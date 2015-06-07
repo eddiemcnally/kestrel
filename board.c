@@ -68,15 +68,35 @@ void clear_board(board_container_t *board_to_clear){
 	}
 }
 
-
+/*
+ *
+ * name: set_bit
+ * @param : board, square
+ * @return : void
+ *
+ */
 void set_bit(board_t *brd, square_t sq){
 	*brd = *brd | (board_t)(0x01ull << sq);
 }
 
+/*
+ *
+ * name: clear_bit
+ * @param : board, square
+ * @return : void
+ *
+ */
 void clear_bit(board_t *brd, square_t sq){
 	*brd = *brd & (board_t)(~0x01ull << sq);
 }
 
+/*
+ *
+ * name: check_bit
+ * @param : board, square
+ * @return : 0 if unset, 1 otherwise
+ *
+ */
 int check_bit(board_t *brd, square_t sq){
 	return (*brd >> sq) & 0x01ull;
 }
