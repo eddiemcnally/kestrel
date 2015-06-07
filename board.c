@@ -32,6 +32,8 @@
  */
 void reset_board(board_container_t *board_to_reset) {
 
+	clear_board(board_to_reset);
+
     board_to_reset->piece_boards[B_PAWN] 	= 	INIT_BRD_B_P;
     board_to_reset->piece_boards[B_ROOK] 	= 	INIT_BRD_B_R;
     board_to_reset->piece_boards[B_BISHOP] 	= 	INIT_BRD_B_B;
@@ -67,14 +69,30 @@ void clear_board(board_container_t *board_to_clear){
 }
 
 
+void set_bit(board_t *brd, square_t sq){
+	*brd = *brd | (board_t)(0x01ull << sq);
+}
+
+void clear_bit(board_t *brd, square_t sq){
+	*brd = *brd & (board_t)(~0x01ull << sq);
+}
+
+int check_bit(board_t *brd, square_t sq){
+	return (*brd >> sq) & 0x01ull;
+}
+
+
+
+
+
 int add_piece_to_board(board_container_t *board, piece_id_t piece, square_t square){
-	board_t mask = GET_PIECE_MASK(square);
-	if ((mask & board->board) != 0){
+
+	if (check_bit(&board->board, square) != 0){
 		// square already occupied
 		return -1;
 	} else{
 		// set bit in relevant piece board
-		board->piece_boards[piece] |= mask;
+		set_bit(&(board->piece_boards[piece]), square);
 
 		// regen flat board
 		overlay_boards(board);
@@ -84,13 +102,13 @@ int add_piece_to_board(board_container_t *board, piece_id_t piece, square_t squa
 }
 
 
-board_t overlay_boards(board_container_t *board_container) {
+void overlay_boards(board_container_t *board_container) {
     int i = 0;
     board_t flat_board = 0;
     for (i = 0; i < NUM_PIECE_TYPES; i++) {
         flat_board = flat_board | board_container->piece_boards[i];
     }
-    return flat_board;
+    board_container->board = flat_board;
 }
 
 

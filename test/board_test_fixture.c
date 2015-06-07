@@ -86,11 +86,72 @@ void test_clean_board(){
 	// now clean it
 	clear_board(the_board);
 
+	// check all squares are zero
 	assert_true(the_board->board == (board_t)0);
 	for(int i = 0; i < NUM_PIECE_TYPES; i++){
 		assert_true(the_board->piece_boards[i] == (board_t)0);
 	}
 }
+
+
+void test_add_to_board(){
+
+	struct board_container *the_board = malloc(sizeof (struct board_container));
+
+	// now clean it
+	clear_board(the_board);
+
+	add_piece_to_board(the_board, W_PAWN, A8);
+	add_piece_to_board(the_board, B_QUEEN, G3);
+	add_piece_to_board(the_board, W_PAWN, B6);
+	add_piece_to_board(the_board, W_KING, A4);
+	add_piece_to_board(the_board, W_ROOK, H8);
+
+	// add again, to check error handling
+	assert_true(add_piece_to_board(the_board, W_PAWN, A8) == -1);
+
+	assert_true(get_piece_at_square(the_board, A8) == (piece_id_t)W_PAWN);
+	assert_true(get_piece_at_square(the_board, G3) == (piece_id_t)B_QUEEN);
+	assert_true(get_piece_at_square(the_board, B6) == (piece_id_t)W_PAWN);
+	assert_true(get_piece_at_square(the_board, A4) == (piece_id_t)W_KING);
+	assert_true(get_piece_at_square(the_board, H8) == (piece_id_t)W_ROOK);
+
+}
+
+
+void test_bit_manipulation(){
+	board_t test_brd = 0;
+
+	// Test setting bits
+	set_bit(&test_brd, 22);
+	assert_true(test_brd == 4194304);
+	test_brd = 0;
+
+	set_bit(&test_brd, 0);
+	assert_true(test_brd == 1);
+	test_brd = 0;
+
+
+	set_bit(&test_brd, 63);
+	assert_true(test_brd == 0x8000000000000000);
+	test_brd = 0;
+
+
+	set_bit(&test_brd, 31);
+	assert_true(test_brd == 2147483648);
+	test_brd = 0;
+
+
+
+
+
+
+
+
+
+
+}
+
 
 
 
@@ -131,6 +192,8 @@ void board_test_fixture( void )
 	test_fixture_start();               // starts a fixture
 	run_test(test_initial_board_placement);
 	run_test(test_clean_board);
+	run_test(test_add_to_board);
+	run_test(test_bit_manipulation);
 	//run_test(test_strings);   // run tests
 	//run_test(test_arrays_equal);
 	//run_test(test_bits);
