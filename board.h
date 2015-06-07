@@ -117,7 +117,9 @@ typedef struct board_container {
 
 
 void reset_board(board_container_t *board_to_reset);
+void clear_board(board_container_t *board_to_clear);
 void print_board(board_container_t *the_board);
+board_t overlay_boards(board_container_t *board_container);
 piece_id_t get_piece_at_square(board_container_t *the_board, square_t square);
 board_t get_black_piece_map(board_container_t *the_board);
 board_t get_white_piece_map(board_container_t *the_board);

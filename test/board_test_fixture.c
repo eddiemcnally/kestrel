@@ -77,6 +77,21 @@ void test_initial_board_placement()
 }
 
 
+void test_clean_board(){
+	struct board_container *the_board = malloc(sizeof (struct board_container));
+
+    // set up initial board
+    reset_board(the_board);
+
+	// now clean it
+	clear_board(the_board);
+
+	assert_true(the_board->board == (board_t)0);
+	for(int i = 0; i < NUM_PIECE_TYPES; i++){
+		assert_true(the_board->piece_boards[i] == (board_t)0);
+	}
+}
+
 
 
 void test_arrays_equal()
@@ -115,6 +130,7 @@ void board_test_fixture( void )
 {
 	test_fixture_start();               // starts a fixture
 	run_test(test_initial_board_placement);
+	run_test(test_clean_board);
 	//run_test(test_strings);   // run tests
 	//run_test(test_arrays_equal);
 	//run_test(test_bits);

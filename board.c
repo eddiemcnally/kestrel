@@ -22,11 +22,14 @@
 #include "board.h"
 #include "pieces.h"
 
+
 /*
- * Creates a new board layer
+ *
+ * name: reset_board
+ * @param: board_container_t *	:	the board to reset
+ * @return: void
  *
  */
-
 void reset_board(board_container_t *board_to_reset) {
 
     board_to_reset->piece_boards[B_PAWN] 	= 	INIT_BRD_B_P;
@@ -45,6 +48,41 @@ void reset_board(board_container_t *board_to_reset) {
     board_to_reset->board = INIT_BRD_B | INIT_BRD_W;
 
 }
+
+/*
+ *
+ * name: clear_board
+ * Cleans a board of all pieces
+ * @param : board_container_t *	: the board to clear
+ * @return : void
+ *
+ */
+void clear_board(board_container_t *board_to_clear){
+
+	board_to_clear->board = (board_t)0;
+
+	for(int i = 0; i < NUM_PIECE_TYPES; i++){
+		board_to_clear->piece_boards[i] = (board_t)0;
+	}
+}
+
+
+int add_piece_to_board(board_container_t *board, piece_id_t piece, square_t square){
+	board_t mask = GET_PIECE_MASK(square);
+	if ((mask & board->board) != 0){
+		// square already occupied
+		return -1;
+	} else{
+		// set bit in relevant piece board
+		board->piece_boards[piece] |= mask;
+
+		// regen flat board
+		overlay_boards(board);
+
+		return 0;
+	}
+}
+
 
 board_t overlay_boards(board_container_t *board_container) {
     int i = 0;
