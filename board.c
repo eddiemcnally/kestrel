@@ -75,7 +75,7 @@ void clear_board(board_container_t *board_to_clear){
  * @return : void
  *
  */
-void set_bit(board_t *brd, square_t sq){
+inline void set_bit(board_t *brd, square_t sq){
 	*brd = *brd | (board_t)(0x01ull << sq);
 }
 
@@ -86,7 +86,7 @@ void set_bit(board_t *brd, square_t sq){
  * @return : void
  *
  */
-void clear_bit(board_t *brd, square_t sq){
+inline void clear_bit(board_t *brd, square_t sq){
 	*brd = *brd & (board_t)(~0x01ull << sq);
 }
 
@@ -97,14 +97,20 @@ void clear_bit(board_t *brd, square_t sq){
  * @return : 0 if unset, 1 otherwise
  *
  */
-int check_bit(board_t *brd, square_t sq){
+inline int check_bit(board_t *brd, square_t sq){
 	return (*brd >> sq) & 0x01ull;
 }
 
 
 
 
-
+/*
+ * Adds a piece to a board.
+ * name: add_piece_to_board
+ * @param : the board, the piece, and the square
+ * @return : 0 if OK, -1 if piece already on that square
+ *
+ */
 int add_piece_to_board(board_container_t *board, piece_id_t piece, square_t square){
 
 	if (check_bit(&board->board, square) != 0){

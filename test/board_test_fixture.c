@@ -119,10 +119,12 @@ void test_add_to_board(){
 }
 
 
-void test_bit_manipulation(){
+void test_setting_bits_in_a_board(){
 	board_t test_brd = 0;
 
+	//
 	// Test setting bits
+	//
 	set_bit(&test_brd, 22);
 	assert_true(test_brd == 4194304);
 	test_brd = 0;
@@ -140,17 +142,87 @@ void test_bit_manipulation(){
 	set_bit(&test_brd, 31);
 	assert_true(test_brd == 2147483648);
 	test_brd = 0;
+}
 
 
+void test_clearing_bits_in_a_board(){
+	board_t test_brd = 0;
 
+	//
+	// Test clearing bits
+	//
+	set_bit(&test_brd, 22);
+	clear_bit(&test_brd, 22);
+	assert_true(test_brd == 0);
 
+	set_bit(&test_brd, 1);
+	clear_bit(&test_brd, 1);
+	assert_true(test_brd == 0);
 
+	set_bit(&test_brd, 31);
+	clear_bit(&test_brd, 31);
+	assert_true(test_brd == 0);
 
+	set_bit(&test_brd, 32);
+	clear_bit(&test_brd, 32);
+	assert_true(test_brd == 0);
 
-
+	set_bit(&test_brd, 63);
+	clear_bit(&test_brd, 63);
+	assert_true(test_brd == 0);
 
 
 }
+
+
+
+
+
+
+
+void test_checking_bits_in_a_board(){
+	board_t test_brd = 0;
+
+	//
+	// Test checking bits
+	//
+	set_bit(&test_brd, 22);
+	assert_true(check_bit(&test_brd, 22) == 1);
+	test_brd = 0; // clean up
+
+	set_bit(&test_brd, 1);
+	assert_true(check_bit(&test_brd, 1) == 1);
+	test_brd = 0; // clean up
+
+	set_bit(&test_brd, 31);
+	assert_true(check_bit(&test_brd, 31) == 1);
+	test_brd = 0; // clean up
+
+	set_bit(&test_brd, 32);
+	assert_true(check_bit(&test_brd, 32) == 1);
+	test_brd = 0; // clean up
+
+	set_bit(&test_brd, 63);
+	assert_true(check_bit(&test_brd, 63) == 1);
+	test_brd = 0; // clean up
+
+
+	// do some negative testing
+	assert_true(check_bit(&test_brd, 22) == 0);
+	assert_true(check_bit(&test_brd, 1) == 0);
+	assert_true(check_bit(&test_brd, 31) == 0);
+	assert_true(check_bit(&test_brd, 8) == 0);
+	assert_true(check_bit(&test_brd, 48) == 0);
+	assert_true(check_bit(&test_brd, 63) == 0);
+	assert_true(check_bit(&test_brd, 58) == 0);
+	assert_true(check_bit(&test_brd, 61) == 0);
+
+}
+
+
+
+
+
 
 
 
@@ -193,7 +265,11 @@ void board_test_fixture( void )
 	run_test(test_initial_board_placement);
 	run_test(test_clean_board);
 	run_test(test_add_to_board);
-	run_test(test_bit_manipulation);
+	run_test(test_setting_bits_in_a_board);
+	run_test(test_checking_bits_in_a_board);
+	run_test(test_clearing_bits_in_a_board);
+
+
 	//run_test(test_strings);   // run tests
 	//run_test(test_arrays_equal);
 	//run_test(test_bits);
