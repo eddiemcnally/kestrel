@@ -1,1 +1,3 @@
 - add function description comments to all functions
+- fix up the printing of the board (Q/q and K/k reversed)
+- test the FEN parser code

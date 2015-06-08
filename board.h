@@ -64,7 +64,9 @@ typedef enum piece_id {
 #define IS_WHITE(piece_id_t)	(piece_id_t <= piece_id_t.W_KING)
 #define IS_BLACK(piece_id_t)	(IS_WHITE(piece_id_t) == FALSE)
 
-
+static const char pieceToChar[12] = {
+	'P','R', 'N','B', 'Q', 'K', 'p','r', 'n','b', 'q','k'
+};
 
 
 

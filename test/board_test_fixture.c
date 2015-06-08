@@ -119,6 +119,18 @@ void test_add_to_board(){
 }
 
 
+void test_fen_parsing(){
+
+
+
+
+
+
+
+}
+
+
+
 void test_setting_bits_in_a_board(){
 	board_t test_brd = 0;
 

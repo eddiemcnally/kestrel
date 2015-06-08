@@ -29,26 +29,90 @@
  *
  * name: Takes a char array as FEN notation, and returns a populated
  * board
- * @param char * representing the FEN string
- * @return a populated board
+ * @param 	char * representing the FEN string
+ * 			board * representing the bpard tp be populated
+ * @return 	0 = OK, -1 Error
  *
  */
-//board_container_t consume_fen_notation(char *fen_string){
+int consume_fen_notation(char *fen_string, board_container_t *board_to_setup){
 
-	////example of starting poition:
-	////rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+	//example of starting poition:
+	//rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
 
-	//// step 1: ignore moves, castling, etc, just return the board
+	// step 1: ignore moves, castling, etc, just return the board
+	int sq = 0;
 
-	////char *str = strdup(fen_string);  	// copy so we own the str (it's modified by strsep())
-	////char *token;
-	////int rank = 7;
-	 						////// FEN notation starts are rank 8
-	////while ((token = strsep(&str_copy, ","))) {
+	// ensure board is initialised
+	clear_board(board_to_setup);
 
-		////my_fn(token);
-
-	////}
-	////free(str);
-	//return void;
-//}
+	while (sq < NUM_SQUARES) {
+		char c = *(fen_string + sq);
+		switch (c) {
+			case 'p' :
+				add_piece_to_board(board_to_setup, B_PAWN, sq);
+				break;
+			case 'r' :
+				add_piece_to_board(board_to_setup, B_ROOK, sq);
+				break;
+			case 'n' :
+				add_piece_to_board(board_to_setup, B_KNIGHT, sq);
+				break;
+			case 'b' :
+				add_piece_to_board(board_to_setup, B_BISHOP, sq);
+				break;
+			case 'q' :
+				add_piece_to_board(board_to_setup, B_QUEEN, sq);
+				break;
+			case 'k' :
+				add_piece_to_board(board_to_setup, B_KING, sq);
+				break;
+			case 'P' :
+				add_piece_to_board(board_to_setup, W_PAWN, sq);
+				break;
+			case 'R' :
+				add_piece_to_board(board_to_setup, W_ROOK, sq);
+				break;
+			case 'N' :
+				add_piece_to_board(board_to_setup, W_KNIGHT, sq);
+				break;
+			case 'B' :
+				add_piece_to_board(board_to_setup, W_BISHOP, sq);
+				break;
+			case 'Q' :
+				add_piece_to_board(board_to_setup, W_QUEEN, sq);
+				break;
+			case 'K' :
+				add_piece_to_board(board_to_setup, W_KING, sq);
+				break;
+			case '/' :
+				break;
+			case '1' :
+				sq++;
+				break;
+			case '2' :
+				sq += 2;
+				break;
+			case '3' :
+				sq+=3;
+				break;
+			case '4' :
+				sq+=4;
+				break;
+			case '5' :
+				sq+=5;
+				break;
+			case '6' :
+				sq+=6;
+				break;
+			case '7' :
+				sq+=7;
+				break;
+			case '8' :
+				sq+=8;
+				break;
+			default:
+				return -1;
+			}
+	}
+	return 0;
+}
