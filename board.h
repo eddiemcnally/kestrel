@@ -43,9 +43,8 @@ typedef enum squares {
 } square_t;
 
 
-
-
-
+#define GET_RANK_ZERO_BASED(square)		(square / 8)
+#define GET_FILE_ZERO_BASED(square)		(square % 8)
 
 
 typedef enum piece_id {

@@ -16,23 +16,21 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "seatest.h"
+#include "board.h"
+#include "pieces.h"
 
-void test_asserting()
-{
-	//assert_true( 1 == 1);
-	//assert_false(1 == 2);
-	//assert_int_equal(1, 1);
+
+
+void test_piece_to_char_conversion(){
+	assert_true('P' == get_piece_label(W_PAWN));
 }
 
-void test_assert_fails()
-{
-	//assert_true( 1 == 2);
-}
+
+
 
 void piece_test_fixture( void )
 {
 	test_fixture_start();
-	//run_test(test_asserting);
-	//run_test(test_assert_fails);
+	run_test(test_piece_to_char_conversion);
 	test_fixture_end();
 }
