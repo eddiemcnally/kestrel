@@ -33,20 +33,32 @@
  * 			board * representing the bpard tp be populated
  * @return 	0 = OK, -1 Error
  *
+ * NOTE:
+ *  - Credit for the following implementation goes to Thomas Petzke
+ *  - Taken from his blog at http://www.fam-petzke.de/cp_fen_en.shtml
+ *
  */
 int consume_fen_notation(char *fen_string, board_container_t *board_to_setup){
 
 	//example of starting poition:
 	//rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
 
-	// step 1: ignore moves, castling, etc, just return the board
-	int sq = 0;
+	// TODO:
+	// - load moves, state, etc
+	// - step 1: ignore moves, castling, etc, just return the board
 
 	// ensure board is initialised
 	clear_board(board_to_setup);
 
-	while (sq < NUM_SQUARES) {
-		char c = *(fen_string + sq);
+
+	int j = 1;
+	while (j <= NUM_SQUARES) {
+		char c = *(fen_string++);
+		int aFile = 1+((j-1) % 8);
+		int aRank = 8-((j-1) / 8);
+		int sq = (square_t) (((aRank-1)*8) + (aFile - 1));
+
+		// printf("parsing char %c\n\r", c);
 		switch (c) {
 			case 'p' :
 				add_piece_to_board(board_to_setup, B_PAWN, sq);
@@ -85,34 +97,35 @@ int consume_fen_notation(char *fen_string, board_container_t *board_to_setup){
 				add_piece_to_board(board_to_setup, W_KING, sq);
 				break;
 			case '/' :
+				j--;
 				break;
 			case '1' :
-				sq++;
 				break;
 			case '2' :
-				sq += 2;
+				j++;
 				break;
 			case '3' :
-				sq+=3;
+				j+=2;
 				break;
 			case '4' :
-				sq+=4;
+				j+=3;
 				break;
 			case '5' :
-				sq+=5;
+				j+=4;
 				break;
 			case '6' :
-				sq+=6;
+				j+=5;
 				break;
 			case '7' :
-				sq+=7;
+				j+=6;
 				break;
 			case '8' :
-				sq+=8;
+				j+=7;
 				break;
 			default:
 				return -1;
 			}
+		j++;
 	}
 	return 0;
 }

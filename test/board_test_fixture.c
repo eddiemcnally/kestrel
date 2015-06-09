@@ -21,16 +21,28 @@
 #include "seatest.h"
 #include "board.h"
 #include "pieces.h"
+#include "board_utils.h"
+
+
+void verify_initial_board_placement(board_container_t *the_board);
+
 
 /**
  * Verifies the initial board setup plus some supporting code
  */
 void test_initial_board_placement()
 {
-	struct board_container *the_board = malloc(sizeof (struct board_container));
+	board_container_t *the_board = malloc(sizeof (struct board_container));
 
     // set up initial board
     reset_board(the_board);
+
+    verify_initial_board_placement(the_board);
+
+}
+
+
+void verify_initial_board_placement(board_container_t *the_board){
 
     assert_true(W_ROOK 		== get_piece_at_square(the_board, A1));
 	assert_true(W_KNIGHT 	== get_piece_at_square(the_board, B1));
@@ -78,7 +90,7 @@ void test_initial_board_placement()
 
 
 void test_clean_board(){
-	struct board_container *the_board = malloc(sizeof (struct board_container));
+	board_container_t *the_board = malloc(sizeof (struct board_container));
 
     // set up initial board
     reset_board(the_board);
@@ -96,7 +108,7 @@ void test_clean_board(){
 
 void test_add_to_board(){
 
-	struct board_container *the_board = malloc(sizeof (struct board_container));
+	board_container_t *the_board = malloc(sizeof (struct board_container));
 
 	// now clean it
 	clear_board(the_board);
@@ -119,15 +131,108 @@ void test_add_to_board(){
 }
 
 
-void test_fen_parsing(){
+void test_fen_parsing_initial_board_layout(){
+
+	board_container_t *the_board = malloc(sizeof (struct board_container));
+
+	// now clean it
+	clear_board(the_board);
+
+	// this is the initial bpard setup
+	char *test_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
+	consume_fen_notation(test_fen, the_board);
+
+	//print_board(the_board);
+
+	// verify the board
+	verify_initial_board_placement(the_board);
+
+}
+
+
+void test_fen_parsing_general_layout(){
+
+	board_container_t *the_board = malloc(sizeof (struct board_container));
+
+
+	/////////////////////////////////////////////////////////
+	// Test FEN #1
+	/////////////////////////////////////////////////////////
+
+	// now clean it
+	clear_board(the_board);
+
+	// this is the initial board setup
+	char *test_fen = "3b4/8/1R6/8/8/5R2/7P/4BK1k w - -";
+
+	consume_fen_notation(test_fen, the_board);
+
+	//print_board(the_board);
+
+	// verify the board
+	assert_true(B_BISHOP 	== get_piece_at_square(the_board, D8));
+	assert_true(W_ROOK 		== get_piece_at_square(the_board, B6));
+	assert_true(W_ROOK 		== get_piece_at_square(the_board, F3));
+	assert_true(W_PAWN 		== get_piece_at_square(the_board, H2));
+	assert_true(B_KING 		== get_piece_at_square(the_board, H1));
+	assert_true(W_KING 		== get_piece_at_square(the_board, F1));
+	assert_true(W_BISHOP 	== get_piece_at_square(the_board, E1));
 
 
 
 
+	/////////////////////////////////////////////////////////
+	// Test FEN #2
+	/////////////////////////////////////////////////////////
 
+	// now clean it
+	clear_board(the_board);
+
+	// this is the initial board setup
+	test_fen = "r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R";
+
+	consume_fen_notation(test_fen, the_board);
+
+	//print_board(the_board);
+
+
+    assert_true(W_ROOK 		== get_piece_at_square(the_board, A1));
+	assert_true(W_KNIGHT 	== get_piece_at_square(the_board, B1));
+	assert_true(W_BISHOP 	== get_piece_at_square(the_board, C1));
+	assert_true(W_QUEEN 	== get_piece_at_square(the_board, D1));
+	assert_true(W_KING 		== get_piece_at_square(the_board, E1));
+	assert_true(W_ROOK 		== get_piece_at_square(the_board, H1));
+
+	assert_true(W_PAWN 		== get_piece_at_square(the_board, A2));
+	assert_true(W_PAWN 		== get_piece_at_square(the_board, B2));
+	assert_true(W_PAWN 		== get_piece_at_square(the_board, C2));
+	assert_true(W_PAWN 		== get_piece_at_square(the_board, D2));
+	assert_true(W_PAWN 		== get_piece_at_square(the_board, F2));
+	assert_true(W_PAWN 		== get_piece_at_square(the_board, G2));
+	assert_true(W_PAWN 		== get_piece_at_square(the_board, H2));
+
+
+	assert_true(B_PAWN 		== get_piece_at_square(the_board, A7));
+	assert_true(B_PAWN 		== get_piece_at_square(the_board, B7));
+	assert_true(B_PAWN 		== get_piece_at_square(the_board, C7));
+	assert_true(B_PAWN 		== get_piece_at_square(the_board, D7));
+	assert_true(B_PAWN 		== get_piece_at_square(the_board, F7));
+	assert_true(B_PAWN 		== get_piece_at_square(the_board, G7));
+	assert_true(B_PAWN 		== get_piece_at_square(the_board, H7));
+
+    assert_true(B_ROOK 		== get_piece_at_square(the_board, A8));
+	assert_true(B_BISHOP 	== get_piece_at_square(the_board, C8));
+	assert_true(B_QUEEN 	== get_piece_at_square(the_board, D8));
+	assert_true(B_KING 		== get_piece_at_square(the_board, E8));
+	assert_true(B_BISHOP 	== get_piece_at_square(the_board, F8));
+	assert_true(B_KNIGHT 	== get_piece_at_square(the_board, G8));
+	assert_true(B_ROOK 		== get_piece_at_square(the_board, H8));
 
 
 }
+
+
 
 
 
@@ -236,41 +341,6 @@ void test_checking_bits_in_a_board(){
 
 
 
-
-
-
-void test_arrays_equal()
-{
-	unsigned char expected_bytes[] = { 1, 2, 3};
-	unsigned char buffer[5];
-	int i;
-
-	// put 5 bytes in
-	for(i=0; i<5; i++) buffer[i]=i+1;
-
-	// only check the first 3
-	assert_n_array_equal(expected_bytes, buffer, 3);
-}
-
-void test_bits()
-{
-	assert_bit_set(0, 0x01);
-	assert_bit_set(2, 0x04);
-	assert_bit_not_set(3, 0x02);
-}
-
-void test_strings()
-{
-	char *s = "hello";
-	assert_string_equal("hello", s);
-	assert_string_contains("blah", "why say blah?");
-	assert_string_doesnt_contain("blah", "why say hello?");
-	assert_string_ends_with("h?", "why say blah?");
-	assert_string_starts_with("why", "why say blah?");
-}
-
-
-
 void board_test_fixture( void )
 {
 	test_fixture_start();               // starts a fixture
@@ -280,10 +350,8 @@ void board_test_fixture( void )
 	run_test(test_setting_bits_in_a_board);
 	run_test(test_checking_bits_in_a_board);
 	run_test(test_clearing_bits_in_a_board);
+	run_test(test_fen_parsing_initial_board_layout);
+	run_test(test_fen_parsing_general_layout);
 
-
-	//run_test(test_strings);   // run tests
-	//run_test(test_arrays_equal);
-	//run_test(test_bits);
 	test_fixture_end();                 // ends a fixture
 }
