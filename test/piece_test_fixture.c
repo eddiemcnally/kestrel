@@ -23,6 +23,17 @@
 
 void test_piece_to_char_conversion(){
 	assert_true('P' == get_piece_label(W_PAWN));
+	assert_true('p' == get_piece_label(B_PAWN));
+	assert_true('R' == get_piece_label(W_ROOK));
+	assert_true('r' == get_piece_label(B_ROOK));
+	assert_true('B' == get_piece_label(W_BISHOP));
+	assert_true('b' == get_piece_label(B_BISHOP));
+	assert_true('N' == get_piece_label(W_KNIGHT));
+	assert_true('n' == get_piece_label(B_KNIGHT));
+	assert_true('Q' == get_piece_label(W_QUEEN));
+	assert_true('q' == get_piece_label(B_QUEEN));
+	assert_true('K' == get_piece_label(W_KING));
+	assert_true('k' == get_piece_label(B_KING));
 }
 
 
