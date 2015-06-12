@@ -128,7 +128,7 @@ int add_piece_to_board(board_container_t *board, piece_id_t piece, square_t squa
 }
 
 
-void overlay_boards(board_container_t *board_container) {
+inline void overlay_boards(board_container_t *board_container) {
     int i = 0;
     board_t flat_board = 0;
     for (i = 0; i < NUM_PIECE_TYPES; i++) {
@@ -191,7 +191,6 @@ void print_board(board_container_t *the_board) {
 
     int i = 0;
 
-	// board[0] = A1, board[1] = B1, etc
     char board[NUM_SQUARES] = {' '};
 
 	for(int i = 0; i < NUM_PIECE_TYPES; i++){

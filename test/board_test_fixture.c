@@ -137,7 +137,7 @@ void test_fen_parsing_initial_board_layout(){
 
 	consume_fen_notation(test_fen, the_board);
 
-	//print_board(the_board);
+	print_board(the_board);
 
 	// verify the board
 	// NOTE: This code is cut/paste from above, to make it easier tp
@@ -204,7 +204,7 @@ void test_fen_parsing_general_layout(){
 
 	consume_fen_notation(test_fen, the_board);
 
-	//print_board(the_board);
+	print_board(the_board);
 
 	// verify the board
 	assert_true(B_BISHOP 	== get_piece_at_square(the_board, d8));
@@ -217,7 +217,7 @@ void test_fen_parsing_general_layout(){
 
 
 
-
+/*
 	/////////////////////////////////////////////////////////
 	// Test FEN #2
 	/////////////////////////////////////////////////////////
@@ -230,7 +230,7 @@ void test_fen_parsing_general_layout(){
 
 	consume_fen_notation(test_fen, the_board);
 
-	//print_board(the_board);
+	print_board(the_board);
 
 
     assert_true(W_ROOK 		== get_piece_at_square(the_board, a1));
@@ -264,7 +264,7 @@ void test_fen_parsing_general_layout(){
 	assert_true(B_BISHOP 	== get_piece_at_square(the_board, f8));
 	assert_true(B_KNIGHT 	== get_piece_at_square(the_board, g8));
 	assert_true(B_ROOK 		== get_piece_at_square(the_board, h8));
-
+*/
 
 }
 
@@ -380,13 +380,13 @@ void test_checking_bits_in_a_board(){
 void board_test_fixture( void )
 {
 	test_fixture_start();               // starts a fixture
-	run_test(test_initial_board_placement);
-	run_test(test_clean_board);
-	run_test(test_add_to_board);
-	run_test(test_setting_bits_in_a_board);
-	run_test(test_checking_bits_in_a_board);
-	run_test(test_clearing_bits_in_a_board);
-	run_test(test_fen_parsing_initial_board_layout);
+	//run_test(test_initial_board_placement);
+	//run_test(test_clean_board);
+	//run_test(test_add_to_board);
+	//run_test(test_setting_bits_in_a_board);
+	//run_test(test_checking_bits_in_a_board);
+	//run_test(test_clearing_bits_in_a_board);
+	//run_test(test_fen_parsing_initial_board_layout);
 	run_test(test_fen_parsing_general_layout);
 
 	test_fixture_end();                 // ends a fixture

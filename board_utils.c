@@ -33,9 +33,6 @@
  * 			board * representing the bpard tp be populated
  * @return 	0 = OK, -1 Error
  *
- * NOTE:
- *  - Credit for the following implementation goes to Thomas Petzke
- *  - Taken from his blog at http://www.fam-petzke.de/cp_fen_en.shtml
  *
  */
 int consume_fen_notation(char *fen_string, board_container_t *board_to_setup){
@@ -50,82 +47,81 @@ int consume_fen_notation(char *fen_string, board_container_t *board_to_setup){
 	// ensure board is initialised
 	clear_board(board_to_setup);
 
+	int sq = NUM_SQUARES - 1;
+	while(sq >= 0){
 
-	int j = 1;
-	while (j <= NUM_SQUARES) {
-		char c = *(fen_string++);
-		int aFile = 1+((j-1) % 8);
-		int aRank = 8-((j-1) / 8);
-		int sq = (square_t) (((aRank-1)*8) + (aFile - 1));
+			char c = *(fen_string++);
 
-		// printf("parsing char %c\n\r", c);
+			printf("parsing char %c for square %d \n\r", c, sq);
+
 		switch (c) {
 			case 'p' :
-				add_piece_to_board(board_to_setup, B_PAWN, sq);
+				add_piece_to_board(board_to_setup, B_PAWN, sq--);
 				break;
 			case 'r' :
-				add_piece_to_board(board_to_setup, B_ROOK, sq);
+				add_piece_to_board(board_to_setup, B_ROOK, sq--);
 				break;
 			case 'n' :
-				add_piece_to_board(board_to_setup, B_KNIGHT, sq);
+				add_piece_to_board(board_to_setup, B_KNIGHT, sq--);
 				break;
 			case 'b' :
-				add_piece_to_board(board_to_setup, B_BISHOP, sq);
+				add_piece_to_board(board_to_setup, B_BISHOP, sq--);
 				break;
 			case 'q' :
-				add_piece_to_board(board_to_setup, B_QUEEN, sq);
+				add_piece_to_board(board_to_setup, B_QUEEN, sq--);
 				break;
 			case 'k' :
-				add_piece_to_board(board_to_setup, B_KING, sq);
+				add_piece_to_board(board_to_setup, B_KING, sq--);
 				break;
 			case 'P' :
-				add_piece_to_board(board_to_setup, W_PAWN, sq);
+				add_piece_to_board(board_to_setup, W_PAWN, sq--);
 				break;
 			case 'R' :
-				add_piece_to_board(board_to_setup, W_ROOK, sq);
+				add_piece_to_board(board_to_setup, W_ROOK, sq--);
 				break;
 			case 'N' :
-				add_piece_to_board(board_to_setup, W_KNIGHT, sq);
+				add_piece_to_board(board_to_setup, W_KNIGHT, sq--);
 				break;
 			case 'B' :
-				add_piece_to_board(board_to_setup, W_BISHOP, sq);
+				add_piece_to_board(board_to_setup, W_BISHOP, sq--);
 				break;
 			case 'Q' :
-				add_piece_to_board(board_to_setup, W_QUEEN, sq);
+				add_piece_to_board(board_to_setup, W_QUEEN, sq--);
 				break;
 			case 'K' :
-				add_piece_to_board(board_to_setup, W_KING, sq);
+				add_piece_to_board(board_to_setup, W_KING, sq--);
 				break;
 			case '/' :
-				j--;
+				//  skip this
 				break;
 			case '1' :
+				sq--;
 				break;
 			case '2' :
-				j++;
+				sq -=2;
 				break;
 			case '3' :
-				j+=2;
+				 sq -=3;
 				break;
 			case '4' :
-				j+=3;
+				sq -= 4;
 				break;
 			case '5' :
-				j+=4;
+				sq -=5;
 				break;
 			case '6' :
-				j+=5;
+				sq -=6;
 				break;
 			case '7' :
-				j+=6;
+				sq -=7;
 				break;
 			case '8' :
-				j+=7;
+				sq -=8;
 				break;
 			default:
 				return -1;
 			}
-		j++;
+
 	}
 	return 0;
 }
