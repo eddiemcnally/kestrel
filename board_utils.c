@@ -51,7 +51,7 @@
 	for (int rank = 7; rank >= 0; rank--){
 		bool move_to_next_rank = false;
 		for(int file  = 0; file <= 7 && move_to_next_rank == false; file++){
-			int sq = (rank * 8) + file;
+			int sq = GET_SQUARE(rank, file);
 			char c = *(fen_string++);
 			
 			//printf("parsing char %c for square %d, rank=%d, file = %d \n\r", c, sq, rank, file);

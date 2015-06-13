@@ -42,7 +42,8 @@ typedef enum squares {
     NUM_SQUARES
 } square_t;
 
-// square numbers in the board
+// for reference, above enum versus the rank/file 
+// layout and the square numbers in the board
 // 56 57 58 59 60 61 62 63
 // 48 49 50 51 52 53 54 55
 // 40 41 42 43 44 45 46 47 
@@ -52,9 +53,10 @@ typedef enum squares {
 // 08 09 10 11 12 13 14 15
 // 00 01 02 03 40 05 06 07
 
-
-#define GET_RANK_ZERO_BASED(square)		(square / 8)
-#define GET_FILE_ZERO_BASED(square)		(square % 8)
+// zero-based
+#define GET_RANK(square)		(square / 8)
+#define GET_FILE(square)		(square % 8)
+#define GET_SQUARE(RANK, FILE)	((RANK * 8) + FILE)
 
 
 typedef enum piece_id {

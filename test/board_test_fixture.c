@@ -202,12 +202,9 @@ void test_fen_parsing_general_layout_1(){
 	//print_board(the_board);
 
 	// verify the board
-	assert_true(B_KING 	== get_piece_at_square(the_board, a8));
-	assert_true(W_KNIGHT 		== get_piece_at_square(the_board, e5));
-	//printf("piece on e5 = %d\n\r", get_piece_at_square(the_board, e5));
+	assert_true(B_KING 		== get_piece_at_square(the_board, a8));
+	assert_true(W_KNIGHT 	== get_piece_at_square(the_board, e5));
 	assert_true(W_KING 		== get_piece_at_square(the_board, d1));
-	//printf("piece on d1 = %d\n\r", get_piece_at_square(the_board, d1));
-	
 
 
 }
@@ -260,8 +257,59 @@ void test_fen_parsing_general_layout_2(){
 	assert_true(B_KNIGHT 	== get_piece_at_square(the_board, g8));
 	assert_true(B_ROOK 		== get_piece_at_square(the_board, h8));
 
+}
+
+
+
+void test_fen_parsing_general_layout_3(){
+
+	board_container_t *the_board = malloc(sizeof (struct board_container));
+
+	// now clean it
+	clear_board(the_board);
+
+	// this is the initial board setup
+	char *test_fen = "r1bq1rk1/pp3ppp/3n4/2p1N3/2B5/7P/PPP2PP1/R1BQR1K1";
+
+	consume_fen_notation(test_fen, the_board);
+
+	//print_board(the_board);
+
+
+    assert_true(W_ROOK 		== get_piece_at_square(the_board, a1));
+	assert_true(W_BISHOP 	== get_piece_at_square(the_board, c1));
+	assert_true(W_QUEEN 	== get_piece_at_square(the_board, d1));
+	assert_true(W_ROOK 		== get_piece_at_square(the_board, e1));
+	assert_true(W_KING 		== get_piece_at_square(the_board, g1));
+	
+	assert_true(W_PAWN 		== get_piece_at_square(the_board, a2));
+	assert_true(W_PAWN 		== get_piece_at_square(the_board, b2));
+	assert_true(W_PAWN 		== get_piece_at_square(the_board, c2));
+	assert_true(W_PAWN 		== get_piece_at_square(the_board, f2));
+	assert_true(W_PAWN 		== get_piece_at_square(the_board, g2));
+	
+	assert_true(W_BISHOP 	== get_piece_at_square(the_board, c4));
+	assert_true(B_PAWN 		== get_piece_at_square(the_board, c5));
+	assert_true(W_KNIGHT	== get_piece_at_square(the_board, e5));
+	
+	assert_true(B_KNIGHT	== get_piece_at_square(the_board, d6));
+	
+	assert_true(B_PAWN 		== get_piece_at_square(the_board, a7));
+	assert_true(B_PAWN 		== get_piece_at_square(the_board, b7));
+
+	assert_true(B_PAWN 		== get_piece_at_square(the_board, f7));
+	assert_true(B_PAWN 		== get_piece_at_square(the_board, g7));
+	assert_true(B_PAWN 		== get_piece_at_square(the_board, h7));
+
+    assert_true(B_ROOK 		== get_piece_at_square(the_board, a8));
+	assert_true(B_BISHOP 	== get_piece_at_square(the_board, c8));
+	assert_true(B_QUEEN 	== get_piece_at_square(the_board, d8));
+	assert_true(B_ROOK 		== get_piece_at_square(the_board, f8));
+	assert_true(B_KING 		== get_piece_at_square(the_board, g8));
 
 }
+
+
 
 
 
@@ -366,10 +414,6 @@ void test_checking_bits_in_a_board(){
 }
 
 
-
-
-
-
 void board_test_fixture( void )
 {
 	test_fixture_start();               // starts a fixture
@@ -383,6 +427,7 @@ void board_test_fixture( void )
 	run_test(test_fen_parsing_initial_board_layout);
 	run_test(test_fen_parsing_general_layout_1);
 	run_test(test_fen_parsing_general_layout_2);
+	run_test(test_fen_parsing_general_layout_3);
 
 	test_fixture_end();                 // ends a fixture
 }

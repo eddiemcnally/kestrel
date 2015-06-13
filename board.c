@@ -190,38 +190,43 @@ board_t get_black_piece_map(board_container_t *the_board){
 
 
 
-
-
-
 void print_board(board_container_t *the_board) {
-
-    int i = 0;
-
-	// [0] = a8, [63] = h1
-    char board[NUM_SQUARES] = {' '};
-
-	for(int i = 0; i < NUM_PIECE_TYPES; i++){
-		board_t brd = the_board->piece_boards[i];
-
-		piece_id_t piece = (piece_id_t)i;
-		char c = get_piece_label(piece);
-
-		for(int j = 0; j < NUM_SQUARES; j++){
-			if (((brd >> j) & 0x01) != 0){
-				board[j] = c;
-			}
+	
+	char brd[8][8];
+			
+	for(int i =0; i < 8; i++){
+		for (int j = 0; j < 8; j++){
+			brd[i][j] = ' ';
 		}
 	}
-
-	// char array is filled in according to char[0]= A1
-	// so swap for display
-
-    for (i = NUM_SQUARES; i >=0; i--) {
-        printf("%c", board[i]);
-		if ((i % 8 == 0)) {
-            printf("\n\r");
-        }
-
-    }
+			
+			
+	for(int rank = 0; rank < 8; rank++){
+		for(int file = 0; file < 8; file++){
+			//int square = GET_SQUARE(rank, file);
+			
+			square_t square = (rank * 8) + file;
+			
+			//printf("sq = %d", square);
+			
+			piece_t piece = get_piece_at_square(the_board, square);
+			if (piece >= 0){
+				//printf("piece = %d\n\r", piece);
+				
+				char pce = get_piece_label(piece);
+				//printf("piece = %c, sq = %d\n\r", pce, square);
+				
+				brd[rank][file] = pce;	
+			}			
+		}
+	}
+	
+	for(int rank = 7; rank >= 0; rank--){
+		for(int file = 0; file <= 7; file++){
+			printf("%c", brd[rank][file]);
+		}
+		printf("\n\r");
+	}
+	
 }
 
