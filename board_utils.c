@@ -35,7 +35,7 @@
  *
  *
  */
-int consume_fen_notation(char *fen_string, board_container_t *board_to_setup){
+ int consume_fen_notation(char *fen_string, board_container_t *board_to_setup){
 
 	//example of starting poition:
 	//rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
@@ -47,81 +47,92 @@ int consume_fen_notation(char *fen_string, board_container_t *board_to_setup){
 	// ensure board is initialised
 	clear_board(board_to_setup);
 
-	int sq = NUM_SQUARES - 1;
-	while(sq >= 0){
 
+	for (int rank = 7; rank >= 0; rank--){
+		bool move_to_next_rank = false;
+		for(int file  = 0; file <= 7 && move_to_next_rank == false; file++){
+			int sq = (rank * 8) + file;
 			char c = *(fen_string++);
-
-			printf("parsing char %c for square %d \n\r", c, sq);
-
-		switch (c) {
-			case 'p' :
-				add_piece_to_board(board_to_setup, B_PAWN, sq--);
-				break;
-			case 'r' :
-				add_piece_to_board(board_to_setup, B_ROOK, sq--);
-				break;
-			case 'n' :
-				add_piece_to_board(board_to_setup, B_KNIGHT, sq--);
-				break;
-			case 'b' :
-				add_piece_to_board(board_to_setup, B_BISHOP, sq--);
-				break;
-			case 'q' :
-				add_piece_to_board(board_to_setup, B_QUEEN, sq--);
-				break;
-			case 'k' :
-				add_piece_to_board(board_to_setup, B_KING, sq--);
-				break;
-			case 'P' :
-				add_piece_to_board(board_to_setup, W_PAWN, sq--);
-				break;
-			case 'R' :
-				add_piece_to_board(board_to_setup, W_ROOK, sq--);
-				break;
-			case 'N' :
-				add_piece_to_board(board_to_setup, W_KNIGHT, sq--);
-				break;
-			case 'B' :
-				add_piece_to_board(board_to_setup, W_BISHOP, sq--);
-				break;
-			case 'Q' :
-				add_piece_to_board(board_to_setup, W_QUEEN, sq--);
-				break;
-			case 'K' :
-				add_piece_to_board(board_to_setup, W_KING, sq--);
-				break;
-			case '/' :
-				//  skip this
-				break;
-			case '1' :
-				sq--;
-				break;
-			case '2' :
-				sq -=2;
-				break;
-			case '3' :
-				 sq -=3;
-				break;
-			case '4' :
-				sq -= 4;
-				break;
-			case '5' :
-				sq -=5;
-				break;
-			case '6' :
-				sq -=6;
-				break;
-			case '7' :
-				sq -=7;
-				break;
-			case '8' :
-				sq -=8;
-				break;
-			default:
+			
+			//printf("parsing char %c for square %d, rank=%d, file = %d \n\r", c, sq, rank, file);
+			
+			int added_ok = 0;
+			switch (c) {
+				case 'p' :
+					added_ok = add_piece_to_board(board_to_setup, B_PAWN, sq);
+					break;
+				case 'r' :
+					added_ok = add_piece_to_board(board_to_setup, B_ROOK, sq);
+					break;
+				case 'n' :
+					added_ok = add_piece_to_board(board_to_setup, B_KNIGHT, sq);
+					break;
+				case 'b' :
+					added_ok = add_piece_to_board(board_to_setup, B_BISHOP, sq);
+					break;
+				case 'q' :
+					added_ok = add_piece_to_board(board_to_setup, B_QUEEN, sq);
+					break;
+				case 'k' :
+					added_ok = add_piece_to_board(board_to_setup, B_KING, sq);
+					break;
+				case 'P' :
+					added_ok = add_piece_to_board(board_to_setup, W_PAWN, sq);
+					break;
+				case 'R' :
+					added_ok = add_piece_to_board(board_to_setup, W_ROOK, sq);
+					break;
+				case 'N' :
+					added_ok = add_piece_to_board(board_to_setup, W_KNIGHT, sq);
+					break;
+				case 'B' :
+					added_ok = add_piece_to_board(board_to_setup, W_BISHOP, sq);
+					break;
+				case 'Q' :
+					added_ok = add_piece_to_board(board_to_setup, W_QUEEN, sq);
+					break;
+				case 'K' :
+					added_ok = add_piece_to_board(board_to_setup, W_KING, sq);
+					break;
+				case '/' :
+					move_to_next_rank = true;
+					rank++;					
+					break;
+				case '1' :
+					//file++;
+					break;
+				case '2' :
+					file +=1;
+					break;
+				case '3' :
+					 file +=2;
+					break;
+				case '4' :
+					file += 3;
+					break;
+				case '5' :
+					file +=4;
+					break;
+				case '6' :
+					file +=5;
+					break;
+				case '7' :
+					file +=6;
+					break;
+				case '8' :
+					file +=7;
+					break;
+				default:
+					return -1;
+				}
+			
+			if (added_ok != 0){
+				printf("Problem adding piece");
 				return -1;
 			}
-
+						
+		}
 	}
 	return 0;
 }
+

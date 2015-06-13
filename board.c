@@ -113,6 +113,10 @@ inline int check_bit(board_t *brd, square_t sq){
  */
 int add_piece_to_board(board_container_t *board, piece_id_t piece, square_t square){
 
+	// char pce = get_piece_label(piece);
+	// printf("Adding piece %c to square %d\n\r", pce,  square);
+	
+	
 	if (check_bit(&board->board, square) != 0){
 		// square already occupied
 		return -1;
@@ -187,10 +191,13 @@ board_t get_black_piece_map(board_container_t *the_board){
 
 
 
+
+
 void print_board(board_container_t *the_board) {
 
     int i = 0;
 
+	// [0] = a8, [63] = h1
     char board[NUM_SQUARES] = {' '};
 
 	for(int i = 0; i < NUM_PIECE_TYPES; i++){
@@ -217,3 +224,4 @@ void print_board(board_container_t *the_board) {
 
     }
 }
+
