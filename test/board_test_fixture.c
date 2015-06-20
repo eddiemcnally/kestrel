@@ -311,6 +311,69 @@ void test_fen_parsing_general_layout_3(){
 
 
 
+void test_occupancy_maps(){
+	board_container_t *board = malloc(sizeof (struct board_container));
+
+	// now clean it
+	clear_board(board);
+
+	add_piece_to_board(board, W_PAWN, a3);
+	add_piece_to_board(board, W_PAWN, b8);
+	add_piece_to_board(board, W_PAWN, a4);
+	add_piece_to_board(board, W_PAWN, d7);
+	add_piece_to_board(board, W_PAWN, g8);
+	add_piece_to_board(board, W_BISHOP, a8);
+	add_piece_to_board(board, W_ROOK, h8);
+	add_piece_to_board(board, W_QUEEN, a5);
+	add_piece_to_board(board, W_KNIGHT, c6);
+	add_piece_to_board(board, W_KNIGHT, b6);
+	
+	
+	board_t a_board = get_white_occupancy_map(board);
+	
+	assert_true(is_square_occupied(a_board, a3));
+	assert_true(is_square_occupied(a_board, b8));
+	assert_true(is_square_occupied(a_board, a4));
+	assert_true(is_square_occupied(a_board, d7));
+	assert_true(is_square_occupied(a_board, g8));
+	assert_true(is_square_occupied(a_board, a8));
+	assert_true(is_square_occupied(a_board, h8));
+	assert_true(is_square_occupied(a_board, a5));
+	assert_true(is_square_occupied(a_board, c6));
+	assert_true(is_square_occupied(a_board, b6));
+	
+
+
+	// now clean th board ans check the black pieces
+	clear_board(board);
+
+	add_piece_to_board(board, B_PAWN, a3);
+	add_piece_to_board(board, B_PAWN, a1);
+	add_piece_to_board(board, B_PAWN, d7);
+	add_piece_to_board(board, B_PAWN, e8);
+	add_piece_to_board(board, B_PAWN, g8);
+	add_piece_to_board(board, B_BISHOP, f4);
+	add_piece_to_board(board, B_ROOK, h6);
+	add_piece_to_board(board, B_QUEEN, a5);
+	add_piece_to_board(board, B_KNIGHT, g2);
+	add_piece_to_board(board, B_KNIGHT, g8);
+	
+	
+	a_board = get_black_occupancy_map(board);
+	
+	assert_true(is_square_occupied(a_board, a3));
+	assert_true(is_square_occupied(a_board, a1));
+	assert_true(is_square_occupied(a_board, d7));
+	assert_true(is_square_occupied(a_board, e8));
+	assert_true(is_square_occupied(a_board, g8));
+	assert_true(is_square_occupied(a_board, f4));
+	assert_true(is_square_occupied(a_board, h6));
+	assert_true(is_square_occupied(a_board, a5));
+	assert_true(is_square_occupied(a_board, g2));
+	assert_true(is_square_occupied(a_board, g8));
+
+}
+
 
 
 void test_setting_bits_in_a_board(){
@@ -428,6 +491,7 @@ void board_test_fixture( void )
 	run_test(test_fen_parsing_general_layout_1);
 	run_test(test_fen_parsing_general_layout_2);
 	run_test(test_fen_parsing_general_layout_3);
+	run_test(test_occupancy_maps);
 
 	test_fixture_end();                 // ends a fixture
 }

@@ -19,6 +19,7 @@
 #ifndef _BOARD_H_
 #define _BOARD_H_
 
+#include <stdbool.h>
 
 typedef unsigned long long board_t;
 
@@ -27,7 +28,7 @@ typedef unsigned long long board_t;
 #define NUM_FILES	8
 
 
-#define GET_PIECE_MASK(square)	((board_t)(0x01ull << (int)square))
+#define GET_PIECE_MASK(square)		((board_t)(0x01ull << (int)square))
 
 
 typedef enum squares {
@@ -54,9 +55,9 @@ typedef enum squares {
 // 00 01 02 03 40 05 06 07
 
 // zero-based
-#define GET_RANK(square)		(square / 8)
-#define GET_FILE(square)		(square % 8)
-#define GET_SQUARE(RANK, FILE)	((RANK * 8) + FILE)
+#define GET_RANK(square)			(square / 8)
+#define GET_FILE(square)			(square % 8)
+#define GET_SQUARE(RANK, FILE)		((RANK * 8) + FILE)
 
 
 typedef enum piece_id {
@@ -76,12 +77,13 @@ typedef enum piece_id {
 
 #define	NUM_PIECE_TYPES	12
 
-#define IS_WHITE(piece_id_t)	(piece_id_t <= piece_id_t.W_KING)
-#define IS_BLACK(piece_id_t)	(IS_WHITE(piece_id_t) == FALSE)
+#define IS_WHITE(piece_id_t)		(piece_id_t <= piece_id_t.W_KING)
+#define IS_BLACK(piece_id_t)		(IS_WHITE(piece_id_t) == FALSE)
 
 static const char pieceToChar[12] = {
 	'P','R', 'N','B', 'Q', 'K', 'p','r', 'n','b', 'q','k'
 };
+
 
 
 
@@ -139,14 +141,14 @@ typedef struct board_container {
 void reset_board(board_container_t *board_to_reset);
 void clear_board(board_container_t *board_to_clear);
 void print_board(board_container_t *the_board);
-void overlay_boards(board_container_t *board_container);
 piece_id_t get_piece_at_square(board_container_t *the_board, square_t square);
 int add_piece_to_board(board_container_t *board, piece_id_t piece, square_t square);
-board_t get_black_piece_map(board_container_t *the_board);
-board_t get_white_piece_map(board_container_t *the_board);
+board_t get_black_occupancy_map(board_container_t *the_board);
+board_t get_white_occupancy_map(board_container_t *the_board);
+bool is_square_occupied(board_t board, square_t square);
 void set_bit(board_t *brd, square_t sq);
 void clear_bit(board_t *brd, square_t sq);
-int check_bit(board_t *brd, square_t sq);
+bool check_bit(board_t *brd, square_t sq);
 
 
 #endif

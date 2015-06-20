@@ -25,6 +25,6 @@
 /**
  * Takes a typed piece and returns a human-readable representation
  */
-char get_piece_label(piece_id_t piece) {
+inline char get_piece_label(piece_id_t piece) {
 	return pieceToChar[piece];
 }

@@ -23,13 +23,9 @@
 #include "pieces.h"
 
 
-/*
- *
- * name: reset_board
- * @param: board_container_t *	:	the board to reset
- * @return: void
- *
- */
+void overlay_boards(board_container_t *board_container);
+
+
 void reset_board(board_container_t *board_to_reset) {
 
 	clear_board(board_to_reset);
@@ -94,11 +90,14 @@ inline void clear_bit(board_t *brd, square_t sq){
  *
  * name: check_bit
  * @param : board, square
- * @return : 0 if unset, 1 otherwise
+ * @return : bool false if unset, bool true otherwise
  *
  */
-inline int check_bit(board_t *brd, square_t sq){
-	return (*brd >> sq) & 0x01ull;
+inline bool check_bit(board_t *brd, square_t sq){
+	if ((*brd >> sq) & 0x01ull !=0){
+		return true;
+	}
+	return false;
 }
 
 
@@ -153,7 +152,6 @@ piece_id_t get_piece_at_square(board_container_t *the_board, square_t square){
 
 		piece_id_t piece = (piece_id_t)i;
 		//char c = get_piece_label(piece);
-
 		//printf("piece %c board = 0x%llx\n\r", c, (unsigned long long)brd);
 
 		if ((brd & the_piece) != 0){
@@ -169,7 +167,15 @@ piece_id_t get_piece_at_square(board_container_t *the_board, square_t square){
 }
 
 
-board_t get_white_piece_map(board_container_t *the_board){
+inline bool is_square_occupied(board_t board, square_t square){
+	if ( check_bit(&board, square) != 0){
+		return true;
+	}
+	return false;
+}
+
+
+inline board_t get_white_occupancy_map(board_container_t *the_board){
 	return the_board->piece_boards[W_PAWN]
 			| the_board->piece_boards[W_ROOK]
 			| the_board->piece_boards[W_KNIGHT]
@@ -179,7 +185,7 @@ board_t get_white_piece_map(board_container_t *the_board){
 }
 
 
-board_t get_black_piece_map(board_container_t *the_board){
+inline board_t get_black_occupancy_map(board_container_t *the_board){
 	return the_board->piece_boards[B_PAWN]
 			| the_board->piece_boards[B_ROOK]
 			| the_board->piece_boards[B_KNIGHT]
