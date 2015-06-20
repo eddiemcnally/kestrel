@@ -101,7 +101,13 @@ inline bool check_bit(board_t *brd, square_t sq){
 }
 
 
+board_container_t * get_clean_board(){
+	 board_container_t *the_board = malloc(sizeof (struct board_container));
 
+	 clear_board(the_board);
+	 
+	 return the_board;
+}
 
 /*
  * Adds a piece to a board.

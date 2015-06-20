@@ -32,7 +32,7 @@ void verify_initial_board_placement(board_container_t *the_board);
  */
 void test_initial_board_placement()
 {
-	board_container_t *the_board = malloc(sizeof (struct board_container));
+	board_container_t *the_board = get_clean_board();
 
     // set up initial board
     reset_board(the_board);
@@ -84,13 +84,7 @@ void test_initial_board_placement()
 
 
 void test_clean_board(){
-	board_container_t *the_board = malloc(sizeof (struct board_container));
-
-    // set up initial board
-    reset_board(the_board);
-
-	// now clean it
-	clear_board(the_board);
+	board_container_t *the_board = get_clean_board();
 
 	// check all squares are zero
 	assert_true(the_board->board == (board_t)0);
@@ -102,10 +96,7 @@ void test_clean_board(){
 
 void test_add_to_board(){
 
-	board_container_t *the_board = malloc(sizeof (struct board_container));
-
-	// now clean it
-	clear_board(the_board);
+	board_container_t *the_board = get_clean_board();
 
 	add_piece_to_board(the_board, W_PAWN, a8);
 	add_piece_to_board(the_board, B_QUEEN, g3);
@@ -127,10 +118,7 @@ void test_add_to_board(){
 
 void test_fen_parsing_initial_board_layout(){
 
-	board_container_t *the_board = malloc(sizeof (struct board_container));
-
-	// now clean it
-	clear_board(the_board);
+	board_container_t *the_board = get_clean_board();
 
 	// this is the initial bpard setup
 	char *test_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
@@ -189,10 +177,7 @@ void test_fen_parsing_initial_board_layout(){
 
 void test_fen_parsing_general_layout_1(){
 
-	board_container_t *the_board = malloc(sizeof (struct board_container));
-
-	// now clean it
-	clear_board(the_board);
+	board_container_t *the_board = get_clean_board();
 
 	// this is the initial board setup
 	char *test_fen = "k7/8/8/4N3/8/8/8/3K4 b - - 13 56";
@@ -212,10 +197,7 @@ void test_fen_parsing_general_layout_1(){
 
 void test_fen_parsing_general_layout_2(){
 
-	board_container_t *the_board = malloc(sizeof (struct board_container));
-
-	// now clean it
-	clear_board(the_board);
+	board_container_t *the_board = get_clean_board();
 
 	// this is the initial board setup
 	char *test_fen = "r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R";
@@ -263,10 +245,7 @@ void test_fen_parsing_general_layout_2(){
 
 void test_fen_parsing_general_layout_3(){
 
-	board_container_t *the_board = malloc(sizeof (struct board_container));
-
-	// now clean it
-	clear_board(the_board);
+	board_container_t *the_board = get_clean_board();
 
 	// this is the initial board setup
 	char *test_fen = "r1bq1rk1/pp3ppp/3n4/2p1N3/2B5/7P/PPP2PP1/R1BQR1K1";
@@ -311,11 +290,8 @@ void test_fen_parsing_general_layout_3(){
 
 
 
-void test_occupancy_maps(){
-	board_container_t *board = malloc(sizeof (struct board_container));
-
-	// now clean it
-	clear_board(board);
+void test_white_occupancy_map(){
+	board_container_t *board = get_clean_board();
 
 	add_piece_to_board(board, W_PAWN, a3);
 	add_piece_to_board(board, W_PAWN, b8);
@@ -343,9 +319,10 @@ void test_occupancy_maps(){
 	assert_true(is_square_occupied(a_board, b6));
 	
 
+}
 
-	// now clean th board ans check the black pieces
-	clear_board(board);
+void test_black_occupancy_map(){
+	board_container_t *board = get_clean_board();
 
 	add_piece_to_board(board, B_PAWN, a3);
 	add_piece_to_board(board, B_PAWN, a1);
@@ -359,7 +336,7 @@ void test_occupancy_maps(){
 	add_piece_to_board(board, B_KNIGHT, g8);
 	
 	
-	a_board = get_black_occupancy_map(board);
+	board_t a_board = get_black_occupancy_map(board);
 	
 	assert_true(is_square_occupied(a_board, a3));
 	assert_true(is_square_occupied(a_board, a1));
@@ -371,10 +348,8 @@ void test_occupancy_maps(){
 	assert_true(is_square_occupied(a_board, a5));
 	assert_true(is_square_occupied(a_board, g2));
 	assert_true(is_square_occupied(a_board, g8));
-
+	
 }
-
-
 
 void test_setting_bits_in_a_board(){
 	board_t test_brd = 0;
@@ -491,7 +466,9 @@ void board_test_fixture( void )
 	run_test(test_fen_parsing_general_layout_1);
 	run_test(test_fen_parsing_general_layout_2);
 	run_test(test_fen_parsing_general_layout_3);
-	run_test(test_occupancy_maps);
-
+	run_test(test_white_occupancy_map);
+	run_test(test_black_occupancy_map);
+	
+	
 	test_fixture_end();                 // ends a fixture
 }

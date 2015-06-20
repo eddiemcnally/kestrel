@@ -141,9 +141,10 @@ typedef struct board_container {
 }board_container_t;
 
 
+board_container_t * get_clean_board();
 void reset_board(board_container_t *board_to_reset);
-void clear_board(board_container_t *board_to_clear);
 void print_board(board_container_t *the_board);
+void clear_board(board_container_t *board_to_clear);
 piece_id_t get_piece_at_square(board_container_t *the_board, square_t square);
 int add_piece_to_board(board_container_t *board, piece_id_t piece, square_t square);
 board_t get_black_occupancy_map(board_container_t *the_board);
