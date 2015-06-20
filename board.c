@@ -55,7 +55,7 @@ void reset_board(board_container_t *board_to_reset) {
  * @return : void
  *
  */
-void clear_board(board_container_t *board_to_clear){
+inline void clear_board(board_container_t *board_to_clear){
 
 	board_to_clear->board = (board_t)0;
 
@@ -94,7 +94,7 @@ inline void clear_bit(board_t *brd, square_t sq){
  *
  */
 inline bool check_bit(board_t *brd, square_t sq){
-	if ((*brd >> sq) & 0x01ull !=0){
+	if (((*brd >> sq) & 0x01ull) !=0){
 		return true;
 	}
 	return false;

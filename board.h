@@ -23,6 +23,9 @@
 
 typedef unsigned long long board_t;
 
+#define	BOARD_EMPTY	((board_t)0x0ull) 
+
+
 
 #define NUM_RANKS 	8
 #define NUM_FILES	8
@@ -45,14 +48,14 @@ typedef enum squares {
 
 // for reference, above enum versus the rank/file 
 // layout and the square numbers in the board
-// 56 57 58 59 60 61 62 63
-// 48 49 50 51 52 53 54 55
-// 40 41 42 43 44 45 46 47 
-// 32 33 34 35 36 37 38 39
-// 24 25 26 27 28 29 30 31
-// 16 17 18 19 20 21 22 23
-// 08 09 10 11 12 13 14 15
-// 00 01 02 03 40 05 06 07
+// 		56 57 58 59 60 61 62 63
+// 		48 49 50 51 52 53 54 55
+// 		40 41 42 43 44 45 46 47 
+// 		32 33 34 35 36 37 38 39
+// 		24 25 26 27 28 29 30 31
+// 		16 17 18 19 20 21 22 23
+// 		08 09 10 11 12 13 14 15
+// 		00 01 02 03 40 05 06 07
 
 // zero-based
 #define GET_RANK(square)			(square / 8)
@@ -78,7 +81,7 @@ typedef enum piece_id {
 #define	NUM_PIECE_TYPES	12
 
 #define IS_WHITE(piece_id_t)		(piece_id_t <= piece_id_t.W_KING)
-#define IS_BLACK(piece_id_t)		(IS_WHITE(piece_id_t) == FALSE)
+#define IS_BLACK(piece_id_t)		(IS_WHITE(piece_id_t) == false)
 
 static const char pieceToChar[12] = {
 	'P','R', 'N','B', 'Q', 'K', 'p','r', 'n','b', 'q','k'

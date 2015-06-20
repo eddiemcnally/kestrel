@@ -1,15 +1,16 @@
 #
 # 'make depend' uses makedepend to automatically generate dependencies
 #               (dependencies are added to end of Makefile)
-# 'make'        build executable file 'mycc'
+# 'make'        build executable file 'ece'
+# 'make all'	makes executable file 'ece'
 # 'make clean'  removes all .o and executable files
-#
+# 'make test'	makes the unit test executable 'test_ece'
 
 # define the C compiler to use
 	CC	=	gcc
 
 # define any compile-time flags
-	CFLAGS	=	-Wall -g -std=c11
+	CFLAGS	=	-Wall -g -std=c11 -o3
 
 # define any directories containing header files other than /usr/include
 #
@@ -84,3 +85,66 @@ depend:	$(SRCS)
 		$(TEST_SRCS)
 		makedepend $(INCLUDES) $^
 # DO NOT DELETE THIS LINE -- make depend depends on it.
+
+board.o: /usr/include/stdio.h /usr/include/features.h
+board.o: /usr/include/stdc-predef.h /usr/include/sys/cdefs.h
+board.o: /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h
+board.o: /usr/include/bits/types.h /usr/include/bits/typesizes.h
+board.o: /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h
+board.o: /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h
+board.o: /usr/include/stdlib.h /usr/include/bits/waitflags.h
+board.o: /usr/include/bits/waitstatus.h /usr/include/endian.h
+board.o: /usr/include/bits/endian.h /usr/include/bits/byteswap.h
+board.o: /usr/include/bits/byteswap-16.h /usr/include/sys/types.h
+board.o: /usr/include/time.h /usr/include/sys/select.h
+board.o: /usr/include/bits/select.h /usr/include/bits/sigset.h
+board.o: /usr/include/bits/time.h /usr/include/sys/sysmacros.h
+board.o: /usr/include/bits/pthreadtypes.h /usr/include/alloca.h
+board.o: /usr/include/bits/stdlib-float.h board.h pieces.h
+main.o: /usr/include/stdio.h /usr/include/features.h
+main.o: /usr/include/stdc-predef.h /usr/include/sys/cdefs.h
+main.o: /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h
+main.o: /usr/include/bits/types.h /usr/include/bits/typesizes.h
+main.o: /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h
+main.o: /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h
+main.o: /usr/include/stdlib.h /usr/include/bits/waitflags.h
+main.o: /usr/include/bits/waitstatus.h /usr/include/endian.h
+main.o: /usr/include/bits/endian.h /usr/include/bits/byteswap.h
+main.o: /usr/include/bits/byteswap-16.h /usr/include/sys/types.h
+main.o: /usr/include/time.h /usr/include/sys/select.h
+main.o: /usr/include/bits/select.h /usr/include/bits/sigset.h
+main.o: /usr/include/bits/time.h /usr/include/sys/sysmacros.h
+main.o: /usr/include/bits/pthreadtypes.h /usr/include/alloca.h
+main.o: /usr/include/bits/stdlib-float.h board.h
+pieces.o: /usr/include/stdio.h /usr/include/features.h
+pieces.o: /usr/include/stdc-predef.h /usr/include/sys/cdefs.h
+pieces.o: /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h
+pieces.o: /usr/include/bits/types.h /usr/include/bits/typesizes.h
+pieces.o: /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h
+pieces.o: /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h
+pieces.o: /usr/include/stdlib.h /usr/include/bits/waitflags.h
+pieces.o: /usr/include/bits/waitstatus.h /usr/include/endian.h
+pieces.o: /usr/include/bits/endian.h /usr/include/bits/byteswap.h
+pieces.o: /usr/include/bits/byteswap-16.h /usr/include/sys/types.h
+pieces.o: /usr/include/time.h /usr/include/sys/select.h
+pieces.o: /usr/include/bits/select.h /usr/include/bits/sigset.h
+pieces.o: /usr/include/bits/time.h /usr/include/sys/sysmacros.h
+pieces.o: /usr/include/bits/pthreadtypes.h /usr/include/alloca.h
+pieces.o: /usr/include/bits/stdlib-float.h /usr/include/ctype.h
+pieces.o: /usr/include/xlocale.h board.h pieces.h
+board_utils.o: /usr/include/stdio.h /usr/include/features.h
+board_utils.o: /usr/include/stdc-predef.h /usr/include/sys/cdefs.h
+board_utils.o: /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h
+board_utils.o: /usr/include/bits/types.h /usr/include/bits/typesizes.h
+board_utils.o: /usr/include/libio.h /usr/include/_G_config.h
+board_utils.o: /usr/include/wchar.h /usr/include/bits/stdio_lim.h
+board_utils.o: /usr/include/bits/sys_errlist.h /usr/include/stdlib.h
+board_utils.o: /usr/include/bits/waitflags.h /usr/include/bits/waitstatus.h
+board_utils.o: /usr/include/endian.h /usr/include/bits/endian.h
+board_utils.o: /usr/include/bits/byteswap.h /usr/include/bits/byteswap-16.h
+board_utils.o: /usr/include/sys/types.h /usr/include/time.h
+board_utils.o: /usr/include/sys/select.h /usr/include/bits/select.h
+board_utils.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+board_utils.o: /usr/include/sys/sysmacros.h /usr/include/bits/pthreadtypes.h
+board_utils.o: /usr/include/alloca.h /usr/include/bits/stdlib-float.h
+board_utils.o: /usr/include/string.h /usr/include/xlocale.h board.h pieces.h

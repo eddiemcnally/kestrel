@@ -37,13 +37,20 @@
  */
  int consume_fen_notation(char *fen_string, board_container_t *board_to_setup){
 
-	//example of starting poition:
-	//rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+	//example of starting position:
+	//		rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+	// 
+	// definition of FEN notation: 
+	//		https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
 
 	// TODO:
 	// - load moves, state, etc
-	// - step 1: ignore moves, castling, etc, just return the board
-
+	// 
+	// NOTE: ignore moves, castling, etc, just returns the board
+	//
+	
+	
+	
 	// ensure board is initialised
 	clear_board(board_to_setup);
 
@@ -136,3 +143,14 @@
 	return 0;
 }
 
+/*
+ * 
+ * name: generate_fen_notation
+ * @param 	board_container_t *	the board to generate	
+ * @return 	cnar *	string representing fen notation
+ * 
+ */
+
+char * generate_fen_notation(board_container_t *board_to_setup){
+	return malloc(80);	
+}
