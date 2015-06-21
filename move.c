@@ -23,6 +23,10 @@
 #include "pieces.h"
 
 
+void print_out_masks(board_t * masks);
+
+
+
 /*
  * Generates the occupancy bit masks for a king on each square on the board 
  * name: 	generate_king_occupancy_masks
@@ -32,6 +36,7 @@
  */
 void generate_king_occupancy_masks(board_t *occ_mask_array){
 	for(int i = 0; i < NUM_SQUARES; i++){
+		// valid king moves, and resulting distance vector
 		// +7, +8, +9
 		// -1,  K, +1
 		// -9, -8, -7
@@ -98,32 +103,45 @@ void generate_knight_occupancy_masks(board_t *occ_mask_array){
 	}	
 }
 
+/*
+ * Prints out occupancy masks as padded hex
+ * name: print_knight_occupancy_masks
+ * @param	-
+ * @return 	-
+ * 
+ */
 void print_knight_occupancy_masks(){
 	board_t * masks = malloc(sizeof(board_t) * NUM_SQUARES);
 	memset(masks, 0, sizeof(board_t) * NUM_SQUARES);
 
 	generate_knight_occupancy_masks(masks);
 
-	for(int i = 0; i < NUM_SQUARES; i++){
-		printf("0x%016llx\n", masks[i]);
-	}
+	print_out_masks(masks);
 
 	free(masks);
 }
 
-
+/*
+ * Prints out occupancy masks as padded hex
+ * name: print_king_occupancy_masks
+ * @param	-
+ * @return 	-
+ * 
+ */
 void print_king_occupancy_masks(){
 	board_t * masks = malloc(sizeof(board_t) * NUM_SQUARES);
 	memset(masks, 0, sizeof(board_t) * NUM_SQUARES);
 
 	generate_king_occupancy_masks(masks);
 
-	for(int i = 0; i < NUM_SQUARES; i++){
-		printf("0x%016llx\n", masks[i]);
-	}
+	print_out_masks(masks);
 
 	free(masks);
 }
 
-
+void print_out_masks(board_t * masks){
+	for(int i = 0; i < NUM_SQUARES; i++){
+		printf("0x%016llx\n", masks[i]);
+	}
+}
 

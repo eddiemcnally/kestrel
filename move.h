@@ -20,18 +20,19 @@ void generate_knight_occupancy_masks(board_t *occ_mask_array);
 void print_knight_occupancy_masks();
 void print_king_occupancy_masks();
 
+
 // elem [0] is a1, [63] is h8
 static const board_t knight_occupancy_masks[NUM_SQUARES] = {
-			0x0000000000028440,
-			0x0000000000050880,
+			0x0000000000028440,			
+			0x0000000000050880,			
 			0x00000000000a1100,
 			0x0000000000142200,
 			0x0000000000284400,
 			0x0000000000508800,
 			0x0000000000a11001,
 			0x0000000001422002,
-			0x0000000002844004,
-			0x0000000005088008,
+			0x0000000002844004,		
+			0x0000000005088008,			
 			0x000000000a110011,
 			0x0000000014220022,
 			0x0000000028440044,

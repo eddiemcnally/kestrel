@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 #include "board.h"
 #include "pieces.h"
 
@@ -102,11 +103,12 @@ inline bool check_bit(board_t *brd, square_t sq){
 
 
 board_container_t * get_clean_board(){
-	 board_container_t *the_board = malloc(sizeof (struct board_container));
+	
+	board_container_t *the_board = malloc(sizeof (struct board_container));
 
-	 clear_board(the_board);
+	memset(the_board, 0, sizeof (struct board_container));
 	 
-	 return the_board;
+	return the_board;
 }
 
 /*
@@ -118,10 +120,6 @@ board_container_t * get_clean_board(){
  */
 bool add_piece_to_board(board_container_t *board, piece_id_t piece, square_t square){
 
-	// char pce = get_piece_label(piece);
-	// printf("Adding piece %c to square %d\n\r", pce,  square);
-	
-	
 	if (check_bit(&board->board, square) != 0){
 		// square already occupied
 		return false;
@@ -137,39 +135,32 @@ bool add_piece_to_board(board_container_t *board, piece_id_t piece, square_t squ
 }
 
 
-inline void overlay_boards(board_container_t *board_container) {
+inline void overlay_boards(board_container_t *the_board) {
     int i = 0;
     board_t flat_board = BOARD_EMPTY;
     for (i = 0; i < NUM_PIECE_TYPES; i++) {
-        flat_board = flat_board | board_container->piece_boards[i];
+        flat_board = flat_board | the_board->piece_boards[i];
     }
-    board_container->board = flat_board;
+    the_board->board = flat_board;
 }
 
 
 piece_id_t get_piece_at_square(board_container_t *the_board, square_t square){
-
 	board_t the_piece = GET_PIECE_MASK(square);
-	//printf("piece mask for square %d= 0x%llx\n\r", (int)square, (unsigned long long)the_piece);
 
 	for(int i = 0; i < NUM_PIECE_TYPES; i++){
 
 		board_t brd = the_board->piece_boards[i];
 
 		piece_id_t piece = (piece_id_t)i;
-		//char c = get_piece_label(piece);
-		//printf("piece %c board = 0x%llx\n\r", c, (unsigned long long)brd);
-
 		if ((brd & the_piece) != 0){
 			// found it
 			return piece;
 		}
 	}
 
-
 	// no piece on that square
 	return -1;
-
 }
 
 
@@ -215,19 +206,12 @@ void print_board(board_container_t *the_board) {
 			
 	for(int rank = 0; rank < 8; rank++){
 		for(int file = 0; file < 8; file++){
-			//int square = GET_SQUARE(rank, file);
 			
 			square_t square = (rank * 8) + file;
 			
-			//printf("sq = %d", square);
-			
 			piece_t piece = get_piece_at_square(the_board, square);
 			if (piece >= 0){
-				//printf("piece = %d\n\r", piece);
-				
 				char pce = get_piece_label(piece);
-				//printf("piece = %c, sq = %d\n\r", pce, square);
-				
 				brd[rank][file] = pce;	
 			}			
 		}

@@ -1,3 +1,6 @@
 - add function description comments to all functions
 - put a unit test around print_board()
-- fix the ordering problem with pieces.h and board.h
+- look at SIMD
+- magic boards for bishop and queen
+- figure out how to manage pawns
+

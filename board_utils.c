@@ -61,8 +61,6 @@
 			int sq = GET_SQUARE(rank, file);
 			char c = *(fen_string++);
 			
-			//printf("parsing char %c for square %d, rank=%d, file = %d \n\r", c, sq, rank, file);
-			
 			bool added_ok = true;
 			switch (c) {
 				case 'p' :

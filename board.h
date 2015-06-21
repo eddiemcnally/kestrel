@@ -46,16 +46,6 @@ typedef enum squares {
     NUM_SQUARES
 } square_t;
 
-// for reference, above enum versus the rank/file 
-// layout and the square numbers in the board
-// 		56 57 58 59 60 61 62 63
-// 		48 49 50 51 52 53 54 55
-// 		40 41 42 43 44 45 46 47 
-// 		32 33 34 35 36 37 38 39
-// 		24 25 26 27 28 29 30 31
-// 		16 17 18 19 20 21 22 23
-// 		08 09 10 11 12 13 14 15
-// 		00 01 02 03 40 05 06 07
 
 // zero-based
 #define GET_RANK(square)			(square / 8)
@@ -75,7 +65,7 @@ typedef enum piece_id {
 	B_KNIGHT		=	8,
 	B_BISHOP		=	9,
 	B_QUEEN			=	10,
-	B_KING			=	11,
+	B_KING			=	11
 } piece_id_t;
 
 #define	NUM_PIECE_TYPES	12
@@ -83,7 +73,8 @@ typedef enum piece_id {
 #define IS_WHITE(piece_id_t)		(piece_id_t <= piece_id_t.W_KING)
 #define IS_BLACK(piece_id_t)		(IS_WHITE(piece_id_t) == false)
 
-static const char pieceToChar[12] = {
+// offsets into this array are by type piece_id_t 
+static const char pieceToChar[NUM_PIECE_TYPES] = {
 	'P','R', 'N','B', 'Q', 'K', 'p','r', 'n','b', 'q','k'
 };
 
@@ -94,24 +85,34 @@ static const char pieceToChar[12] = {
  * Initial Board Configuration
  *************************************************************/
 /* initial board - black */
-#define INIT_BRD_B_P	(board_t)(0x1ull << a7 | 0x1ull << b7 | 0x1ull << c7 | 0x1ull << d7 | 0x1ull << e7 | 0x1ull << f7 | 0x1ull << g7 | 0x1ull << h7)
-#define INIT_BRD_B_R 	(board_t)(0x1ull << a8 | 0x1ull << h8)
-#define INIT_BRD_B_N 	(board_t)(0x1ull << b8 | 0x1ull << g8)
-#define INIT_BRD_B_B 	(board_t)(0x1ull << c8 | 0x1ull << f8)
-#define INIT_BRD_B_Q 	(board_t)(0x1ull << d8)
-#define INIT_BRD_B_K 	(board_t)(0x1ull << e8)
-#define INIT_BRD_B 		(board_t)(INIT_BRD_B_P | INIT_BRD_B_R | INIT_BRD_B_B | INIT_BRD_B_N | INIT_BRD_B_Q | INIT_BRD_B_K)
+#define INIT_BRD_B_P	((board_t)(0x1ull << a7 | 0x1ull << b7 | \
+								   0x1ull << c7 | 0x1ull << d7 | \
+								   0x1ull << e7 | 0x1ull << f7 | \
+								   0x1ull << g7 | 0x1ull << h7))
+#define INIT_BRD_B_R 	((board_t)(0x1ull << a8 | 0x1ull << h8))
+#define INIT_BRD_B_N 	((board_t)(0x1ull << b8 | 0x1ull << g8))
+#define INIT_BRD_B_B 	((board_t)(0x1ull << c8 | 0x1ull << f8))
+#define INIT_BRD_B_Q 	((board_t)(0x1ull << d8))
+#define INIT_BRD_B_K 	((board_t)(0x1ull << e8))
+#define INIT_BRD_B 		((board_t)(INIT_BRD_B_P | INIT_BRD_B_R | \
+								   INIT_BRD_B_B | INIT_BRD_B_N | \
+								   INIT_BRD_B_Q | INIT_BRD_B_K))
 
 
 /* initial board - white */
-#define INIT_BRD_W_P 	(board_t)(0x1ull << a2 | 0x1ull << b2 | 0x1ull << c2 | 0x1ull << d2 | 0x1ull << e2 | 0x1ull << f2 | 0x1ull << g2 | 0x1ull << h2)
-#define INIT_BRD_W_R 	(board_t)(0x1ull << a1 | 0x1ull << h1)
-#define INIT_BRD_W_N 	(board_t)(0x1ull << b1 | 0x1ull << g1)
-#define INIT_BRD_W_B 	(board_t)(0x1ull << c1 | 0x1ull << f1)
-#define INIT_BRD_W_Q 	(board_t)(0x1ull << d1)
-#define INIT_BRD_W_K 	(board_t)(0x1ull << e1)
+#define INIT_BRD_W_P 	((board_t)(0x1ull << a2 | 0x1ull << b2 | \
+								   0x1ull << c2 | 0x1ull << d2 | \
+								   0x1ull << e2 | 0x1ull << f2 | \
+								   0x1ull << g2 | 0x1ull << h2))
+#define INIT_BRD_W_R 	((board_t)(0x1ull << a1 | 0x1ull << h1))
+#define INIT_BRD_W_N 	((board_t)(0x1ull << b1 | 0x1ull << g1))
+#define INIT_BRD_W_B 	((board_t)(0x1ull << c1 | 0x1ull << f1))
+#define INIT_BRD_W_Q 	((board_t)(0x1ull << d1))
+#define INIT_BRD_W_K 	((board_t)(0x1ull << e1))
 
-#define INIT_BRD_W 		(board_t)(INIT_BRD_W_P | INIT_BRD_W_R | INIT_BRD_W_B | INIT_BRD_W_N | INIT_BRD_W_Q | INIT_BRD_W_K)
+#define INIT_BRD_W 		((board_t)(INIT_BRD_W_P | INIT_BRD_W_R | \
+								   INIT_BRD_W_B | INIT_BRD_W_N | \
+								   INIT_BRD_W_Q | INIT_BRD_W_K))
 
 
 
