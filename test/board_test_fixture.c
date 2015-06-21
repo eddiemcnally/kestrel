@@ -105,7 +105,7 @@ void test_add_to_board(){
 	add_piece_to_board(the_board, W_ROOK, h8);
 
 	// add again, to check error handling
-	assert_true(add_piece_to_board(the_board, W_PAWN, a8) == -1);
+	assert_true(add_piece_to_board(the_board, W_PAWN, a8) == false);
 
 	assert_true(get_piece_at_square(the_board, a8) == (piece_id_t)W_PAWN);
 	assert_true(get_piece_at_square(the_board, g3) == (piece_id_t)B_QUEEN);
@@ -457,15 +457,20 @@ void board_test_fixture( void )
 	test_fixture_start();               // starts a fixture
 	
 	run_test(test_initial_board_placement);
+
 	run_test(test_clean_board);
 	run_test(test_add_to_board);
+
 	run_test(test_setting_bits_in_a_board);
 	run_test(test_checking_bits_in_a_board);
 	run_test(test_clearing_bits_in_a_board);
+	
 	run_test(test_fen_parsing_initial_board_layout);
+	
 	run_test(test_fen_parsing_general_layout_1);
 	run_test(test_fen_parsing_general_layout_2);
 	run_test(test_fen_parsing_general_layout_3);
+	
 	run_test(test_white_occupancy_map);
 	run_test(test_black_occupancy_map);
 	

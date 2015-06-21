@@ -19,11 +19,14 @@
 
 void board_test_fixture( void );
 void piece_test_fixture( void );
+void move_test_fixture( void );
 
 void all_tests( void )
 {
 	board_test_fixture();
 	piece_test_fixture();
+	move_test_fixture();
+	
 	// add new test fixtures here.
 }
 

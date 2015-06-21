@@ -94,14 +94,7 @@ static const char pieceToChar[12] = {
  * Initial Board Configuration
  *************************************************************/
 /* initial board - black */
-#define INIT_BRD_B_P	(board_t)(0x1ull << a7 \
-								| 0x1ull << b7 \
-								| 0x1ull << c7 \
-								| 0x1ull << d7 \
-								| 0x1ull << e7 \
-								| 0x1ull << f7 \
-								| 0x1ull << g7 \
-								| 0x1ull << h7)
+#define INIT_BRD_B_P	(board_t)(0x1ull << a7 | 0x1ull << b7 | 0x1ull << c7 | 0x1ull << d7 | 0x1ull << e7 | 0x1ull << f7 | 0x1ull << g7 | 0x1ull << h7)
 #define INIT_BRD_B_R 	(board_t)(0x1ull << a8 | 0x1ull << h8)
 #define INIT_BRD_B_N 	(board_t)(0x1ull << b8 | 0x1ull << g8)
 #define INIT_BRD_B_B 	(board_t)(0x1ull << c8 | 0x1ull << f8)
@@ -111,14 +104,7 @@ static const char pieceToChar[12] = {
 
 
 /* initial board - white */
-#define INIT_BRD_W_P 	(board_t)(0x1ull << a2 \
-								| 0x1ull << b2 \
-								| 0x1ull << c2 \
-								| 0x1ull << d2 \
-								| 0x1ull << e2 \
-								| 0x1ull << f2 \
-								| 0x1ull << g2 \
-								| 0x1ull << h2)
+#define INIT_BRD_W_P 	(board_t)(0x1ull << a2 | 0x1ull << b2 | 0x1ull << c2 | 0x1ull << d2 | 0x1ull << e2 | 0x1ull << f2 | 0x1ull << g2 | 0x1ull << h2)
 #define INIT_BRD_W_R 	(board_t)(0x1ull << a1 | 0x1ull << h1)
 #define INIT_BRD_W_N 	(board_t)(0x1ull << b1 | 0x1ull << g1)
 #define INIT_BRD_W_B 	(board_t)(0x1ull << c1 | 0x1ull << f1)
@@ -146,7 +132,7 @@ void reset_board(board_container_t *board_to_reset);
 void print_board(board_container_t *the_board);
 void clear_board(board_container_t *board_to_clear);
 piece_id_t get_piece_at_square(board_container_t *the_board, square_t square);
-int add_piece_to_board(board_container_t *board, piece_id_t piece, square_t square);
+bool add_piece_to_board(board_container_t *board, piece_id_t piece, square_t square);
 board_t get_black_occupancy_map(board_container_t *the_board);
 board_t get_white_occupancy_map(board_container_t *the_board);
 bool is_square_occupied(board_t board, square_t square);

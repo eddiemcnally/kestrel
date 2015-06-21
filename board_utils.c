@@ -63,7 +63,7 @@
 			
 			//printf("parsing char %c for square %d, rank=%d, file = %d \n\r", c, sq, rank, file);
 			
-			int added_ok = 0;
+			bool added_ok = true;
 			switch (c) {
 				case 'p' :
 					added_ok = add_piece_to_board(board_to_setup, B_PAWN, sq);
@@ -133,7 +133,7 @@
 					return -1;
 				}
 			
-			if (added_ok != 0){
+			if (added_ok == false){
 				printf("Problem adding piece");
 				return -1;
 			}
@@ -152,5 +152,6 @@
  */
 
 char * generate_fen_notation(board_container_t *board_to_setup){
+	// TODO
 	return malloc(80);	
 }

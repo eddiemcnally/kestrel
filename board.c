@@ -113,10 +113,10 @@ board_container_t * get_clean_board(){
  * Adds a piece to a board.
  * name: add_piece_to_board
  * @param : the board, the piece, and the square
- * @return : 0 if OK, -1 if piece already on that square
+ * @return : true if OK, false if piece already on that square
  *
  */
-int add_piece_to_board(board_container_t *board, piece_id_t piece, square_t square){
+bool add_piece_to_board(board_container_t *board, piece_id_t piece, square_t square){
 
 	// char pce = get_piece_label(piece);
 	// printf("Adding piece %c to square %d\n\r", pce,  square);
@@ -124,15 +124,15 @@ int add_piece_to_board(board_container_t *board, piece_id_t piece, square_t squa
 	
 	if (check_bit(&board->board, square) != 0){
 		// square already occupied
-		return -1;
-	} else{
+		return false;
+	} else {
 		// set bit in relevant piece board
 		set_bit(&(board->piece_boards[piece]), square);
 
 		// regen flat board
 		overlay_boards(board);
 
-		return 0;
+		return true;
 	}
 }
 
