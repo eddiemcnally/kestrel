@@ -57,10 +57,10 @@ void reset_board(board_container_t *board_to_reset) {
  */
 inline void clear_board(board_container_t *board_to_clear){
 
-	board_to_clear->board = (board_t)0;
+	board_to_clear->board = BOARD_EMPTY;
 
 	for(int i = 0; i < NUM_PIECE_TYPES; i++){
-		board_to_clear->piece_boards[i] = (board_t)0;
+		board_to_clear->piece_boards[i] = BOARD_EMPTY;
 	}
 }
 
@@ -139,7 +139,7 @@ bool add_piece_to_board(board_container_t *board, piece_id_t piece, square_t squ
 
 inline void overlay_boards(board_container_t *board_container) {
     int i = 0;
-    board_t flat_board = 0;
+    board_t flat_board = BOARD_EMPTY;
     for (i = 0; i < NUM_PIECE_TYPES; i++) {
         flat_board = flat_board | board_container->piece_boards[i];
     }

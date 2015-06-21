@@ -26,7 +26,7 @@
 #include "move.h"
 
 
-void test_king_occupancy_mask_generation_centre_square(){
+void test_king_occupancy_mask_generation_centre_squares(){
 	
 	board_t * masks = malloc(sizeof(board_t) * NUM_SQUARES);
 	memset(masks, 0, sizeof(board_t) * NUM_SQUARES);
@@ -163,17 +163,72 @@ void test_king_occupancy_mask_edge_squares(){
 	assert_true(is_square_occupied(mask_h1, h2));
 	assert_true(is_square_occupied(mask_h1, g2));
 
+
+
+	// TEST h8
+	// =======
+	board_t mask_h8 = masks[h8];
+	assert_true(is_square_occupied(mask_h8, g8));
+	assert_true(is_square_occupied(mask_h8, g7));
+	assert_true(is_square_occupied(mask_h8, h7));
+
+
+
+	// TEST b8
+	// =======
+	board_t mask_b8 = masks[b8];
+	assert_true(is_square_occupied(mask_b8, a8));
+	assert_true(is_square_occupied(mask_b8, a7));
+	assert_true(is_square_occupied(mask_b8, b7));
+	assert_true(is_square_occupied(mask_b8, c7));
+	assert_true(is_square_occupied(mask_b8, c8));
 	
 	free(masks);
 }
+
+
+void test_knight_occupancy_mask(){
+	board_t * masks = malloc(sizeof(board_t) * NUM_SQUARES);
+	memset(masks, 0, sizeof(board_t) * NUM_SQUARES);
+
+	generate_knight_occupancy_masks(masks);
+
+
+	// TEST a1
+	// =======
+	board_t mask_a1 = masks[a1];
+	assert_true(is_square_occupied(mask_a1, c2));
+	assert_true(is_square_occupied(mask_a1, b3));
+
+	// TEST d5
+	// =======
+	board_t mask_d5 = masks[d5];
+	assert_true(is_square_occupied(mask_d5, b4));
+	assert_true(is_square_occupied(mask_d5, c3));
+	assert_true(is_square_occupied(mask_d5, e3));
+	assert_true(is_square_occupied(mask_d5, f4));
+	assert_true(is_square_occupied(mask_d5, b6));
+	assert_true(is_square_occupied(mask_d5, c7));
+	assert_true(is_square_occupied(mask_d5, f6));
+	assert_true(is_square_occupied(mask_d5, e7));
+		
+	
+	free(masks);
+		
+}
+
+
+
 
 
 void move_test_fixture( void )
 {
 	test_fixture_start();               // starts a fixture
 	
-	run_test(test_king_occupancy_mask_generation_centre_square);
+	run_test(test_king_occupancy_mask_generation_centre_squares);
 	run_test(test_king_occupancy_mask_edge_squares);
+	
+	run_test(test_knight_occupancy_mask);
 	
 	test_fixture_end();                 // ends a fixture
 }
