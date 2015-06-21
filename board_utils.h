@@ -18,3 +18,4 @@
 
 int consume_fen_notation(char *fen_string, board_container_t *board_to_setup);
 char * generate_fen_notation(board_container_t *board_to_setup);
+

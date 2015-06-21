@@ -20,16 +20,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "board.h"
-
+#include "board_utils.h"
 
 int main( int argc, char** argv )
 {
+	/*
     board_container_t *the_board = malloc(sizeof (struct board_container));
 
     // set up initial board
     reset_board(the_board);
 
     print_board(the_board);
+	*/
+	print_king_occupancy_masks();
+	
 
     return 0;
 }

@@ -17,6 +17,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <ctype.h>
 #include "board.h"
 #include "pieces.h"
@@ -97,11 +98,32 @@ void generate_knight_occupancy_masks(board_t *occ_mask_array){
 	}	
 }
 
+void print_knight_occupancy_masks(){
+	board_t * masks = malloc(sizeof(board_t) * NUM_SQUARES);
+	memset(masks, 0, sizeof(board_t) * NUM_SQUARES);
 
-void generate_pawn_occupancy_masks(board_t *occ_mask_array){
+	generate_knight_occupancy_masks(masks);
+
 	for(int i = 0; i < NUM_SQUARES; i++){
-		
-	}	
+		printf("0x%016llx\n", masks[i]);
+	}
+
+	free(masks);
 }
+
+
+void print_king_occupancy_masks(){
+	board_t * masks = malloc(sizeof(board_t) * NUM_SQUARES);
+	memset(masks, 0, sizeof(board_t) * NUM_SQUARES);
+
+	generate_king_occupancy_masks(masks);
+
+	for(int i = 0; i < NUM_SQUARES; i++){
+		printf("0x%016llx\n", masks[i]);
+	}
+
+	free(masks);
+}
+
 
 
