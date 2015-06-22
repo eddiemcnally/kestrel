@@ -187,6 +187,29 @@ void test_king_occupancy_mask_edge_squares(){
 }
 
 
+
+void test_rook_occupancy_mask(){
+	board_t * masks = malloc(sizeof(board_t) * NUM_SQUARES);
+	memset(masks, 0, sizeof(board_t) * NUM_SQUARES);
+
+	generate_rook_occupancy_masks(masks);
+
+	// TEST d2
+	// =======
+	board_t mask_d2 = masks[d2];
+	assert_true(is_square_occupied(mask_d2, a2));
+	assert_true(is_square_occupied(mask_d2, b2));
+	assert_true(is_square_occupied(mask_d2, c2));
+	assert_true(is_square_occupied(mask_d2, e2));
+	assert_true(is_square_occupied(mask_d2, f2));
+	assert_true(is_square_occupied(mask_d2, g2));
+	assert_true(is_square_occupied(mask_d2, h2));
+
+
+
+}
+
+
 void test_knight_occupancy_mask(){
 	board_t * masks = malloc(sizeof(board_t) * NUM_SQUARES);
 	memset(masks, 0, sizeof(board_t) * NUM_SQUARES);
@@ -229,6 +252,8 @@ void move_test_fixture( void )
 	run_test(test_king_occupancy_mask_edge_squares);
 	
 	run_test(test_knight_occupancy_mask);
+	
+	run_test(test_rook_occupancy_mask);
 	
 	test_fixture_end();                 // ends a fixture
 }

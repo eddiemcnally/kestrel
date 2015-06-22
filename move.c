@@ -103,6 +103,40 @@ void generate_knight_occupancy_masks(board_t *occ_mask_array){
 	}	
 }
 
+void generate_rook_occupancy_masks(board_t *occ_mask_array){
+
+// 		56 57 58 59 60 61 62 63
+// 		48 49 50 51 52 53 54 55
+// 		40 41 42 43 44 45 46 47 
+// 		32 33 34 35 36 37 38 39
+// 		24 25 26 27 28 29 30 31
+// 		16 17 18 19 20 21 22 23
+// 		08 09 10 11 12 13 14 15
+// 		00 01 02 03 40 05 06 07
+
+	for(int i = 0; i < NUM_SQUARES; i++){
+		
+		board_t b = 0;
+		
+        for (int j = i + 8; j <= NUM_SQUARES; j += 8) 
+			b |= (0x1ull << j);
+        for (int j = i - 8; j >= 0; j -= 8) 
+			b |= (0x1ull << j);
+			
+        for (int j = i+1; j %8 != 7 && j <= NUM_SQUARES; j++) 
+			b |= (0x1ull << j);
+        for (int j=i-1; j %8 !=0 && j>=0;  j--) 
+			b |= (0x1ull << j);
+        
+		occ_mask_array[i] = b;
+	}
+}
+
+
+
+
+
+
 /*
  * Prints out occupancy masks as padded hex
  * name: print_knight_occupancy_masks
