@@ -21,9 +21,9 @@
 void move_test_fixture(void);
 void all_tests(void) 
 {
-    board_test_fixture();
-    piece_test_fixture();
-    move_test_fixture();
+    	board_test_fixture();
+			piece_test_fixture();
+			move_test_fixture();
     
 	// add new test fixtures here.
 } void my_suite_setup(void) 
@@ -50,12 +50,12 @@ Use this if you don't have any global setup/teardown...
 */ 
 int main_no_setup_or_teardown(int argc, char **argv) 
 {
-    return seatest_testrunner(argc, argv, all_tests, NULL, NULL);
+    	return seatest_testrunner(argc, argv, all_tests, NULL, NULL);
 }
 
 int main(int argc, char **argv) 
 {
-    return seatest_testrunner(argc, argv, all_tests, NULL, NULL);
+    	return seatest_testrunner(argc, argv, all_tests, NULL, NULL);
 }
 
 
@@ -64,9 +64,9 @@ Use this if you don't want to use the test runner...
 */ 
 int main_do_it_myself(int argc, char **argv) 
 {
-    suite_setup(my_suite_setup);
-    suite_teardown(my_suite_teardown);
-    return run_tests(all_tests);
+    	suite_setup(my_suite_setup);
+			suite_teardown(my_suite_teardown);
+			return run_tests(all_tests);
 }
 
 
@@ -75,7 +75,7 @@ Use this if you don't want to use the test runner and don't have any global setu
 */ 
 int main_do_it_myself_really_simply(int argc, char **argv) 
 {
-    return run_tests(all_tests);
+    	return run_tests(all_tests);
 }
 
 

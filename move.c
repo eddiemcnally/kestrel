@@ -37,33 +37,33 @@ void print_out_masks(board_t * masks);
 void generate_king_occupancy_masks(board_t * occ_mask_array)
 {
     for (int i = 0; i < NUM_SQUARES; i++) {
-	// valid king moves, and resulting distance vector
-	// +7, +8, +9
-	// -1,  K, +1
-	// -9, -8, -7
+		// valid king moves, and resulting distance vector
+		// +7, +8, +9
+		// -1,  K, +1
+		// -9, -8, -7
 
-	board_t b = 0;
+		board_t b = 0;
 
-	if (i + 7 < NUM_SQUARES)
-	    b |= (0x1ull << (i + 7));
-	if (i + 8 < NUM_SQUARES)
-	    b |= (0x1ull << (i + 8));
-	if (i + 9 < NUM_SQUARES)
-	    b |= (0x1ull << (i + 9));
+		if (i + 7 < NUM_SQUARES)
+			b |= (0x1ull << (i + 7));
+		if (i + 8 < NUM_SQUARES)
+			b |= (0x1ull << (i + 8));
+		if (i + 9 < NUM_SQUARES)
+			b |= (0x1ull << (i + 9));
 
-	if (i - 1 >= 0)
-	    b |= (0x1ull << (i - 1));
-	if (i + 1 < NUM_SQUARES)
-	    b |= (0x1ull << (i + 1));
+		if (i - 1 >= 0)
+			b |= (0x1ull << (i - 1));
+		if (i + 1 < NUM_SQUARES)
+			b |= (0x1ull << (i + 1));
 
-	if (i - 9 >= 0)
-	    b |= (0x1ull << (i - 9));
-	if (i - 8 >= 0)
-	    b |= (0x1ull << (i - 8));
-	if (i - 7 >= 0)
-	    b |= (0x1ull << (i - 7));
+		if (i - 9 >= 0)
+			b |= (0x1ull << (i - 9));
+		if (i - 8 >= 0)
+			b |= (0x1ull << (i - 8));
+		if (i - 7 >= 0)
+			b |= (0x1ull << (i - 7));
 
-	occ_mask_array[i] = b;
+		occ_mask_array[i] = b;
     }
 }
 
@@ -77,31 +77,31 @@ void generate_king_occupancy_masks(board_t * occ_mask_array)
 void generate_knight_occupancy_masks(board_t * occ_mask_array)
 {
     for (int i = 0; i < NUM_SQUARES; i++) {
-	// 8 destination squares are:
-	// (-2 +8), (-1 + 16), (+1 + 16) (+2 + 8), 
-	// (-2 -8), (-1 - 16), (+1 - 16) (+2 - 8),
+		// 8 destination squares are:
+		// (-2 +8), (-1 + 16), (+1 + 16) (+2 + 8), 
+		// (-2 -8), (-1 - 16), (+1 - 16) (+2 - 8),
 
-	board_t b = 0;
+		board_t b = 0;
 
-	if (i + 6 < NUM_SQUARES)
-	    b |= (0x1ull << (i + 6));
-	if (i + 15 < NUM_SQUARES)
-	    b |= (0x1ull << (i + 15));
-	if (i + 17 < NUM_SQUARES)
-	    b |= (0x1ull << (i + 17));
-	if (i + 10 < NUM_SQUARES)
-	    b |= (0x1ull << (i + 10));
+		if (i + 6 < NUM_SQUARES)
+			b |= (0x1ull << (i + 6));
+		if (i + 15 < NUM_SQUARES)
+			b |= (0x1ull << (i + 15));
+		if (i + 17 < NUM_SQUARES)
+			b |= (0x1ull << (i + 17));
+		if (i + 10 < NUM_SQUARES)
+			b |= (0x1ull << (i + 10));
 
-	if (i - 10 >= 0)
-	    b |= (0x1ull << (i - 10));
-	if (i - 17 >= 0)
-	    b |= (0x1ull << (i - 17));
-	if (i - 15 >= 0)
-	    b |= (0x1ull << (i - 15));
-	if (i - 6 >= 0)
-	    b |= (0x1ull << (i - 6));
+		if (i - 10 >= 0)
+			b |= (0x1ull << (i - 10));
+		if (i - 17 >= 0)
+			b |= (0x1ull << (i - 17));
+		if (i - 15 >= 0)
+			b |= (0x1ull << (i - 15));
+		if (i - 6 >= 0)
+			b |= (0x1ull << (i - 6));
 
-	occ_mask_array[i] = b;
+		occ_mask_array[i] = b;
     }
 }
 
@@ -124,22 +124,23 @@ void generate_rook_occupancy_masks(board_t * occ_mask_array)
 
     for (int i = 0; i < NUM_SQUARES; i++) {
 
-	board_t b = 0;
-	// move up
-	for (int j = i + 8; j <= NUM_SQUARES; j += 8)
-	    b |= (0x1ull << j);
-	// move down
-	for (int j = i - 8; j >= 0; j -= 8)
-	    b |= (0x1ull << j);
+		board_t b = 0;
 
-	// move right
-	for (int j = i + 1; j % 8 != 7 && j <= NUM_SQUARES; j++)
-	    b |= (0x1ull << j);
-	// move left
-	for (int j = i - 1; j % 8 != 0 && j >= 0; j--)
-	    b |= (0x1ull << j);
+		// move up
+		for (int j = i + 8; j <= NUM_SQUARES; j += 8)
+			b |= (0x1ull << j);
+		// move down
+		for (int j = i - 8; j >= 0; j -= 8)
+			b |= (0x1ull << j);
 
-	occ_mask_array[i] = b;
+		// move right
+		for (int j = i + 1; j % 8 != 7 && j <= NUM_SQUARES; j++)
+			b |= (0x1ull << j);
+		// move left
+		for (int j = i - 1; j % 8 != 0 && j >= 0; j--)
+			b |= (0x1ull << j);
+
+		occ_mask_array[i] = b;
     }
 }
 
@@ -208,6 +209,6 @@ void print_king_occupancy_masks()
 void print_out_masks(board_t * masks)
 {
     for (int i = 0; i < NUM_SQUARES; i++) {
-	printf("0x%016llx\n", masks[i]);
+		printf("0x%016llx\n", masks[i]);
     }
 }
