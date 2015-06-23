@@ -3,3 +3,5 @@
 test_ece
 ece
 *.bak
+*.c~
+*.h~

@@ -16,6 +16,6 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-int consume_fen_notation(char *fen_string, board_container_t *board_to_setup);
-char * generate_fen_notation(board_container_t *board_to_setup);
-
+int consume_fen_notation(char *fen_string,
+			 board_container_t * board_to_setup);
+char *generate_fen_notation(board_container_t * board_to_setup);

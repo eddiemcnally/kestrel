@@ -23,7 +23,7 @@
 
 typedef unsigned long long board_t;
 
-#define	BOARD_EMPTY	((board_t)0x0ull) 
+#define	BOARD_EMPTY	((board_t)0x0ull)
 
 
 
@@ -36,13 +36,13 @@ typedef unsigned long long board_t;
 
 typedef enum squares {
     a1 = 0, b1, c1, d1, e1, f1, g1, h1,
-    a2, 	b2, c2, d2, e2, f2, g2, h2,
-    a3, 	b3, c3, d3, e3, f3, g3, h3,
-    a4, 	b4, c4, d4, e4, f4, g4, h4,
-    a5, 	b5, c5, d5, e5, f5, g5, h5,
-    a6, 	b6, c6, d6, e6, f6, g6, h6,
-    a7, 	b7, c7, d7, e7, f7, g7, h7,
-    a8, 	b8, c8, d8, e8, f8, g8, h8,
+    a2, b2, c2, d2, e2, f2, g2, h2,
+    a3, b3, c3, d3, e3, f3, g3, h3,
+    a4, b4, c4, d4, e4, f4, g4, h4,
+    a5, b5, c5, d5, e5, f5, g5, h5,
+    a6, b6, c6, d6, e6, f6, g6, h6,
+    a7, b7, c7, d7, e7, f7, g7, h7,
+    a8, b8, c8, d8, e8, f8, g8, h8,
     NUM_SQUARES
 } square_t;
 
@@ -54,18 +54,18 @@ typedef enum squares {
 
 
 typedef enum piece_id {
-	W_PAWN 			= 	0,
-	W_ROOK			= 	1,
-	W_KNIGHT		=	2,
-	W_BISHOP		=	3,
-	W_QUEEN			=	4,
-	W_KING			=	5,
-	B_PAWN			=	6,
-	B_ROOK			=	7,
-	B_KNIGHT		=	8,
-	B_BISHOP		=	9,
-	B_QUEEN			=	10,
-	B_KING			=	11
+    W_PAWN = 0,
+    W_ROOK = 1,
+    W_KNIGHT = 2,
+    W_BISHOP = 3,
+    W_QUEEN = 4,
+    W_KING = 5,
+    B_PAWN = 6,
+    B_ROOK = 7,
+    B_KNIGHT = 8,
+    B_BISHOP = 9,
+    B_QUEEN = 10,
+    B_KING = 11
 } piece_id_t;
 
 #define	NUM_PIECE_TYPES	12
@@ -75,7 +75,7 @@ typedef enum piece_id {
 
 // offsets into this array are by type piece_id_t 
 static const char pieceToChar[NUM_PIECE_TYPES] = {
-	'P','R', 'N','B', 'Q', 'K', 'p','r', 'n','b', 'q','k'
+    'P', 'R', 'N', 'B', 'Q', 'K', 'p', 'r', 'n', 'b', 'q', 'k'
 };
 
 
@@ -125,21 +125,23 @@ typedef struct board_container {
 
     // the above array piece arrays overlayed into a single bitboard
     board_t board;
-}board_container_t;
+} board_container_t;
 
 
-board_container_t * get_clean_board();
-void reset_board(board_container_t *board_to_reset);
-void print_board(board_container_t *the_board);
-void clear_board(board_container_t *board_to_clear);
-piece_id_t get_piece_at_square(board_container_t *the_board, square_t square);
-bool add_piece_to_board(board_container_t *board, piece_id_t piece, square_t square);
-board_t get_black_occupancy_map(board_container_t *the_board);
-board_t get_white_occupancy_map(board_container_t *the_board);
+board_container_t *get_clean_board();
+void reset_board(board_container_t * board_to_reset);
+void print_board(board_container_t * the_board);
+void clear_board(board_container_t * board_to_clear);
+piece_id_t get_piece_at_square(board_container_t * the_board,
+			       square_t square);
+bool add_piece_to_board(board_container_t * board, piece_id_t piece,
+			square_t square);
+board_t get_black_occupancy_map(board_container_t * the_board);
+board_t get_white_occupancy_map(board_container_t * the_board);
 bool is_square_occupied(board_t board, square_t square);
-void set_bit(board_t *brd, square_t sq);
-void clear_bit(board_t *brd, square_t sq);
-bool check_bit(board_t *brd, square_t sq);
+void set_bit(board_t * brd, square_t sq);
+void clear_bit(board_t * brd, square_t sq);
+bool check_bit(board_t * brd, square_t sq);
 
 
 #endif

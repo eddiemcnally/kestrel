@@ -19,7 +19,7 @@
 #ifndef _ALL_TESTS_H_
 #define _ALL_TESTS_H_
 
-int main_do_it_myself_really_simply( int argc, char** argv );
+int main_do_it_myself_really_simply(int argc, char **argv);
 
 
 #endif
