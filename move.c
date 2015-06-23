@@ -103,6 +103,11 @@ void generate_knight_occupancy_masks(board_t *occ_mask_array){
 	}	
 }
 
+// 
+// in keeping with magic bitboards, the occupancy map
+// ignore edge squares.
+// see : http://www.afewmorelines.com/understanding-magic-bitboards-in-chess-programming/
+//
 void generate_rook_occupancy_masks(board_t *occ_mask_array){
 
 // 		56 57 58 59 60 61 62 63
@@ -117,14 +122,17 @@ void generate_rook_occupancy_masks(board_t *occ_mask_array){
 	for(int i = 0; i < NUM_SQUARES; i++){
 		
 		board_t b = 0;
-		
+		// move up
         for (int j = i + 8; j <= NUM_SQUARES; j += 8) 
 			b |= (0x1ull << j);
+        // move down
         for (int j = i - 8; j >= 0; j -= 8) 
 			b |= (0x1ull << j);
 			
+		// move right
         for (int j = i+1; j %8 != 7 && j <= NUM_SQUARES; j++) 
 			b |= (0x1ull << j);
+        // move left
         for (int j=i-1; j %8 !=0 && j>=0;  j--) 
 			b |= (0x1ull << j);
         

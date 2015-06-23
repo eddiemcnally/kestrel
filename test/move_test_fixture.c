@@ -205,7 +205,15 @@ void test_rook_occupancy_mask(){
 	assert_true(is_square_occupied(mask_d2, g2));
 	assert_true(is_square_occupied(mask_d2, h2));
 
+	assert_true(is_square_occupied(mask_d2, d1));
+	assert_true(is_square_occupied(mask_d2, d3));
+	assert_true(is_square_occupied(mask_d2, d4));
+	assert_true(is_square_occupied(mask_d2, d5));
+	assert_true(is_square_occupied(mask_d2, d6));
+	assert_true(is_square_occupied(mask_d2, d7));
+	assert_true(is_square_occupied(mask_d2, d8));
 
+	free(masks);
 
 }
 
