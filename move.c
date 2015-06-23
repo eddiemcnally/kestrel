@@ -144,6 +144,24 @@ void generate_rook_occupancy_masks(board_t *occ_mask_array){
 
 
 
+/*
+ * Prints out occupancy masks as padded hex
+ * name: print_rook_occupancy_masks
+ * @param	-
+ * @return 	-
+ * 
+ */
+void print_rook_occupancy_masks(){
+	board_t * masks = malloc(sizeof(board_t) * NUM_SQUARES);
+	memset(masks, 0, sizeof(board_t) * NUM_SQUARES);
+
+	generate_rook_occupancy_masks(masks);
+
+	print_out_masks(masks);
+
+	free(masks);
+}
+
 
 /*
  * Prints out occupancy masks as padded hex

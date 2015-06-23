@@ -20,6 +20,8 @@ void generate_knight_occupancy_masks(board_t *occ_mask_array);
 void generate_rook_occupancy_masks(board_t *occ_mask_array);
 void print_knight_occupancy_masks();
 void print_king_occupancy_masks();
+void print_rook_occupancy_masks();
+
 
 
 // elem [0] is a1, [63] is h8

@@ -32,7 +32,7 @@ int main( int argc, char** argv )
 
     print_board(the_board);
 	*/
-	print_king_occupancy_masks();
+	print_rook_occupancy_masks();
 	
 
     return 0;
