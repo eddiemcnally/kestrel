@@ -106,12 +106,20 @@ inline bool check_bit(board_t * brd, square_t sq)
 }
 
 
+unsigned int count_bits(board_t bb){
+	unsigned int cntr;
+	for (cntr = 0; bb; cntr++)	{
+		bb &= bb - 1; // clear the least significant bit set
+	}
+	return cntr; 
+}
+
+
 board_container_t *get_clean_board()
 {
+    board_container_t *the_board = malloc(sizeof(board_container_t));
 
-    board_container_t *the_board = malloc(sizeof(struct board_container));
-
-    memset(the_board, 0, sizeof(struct board_container));
+    memset(the_board, 0, sizeof(board_container_t));
 
     return the_board;
 }
@@ -212,7 +220,7 @@ void print_board(board_container_t * the_board)
 
     for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
-			brd[i][j] = ' ';
+			brd[i][j] = '-';
 		}
     }
 

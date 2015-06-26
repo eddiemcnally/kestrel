@@ -21,9 +21,19 @@
 
 #include <stdbool.h>
 
+
+
 typedef unsigned long long board_t;
 
 #define	BOARD_EMPTY	((board_t)0x0ull)
+
+typedef unsigned char 			U8;
+typedef unsigned long long 		U64;
+
+// half moves
+#define MAX_GAME_MOVES 2048
+
+
 
 
 
@@ -52,6 +62,14 @@ typedef enum squares {
 #define GET_FILE(square)			(square % 8)
 #define GET_SQUARE(RANK, FILE)		((RANK * 8) + FILE)
 
+// castling permissions
+enum {
+	WKCA = 1,	// white, king-side
+	WQCA = 2,	// white, queen-side
+	BKCA = 4,	// black, king-side
+	BQCA = 8	// black, queen-side
+};
+
 
 typedef enum piece_id {
     W_PAWN 		= 0,
@@ -69,6 +87,11 @@ typedef enum piece_id {
 } piece_id_t;
 
 #define	NUM_PIECE_TYPES	12
+
+typedef enum colour{
+	BLACK,
+	WHITE
+} colour_t;
 
 #define IS_WHITE(piece_id_t)		(piece_id_t <= piece_id_t.W_KING)
 #define IS_BLACK(piece_id_t)		(IS_WHITE(piece_id_t) == false)
@@ -114,17 +137,65 @@ static const char pieceToChar[NUM_PIECE_TYPES] = {
 								   INIT_BRD_W_B | INIT_BRD_W_N | \
 								   INIT_BRD_W_Q | INIT_BRD_W_K))
 
+// contains information before the current
+// move was made
+typedef struct {
+	int move;
+	U8 castle_perm;
+	U8 en_passant;
+	U8 fifty_move_counter;
+	U64 position_key;
+} undo_t;
 
 
 /**
  * A container for holding the bitboards
  */
-typedef struct board_container {
+typedef struct {
     // an entry for each piece type
     board_t piece_boards[NUM_PIECE_TYPES];
 
-    // the above array piece arrays overlayed into a single bitboard
+    // The above array piece arrays overlayed into a single bitboard.
+    // In effect, an OR of all elements in piece_boards[]
     board_t board;
+
+
+	// squares where the kings are
+	square_t king_squares[2];
+
+	// the next side to move
+	colour_t side_to_move;
+	
+	// any square where en passent is active
+	square_t en_passant;
+
+	// fifty move ounter
+	U8 fifty_move_counter;
+	
+	// keeping track of ply
+	U8 ply;
+	U8 history_ply;
+	
+	// indexed by piece_id_t, contains the number of pieces of that type on the board
+	U8 pce_num[NUM_PIECE_TYPES];
+
+	// indexed by colour_t, contains number of pieces != PAWN
+	U8 big_pieces[2]; 
+	
+	// indexed by colour_t, contains number of ROOKs and QUEENs
+	U8 major_pieces[2];
+	
+	// indexed by colour_t, contains number of BISHOPs and KNIGHTs
+	U8 minor_pieces[2];
+
+	// castling permissions
+	U8 castle_perm;
+
+	// move history
+	undo_t history[MAX_GAME_MOVES];
+	
+	U64 position_key;
+	
 } board_container_t;
 
 
@@ -142,6 +213,7 @@ bool is_square_occupied(board_t board, square_t square);
 void set_bit(board_t * brd, square_t sq);
 void clear_bit(board_t * brd, square_t sq);
 bool check_bit(board_t * brd, square_t sq);
+unsigned int count_bits(board_t bb);
 
 
 #endif

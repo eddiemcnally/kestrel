@@ -313,38 +313,33 @@ assert_true(B_ROOK == get_piece_at_square(the_board, h8));
     clear_bit(&test_brd, 63);
     assert_true(test_brd == 0);
 } void test_checking_bits_in_a_board()
-{
-			board_t test_brd = 0;
-    
-	//
-	// Test checking bits
-	//
-	set_bit(&test_brd, 22);
-   	assert_true(check_bit(&test_brd, 22) == 1);
-		test_brd = 0;		// clean up
-	set_bit(&test_brd, 1);
-	assert_true(check_bit(&test_brd, 1) == 1);
-			test_brd = 0;		// clean up
-	set_bit(&test_brd, 31);
-	assert_true(check_bit(&test_brd, 31) == 1);
-			test_brd = 0;		// clean up
-	set_bit(&test_brd, 32);
-	assert_true(check_bit(&test_brd, 32) == 1);
-			test_brd = 0;		// clean up
-	set_bit(&test_brd, 63);
-	assert_true(check_bit(&test_brd, 63) == 1);
-			test_brd = 0;		// clean up
+{			board_t test_brd = 0;
+
+	for (int i = 0; i < NUM_SQUARES; i++){
+		set_bit(&test_brd, i);
+		assert_true(check_bit(&test_brd, i));
+		
+		clear_bit(&test_brd, i);
+		assert_false(check_bit(&test_brd, i));		
+	}
+} 
+
+
+void test_bit_counting(){
+	board_t brd = 0;
 	
-	// do some negative testing
-	assert_true(check_bit(&test_brd, 22) == 0);
-	assert_true(check_bit(&test_brd, 1) == 0);
-	assert_true(check_bit(&test_brd, 31) == 0);
-	assert_true(check_bit(&test_brd, 8) == 0);
-	assert_true(check_bit(&test_brd, 48) == 0);
-	assert_true(check_bit(&test_brd, 63) == 0);
-	assert_true(check_bit(&test_brd, 58) == 0);
-	assert_true(check_bit(&test_brd, 61) == 0);
-} void board_test_fixture(void) 
+	set_bit(&brd, d3);
+	set_bit(&brd, a7);
+	set_bit(&brd, b3);
+	set_bit(&brd, g6);
+	set_bit(&brd, d2);
+	
+	assert_true(count_bits(brd) == 5);
+		
+}
+
+
+void board_test_fixture(void) 
 {
     	test_fixture_start();	// starts a fixture
 			run_test(test_initial_board_placement);
@@ -359,5 +354,7 @@ assert_true(B_ROOK == get_piece_at_square(the_board, h8));
 	run_test(test_fen_parsing_general_layout_3);
 	run_test(test_white_occupancy_map);
 	run_test(test_black_occupancy_map);
+
+	run_test(test_bit_counting);
 	test_fixture_end();	// ends a fixture
 } 
