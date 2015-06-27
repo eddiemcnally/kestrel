@@ -20,11 +20,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include "types.h"
 #include "utils.h"
 #include "pieces.h"
 #include "board.h"
 #include "board_utils.h"
 
+#include "hashkeys.h"
 
 U64 get_castle_key(unsigned int castle_map);
 U64 get_side_key();

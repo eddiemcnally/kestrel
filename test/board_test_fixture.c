@@ -19,9 +19,12 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include "seatest.h"
-#include "board.h"
-#include "pieces.h"
+#include "types.h"
 #include "board_utils.h"
+#include "board.h"
+#include "fen.h"
+#include "pieces.h"
+
 void verify_initial_board_placement(board_container_t * the_board);
 
 /**

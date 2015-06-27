@@ -20,6 +20,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <assert.h>
+#include "types.h"
 #include "board.h"
 #include "pieces.h"
 

@@ -16,6 +16,7 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */  
 #include "seatest.h"
+#include "types.h"
 #include "board.h"
 #include "pieces.h"
 void test_piece_to_char_conversion()

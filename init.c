@@ -19,10 +19,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include "types.h"
 #include "board.h"
 #include "hashkeys.h"
-#include "board_utils.h"
-#include "pieces.h"
 
 
 board_container_t * init_game(){

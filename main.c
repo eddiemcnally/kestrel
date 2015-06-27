@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-
+#include "types.h"
 #include "board.h"
 #include "board_utils.h"
 #include "init.h"

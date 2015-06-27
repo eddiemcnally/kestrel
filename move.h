@@ -18,6 +18,7 @@
 #ifndef _MOVE_H_
 #define _MOVE_H_
 
+#include "types.h"
  
 void generate_king_occupancy_masks(board_t * occ_mask_array);
 void generate_knight_occupancy_masks(board_t * occ_mask_array);

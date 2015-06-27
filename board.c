@@ -20,11 +20,17 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include "types.h"
 #include "board.h"
+#include "board_utils.h"
+#include "hashkeys.h"
 #include "pieces.h"
 
 
 void overlay_boards(board_container_t * board_container);
+void reset_board_to_init_position(board_container_t * board_to_reset);
+void clear_board(board_container_t * board_to_clear);
+
 
 
 const U8 BitTable[64] = {
@@ -35,12 +41,58 @@ const U8 BitTable[64] = {
 };
 
 
-
-
+/*
+ * Creates and initialises a new board. The default starting piece 
+ * positions are populated.
+ * name: init_board
+ * @param
+ * @return	a new board
+ * 
+ */
 board_container_t * init_board(){
 	board_container_t * brd = get_clean_board();
 	
 	reset_board_to_init_position(brd);
+	
+	
+	brd->king_squares[WHITE] = e5;
+	brd->king_squares[BLACK] = e8;
+	
+	brd->side_to_move = WHITE;
+	
+	brd->en_passant = NO_SQUARE;
+	
+	brd->fifty_move_counter = 0;
+	brd->ply = 0;
+	brd->history_ply = 0;
+	
+	brd->pce_num[W_PAWN] 	= 8;
+	brd->pce_num[W_KNIGHT] 	= 2;
+	brd->pce_num[W_BISHOP] 	= 2;
+	brd->pce_num[W_ROOK] 	= 2;
+	brd->pce_num[W_QUEEN] 	= 1;
+	brd->pce_num[W_KING] 	= 1;
+	
+	brd->pce_num[B_PAWN] 	= 8;
+	brd->pce_num[B_KNIGHT] 	= 2;
+	brd->pce_num[B_BISHOP] 	= 2;
+	brd->pce_num[B_ROOK] 	= 2;
+	brd->pce_num[B_QUEEN] 	= 1;
+	brd->pce_num[B_KING] 	= 1;
+
+	brd->big_pieces[WHITE] 	= 8;
+	brd->big_pieces[BLACK] 	= 8;
+
+	brd->major_pieces[WHITE] = 3;
+	brd->major_pieces[BLACK] = 3;
+	
+	brd->minor_pieces[WHITE] = 4;
+	brd->minor_pieces[BLACK] = 4;
+	
+	brd->castle_perm = WQCA | WKCA | BQCA | BKCA;
+
+	brd->position_key = get_position_hashkey(brd);
+
 	
 	return brd;
 }
@@ -106,77 +158,6 @@ inline void clear_board(board_container_t * board_to_clear)
 		board_to_clear->piece_boards[i] = BOARD_EMPTY;
     }
 }
-
-/*
- *
- * name: set_bit
- * @param : board, square
- * @return : void
- *
- */
-inline void set_bit(board_t * brd, square_t sq)
-{
-    *brd = *brd | (board_t) (0x01ull << sq);
-}
-
-/*
- *
- * name: clear_bit
- * @param : board, square
- * @return : void
- *
- */
-inline void clear_bit(board_t * brd, square_t sq)
-{
-    *brd = *brd & (board_t) (~0x01ull << sq);
-}
-
-/*
- *
- * name: check_bit
- * @param : board, square
- * @return : bool false if unset, bool true otherwise
- *
- */
-inline bool check_bit(board_t * brd, square_t sq)
-{
-    if (((*brd >> sq) & 0x01ull) != 0) {
-		return true;
-	}
-    return false;
-}
-
-/*
- * Counts set bits in a board_t 
- * name: count_bits
- * @param 	the board
- * @return	the number of set bits
- * 
- */
-inline U8 count_bits(board_t bb){
-	U8 cntr;
-	for (cntr = 0; bb; cntr++)	{
-		bb &= bb - 1; // clear the least significant bit set
-	}
-	return cntr; 
-}
-
-
-
-/*
- * Clears the LSB of the board, and returns the bit # that was cleared. 
- * name: pop_1st_bit
- * @param	ptr to board_t
- * @return	index of bit cleared.
- * 
- */
-inline U8 pop_1st_bit(board_t *bb) {
-  board_t b = *bb ^ (*bb - 1);
-  unsigned int fold = (unsigned) ((b & 0xffffffff) ^ (b >> 32));
-  *bb &= (*bb - 1);
-  return BitTable[(fold * 0x783a9b23) >> 26];
-}
-
 
 /*
  * Creates an empty board struct 
@@ -256,12 +237,85 @@ inline piece_id_t get_piece_at_square(board_container_t * the_board,
 				return piece;
 			}
 		}
-	} else{
-		// no piece on that square
-		return NO_PIECE;
-	}
-
+	} 
+	// no piece on that square
+	return NO_PIECE;
+	
 }
+
+
+
+/*
+ *
+ * name: set_bit
+ * @param : board, square
+ * @return : void
+ *
+ */
+inline void set_bit(board_t * brd, square_t sq)
+{
+    *brd = *brd | (board_t) (0x01ull << sq);
+}
+
+/*
+ *
+ * name: clear_bit
+ * @param : board, square
+ * @return : void
+ *
+ */
+inline void clear_bit(board_t * brd, square_t sq)
+{
+    *brd = *brd & (board_t) (~0x01ull << sq);
+}
+
+/*
+ *
+ * name: check_bit
+ * @param : board, square
+ * @return : bool false if unset, bool true otherwise
+ *
+ */
+inline bool check_bit(board_t * brd, square_t sq)
+{
+    if (((*brd >> sq) & 0x01ull) != 0) {
+		return true;
+	}
+    return false;
+}
+
+/*
+ * Counts set bits in a board_t 
+ * name: count_bits
+ * @param 	the board
+ * @return	the number of set bits
+ * 
+ */
+inline U8 count_bits(board_t bb){
+	U8 cntr;
+	for (cntr = 0; bb; cntr++)	{
+		bb &= bb - 1; // clear the least significant bit set
+	}
+	return cntr; 
+}
+
+
+
+/*
+ * Clears the LSB of the board, and returns the bit # that was cleared. 
+ * name: pop_1st_bit
+ * @param	ptr to board_t
+ * @return	index of bit cleared.
+ * 
+ */
+inline U8 pop_1st_bit(board_t *bb) {
+  board_t b = *bb ^ (*bb - 1);
+  unsigned int fold = (unsigned) ((b & 0xffffffff) ^ (b >> 32));
+  *bb &= (*bb - 1);
+  return BitTable[(fold * 0x783a9b23) >> 26];
+}
+
+
 
 
 inline bool is_square_occupied(board_t board, square_t square)

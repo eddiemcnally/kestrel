@@ -19,12 +19,5 @@
 #ifndef _UTILS_H_
 #define _UTILS_H_
 
-#include <stdlib.h>
-
-#define RAND64	( 	(U64)rand() + \
-					((U64)rand() << 15) + \
-					((U64)rand() << 30) + \
-					((U64)rand() << 45) + \
-					(((U64)rand() & 0x0F) << 60)   )
 
 #endif

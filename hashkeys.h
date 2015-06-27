@@ -18,10 +18,15 @@
 #ifndef _HASHKEYS_H_
 #define _HASHKEYS_H_
 
-
+// generates a 64bit randon number
+#define RAND64	( 	(U64)rand() + \
+					((U64)rand() << 15) + \
+					((U64)rand() << 30) + \
+					((U64)rand() << 45) + \
+					(((U64)rand() & 0x0F) << 60)   )
 
 void init_hash_keys();
-
+U64 get_position_hashkey(board_container_t *brd);
 
 
 #endif
