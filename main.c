@@ -22,6 +22,7 @@
 #include <assert.h>
 
 #include "board.h"
+#include "board_utils.h"
 #include "init.h"
 
 int main(int argc, char **argv)

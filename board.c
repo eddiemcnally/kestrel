@@ -40,35 +40,58 @@ const U8 BitTable[64] = {
 board_container_t * init_board(){
 	board_container_t * brd = get_clean_board();
 	
-	reset_board(brd);
+	reset_board_to_init_position(brd);
+	
+	return brd;
 }
 
 
 
-void reset_board(board_container_t * board_to_reset)
-{
+void reset_board_to_init_position(board_container_t * board_to_reset){
 
     clear_board(board_to_reset);
-
-    board_to_reset->piece_boards[B_PAWN] 	= INIT_BRD_B_P;
-    board_to_reset->piece_boards[B_ROOK] 	= INIT_BRD_B_R;
-    board_to_reset->piece_boards[B_BISHOP] 	= INIT_BRD_B_B;
-    board_to_reset->piece_boards[B_KNIGHT] 	= INIT_BRD_B_N;
-    board_to_reset->piece_boards[B_QUEEN] 	= INIT_BRD_B_Q;
-    board_to_reset->piece_boards[B_KING] 	= INIT_BRD_B_K;
-    board_to_reset->piece_boards[W_PAWN] 	= INIT_BRD_W_P;
-    board_to_reset->piece_boards[W_ROOK] 	= INIT_BRD_W_R;
-    board_to_reset->piece_boards[W_BISHOP] 	= INIT_BRD_W_B;
-    board_to_reset->piece_boards[W_KNIGHT] 	= INIT_BRD_W_N;
-    board_to_reset->piece_boards[W_QUEEN] 	= INIT_BRD_W_Q;
-    board_to_reset->piece_boards[W_KING] 	= INIT_BRD_W_K;
-
-    board_to_reset->board = INIT_BRD_B | INIT_BRD_W;
-
+    
+    add_piece_to_board(board_to_reset, 	B_PAWN, 	a7);
+    add_piece_to_board(board_to_reset, 	B_PAWN, 	b7);
+    add_piece_to_board(board_to_reset, 	B_PAWN, 	c7);
+    add_piece_to_board(board_to_reset, 	B_PAWN, 	d7);
+    add_piece_to_board(board_to_reset, 	B_PAWN, 	e7);
+    add_piece_to_board(board_to_reset, 	B_PAWN, 	f7);
+    add_piece_to_board(board_to_reset, 	B_PAWN, 	g7);
+    add_piece_to_board(board_to_reset, 	B_PAWN, 	h7);
+       
+    add_piece_to_board(board_to_reset, 	B_ROOK, 	a8);
+    add_piece_to_board(board_to_reset, 	B_ROOK, 	h8);
+    add_piece_to_board(board_to_reset, 	B_KNIGHT, 	b8);
+    add_piece_to_board(board_to_reset, 	B_KNIGHT, 	g8);
+    add_piece_to_board(board_to_reset, 	B_BISHOP, 	c8);
+    add_piece_to_board(board_to_reset, 	B_BISHOP, 	f8);
+    add_piece_to_board(board_to_reset, 	B_QUEEN, 	d8);
+    add_piece_to_board(board_to_reset, 	B_KING, 	e8);
+    
+    
+    add_piece_to_board(board_to_reset, 	W_PAWN, 	a2);
+    add_piece_to_board(board_to_reset, 	W_PAWN, 	b2);
+    add_piece_to_board(board_to_reset, 	W_PAWN, 	c2);
+    add_piece_to_board(board_to_reset, 	W_PAWN, 	d2);
+    add_piece_to_board(board_to_reset, 	W_PAWN, 	e2);
+    add_piece_to_board(board_to_reset, 	W_PAWN, 	f2);
+    add_piece_to_board(board_to_reset, 	W_PAWN, 	g2);
+    add_piece_to_board(board_to_reset, 	W_PAWN, 	h2);
+    
+    add_piece_to_board(board_to_reset, 	W_ROOK, 	a1);
+    add_piece_to_board(board_to_reset, 	W_ROOK, 	h1);
+    add_piece_to_board(board_to_reset, 	W_KNIGHT, 	b1);
+    add_piece_to_board(board_to_reset, 	W_KNIGHT, 	g1);
+    add_piece_to_board(board_to_reset, 	W_BISHOP, 	c1);
+    add_piece_to_board(board_to_reset, 	W_BISHOP, 	f1);
+    add_piece_to_board(board_to_reset, 	W_QUEEN, 	d1);
+    add_piece_to_board(board_to_reset, 	W_KING, 	e1);
+    
+    
 }
 
 /*
- *
  * name: clear_board
  * Cleans a board of all pieces
  * @param : board_container_t *	: the board to clear
@@ -271,40 +294,3 @@ inline board_t get_black_occupancy_map(board_container_t * the_board)
 				| the_board->piece_boards[B_KING];
 }
 
-
-
-void print_board(board_container_t * the_board)
-{
-
-    char brd[8][8];
-
-    for (int i = 0; i < 8; i++) {
-		for (int j = 0; j < 8; j++) {
-			brd[i][j] = '-';
-		}
-    }
-
-
-    for (int rank = 0; rank < 8; rank++) {
-		for (int file = 0; file < 8; file++) {
-
-			square_t square = (rank * 8) + file;
-
-			piece_t piece = get_piece_at_square(the_board, square);
-			if (piece >= 0) {
-				char pce = get_piece_label(piece);
-				brd[rank][file] = pce;
-			}
-		}
-    }
-
-	printf("\n\r");
-    for (int rank = 7; rank >= 0; rank--) {
-		for (int file = 0; file <= 7; file++) {
-			printf("%c", brd[rank][file]);
-		}
-		printf("\n\r");
-    }
-    printf("\n\r");
-
-}

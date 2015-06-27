@@ -29,11 +29,8 @@
  */ 
 void test_initial_board_placement() 
 {
-    	board_container_t * the_board = get_clean_board();
-    
-	// set up initial board
-	reset_board(the_board);
-    	assert_true(W_ROOK == get_piece_at_square(the_board, a1));
+    	board_container_t * the_board = init_board();
+    	assert_true(W_ROOK == get_piece_at_square(the_board, a1));
 	assert_true(W_KNIGHT == get_piece_at_square(the_board, b1));
 	assert_true(W_BISHOP == get_piece_at_square(the_board, c1));
 	assert_true(W_QUEEN == get_piece_at_square(the_board, d1));

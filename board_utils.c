@@ -51,12 +51,6 @@ int consume_fen_notation(char *fen_string,
     // NOTE: ignore moves, castling, etc, just returns the board
     //
 
-
-
-    // ensure board is initialised
-    clear_board(board_to_setup);
-
-
     for (int rank = 7; rank >= 0; rank--) {
 		bool move_to_next_rank = false;
 		for (int file = 0; file <= 7 && move_to_next_rank == false; file++) {
@@ -156,6 +150,43 @@ char *generate_fen_notation(board_container_t * board_to_setup)
     return malloc(80);
 }
 
+
+
+void print_board(board_container_t * the_board)
+{
+
+    char brd[8][8];
+
+    for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			brd[i][j] = '-';
+		}
+    }
+
+
+    for (int rank = 0; rank < 8; rank++) {
+		for (int file = 0; file < 8; file++) {
+
+			square_t square = (rank * 8) + file;
+
+			piece_t piece = get_piece_at_square(the_board, square);
+			if (piece >= 0) {
+				char pce = get_piece_label(piece);
+				brd[rank][file] = pce;
+			}
+		}
+    }
+
+	printf("\n\r");
+    for (int rank = 7; rank >= 0; rank--) {
+		for (int file = 0; file <= 7; file++) {
+			printf("%c", brd[rank][file]);
+		}
+		printf("\n\r");
+    }
+    printf("\n\r");
+
+}
 
 
 
