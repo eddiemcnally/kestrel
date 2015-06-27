@@ -27,6 +27,24 @@
 void overlay_boards(board_container_t * board_container);
 
 
+const U8 BitTable[64] = {
+  63, 30, 3, 32, 25, 41, 22, 33, 15, 50, 42, 13, 11, 53, 19, 34, 61, 29, 2,
+  51, 21, 43, 45, 10, 18, 47, 1, 54, 9, 57, 0, 35, 62, 31, 40, 4, 49, 5, 52,
+  26, 60, 6, 23, 44, 46, 27, 56, 16, 7, 39, 48, 24, 59, 14, 12, 55, 38, 28,
+  58, 20, 37, 17, 36, 8
+};
+
+
+
+
+board_container_t * init_board(){
+	board_container_t * brd = get_clean_board();
+	
+	reset_board(brd);
+}
+
+
+
 void reset_board(board_container_t * board_to_reset)
 {
 
@@ -105,9 +123,15 @@ inline bool check_bit(board_t * brd, square_t sq)
     return false;
 }
 
-
-unsigned int count_bits(board_t bb){
-	unsigned int cntr;
+/*
+ * Counts set bits in a board_t 
+ * name: count_bits
+ * @param 	the board
+ * @return	the number of set bits
+ * 
+ */
+inline U8 count_bits(board_t bb){
+	U8 cntr;
 	for (cntr = 0; bb; cntr++)	{
 		bb &= bb - 1; // clear the least significant bit set
 	}
@@ -115,6 +139,29 @@ unsigned int count_bits(board_t bb){
 }
 
 
+
+/*
+ * Clears the LSB of the board, and returns the bit # that was cleared. 
+ * name: pop_1st_bit
+ * @param	ptr to board_t
+ * @return	index of bit cleared.
+ * 
+ */
+inline U8 pop_1st_bit(board_t *bb) {
+  board_t b = *bb ^ (*bb - 1);
+  unsigned int fold = (unsigned) ((b & 0xffffffff) ^ (b >> 32));
+  *bb &= (*bb - 1);
+  return BitTable[(fold * 0x783a9b23) >> 26];
+}
+
+
+/*
+ * Creates an empty board struct 
+ * name: get_clean_board
+ * @param			
+ * @return	ptr to a created board struct
+ * 
+ */
 board_container_t *get_clean_board()
 {
     board_container_t *the_board = malloc(sizeof(board_container_t));
@@ -160,24 +207,37 @@ inline void overlay_boards(board_container_t * the_board)
     the_board->board = flat_board;
 }
 
+/*
+ * Returns the piece type os the given square
+ * 
+ * name: 	get_piece_at_square
+ * @param	the board container and the square to test
+ * @return	the piece or NO_PIECE
+ * 
+ */
 
-piece_id_t get_piece_at_square(board_container_t * the_board,
+inline piece_id_t get_piece_at_square(board_container_t * the_board,
 			       square_t square)
 {
-    board_t the_piece = GET_PIECE_MASK(square);
+	// quick check to see if square occupied
+	if (check_bit(&the_board->board, square)){
+		// it is, so find the piece type
+		board_t the_piece = GET_PIECE_MASK(square);
 
-    for (int i = 0; i < NUM_PIECE_TYPES; i++) {
-		board_t brd = the_board->piece_boards[i];
+		for (int i = 0; i < NUM_PIECE_TYPES; i++) {
+			board_t brd = the_board->piece_boards[i];
 
-		piece_id_t piece = (piece_id_t) i;
-		if ((brd & the_piece) != 0) {
-			// found it
-			return piece;
+			piece_id_t piece = (piece_id_t) i;
+			if ((brd & the_piece) != 0) {
+				// found it
+				return piece;
+			}
 		}
-    }
+	} else{
+		// no piece on that square
+		return NO_PIECE;
+	}
 
-    // no piece on that square
-    return -1;
 }
 
 
@@ -238,11 +298,13 @@ void print_board(board_container_t * the_board)
 		}
     }
 
+	printf("\n\r");
     for (int rank = 7; rank >= 0; rank--) {
 		for (int file = 0; file <= 7; file++) {
 			printf("%c", brd[rank][file]);
 		}
 		printf("\n\r");
     }
+    printf("\n\r");
 
 }

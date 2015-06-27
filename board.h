@@ -20,7 +20,7 @@
 #define _BOARD_H_
 
 #include <stdbool.h>
-
+#include "pieces.h"
 
 
 typedef unsigned long long board_t;
@@ -41,10 +41,13 @@ typedef unsigned long long 		U64;
 #define NUM_FILES	8
 
 
+#define	NO_SQUARE	-1
+
+
 #define GET_PIECE_MASK(square)		((board_t)(0x01ull << (int)square))
 
 
-typedef enum squares {
+typedef enum {
     a1 = 0, b1, c1, d1, e1, f1, g1, h1,
     a2, 	b2, c2, d2, e2, f2, g2, h2,
     a3, 	b3, c3, d3, e3, f3, g3, h3,
@@ -71,24 +74,10 @@ enum {
 };
 
 
-typedef enum piece_id {
-    W_PAWN 		= 0,
-    W_ROOK 		= 1,
-    W_KNIGHT 	= 2,
-    W_BISHOP 	= 3,
-    W_QUEEN 	= 4,
-    W_KING 		= 5,
-    B_PAWN 		= 6,
-    B_ROOK 		= 7,
-    B_KNIGHT 	= 8,
-    B_BISHOP 	= 9,
-    B_QUEEN 	= 10,
-    B_KING 		= 11
-} piece_id_t;
-
 #define	NUM_PIECE_TYPES	12
 
-typedef enum colour{
+
+typedef enum {
 	BLACK,
 	WHITE
 } colour_t;
@@ -101,6 +90,10 @@ static const char pieceToChar[NUM_PIECE_TYPES] = {
     'P', 'R', 'N', 'B', 'Q', 'K', 'p', 'r', 'n', 'b', 'q', 'k'
 };
 
+
+// some shortcut macros
+#define POP(bb)			pop_1st_bit(bb)
+#define	CNT(bb)			count_bits(bb)
 
 
 
@@ -167,6 +160,7 @@ typedef struct {
 	colour_t side_to_move;
 	
 	// any square where en passent is active
+	// TO DO
 	square_t en_passant;
 
 	// fifty move ounter
@@ -199,6 +193,7 @@ typedef struct {
 } board_container_t;
 
 
+board_container_t * init_board();
 board_container_t *get_clean_board();
 void reset_board(board_container_t * board_to_reset);
 void print_board(board_container_t * the_board);
@@ -213,7 +208,9 @@ bool is_square_occupied(board_t board, square_t square);
 void set_bit(board_t * brd, square_t sq);
 void clear_bit(board_t * brd, square_t sq);
 bool check_bit(board_t * brd, square_t sq);
-unsigned int count_bits(board_t bb);
+U8 count_bits(board_t bb);
+U8 pop_1st_bit(board_t *bb);
+
 
 
 #endif

@@ -15,6 +15,10 @@
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#ifndef _MOVE_H_
+#define _MOVE_H_
+
+ 
 void generate_king_occupancy_masks(board_t * occ_mask_array);
 void generate_knight_occupancy_masks(board_t * occ_mask_array);
 void generate_rook_occupancy_masks(board_t * occ_mask_array);
@@ -160,3 +164,6 @@ static const board_t king_occupancy_masks[NUM_SQUARES] = {
     0xa0e0000000000000,
     0x41c0000000000000
 };
+
+
+#endif

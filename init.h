@@ -1,5 +1,5 @@
 /*
- * utils.h
+ * init.h
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  * 
  * Chess is free software: you can redistribute it and/or modify it
@@ -16,15 +16,10 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _UTILS_H_
-#define _UTILS_H_
+#ifndef _INIT_H_
+#define _INIT_H_
 
-#include <stdlib.h>
+board_container_t * init_game();
 
-#define RAND64	( 	(U64)rand() + \
-					((U64)rand() << 15) + \
-					((U64)rand() << 30) + \
-					((U64)rand() << 45) + \
-					(((U64)rand() & 0x0F) << 60)   )
 
 #endif

@@ -339,6 +339,22 @@ void test_bit_counting(){
 }
 
 
+
+void test_LSB_clear(){
+	board_t brd = 0;
+	
+	set_bit(&brd, d3);
+	set_bit(&brd, a7);
+	set_bit(&brd, b3);
+	set_bit(&brd, g6);
+	set_bit(&brd, a1);
+	
+	
+	U8 cleared_bit = pop_1st_bit(&brd);	
+	
+	assert_true(cleared_bit == a1);
+	assert_false(check_bit(&brd, a1));
+}
 void board_test_fixture(void) 
 {
     	test_fixture_start();	// starts a fixture
@@ -356,5 +372,7 @@ void test_bit_counting(){
 	run_test(test_black_occupancy_map);
 
 	run_test(test_bit_counting);
-	test_fixture_end();	// ends a fixture
+	run_test(test_LSB_clear);
+	
+		test_fixture_end();	// ends a fixture
 } 

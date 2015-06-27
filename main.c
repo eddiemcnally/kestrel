@@ -22,19 +22,12 @@
 #include <assert.h>
 
 #include "board.h"
-#include "move.h"
-#include "board_utils.h"
-
+#include "init.h"
 
 int main(int argc, char **argv)
 {
-	board_container_t *the_board = get_clean_board();
-
-	add_piece_to_board(the_board, W_KNIGHT, b2);
-
-	print_board(the_board);
-     
-//    print_rook_occupancy_masks();
-
+	board_container_t * brd = init_game();
+	
+	print_board(brd);
     return 0;
 }
