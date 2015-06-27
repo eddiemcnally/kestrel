@@ -51,8 +51,7 @@ void init_hash_keys(){
 		for(int sq = 0; sq < NUM_SQUARES; sq++){
 			piece_keys[pce][sq] = RAND64;
 		}
-	}
-	
+	}	
 	
 	side_to_move_key = RAND64;
 	

@@ -25,8 +25,9 @@
 
 
 board_container_t * init_game(){
-	board_container_t * brd = init_board();
 	init_hash_keys();
+	board_container_t * brd = init_board();
+
 	
 	return brd;	
 }

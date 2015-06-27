@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include "seatest.h"
 #include "types.h"
+#include "hashkeys.h"
 #include "board_utils.h"
 #include "board.h"
 #include "fen.h"
@@ -32,7 +33,7 @@
  */ 
 void test_initial_board_placement() 
 {
-    	board_container_t * the_board = init_board();
+    init_hash_keys();	board_container_t * the_board = init_board();
     	assert_true(W_ROOK == get_piece_at_square(the_board, a1));
 	assert_true(W_KNIGHT == get_piece_at_square(the_board, b1));
 	assert_true(W_BISHOP == get_piece_at_square(the_board, c1));
