@@ -114,7 +114,7 @@ U64 get_position_hashkey(board_container_t *brd){
 	for(int sq = 0; sq < NUM_SQUARES; sq++){
 		piece_t pce = get_piece_at_square(brd, sq);
 		
-		if (pce >= 0){
+		if (pce != NO_PIECE){
 			retval ^= get_piece_key(pce, sq);
 		}		
 	}

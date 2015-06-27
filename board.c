@@ -89,9 +89,10 @@ board_container_t * init_board(){
 	brd->minor_pieces[WHITE] = 4;
 	brd->minor_pieces[BLACK] = 4;
 	
-	brd->castle_perm = WQCA | WKCA | BQCA | BKCA;
+	brd->castle_perm = (WQCA | WKCA | BQCA | BKCA);
 
 	brd->position_key = get_position_hashkey(brd);
+	printf("0x%016llx\n", brd->position_key);
 
 	
 	return brd;

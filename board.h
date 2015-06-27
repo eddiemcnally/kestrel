@@ -38,8 +38,6 @@
 
 #define GET_PIECE_MASK(square)		((board_t)(0x01ull << (int)square))
 
-#define	NO_SQUARE	-1
-
 
 
 // zero-based

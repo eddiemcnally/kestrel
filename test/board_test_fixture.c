@@ -69,7 +69,50 @@ void test_initial_board_placement()
 	// no piece present
 	for (int i = a3; i < h6; i++) {
 		assert_true(-1 == get_piece_at_square(the_board, i));
-	}} void test_clean_board()
+	}
+	
+	
+	// now verify remainder of struct is populate
+	assert_true(the_board->king_squares[WHITE] == e5);
+	assert_true(the_board->king_squares[BLACK] == e8);
+	
+	assert_true(the_board->side_to_move == WHITE);
+	
+	assert_true(the_board->en_passant == NO_SQUARE);
+	
+	assert_true(the_board->fifty_move_counter == 0);
+	assert_true(the_board->ply == 0);
+	assert_true(the_board->history_ply == 0);
+	
+	assert_true(the_board->pce_num[W_PAWN] == 8);
+	assert_true(the_board->pce_num[W_KNIGHT] == 2);
+	assert_true(the_board->pce_num[W_BISHOP] == 2);
+	assert_true(the_board->pce_num[W_ROOK] 	== 2);
+	assert_true(the_board->pce_num[W_QUEEN] == 1);
+	assert_true(the_board->pce_num[W_KING] 	== 1);
+	
+	assert_true(the_board->pce_num[B_PAWN] == 8);
+	assert_true(the_board->pce_num[B_KNIGHT] == 2);
+	assert_true(the_board->pce_num[B_BISHOP] == 2);
+	assert_true(the_board->pce_num[B_ROOK] == 2);
+	assert_true(the_board->pce_num[B_QUEEN] == 1);
+	assert_true(the_board->pce_num[B_KING] == 1);
+
+	assert_true(the_board->big_pieces[WHITE] == 8);
+	assert_true(the_board->big_pieces[BLACK] == 8);
+
+	assert_true(the_board->major_pieces[WHITE] == 3);
+	assert_true(the_board->major_pieces[BLACK] == 3);
+	
+	assert_true(the_board->minor_pieces[WHITE] == 4);
+	assert_true(the_board->minor_pieces[BLACK] == 4);
+	
+	assert_true(the_board->castle_perm == (WQCA | WKCA | BQCA | BKCA));
+
+	assert_true(the_board->position_key != 0);
+
+	
+	} void test_clean_board()
 {
     	board_container_t * the_board = get_clean_board();
     
