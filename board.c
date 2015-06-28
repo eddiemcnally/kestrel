@@ -20,6 +20,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 #include "types.h"
 #include "board.h"
 #include "board_utils.h"
@@ -109,6 +110,8 @@ board_container_t * init_board(){
 
 void reset_board_to_init_position(board_container_t * board_to_reset){
 
+	assert(board_to_reset != 0);
+	
     clear_board(board_to_reset);
     
     add_piece_to_board(board_to_reset, 	B_PAWN, 	a7);
@@ -193,7 +196,10 @@ board_container_t *get_clean_board()
 bool add_piece_to_board(board_container_t * board, piece_id_t piece,
 			square_t square)
 {
-
+	assert((square >= a1) && (square <= h8));
+	assert((piece >= W_PAWN) && (piece <= B_KING));
+	
+	
     if (check_bit(&board->board, square) != 0) {
 		// square already occupied
 		return false;
@@ -226,13 +232,13 @@ inline void overlay_boards(board_container_t * the_board)
  * @param	the board container and the square to test
  * @return	the piece or NO_PIECE
  * 
+ * TODO - possibly replace this with a cache lookup on a new board array
  */
 
 inline piece_id_t get_piece_at_square(board_container_t * the_board,
 			       square_t square)
 {
-	// TODO - possibly replace this with a cache lookup on a new board array
-	
+	assert((square >= a1) && (square <= h8));
 	
 	// quick check to see if square occupied
 	if (check_bit(&the_board->board, square)){
@@ -264,6 +270,8 @@ inline piece_id_t get_piece_at_square(board_container_t * the_board,
  */
 inline void set_bit(board_t * brd, square_t sq)
 {
+	assert((sq >= a1) && (sq <= h8));
+
     *brd = *brd | (board_t) (0x01ull << sq);
 }
 
@@ -276,6 +284,8 @@ inline void set_bit(board_t * brd, square_t sq)
  */
 inline void clear_bit(board_t * brd, square_t sq)
 {
+	assert((sq >= a1) && (sq <= h8));
+
     *brd = *brd & (board_t) (~0x01ull << sq);
 }
 
@@ -288,6 +298,8 @@ inline void clear_bit(board_t * brd, square_t sq)
  */
 inline bool check_bit(board_t * brd, square_t sq)
 {
+	assert((sq >= a1) && (sq <= h8));
+	
     if (((*brd >> sq) & 0x01ull) != 0) {
 		return true;
 	}
@@ -330,6 +342,8 @@ inline U8 pop_1st_bit(board_t *bb) {
 
 inline bool is_square_occupied(board_t board, square_t square)
 {
+	assert((square >= a1) && (square <= h8));
+
     if (check_bit(&board, square) != 0) {
 		return true;
 	}

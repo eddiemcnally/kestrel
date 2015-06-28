@@ -58,18 +58,18 @@ int consume_fen_notation(char *fen_string,
 			piece_t to_add = NO_PIECE;
 			
 			switch (c) {
-				case 'p': to_add = B_PAWN; 		break;
-				case 'r': to_add = B_ROOK; 		break;
-				case 'n': to_add = B_KNIGHT; 	break;
-				case 'b': to_add = B_BISHOP; 	break;
-				case 'q': to_add = B_QUEEN; 	break;
-				case 'k': to_add = B_KING; 		break;
-				case 'P': to_add = W_PAWN; 		break;
-				case 'R': to_add = W_ROOK; 		break;
-				case 'N': to_add = W_KNIGHT; 	break;
-				case 'B': to_add = W_BISHOP; 	break;
-				case 'Q': to_add = W_QUEEN; 	break;
-				case 'K': to_add = W_KING; 		break;
+				case 'p': to_add = B_PAWN; 	break;
+				case 'r': to_add = B_ROOK; 	break;
+				case 'n': to_add = B_KNIGHT;break;
+				case 'b': to_add = B_BISHOP;break;
+				case 'q': to_add = B_QUEEN; break;
+				case 'k': to_add = B_KING; 	break;
+				case 'P': to_add = W_PAWN; 	break;
+				case 'R': to_add = W_ROOK; 	break;
+				case 'N': to_add = W_KNIGHT;break;
+				case 'B': to_add = W_BISHOP;break;
+				case 'Q': to_add = W_QUEEN; break;
+				case 'K': to_add = W_KING; 	break;
 				case '/':
 					move_to_next_rank = true;
 					rank++;
@@ -92,7 +92,6 @@ int consume_fen_notation(char *fen_string,
 				bool added = add_piece_to_board(board_to_setup, to_add, sq);
 				assert(added == true);
 			}
-
 		}
     }
     return 0;

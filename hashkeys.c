@@ -68,7 +68,7 @@ void init_hash_keys(){
  * 
  */
 inline U64 get_castle_key(unsigned int castle_map){
-	assert(castle_map < 16);
+	assert(castle_map < 16);	// 4 bits, 0..F valid values
 	
 	return castle_keys[castle_map];
 }
@@ -94,6 +94,10 @@ inline U64 get_side_key(){
  * 
  */
 inline U64 get_piece_key(piece_id_t piece, square_t square){
+
+	assert((square >= a1) && (square <= h8));
+	assert((piece >= W_PAWN) && (piece <= B_KING));
+
 	return piece_keys[piece][square];
 }
 
