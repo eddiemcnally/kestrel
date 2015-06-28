@@ -22,7 +22,7 @@
 #include "types.h"
 
 
-#define NO_PIECE	-1
+#define NO_PIECE	(-1)
 
 char get_piece_label(piece_id_t piece);
 

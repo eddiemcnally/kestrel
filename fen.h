@@ -20,6 +20,9 @@
 
 int consume_fen_notation(char *fen_string, board_container_t * board_to_setup);
 
+// starting FEN position
+#define STARTING_FEN 	"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+
 
 #endif
 

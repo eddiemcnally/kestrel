@@ -18,7 +18,9 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <assert.h>
 #include "types.h"
+#include "pieces.h"
 #include "board.h"
 
 /*
@@ -53,80 +55,44 @@ int consume_fen_notation(char *fen_string,
 			int sq = GET_SQUARE(rank, file);
 			char c = *(fen_string++);
 
-			bool added_ok = true;
+			piece_t to_add = NO_PIECE;
+			
 			switch (c) {
-				case 'p':
-					added_ok = add_piece_to_board(board_to_setup, B_PAWN, sq);
-					break;
-				case 'r':
-					added_ok = add_piece_to_board(board_to_setup, B_ROOK, sq);
-					break;
-				case 'n':
-					added_ok = add_piece_to_board(board_to_setup, B_KNIGHT, sq);
-					break;
-				case 'b':
-					added_ok = add_piece_to_board(board_to_setup, B_BISHOP, sq);
-					break;
-				case 'q':
-					added_ok = add_piece_to_board(board_to_setup, B_QUEEN, sq);
-					break;
-				case 'k':
-					added_ok = add_piece_to_board(board_to_setup, B_KING, sq);
-					break;
-				case 'P':
-					added_ok = add_piece_to_board(board_to_setup, W_PAWN, sq);
-					break;
-				case 'R':
-					added_ok = add_piece_to_board(board_to_setup, W_ROOK, sq);
-					break;
-				case 'N':
-					added_ok = add_piece_to_board(board_to_setup, W_KNIGHT, sq);
-					break;
-				case 'B':
-					added_ok = add_piece_to_board(board_to_setup, W_BISHOP, sq);
-					break;
-				case 'Q':
-					added_ok = add_piece_to_board(board_to_setup, W_QUEEN, sq);
-					break;
-				case 'K':
-					added_ok = add_piece_to_board(board_to_setup, W_KING, sq);
-					break;
+				case 'p': to_add = B_PAWN; 		break;
+				case 'r': to_add = B_ROOK; 		break;
+				case 'n': to_add = B_KNIGHT; 	break;
+				case 'b': to_add = B_BISHOP; 	break;
+				case 'q': to_add = B_QUEEN; 	break;
+				case 'k': to_add = B_KING; 		break;
+				case 'P': to_add = W_PAWN; 		break;
+				case 'R': to_add = W_ROOK; 		break;
+				case 'N': to_add = W_KNIGHT; 	break;
+				case 'B': to_add = W_BISHOP; 	break;
+				case 'Q': to_add = W_QUEEN; 	break;
+				case 'K': to_add = W_KING; 		break;
 				case '/':
 					move_to_next_rank = true;
 					rank++;
 					break;
-				case '1':
-					//file++;
-					break;
-				case '2':
-					file += 1;
-					break;
-				case '3':
-					file += 2;
-					break;
-				case '4':
-					file += 3;
-					break;
-				case '5':
-					file += 4;
-					break;
-				case '6':
-					file += 5;
-					break;
-				case '7':
-					file += 6;
-					break;
-				case '8':
-					file += 7;
+				case '1': 
+				case '2': 
+				case '3': 
+				case '4': 
+				case '5': 
+				case '6': 
+				case '7': 
+				case '8': 
+					file += ((c - '0') - 1);
 					break;
 				default:
 					return -1;
 			}
 
-			if (added_ok == false) {
-				printf("Problem adding piece");
-				return -1;
+			if (to_add != NO_PIECE){
+				bool added = add_piece_to_board(board_to_setup, to_add, sq);
+				assert(added == true);
 			}
+
 		}
     }
     return 0;

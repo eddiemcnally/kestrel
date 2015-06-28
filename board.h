@@ -29,14 +29,14 @@
 #define NUM_RANKS 	8
 #define NUM_FILES	8
 
-#define	NO_SQUARE	-1
+#define	NO_SQUARE	(-1)
 
-#define GET_PIECE_MASK(square)		((board_t)(0x01ull << (int)square))
+#define GET_PIECE_MASK(square)		((board_t)(0x01ull << (int)(square)))
 
 
 // zero-based
-#define GET_RANK(square)			(square / 8)
-#define GET_FILE(square)			(square % 8)
+#define GET_RANK(square)			((square) / 8)
+#define GET_FILE(square)			((square) % 8)
 #define GET_SQUARE(RANK, FILE)		((RANK * 8) + FILE)
 
 // castling permissions
@@ -51,8 +51,8 @@ enum {
 //#define	NUM_PIECE_TYPES	12
 
 
-#define IS_WHITE(piece_id_t)		(piece_id_t <= piece_id_t.W_KING)
-#define IS_BLACK(piece_id_t)		(IS_WHITE(piece_id_t) == false)
+#define IS_WHITE(piece)			(piece <= W_KING)
+#define IS_BLACK(piece)			(IS_WHITE(piece) == false)
 
 // offsets into this array are by type piece_id_t 
 static const char pieceToChar[NUM_PIECE_TYPES] = {
