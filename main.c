@@ -24,11 +24,17 @@
 #include "board.h"
 #include "board_utils.h"
 #include "init.h"
+#include "fen.h"
 
 int main(int argc, char **argv)
 {
-	board_container_t * brd = init_game();
-	
-	print_board(brd);
+    
+	board_container_t * the_board = get_clean_board();
+    
+	// this is the initial bpard setup
+    char *test_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    
+	consume_fen_notation(test_fen, the_board);
+    
     return 0;
 }

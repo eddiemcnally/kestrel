@@ -22,6 +22,9 @@
 #include "types.h"
 #include "pieces.h"
 #include "board.h"
+#include "hashkeys.h"
+#include "board_utils.h"
+
 
 /*
  *
@@ -31,12 +34,12 @@
  * 			board * representing the bpard tp be populated
  * @return 	0 = OK, -1 Error
  *
- *
+ * Thanks for BlueFever Software for his youtube videos and this code
  */
  
 int consume_fen_notation(char *fen_string,
 			 board_container_t * board_to_setup){
-
+	
     //example of starting position:
     //              rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
     // 
@@ -49,51 +52,104 @@ int consume_fen_notation(char *fen_string,
     // NOTE: ignore moves, castling, etc, just returns the board
     //
 
-    for (int rank = 7; rank >= 0; rank--) {
-		bool move_to_next_rank = false;
-		for (int file = 0; file <= 7 && move_to_next_rank == false; file++) {
-			int sq = GET_SQUARE(rank, file);
-			char c = *(fen_string++);
+	int rank = RANK8;
+	int file = FILE_A;
+	int count = 0;
+	
+	while((rank >= RANK1) && *fen_string){
+	    piece_t piece_to_add = NO_PIECE;
+		count = 1;
+		
+		switch (*fen_string) {
+			case 'p': piece_to_add = B_PAWN; 	break;
+			case 'r': piece_to_add = B_ROOK; 	break;
+			case 'n': piece_to_add = B_KNIGHT;break;
+			case 'b': piece_to_add = B_BISHOP;break;
+			case 'q': piece_to_add = B_QUEEN; break;
+			case 'k': piece_to_add = B_KING; 	break;
+			case 'P': piece_to_add = W_PAWN; 	break;
+			case 'R': piece_to_add = W_ROOK; 	break;
+			case 'N': piece_to_add = W_KNIGHT;break;
+			case 'B': piece_to_add = W_BISHOP;break;
+			case 'Q': piece_to_add = W_QUEEN; break;
+			case 'K': piece_to_add = W_KING; 	break;
+	
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+                count = (*fen_string) - '0';
+                break;
 
-			piece_t to_add = NO_PIECE;
-			
-			switch (c) {
-				case 'p': to_add = B_PAWN; 	break;
-				case 'r': to_add = B_ROOK; 	break;
-				case 'n': to_add = B_KNIGHT;break;
-				case 'b': to_add = B_BISHOP;break;
-				case 'q': to_add = B_QUEEN; break;
-				case 'k': to_add = B_KING; 	break;
-				case 'P': to_add = W_PAWN; 	break;
-				case 'R': to_add = W_ROOK; 	break;
-				case 'N': to_add = W_KNIGHT;break;
-				case 'B': to_add = W_BISHOP;break;
-				case 'Q': to_add = W_QUEEN; break;
-				case 'K': to_add = W_KING; 	break;
-				case '/':
-					move_to_next_rank = true;
-					rank++;
-					break;
-				case '1': 
-				case '2': 
-				case '3': 
-				case '4': 
-				case '5': 
-				case '6': 
-				case '7': 
-				case '8': 
-					file += ((c - '0') - 1);
-					break;
-				default:
-					return -1;
-			}
+            case '/':
+            case ' ':
+                rank--;
+                file = FILE_A;
+                fen_string++;
+                continue;              
 
-			if (to_add != NO_PIECE){
-				bool added = add_piece_to_board(board_to_setup, to_add, sq);
-				assert(added == true);
-			}
+            default:
+                printf("FEN error \n");
+                return -1;
+        }		
+		
+		for (int i = 0; i < count; i++) {			
+            if (piece_to_add != NO_PIECE) {
+				int sq = GET_SQUARE(rank, file);
+				add_piece_to_board(board_to_setup, piece_to_add, sq);
+				
+				//print_board(board_to_setup);
+            }
+			file++;
+        }	
+		
+		fen_string++;
+	}
+	
+    //assert((*fen_string == 'w') || (*fen_string == 'b'));
+    
+    if (*fen_string == 'w'){
+		board_to_setup->side_to_move = WHITE;
+	} else{
+		board_to_setup->side_to_move = BLACK;
+	}
+    
+    // skip 'w' or 'b', and the next space
+    fen_string += 2;
+    
+    for(int i = 0; i < 4; i++){
+		if (*fen_string == ' '){
+			break;
 		}
-    }
+		
+		switch(*fen_string){
+			case'K': board_to_setup->castle_perm |= WKCA; break; 
+			case'Q': board_to_setup->castle_perm |= WQCA; break; 
+			case'k': board_to_setup->castle_perm |= BKCA; break; 
+			case'q': board_to_setup->castle_perm |= BQCA; break; 
+			default: break;
+		}
+		fen_string++;		
+	}
+	
+	fen_string++;
+	
+	if (*fen_string != '-'){
+		// en passant square present
+		file = fen_string[0] - 'a';
+		rank = fen_string[1] - '1';
+		
+		board_to_setup->en_passant = GET_SQUARE(rank, file);
+	} else{
+		board_to_setup->en_passant = NO_SQUARE;
+	}
+    
+    board_to_setup->position_key = get_position_hashkey(board_to_setup);
+        
     return 0;
 }
 

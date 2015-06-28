@@ -331,10 +331,10 @@ inline U8 count_bits(board_t bb){
  * 
  */
 inline U8 pop_1st_bit(board_t *bb) {
-  board_t b = *bb ^ (*bb - 1);
-  unsigned int fold = (unsigned) ((b & 0xffffffff) ^ (b >> 32));
-  *bb &= (*bb - 1);
-  return BitTable[(fold * 0x783a9b23) >> 26];
+	board_t b = *bb ^ (*bb - 1);
+	unsigned int fold = (unsigned) ((b & 0xffffffff) ^ (b >> 32));
+	*bb &= (*bb - 1);
+	return BitTable[(fold * 0x783a9b23) >> 26];
 }
 
 

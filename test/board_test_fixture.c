@@ -148,8 +148,6 @@ void test_initial_board_placement()
 	//print_board(the_board);
 	
 	// verify the board
-	// NOTE: This code is cut/paste from above, to make it easier tp
-	// find out what tests are failing
 	assert_true(W_ROOK == get_piece_at_square(the_board, a1));
 	assert_true(W_KNIGHT == get_piece_at_square(the_board, b1));
 	assert_true(W_BISHOP == get_piece_at_square(the_board, c1));
@@ -166,27 +164,34 @@ void test_initial_board_placement()
 	assert_true(W_PAWN == get_piece_at_square(the_board, f2));
 	assert_true(W_PAWN == get_piece_at_square(the_board, g2));
 	assert_true(W_PAWN == get_piece_at_square(the_board, h2));
-    assert_true(B_PAWN == get_piece_at_square(the_board, a7));
-assert_true(B_PAWN == get_piece_at_square(the_board, b7));
-assert_true(B_PAWN == get_piece_at_square(the_board, c7));
-assert_true(B_PAWN == get_piece_at_square(the_board, d7));
-assert_true(B_PAWN == get_piece_at_square(the_board, e7));
-assert_true(B_PAWN == get_piece_at_square(the_board, f7));
-assert_true(B_PAWN == get_piece_at_square(the_board, g7));
-assert_true(B_PAWN == get_piece_at_square(the_board, h7));
-assert_true(B_ROOK == get_piece_at_square(the_board, a8));
-assert_true(B_KNIGHT == get_piece_at_square(the_board, b8));
-assert_true(B_BISHOP == get_piece_at_square(the_board, c8));
-assert_true(B_QUEEN == get_piece_at_square(the_board, d8));
-assert_true(B_KING == get_piece_at_square(the_board, e8));
-assert_true(B_BISHOP == get_piece_at_square(the_board, f8));
-assert_true(B_KNIGHT == get_piece_at_square(the_board, g8));
-assert_true(B_ROOK == get_piece_at_square(the_board, h8));
+    	assert_true(B_PAWN == get_piece_at_square(the_board, a7));
+	assert_true(B_PAWN == get_piece_at_square(the_board, b7));
+	assert_true(B_PAWN == get_piece_at_square(the_board, c7));
+	assert_true(B_PAWN == get_piece_at_square(the_board, d7));
+	assert_true(B_PAWN == get_piece_at_square(the_board, e7));
+	assert_true(B_PAWN == get_piece_at_square(the_board, f7));
+	assert_true(B_PAWN == get_piece_at_square(the_board, g7));
+	assert_true(B_PAWN == get_piece_at_square(the_board, h7));
+		assert_true(B_ROOK == get_piece_at_square(the_board, a8));
+	assert_true(B_KNIGHT == get_piece_at_square(the_board, b8));
+	assert_true(B_BISHOP == get_piece_at_square(the_board, c8));
+	assert_true(B_QUEEN == get_piece_at_square(the_board, d8));
+	assert_true(B_KING == get_piece_at_square(the_board, e8));
+	assert_true(B_BISHOP == get_piece_at_square(the_board, f8));
+	assert_true(B_KNIGHT == get_piece_at_square(the_board, g8));
+	assert_true(B_ROOK == get_piece_at_square(the_board, h8));
     
 	// no piece present
 	for (int i = a3; i < h6; i++) {
 		assert_true(-1 == get_piece_at_square(the_board, i));
-	} } void test_fen_parsing_general_layout_1()
+	} 
+	
+	assert_true(the_board->side_to_move == WHITE);
+	
+	assert_true(the_board->castle_perm == (WKCA | WQCA | BKCA | BQCA));
+	
+	assert_true(the_board->en_passant == NO_SQUARE);
+	} void test_fen_parsing_general_layout_1()
 {
     	board_container_t * the_board = get_clean_board();
     
@@ -200,76 +205,67 @@ assert_true(B_ROOK == get_piece_at_square(the_board, h8));
 	assert_true(B_KING == get_piece_at_square(the_board, a8));
 	assert_true(W_KNIGHT == get_piece_at_square(the_board, e5));
 	assert_true(W_KING == get_piece_at_square(the_board, d1));
-} void test_fen_parsing_general_layout_2()
+
+	assert_true(the_board->side_to_move == BLACK);
+	
+	assert_true(the_board->castle_perm == 0);
+	
+	assert_true(the_board->en_passant == NO_SQUARE);
+} 
+void test_fen_parsing_general_layout_2()
 {
-    	board_container_t * the_board = get_clean_board();
+    board_container_t * the_board = get_clean_board();
     
+
 	// this is the initial board setup
-    char *test_fen ="r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R";
-    	consume_fen_notation(test_fen, the_board);
+    char *test_fen = "rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2";
+    
+
+	consume_fen_notation(test_fen, the_board);
+    
 
 	//print_board(the_board);
+	
+	// verify the board
 	assert_true(W_ROOK == get_piece_at_square(the_board, a1));
 	assert_true(W_KNIGHT == get_piece_at_square(the_board, b1));
 	assert_true(W_BISHOP == get_piece_at_square(the_board, c1));
 	assert_true(W_QUEEN == get_piece_at_square(the_board, d1));
 	assert_true(W_KING == get_piece_at_square(the_board, e1));
+	assert_true(W_BISHOP == get_piece_at_square(the_board, f1));
+
 	assert_true(W_ROOK == get_piece_at_square(the_board, h1));
-	assert_true(W_PAWN == get_piece_at_square(the_board, a2));
+		
+
+	assert_true(W_PAWN == get_piece_at_square(the_board, a2));
 	assert_true(W_PAWN == get_piece_at_square(the_board, b2));
-	assert_true(W_PAWN == get_piece_at_square(the_board, c2));
 	assert_true(W_PAWN == get_piece_at_square(the_board, d2));
 	assert_true(W_PAWN == get_piece_at_square(the_board, f2));
 	assert_true(W_PAWN == get_piece_at_square(the_board, g2));
 	assert_true(W_PAWN == get_piece_at_square(the_board, h2));
-			assert_true(B_PAWN == get_piece_at_square(the_board, a7));
+    
+	assert_true(B_PAWN == get_piece_at_square(the_board, a7));
 	assert_true(B_PAWN == get_piece_at_square(the_board, b7));
-	assert_true(B_PAWN == get_piece_at_square(the_board, c7));
 	assert_true(B_PAWN == get_piece_at_square(the_board, d7));
 	assert_true(B_PAWN == get_piece_at_square(the_board, f7));
 	assert_true(B_PAWN == get_piece_at_square(the_board, g7));
 	assert_true(B_PAWN == get_piece_at_square(the_board, h7));
+	
 	assert_true(B_ROOK == get_piece_at_square(the_board, a8));
+	assert_true(B_KNIGHT == get_piece_at_square(the_board, b8));
 	assert_true(B_BISHOP == get_piece_at_square(the_board, c8));
 	assert_true(B_QUEEN == get_piece_at_square(the_board, d8));
 	assert_true(B_KING == get_piece_at_square(the_board, e8));
 	assert_true(B_BISHOP == get_piece_at_square(the_board, f8));
-	assert_true(B_KNIGHT == get_piece_at_square(the_board, g8));
 	assert_true(B_ROOK == get_piece_at_square(the_board, h8));
-} void test_fen_parsing_general_layout_3()
-{
-    	board_container_t * the_board = get_clean_board();
-    
-	// this is the initial board setup
-    char *test_fen = "r1bq1rk1/pp3ppp/3n4/2p1N3/2B5/7P/PPP2PP1/R1BQR1K1";
-    	consume_fen_notation(test_fen, the_board);
-    
-	//print_board(the_board);
-		assert_true(W_ROOK == get_piece_at_square(the_board, a1));
-	assert_true(W_BISHOP == get_piece_at_square(the_board, c1));
-	assert_true(W_QUEEN == get_piece_at_square(the_board, d1));
-	assert_true(W_ROOK == get_piece_at_square(the_board, e1));
-	assert_true(W_KING == get_piece_at_square(the_board, g1));
-	assert_true(W_PAWN == get_piece_at_square(the_board, a2));
-	assert_true(W_PAWN == get_piece_at_square(the_board, b2));
-	assert_true(W_PAWN == get_piece_at_square(the_board, c2));
-	assert_true(W_PAWN == get_piece_at_square(the_board, f2));
-	assert_true(W_PAWN == get_piece_at_square(the_board, g2));
-	assert_true(W_BISHOP == get_piece_at_square(the_board, c4));
-	assert_true(B_PAWN == get_piece_at_square(the_board, c5));
-	assert_true(W_KNIGHT == get_piece_at_square(the_board, e5));
-	assert_true(B_KNIGHT == get_piece_at_square(the_board, d6));
-			assert_true(B_PAWN == get_piece_at_square(the_board, a7));
-	assert_true(B_PAWN == get_piece_at_square(the_board, b7));
-	assert_true(B_PAWN == get_piece_at_square(the_board, f7));
-	assert_true(B_PAWN == get_piece_at_square(the_board, g7));
-	assert_true(B_PAWN == get_piece_at_square(the_board, h7));
-	assert_true(B_ROOK == get_piece_at_square(the_board, a8));
-	assert_true(B_BISHOP == get_piece_at_square(the_board, c8));
-	assert_true(B_QUEEN == get_piece_at_square(the_board, d8));
-	assert_true(B_ROOK == get_piece_at_square(the_board, f8));
-	assert_true(B_KING == get_piece_at_square(the_board, g8));
-} void test_white_occupancy_map()
+
+	assert_true(the_board->side_to_move == BLACK);
+	
+	assert_true(the_board->castle_perm == (WKCA | WQCA | BKCA | BQCA));
+	
+	assert_true(the_board->en_passant == NO_SQUARE);
+} 
+void test_white_occupancy_map()
 {
     board_container_t *board = get_clean_board();
     	add_piece_to_board(board, W_PAWN, a3);
@@ -411,7 +407,6 @@ void test_LSB_clear(){
 			run_test(test_fen_parsing_initial_board_layout);
 	run_test(test_fen_parsing_general_layout_1);
 	run_test(test_fen_parsing_general_layout_2);
-	run_test(test_fen_parsing_general_layout_3);
 	run_test(test_white_occupancy_map);
 	run_test(test_black_occupancy_map);
 

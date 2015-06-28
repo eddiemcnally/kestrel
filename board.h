@@ -29,6 +29,16 @@
 #define NUM_RANKS 	8
 #define NUM_FILES	8
 
+enum {
+	RANK1, RANK2, RANK3, RANK4, RANK5, RANK6, RANK7, RANK8
+};
+
+enum {
+	FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H
+};
+
+
+
 #define	NO_SQUARE	(-1)
 
 #define GET_PIECE_MASK(square)		((board_t)(0x01ull << (int)(square)))
@@ -41,10 +51,10 @@
 
 // castling permissions
 enum {
-	WKCA = 1,	// white, king-side
-	WQCA = 2,	// white, queen-side
-	BKCA = 4,	// black, king-side
-	BQCA = 8	// black, queen-side
+	WKCA = 0x01,	// white, king-side
+	WQCA = 0x02,	// white, queen-side
+	BKCA = 0x04,	// black, king-side
+	BQCA = 0x08		// black, queen-side
 };
 
 
