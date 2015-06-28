@@ -26,18 +26,12 @@
 
 #define	BOARD_EMPTY	((board_t)0x0ull)
 
-
-
-
 #define NUM_RANKS 	8
 #define NUM_FILES	8
 
-
 #define	NO_SQUARE	-1
 
-
 #define GET_PIECE_MASK(square)		((board_t)(0x01ull << (int)square))
-
 
 
 // zero-based

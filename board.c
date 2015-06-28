@@ -92,9 +92,16 @@ board_container_t * init_board(){
 	brd->castle_perm = (WQCA | WKCA | BQCA | BKCA);
 
 	brd->position_key = get_position_hashkey(brd);
-	printf("0x%016llx\n", brd->position_key);
+	//printf("0x%016llx\n", brd->position_key);
 
-	
+	for(int i = 0; i < MAX_GAME_MOVES;i++){
+		brd->history[i].castle_perm = 0;
+		brd->history[i].en_passant = 0;
+		brd->history[i].fifty_move_counter = 0;
+		brd->history[i].position_key = 0;
+	}
+
+
 	return brd;
 }
 
@@ -224,18 +231,20 @@ inline void overlay_boards(board_container_t * the_board)
 inline piece_id_t get_piece_at_square(board_container_t * the_board,
 			       square_t square)
 {
+	// TODO - possibly replace this with a cache lookup on a new board array
+	
+	
 	// quick check to see if square occupied
 	if (check_bit(&the_board->board, square)){
 		// it is, so find the piece type
-		board_t the_piece = GET_PIECE_MASK(square);
+		board_t piece_mask = GET_PIECE_MASK(square);
 
-		for (int i = 0; i < NUM_PIECE_TYPES; i++) {
-			board_t brd = the_board->piece_boards[i];
+		for (int pce = 0; pce < NUM_PIECE_TYPES; pce++) {
+			board_t brd = the_board->piece_boards[pce];
 
-			piece_id_t piece = (piece_id_t) i;
-			if ((brd & the_piece) != 0) {
+			if ((brd & piece_mask) != 0) {
 				// found it
-				return piece;
+				return pce;
 			}
 		}
 	} 
@@ -327,7 +336,7 @@ inline bool is_square_occupied(board_t board, square_t square)
     return false;
 }
 
-
+// returns a board with all white pieces
 inline board_t get_white_occupancy_map(board_container_t * the_board)
 {
     return the_board->piece_boards[W_PAWN]
@@ -338,7 +347,7 @@ inline board_t get_white_occupancy_map(board_container_t * the_board)
 				| the_board->piece_boards[W_KING];
 }
 
-
+// returns a board with all black pieces
 inline board_t get_black_occupancy_map(board_container_t * the_board)
 {
     return the_board->piece_boards[B_PAWN]

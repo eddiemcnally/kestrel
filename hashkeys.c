@@ -35,7 +35,7 @@ U64 get_piece_key(piece_id_t piece, square_t square);
 //----- hashkeys for positions
 U64 piece_keys[NUM_PIECE_TYPES][NUM_SQUARES];
 U64 side_to_move_key;
-U64 castle_keys[16];	// 16 because of 4 bits being used for castle enum
+U64 castle_keys[16];	// 16 combinations because of 4 bits being used for castle enum
 //-----
 
 /*
