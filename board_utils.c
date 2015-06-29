@@ -26,41 +26,75 @@
 
 
 
+/* Pretty-prints the board
+ * 
+ * name: print_board
+ * @param: a board
+ * @return : void
+ * 
+ */
 
+// char arrays to suport printing
+const char ranks[] 	= "12345678";
+const char files[] 	= "abcdefgh";
+
+/**
+ * Thanks again to Bluefever Software for this code
+ */
 void print_board(board_container_t * the_board)
 {
 
-    char brd[8][8];
-
-    for (int i = 0; i < 8; i++) {
-		for (int j = 0; j < 8; j++) {
-			brd[i][j] = '-';
-		}
-    }
-
-
-    for (int rank = 0; rank < 8; rank++) {
-		for (int file = 0; file < 8; file++) {
-
-			square_t square = (rank * 8) + file;
-
-			piece_t piece = get_piece_at_square(the_board, square);
-			if (piece >= 0) {
-				char pce = get_piece_label(piece);
-				brd[rank][file] = pce;
+	//int sq,piece;
+	
+	printf("\nGame Board:\n\n");
+	
+	for(int rank = RANK8; rank >= RANK1; rank--) {
+		printf("%d  ",rank+1);	// enum is zero-based
+		for(int file = FILE_A; file <= FILE_H; file++) {
+			square_t sq = GET_SQUARE(rank, file);
+			piece_t pce = get_piece_at_square(the_board, sq);
+			if (pce != NO_PIECE){
+				char c = get_piece_label(pce);
+				printf("%3c", c);
+			} else {
+				printf("  -");
 			}
 		}
-    }
+		printf("\n");
+	}
+	
+	printf("\n   ");
+	for(int file = FILE_A; file <= FILE_H; file++) {
+		printf("%3c",'a'+file);	
+	}
+	printf("\n\n");
+	char side;
+	if (the_board->side_to_move == WHITE){
+		side = 'w';
+	} else {
+		side = 'b';
+	}
+	printf("side:\t%c\n", side);
+	
+	if (the_board->en_passant == -1){
+		printf("enPas:\t-\n");
+	}
+	else{
+		int rank = GET_RANK(the_board->en_passant);
+		int file = GET_FILE(the_board->en_passant);
+		printf("enPas:\t%c%c\n", files[file], ranks[rank]);
+	}
 
-	printf("\n\r");
-    for (int rank = 7; rank >= 0; rank--) {
-		for (int file = 0; file <= 7; file++) {
-			printf("%c", brd[rank][file]);
-		}
-		printf("\n\r");
-    }
-    printf("\n\r");
+	printf("castle:\t%c%c%c%c\n",
+			(the_board->castle_perm & WKCA) ? 'K' : '-',
+			(the_board->castle_perm & WQCA) ? 'Q' : '-',
+			(the_board->castle_perm & BKCA) ? 'k' : '-',
+			(the_board->castle_perm & BQCA) ? 'q' : '-'	
+			);
+	printf("PosKey:\t0x%016llx\n",the_board->position_key);
 
+	printf("\n\n");
+	
 }
 
 

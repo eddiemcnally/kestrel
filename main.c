@@ -26,15 +26,29 @@
 #include "init.h"
 #include "fen.h"
 
+
+#define FEN1 	"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+#define FEN2  	"rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"
+#define FEN3	"rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2"
+
 int main(int argc, char **argv)
 {
-    
+	init_hash_keys();
+	
+	
 	board_container_t * the_board = get_clean_board();
+    consume_fen_notation(FEN1, the_board);
+    print_board(the_board);
     
-	// this is the initial bpard setup
-    char *test_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     
-	consume_fen_notation(test_fen, the_board);
+	the_board = get_clean_board();
+    consume_fen_notation(FEN2, the_board);
+    print_board(the_board);
+    
+    
+	the_board = get_clean_board();
+    consume_fen_notation(FEN3, the_board);
+    print_board(the_board);
     
     return 0;
 }

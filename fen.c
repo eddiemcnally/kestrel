@@ -46,12 +46,6 @@ int consume_fen_notation(char *fen_string,
     // definition of FEN notation: 
     //              https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
 
-    // TODO:
-    // - load moves, state, etc
-    // 
-    // NOTE: ignore moves, castling, etc, just returns the board
-    //
-
 	int rank = RANK8;
 	int file = FILE_A;
 	int count = 0;
@@ -63,15 +57,15 @@ int consume_fen_notation(char *fen_string,
 		switch (*fen_string) {
 			case 'p': piece_to_add = B_PAWN; 	break;
 			case 'r': piece_to_add = B_ROOK; 	break;
-			case 'n': piece_to_add = B_KNIGHT;break;
-			case 'b': piece_to_add = B_BISHOP;break;
-			case 'q': piece_to_add = B_QUEEN; break;
+			case 'n': piece_to_add = B_KNIGHT;	break;
+			case 'b': piece_to_add = B_BISHOP;	break;
+			case 'q': piece_to_add = B_QUEEN; 	break;
 			case 'k': piece_to_add = B_KING; 	break;
 			case 'P': piece_to_add = W_PAWN; 	break;
 			case 'R': piece_to_add = W_ROOK; 	break;
-			case 'N': piece_to_add = W_KNIGHT;break;
-			case 'B': piece_to_add = W_BISHOP;break;
-			case 'Q': piece_to_add = W_QUEEN; break;
+			case 'N': piece_to_add = W_KNIGHT;	break;
+			case 'B': piece_to_add = W_BISHOP;	break;
+			case 'Q': piece_to_add = W_QUEEN; 	break;
 			case 'K': piece_to_add = W_KING; 	break;
 	
             case '1':

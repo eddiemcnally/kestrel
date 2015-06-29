@@ -19,10 +19,10 @@
 #define _HASHKEYS_H_
 
 // generates a 64bit randon number
-#define RAND64	( 	(U64)rand() + \
-					((U64)rand() << 15) + \
-					((U64)rand() << 30) + \
-					((U64)rand() << 45) + \
+#define RAND64	( 	(U64)rand() | \
+					((U64)rand() << 15) | \
+					((U64)rand() << 30) | \
+					((U64)rand() << 45) | \
 					(((U64)rand() & 0x0F) << 60)   )
 
 void init_hash_keys();
