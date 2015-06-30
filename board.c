@@ -95,7 +95,7 @@ board_container_t * init_board(){
 	brd->castle_perm = (WQCA | WKCA | BQCA | BKCA);
 
 	brd->position_key = get_position_hashkey(brd);
-	//printf("0x%016llx\n", brd->position_key);
+	//printf("******* 0x%016llx\n", brd->position_key);
 
 	for(int i = 0; i < MAX_GAME_MOVES;i++){
 		brd->history[i].castle_perm = 0;

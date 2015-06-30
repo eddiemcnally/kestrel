@@ -73,7 +73,7 @@ void test_initial_board_placement()
 	}
 	
 	
-	// now verify remainder of struct is populate
+	// now verify remainder of struct is populated
 	assert_true(the_board->king_squares[WHITE] == e5);
 	assert_true(the_board->king_squares[BLACK] == e8);
 	
