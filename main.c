@@ -23,6 +23,7 @@
 #include "types.h"
 #include "board.h"
 #include "board_utils.h"
+#include "hashkeys.h"
 #include "init.h"
 #include "fen.h"
 

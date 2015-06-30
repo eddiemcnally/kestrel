@@ -42,6 +42,8 @@ const U8 BitTable[64] = {
 };
 
 
+
+
 /*
  * Creates and initialises a new board. The default starting piece 
  * positions are populated.
@@ -153,6 +155,35 @@ void reset_board_to_init_position(board_container_t * board_to_reset){
     
     
 }
+
+void update_piece_material(board_container_t * brd) {	
+	
+	for(square_t sq; sq < NUM_SQUARES; sq++) {
+		piece_id_t pce = get_piece_at_square(brd, sq);
+		if (pce != NO_PIECE){
+			colour_t colour = get_colour(pce);
+			
+			if (IS_BIG_PIECE(pce))
+				brd->big_pieces[colour]++;
+			if (IS_MINOR_PIECE(pce))
+				brd->minor_pieces[colour]++;
+			if (IS_MAJOR_PIECE(pce))
+				brd->major_pieces[colour]++;
+
+			brd->material[colour] += piece_values[pce];
+			brd->pce_num[pce]++;
+			
+			if(pce == W_KING) brd->king_squares[WHITE] = sq;
+			if(pce == B_KING) brd->king_squares[BLACK] = sq;
+			
+		}
+	}
+
+}
+
+
+
+
 
 /*
  * name: clear_board

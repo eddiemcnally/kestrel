@@ -54,6 +54,23 @@ typedef enum {
     NUM_PIECE_TYPES = 12
 } piece_id_t;
 
+// piece values, indexed into using the piece_id_t enum
+static const int piece_values[NUM_PIECE_TYPES]= {  	
+										100,  		// PAWN
+										550, 		// ROOK
+										325, 		// BISHOP
+										325, 		// KNIGHT
+										1000, 		// QUEEN
+										50000, 		// KING
+										100, 		// PAWN
+										325, 		// BISHOP
+										325, 		// KNIGHT
+										550, 		// ROOK
+										1000, 		// QUEEN
+										50000		// KING  
+										};				
+
+
 
 typedef char piece_t;
 
@@ -123,8 +140,14 @@ typedef struct {
 	// indexed by colour_t, contains number of BISHOPs and KNIGHTs
 	U8 minor_pieces[2];
 
+	// indexed by colour_t, contains sum of all piece values
+	U8 material[2];
+
 	// castling permissions
 	U8 castle_perm;
+	// a count of the number of each piece (10 is to account for 
+	// all pawns promoting to either bishops, knights or rooks)
+	int piece_list[NUM_PIECE_TYPES][10];
 
 	// move history
 	undo_t history[MAX_GAME_MOVES];

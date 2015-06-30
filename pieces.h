@@ -25,7 +25,7 @@
 #define NO_PIECE	(-1)
 
 char get_piece_label(piece_id_t piece);
-
+colour_t get_colour(piece_id_t piece);
 
 
 #endif

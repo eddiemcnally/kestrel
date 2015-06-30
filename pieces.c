@@ -30,3 +30,11 @@ inline char get_piece_label(piece_id_t piece)
 {
     return pieceToChar[piece];
 }
+
+
+inline colour_t get_colour(piece_id_t piece){
+	if (IS_WHITE(piece))
+		return WHITE;
+	return BLACK;	
+}
+

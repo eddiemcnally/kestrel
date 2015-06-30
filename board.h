@@ -39,6 +39,9 @@ enum {
 
 
 
+
+
+
 #define	NO_SQUARE	(-1)
 
 #define GET_PIECE_MASK(square)		((board_t)(0x01ull << (int)(square)))
@@ -64,6 +67,9 @@ enum {
 #define IS_WHITE(piece)			(piece <= W_KING)
 #define IS_BLACK(piece)			(IS_WHITE(piece) == false)
 
+
+
+
 // offsets into this array are by type piece_id_t 
 static const char pieceToChar[NUM_PIECE_TYPES] = {
     'P', 'R', 'N', 'B', 'Q', 'K', 'p', 'r', 'n', 'b', 'q', 'k'
@@ -73,6 +79,22 @@ static const char pieceToChar[NUM_PIECE_TYPES] = {
 // some shortcut macros
 #define POP(bb)			pop_1st_bit(bb)
 #define	CNT(bb)			count_bits(bb)
+
+
+
+// indicates if a given piece is anything other than a PAWN
+#define IS_BIG_PIECE(piece)		((piece != W_PAWN) && (piece != B_PAWN))
+
+// indicates if a given piece is either a ROOK or QUEEN
+#define IS_MAJOR_PIECE(piece)	((piece == W_ROOK) || (piece == W_QUEEN) || (piece == B_ROOK) || (piece == B_QUEEN))
+
+// indicates if a given piece is either a BISHOP or KNIGHT
+#define IS_MINOR_PIECE(piece)	((piece == W_BISHOP) || (piece == W_KNIGHT) || (piece == B_BISHOP) || (piece == B_KNIGHT))
+
+
+
+
+
 
 
 board_container_t * init_board();
@@ -87,7 +109,7 @@ void clear_bit(board_t * brd, square_t sq);
 bool check_bit(board_t * brd, square_t sq);
 U8 count_bits(board_t bb);
 U8 pop_1st_bit(board_t *bb);
-
+void update_piece_material(board_container_t * brd);
 
 
 #endif
