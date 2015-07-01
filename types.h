@@ -72,10 +72,9 @@ static const int piece_values[NUM_PIECE_TYPES]= {
 
 
 
-typedef char piece_t;
 
-typedef unsigned long long board_t;
 
+typedef unsigned long long 	board_t;
 typedef unsigned char 			U8;
 typedef unsigned long long 		U64;
 
@@ -145,6 +144,7 @@ typedef struct {
 
 	// castling permissions
 	U8 castle_perm;
+	
 	// a count of the number of each piece (10 is to account for 
 	// all pawns promoting to either bishops, knights or rooks)
 	int piece_list[NUM_PIECE_TYPES][10];

@@ -24,6 +24,8 @@
 #include "pieces.h"
 
 
+typedef char piece_t;
+
 
 
 /* Pretty-prints the board

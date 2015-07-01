@@ -51,7 +51,7 @@ int consume_fen_notation(char *fen_string,
 	int count = 0;
 	
 	while((rank >= RANK1) && *fen_string){
-	    piece_t piece_to_add = NO_PIECE;
+	    piece_id_t piece_to_add = NO_PIECE;
 		count = 1;
 		
 		switch (*fen_string) {
