@@ -46,11 +46,11 @@ int consume_fen_notation(char *fen_string,
     // definition of FEN notation: 
     //              https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
 
-	int rank = RANK8;
+	int rank = RANK_8;
 	int file = FILE_A;
 	int count = 0;
 	
-	while((rank >= RANK1) && *fen_string){
+	while((rank >= RANK_1) && *fen_string){
 	    piece_id_t piece_to_add = NO_PIECE;
 		count = 1;
 		

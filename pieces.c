@@ -23,6 +23,13 @@
 #include "board.h"
 #include "pieces.h"
 
+
+// offsets into this array are by type piece_id_t 
+const char pieceToChar[NUM_PIECE_TYPES] = {
+    'P', 'R', 'N', 'B', 'Q', 'K', 'p', 'r', 'n', 'b', 'q', 'k'
+};
+
+
 /**
  * Takes a typed piece and returns a human-readable representation
  */

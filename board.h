@@ -30,7 +30,7 @@
 #define NUM_FILES	8
 
 enum {
-	RANK1, RANK2, RANK3, RANK4, RANK5, RANK6, RANK7, RANK8
+	RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8
 };
 
 enum {
@@ -61,19 +61,12 @@ enum {
 };
 
 
-//#define	NUM_PIECE_TYPES	12
-
 
 #define IS_WHITE(piece)			(piece <= W_KING)
 #define IS_BLACK(piece)			(IS_WHITE(piece) == false)
 
 
 
-
-// offsets into this array are by type piece_id_t 
-static const char pieceToChar[NUM_PIECE_TYPES] = {
-    'P', 'R', 'N', 'B', 'Q', 'K', 'p', 'r', 'n', 'b', 'q', 'k'
-};
 
 
 // some shortcut macros

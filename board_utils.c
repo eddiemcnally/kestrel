@@ -50,7 +50,7 @@ void print_board(board_container_t * the_board)
 	
 	printf("\nGame Board:\n\n");
 	
-	for(int rank = RANK8; rank >= RANK1; rank--) {
+	for(int rank = RANK_8; rank >= RANK_1; rank--) {
 		printf("%d  ",rank+1);	// enum is zero-based
 		for(int file = FILE_A; file <= FILE_H; file++) {
 			square_t sq = GET_SQUARE(rank, file);
