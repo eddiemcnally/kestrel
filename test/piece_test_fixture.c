@@ -2,12 +2,12 @@
  * piece_test_fixture.c
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
- * Chess is free software: you can redistribute it and/or modify it
+ * kestrel is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * Chess is distributed in the hope that it will be useful, but
+ * kestrel is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
@@ -57,20 +57,20 @@ void test_piece_colour_macro(){
 	assert_true(true == IS_WHITE(W_KING));
 	assert_true(true == IS_WHITE(W_QUEEN));
 
-	assert_false(true == IS_WHITE(B_PAWN));
-	assert_false(true == IS_WHITE(B_ROOK));
-	assert_false(true == IS_WHITE(B_BISHOP));
-	assert_false(true == IS_WHITE(B_KNIGHT));
-	assert_false(true == IS_WHITE(B_KING));
-	assert_false(true == IS_WHITE(B_QUEEN));
+	assert_true(false == IS_WHITE(B_PAWN));
+	assert_true(false == IS_WHITE(B_ROOK));
+	assert_true(false == IS_WHITE(B_BISHOP));
+	assert_true(false == IS_WHITE(B_KNIGHT));
+	assert_true(false == IS_WHITE(B_KING));
+	assert_true(false == IS_WHITE(B_QUEEN));
 
 
-	assert_false(true == IS_BLACK(W_PAWN));
-	assert_false(true == IS_BLACK(W_ROOK));
-	assert_false(true == IS_BLACK(W_BISHOP));
-	assert_false(true == IS_BLACK(W_KNIGHT));
-	assert_false(true == IS_BLACK(W_KING));
-	assert_false(true == IS_BLACK(W_QUEEN));
+	assert_true(false == IS_BLACK(W_PAWN));
+	assert_true(false == IS_BLACK(W_ROOK));
+	assert_true(false == IS_BLACK(W_BISHOP));
+	assert_true(false == IS_BLACK(W_KNIGHT));
+	assert_true(false == IS_BLACK(W_KING));
+	assert_true(false == IS_BLACK(W_QUEEN));
 
 	assert_true(true == IS_BLACK(B_PAWN));
 	assert_true(true == IS_BLACK(B_ROOK));
@@ -79,6 +79,64 @@ void test_piece_colour_macro(){
 	assert_true(true == IS_BLACK(B_KING));
 	assert_true(true == IS_BLACK(B_QUEEN));	
 }
+
+
+
+void test_piece_classification_IS_BIG_PIECE(){
+	assert_true(IS_BIG_PIECE(W_PAWN) 	== false);
+	assert_true(IS_BIG_PIECE(B_PAWN) 	== false);
+	
+	assert_true(IS_BIG_PIECE(W_ROOK) 	== true);
+	assert_true(IS_BIG_PIECE(W_BISHOP) 	== true);
+	assert_true(IS_BIG_PIECE(W_KNIGHT) 	== true);
+	assert_true(IS_BIG_PIECE(W_QUEEN) 	== true);
+	assert_true(IS_BIG_PIECE(W_KING) 	== true);
+
+	assert_true(IS_BIG_PIECE(B_ROOK) 	== true);
+	assert_true(IS_BIG_PIECE(B_BISHOP) 	== true);
+	assert_true(IS_BIG_PIECE(B_KNIGHT) 	== true);
+	assert_true(IS_BIG_PIECE(B_QUEEN) 	== true);
+	assert_true(IS_BIG_PIECE(B_KING) 	== true);
+
+}
+
+void test_piece_classification_IS_MAJOR_PIECE(){
+	
+	assert_true(IS_MAJOR_PIECE(W_PAWN)		== false);
+	assert_true(IS_MAJOR_PIECE(B_PAWN)		== false);
+	assert_true(IS_MAJOR_PIECE(W_BISHOP)	== false);
+	assert_true(IS_MAJOR_PIECE(B_BISHOP)	== false);
+	assert_true(IS_MAJOR_PIECE(W_KNIGHT)	== false);
+	assert_true(IS_MAJOR_PIECE(B_KNIGHT)	== false);
+	
+	assert_true(IS_BIG_PIECE(B_ROOK)	== true);
+	assert_true(IS_BIG_PIECE(B_QUEEN)	== true);
+	assert_true(IS_BIG_PIECE(W_QUEEN)	== true);
+	assert_true(IS_BIG_PIECE(W_ROOK)	== true);
+
+
+}
+
+
+
+void test_piece_classification_IS_MINOR_PIECE(){
+	
+	assert_true(IS_MINOR_PIECE(W_PAWN)		== false);
+	assert_true(IS_MINOR_PIECE(B_PAWN)		== false);
+	assert_true(IS_MINOR_PIECE(W_ROOK)		== false);
+	assert_true(IS_MINOR_PIECE(B_ROOK)		== false);
+	assert_true(IS_MINOR_PIECE(W_QUEEN)		== false);
+	assert_true(IS_MINOR_PIECE(B_QUEEN)		== false);
+	
+	assert_true(IS_MINOR_PIECE(B_BISHOP)	== true);
+	assert_true(IS_MINOR_PIECE(B_KNIGHT)	== true);
+	assert_true(IS_MINOR_PIECE(W_BISHOP)	== true);
+	assert_true(IS_MINOR_PIECE(W_KNIGHT)	== true);
+
+
+}
+
+
 
 
 void test_piece_to_char_conversion()
@@ -101,5 +159,8 @@ void test_piece_colour_macro(){
     	run_test(test_piece_to_char_conversion);
     run_test(test_rank_file_macros);
     run_test(test_piece_colour_macro);
+    run_test(test_piece_classification_IS_BIG_PIECE);
+    run_test(test_piece_classification_IS_MAJOR_PIECE);
+    run_test(test_piece_classification_IS_MINOR_PIECE);
     	test_fixture_end();
 } 

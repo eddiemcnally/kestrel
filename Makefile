@@ -28,9 +28,9 @@
 
 # define the C source files
 	SRCS		=	main.c board.c pieces.c board_utils.c move.c init.c \
-					hashkeys.c fen.c
+					hashkeys.c fen.c utils.c
 	TEST_SRCS	=	board.c pieces.c board_utils.c move.c init.c hashkeys.c \
-					fen.c test/all_tests.c test/board_test_fixture.c \
+					fen.c utils.c test/all_tests.c test/board_test_fixture.c \
 					test/piece_test_fixture.c test/move_test_fixture.c \
 					test/seatest.c
 
@@ -48,8 +48,8 @@
 
 
 # define the executable files
-	MAIN		=	ece
-	TEST_MAIN	=	test_ece
+	MAIN		=	kestrel
+	TEST_MAIN	=	test_kestrel
 
 #
 # The following part of the makefile is generic; it can be used to

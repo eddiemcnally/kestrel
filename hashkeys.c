@@ -2,12 +2,12 @@
  * hashkeys.c
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
- * Chess is free software: you can redistribute it and/or modify it
+ * kestrel is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * Chess is distributed in the hope that it will be useful, but
+ * kestrel is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
@@ -24,6 +24,7 @@
 #include "utils.h"
 #include "pieces.h"
 #include "board.h"
+#include "utils.h"
 #include "board_utils.h"
 
 #include "hashkeys.h"
@@ -49,14 +50,14 @@ void init_hash_keys(){
 	
 	for (int pce = 0; pce < NUM_PIECE_TYPES; pce++){
 		for(int sq = 0; sq < NUM_SQUARES; sq++){
-			piece_keys[pce][sq] = RAND64;
+			piece_keys[pce][sq] = generate_rand64();
 		}
 	}	
 	
-	side_to_move_key = RAND64;
+	side_to_move_key = generate_rand64();
 	
 	for(int i = 0; i < 16; i++){
-		castle_keys[i] = RAND64;
+		castle_keys[i] = generate_rand64();
 	}	
 }
 

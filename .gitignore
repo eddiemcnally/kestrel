@@ -1,7 +1,7 @@
 *.o
 /test/*.o
-test_ece
-ece
+test_kestrel
+kestrel
 *.bak
 *.c~
 *.h~
