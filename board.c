@@ -52,7 +52,7 @@ const U8 BitTable[64] = {
  * @return	a new board
  * 
  */
-board_container_t * init_board(){
+board_container_t * init_board(void){
 	board_container_t * brd = get_clean_board();
 	
 	reset_board_to_init_position(brd);
@@ -208,7 +208,7 @@ inline void clear_board(board_container_t * board_to_clear)
  * @return	ptr to a created board struct
  * 
  */
-board_container_t *get_clean_board()
+board_container_t *get_clean_board(void)
 {
     board_container_t *the_board = malloc(sizeof(board_container_t));
 

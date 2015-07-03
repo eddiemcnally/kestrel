@@ -22,6 +22,6 @@
 #include "types.h"
 
 
-U64 generate_rand64();
+U64 generate_rand64(void);
 
 #endif

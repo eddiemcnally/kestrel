@@ -24,6 +24,7 @@
 #include "board.h"
 #include "hashkeys.h"
 #include "board_utils.h"
+#include "fen.h"
 
 
 /*
@@ -37,8 +38,7 @@
  * Thanks for BlueFever Software for his youtube videos and this code
  */
  
-int consume_fen_notation(char *fen_string,
-			 board_container_t * board_to_setup){
+int consume_fen_notation(char *fen_string, board_container_t * board_to_setup){
 	
     //example of starting position:
     //              rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
@@ -157,6 +157,7 @@ int consume_fen_notation(char *fen_string,
 
 char *generate_fen_notation(board_container_t * board_to_setup)
 {
+	printf("PosKey:\t0x%016llx\n", board_to_setup->position_key);
     // TODO
     return malloc(80);
 }

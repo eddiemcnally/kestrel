@@ -10,7 +10,7 @@
 	CC	=	gcc
 
 # define any compile-time flags
-	CFLAGS	=	-Wall -g -std=c11 -o3
+	CFLAGS	=	-Wall -g -std=c11 -o3 -Wmissing-prototypes -Wextra -Wstrict-prototypes -Werror -Wshadow -Wpointer-arith -Wmissing-prototypes
 
 # define any directories containing header files other than /usr/include
 #

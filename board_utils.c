@@ -22,9 +22,10 @@
 #include "types.h"
 #include "board.h"
 #include "pieces.h"
+#include "board_utils.h"
 
 
-typedef char piece_t;
+typedef unsigned int piece_t;
 
 
 
@@ -78,7 +79,7 @@ void print_board(board_container_t * the_board)
 	}
 	printf("side:\t%c\n", side);
 	
-	if (the_board->en_passant == -1){
+	if (the_board->en_passant == NO_SQUARE){
 		printf("enPas:\t-\n");
 	}
 	else{

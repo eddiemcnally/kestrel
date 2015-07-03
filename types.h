@@ -19,6 +19,13 @@
 #define _TYPES_H_
 
 
+typedef unsigned long long 		board_t;
+typedef unsigned char 			U8;
+typedef unsigned long long 		U64;
+
+
+
+
 typedef enum {
 	BLACK,
 	WHITE
@@ -70,13 +77,6 @@ static const int piece_values[NUM_PIECE_TYPES]= {
 										50000		// KING  
 										};				
 
-
-
-
-
-typedef unsigned long long 		board_t;
-typedef unsigned char 			U8;
-typedef unsigned long long 		U64;
 
 
 

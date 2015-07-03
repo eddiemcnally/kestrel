@@ -34,6 +34,11 @@
 
 int main(int argc, char **argv)
 {
+	if (argc > 0){
+		printf("%d", **argv);
+	}
+	
+	
 	init_hash_keys();
 	
 	

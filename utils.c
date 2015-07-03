@@ -18,8 +18,10 @@
 
 #include <stdlib.h>
 #include "types.h"
+#include "utils.h"
 
-U64 generate_rand64(){
+
+U64 generate_rand64(void){
 	U64 retval = 0;
 	
 	retval = (U64)rand();

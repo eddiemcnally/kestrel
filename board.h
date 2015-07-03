@@ -42,7 +42,7 @@ enum {
 
 
 
-#define	NO_SQUARE	(-1)
+#define	NO_SQUARE	((square_t)(-1))
 
 #define GET_PIECE_MASK(square)		((board_t)(0x01ull << (int)(square)))
 
@@ -90,8 +90,8 @@ enum {
 
 
 
-board_container_t * init_board();
-board_container_t *get_clean_board();
+board_container_t * init_board(void);
+board_container_t *get_clean_board(void);
 piece_id_t get_piece_at_square(board_container_t * the_board, square_t square);
 bool add_piece_to_board(board_container_t * board, piece_id_t piece, square_t square);
 board_t get_black_occupancy_map(board_container_t * the_board);

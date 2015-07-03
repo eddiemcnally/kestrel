@@ -23,6 +23,7 @@
 #include "types.h"
 #include "board.h"
 #include "pieces.h"
+#include "move.h"
 
 
 void print_out_masks(board_t * masks);
@@ -157,7 +158,7 @@ void generate_rook_occupancy_masks(board_t * occ_mask_array)
  * @return 	-
  * 
  */
-void print_rook_occupancy_masks()
+void print_rook_occupancy_masks(void)
 {
     board_t *masks = malloc(sizeof(board_t) * NUM_SQUARES);
     memset(masks, 0, sizeof(board_t) * NUM_SQUARES);
@@ -177,7 +178,7 @@ void print_rook_occupancy_masks()
  * @return 	-
  * 
  */
-void print_knight_occupancy_masks()
+void print_knight_occupancy_masks(void)
 {
     board_t *masks = malloc(sizeof(board_t) * NUM_SQUARES);
     memset(masks, 0, sizeof(board_t) * NUM_SQUARES);
@@ -196,7 +197,7 @@ void print_knight_occupancy_masks()
  * @return 	-
  * 
  */
-void print_king_occupancy_masks()
+void print_king_occupancy_masks(void)
 {
     board_t *masks = malloc(sizeof(board_t) * NUM_SQUARES);
     memset(masks, 0, sizeof(board_t) * NUM_SQUARES);

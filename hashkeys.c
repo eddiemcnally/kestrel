@@ -30,7 +30,7 @@
 #include "hashkeys.h"
 
 U64 get_castle_key(unsigned int castle_map);
-U64 get_side_key();
+U64 get_side_key(void);
 U64 get_piece_key(piece_id_t piece, square_t square);
 
 //----- hashkeys for positions
@@ -81,7 +81,7 @@ inline U64 get_castle_key(unsigned int castle_map){
  * @return:	the U64 hashkey
  * 
  */
-inline U64 get_side_key(){
+inline U64 get_side_key(void){
 	return side_to_move_key;
 }
 
