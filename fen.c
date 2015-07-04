@@ -142,6 +142,8 @@ int consume_fen_notation(char *fen_string, board_container_t * board_to_setup){
 		board_to_setup->en_passant = NO_SQUARE;
 	}
     
+    update_piece_material(board_to_setup);
+    
     board_to_setup->position_key = get_position_hashkey(board_to_setup);
         
     return 0;

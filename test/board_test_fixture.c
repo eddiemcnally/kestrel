@@ -27,7 +27,20 @@
 #include "pieces.h"
 
 void verify_initial_board_placement(board_container_t * the_board);
-
+void test_initial_board_placement(void);
+void test_clean_board(void);
+void test_fen_parsing_initial_board_layout(void);
+void test_add_to_board(void);
+void test_fen_parsing_general_layout_1(void);
+void test_fen_parsing_general_layout_2(void);
+void test_white_occupancy_map(void);
+void test_black_occupancy_map(void);
+void test_setting_bits_in_a_board(void);
+void test_clearing_bits_in_a_board(void);
+void test_checking_bits_in_a_board(void);
+void test_bit_counting(void);
+void test_LSB_clear(void);
+void board_test_fixture(void);
 /**
  * Verifies the initial board setup plus some supporting code
  */ 
@@ -69,12 +82,12 @@ void test_initial_board_placement()
     
 	// no piece present
 	for (int i = a3; i < h6; i++) {
-		assert_true(-1 == get_piece_at_square(the_board, i));
+		assert_true(NO_PIECE == get_piece_at_square(the_board, i));
 	}
 	
 	
 	// now verify remainder of struct is populated
-	assert_true(the_board->king_squares[WHITE] == e5);
+	assert_true(the_board->king_squares[WHITE] == e1);
 	assert_true(the_board->king_squares[BLACK] == e8);
 	
 	assert_true(the_board->side_to_move == WHITE);
@@ -183,7 +196,7 @@ void test_initial_board_placement()
     
 	// no piece present
 	for (int i = a3; i < h6; i++) {
-		assert_true(-1 == get_piece_at_square(the_board, i));
+		assert_true(NO_PIECE == get_piece_at_square(the_board, i));
 	} 
 	
 	assert_true(the_board->side_to_move == WHITE);
@@ -352,7 +365,7 @@ void test_fen_parsing_general_layout_2()
     	set_bit(&test_brd, 63);
     clear_bit(&test_brd, 63);
     assert_true(test_brd == 0);
-} void test_checking_bits_in_a_board()
+} void test_checking_bits_in_a_board(void)
 {			board_t test_brd = 0;
 
 	for (int i = 0; i < NUM_SQUARES; i++){
@@ -365,7 +378,7 @@ void test_fen_parsing_general_layout_2()
 } 
 
 
-void test_bit_counting(){
+void test_bit_counting(void){
 	board_t brd = 0;
 	
 	set_bit(&brd, d3);
@@ -380,7 +393,7 @@ void test_bit_counting(){
 
 
 
-void test_LSB_clear(){
+void test_LSB_clear(void){
 	board_t brd = 0;
 	
 	set_bit(&brd, d3);

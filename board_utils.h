@@ -19,10 +19,11 @@
 #ifndef _BOARD_UTILS_H_
 #define _BOARD_UTILS_H_
 
+#include <stdbool.h>
 #include "types.h"
 
 void print_board(board_container_t * the_board);
-
+bool ASSERT_BOARD_OK(board_container_t * brd);
 
 
 #endif

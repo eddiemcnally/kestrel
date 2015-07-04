@@ -28,7 +28,8 @@ typedef unsigned long long 		U64;
 
 typedef enum {
 	BLACK,
-	WHITE
+	WHITE,
+	NUM_COLOURS
 } colour_t;
 
 
@@ -84,11 +85,11 @@ static const int piece_values[NUM_PIECE_TYPES]= {
 // contains information before the current
 // move was made
 typedef struct {
-	int move;
-	U8 castle_perm;
-	U8 en_passant;
-	U8 fifty_move_counter;
-	U64 position_key;
+	int 		move;
+	U8 			castle_perm;
+	square_t 	en_passant;
+	U8 			fifty_move_counter;
+	U64 		position_key;
 } undo_t;
 
 

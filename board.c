@@ -22,6 +22,7 @@
 #include <string.h>
 #include <assert.h>
 #include "types.h"
+#include "fen.h"
 #include "board.h"
 #include "board_utils.h"
 #include "hashkeys.h"
@@ -29,12 +30,13 @@
 
 
 void overlay_boards(board_container_t * board_container);
-void reset_board_to_init_position(board_container_t * board_to_reset);
 void clear_board(board_container_t * board_to_clear);
+int count_minor_pieces(board_container_t * brd);
+int count_big_pieces(board_container_t * brd);
+int count_major_pieces(board_container_t * brd);
 
 
-
-const U8 BitTable[64] = {
+static const U8 BitTable[64] = {
   63, 30, 3, 32, 25, 41, 22, 33, 15, 50, 42, 13, 11, 53, 19, 34, 61, 29, 2,
   51, 21, 43, 45, 10, 18, 47, 1, 54, 9, 57, 0, 35, 62, 31, 40, 4, 49, 5, 52,
   26, 60, 6, 23, 44, 46, 27, 56, 16, 7, 39, 48, 24, 59, 14, 12, 55, 38, 28,
@@ -54,107 +56,12 @@ const U8 BitTable[64] = {
  */
 board_container_t * init_board(void){
 	board_container_t * brd = get_clean_board();
+		
+	consume_fen_notation(STARTING_FEN, brd);
 	
-	reset_board_to_init_position(brd);
-	
-	
-	brd->king_squares[WHITE] = e5;
-	brd->king_squares[BLACK] = e8;
-	
-	brd->side_to_move = WHITE;
-	
-	brd->en_passant = NO_SQUARE;
-	
-	brd->fifty_move_counter = 0;
-	brd->ply = 0;
-	brd->history_ply = 0;
-	
-	brd->pce_num[W_PAWN] 	= 8;
-	brd->pce_num[W_KNIGHT] 	= 2;
-	brd->pce_num[W_BISHOP] 	= 2;
-	brd->pce_num[W_ROOK] 	= 2;
-	brd->pce_num[W_QUEEN] 	= 1;
-	brd->pce_num[W_KING] 	= 1;
-	
-	brd->pce_num[B_PAWN] 	= 8;
-	brd->pce_num[B_KNIGHT] 	= 2;
-	brd->pce_num[B_BISHOP] 	= 2;
-	brd->pce_num[B_ROOK] 	= 2;
-	brd->pce_num[B_QUEEN] 	= 1;
-	brd->pce_num[B_KING] 	= 1;
-
-	brd->big_pieces[WHITE] 	= 8;
-	brd->big_pieces[BLACK] 	= 8;
-
-	brd->major_pieces[WHITE] = 3;
-	brd->major_pieces[BLACK] = 3;
-	
-	brd->minor_pieces[WHITE] = 4;
-	brd->minor_pieces[BLACK] = 4;
-	
-	brd->castle_perm = (WQCA | WKCA | BQCA | BKCA);
-
-	brd->position_key = get_position_hashkey(brd);
-	//printf("******* 0x%016llx\n", brd->position_key);
-
-	for(int i = 0; i < MAX_GAME_MOVES;i++){
-		brd->history[i].castle_perm = 0;
-		brd->history[i].en_passant = 0;
-		brd->history[i].fifty_move_counter = 0;
-		brd->history[i].position_key = 0;
-	}
-
-
 	return brd;
 }
 
-
-
-void reset_board_to_init_position(board_container_t * board_to_reset){
-
-	assert(board_to_reset != 0);
-	
-    clear_board(board_to_reset);
-    
-    add_piece_to_board(board_to_reset, 	B_PAWN, 	a7);
-    add_piece_to_board(board_to_reset, 	B_PAWN, 	b7);
-    add_piece_to_board(board_to_reset, 	B_PAWN, 	c7);
-    add_piece_to_board(board_to_reset, 	B_PAWN, 	d7);
-    add_piece_to_board(board_to_reset, 	B_PAWN, 	e7);
-    add_piece_to_board(board_to_reset, 	B_PAWN, 	f7);
-    add_piece_to_board(board_to_reset, 	B_PAWN, 	g7);
-    add_piece_to_board(board_to_reset, 	B_PAWN, 	h7);
-       
-    add_piece_to_board(board_to_reset, 	B_ROOK, 	a8);
-    add_piece_to_board(board_to_reset, 	B_ROOK, 	h8);
-    add_piece_to_board(board_to_reset, 	B_KNIGHT, 	b8);
-    add_piece_to_board(board_to_reset, 	B_KNIGHT, 	g8);
-    add_piece_to_board(board_to_reset, 	B_BISHOP, 	c8);
-    add_piece_to_board(board_to_reset, 	B_BISHOP, 	f8);
-    add_piece_to_board(board_to_reset, 	B_QUEEN, 	d8);
-    add_piece_to_board(board_to_reset, 	B_KING, 	e8);
-    
-    
-    add_piece_to_board(board_to_reset, 	W_PAWN, 	a2);
-    add_piece_to_board(board_to_reset, 	W_PAWN, 	b2);
-    add_piece_to_board(board_to_reset, 	W_PAWN, 	c2);
-    add_piece_to_board(board_to_reset, 	W_PAWN, 	d2);
-    add_piece_to_board(board_to_reset, 	W_PAWN, 	e2);
-    add_piece_to_board(board_to_reset, 	W_PAWN, 	f2);
-    add_piece_to_board(board_to_reset, 	W_PAWN, 	g2);
-    add_piece_to_board(board_to_reset, 	W_PAWN, 	h2);
-    
-    add_piece_to_board(board_to_reset, 	W_ROOK, 	a1);
-    add_piece_to_board(board_to_reset, 	W_ROOK, 	h1);
-    add_piece_to_board(board_to_reset, 	W_KNIGHT, 	b1);
-    add_piece_to_board(board_to_reset, 	W_KNIGHT, 	g1);
-    add_piece_to_board(board_to_reset, 	W_BISHOP, 	c1);
-    add_piece_to_board(board_to_reset, 	W_BISHOP, 	f1);
-    add_piece_to_board(board_to_reset, 	W_QUEEN, 	d1);
-    add_piece_to_board(board_to_reset, 	W_KING, 	e1);
-    
-    
-}
 
 void update_piece_material(board_container_t * brd) {	
 	
@@ -251,7 +158,7 @@ inline void overlay_boards(board_container_t * the_board)
     int i = 0;
     board_t flat_board = BOARD_EMPTY;
     for (i = 0; i < NUM_PIECE_TYPES; i++) {
-		flat_board = flat_board | the_board->piece_boards[i];
+		flat_board |= the_board->piece_boards[i];
     }
     the_board->board = flat_board;
 }
@@ -380,6 +287,53 @@ inline bool is_square_occupied(board_t board, square_t square)
 	}
     return false;
 }
+
+
+
+int count_big_pieces(board_container_t * brd){
+	int cntr = 0;
+	for(square_t sq = 0; sq < NUM_SQUARES; sq++){
+		piece_id_t pce = get_piece_at_square(brd, sq);
+		if (pce != NO_PIECE){
+			if (IS_BIG_PIECE(pce)){
+				cntr++;
+			}
+		}		
+	}
+	return cntr;
+}
+
+
+int count_major_pieces(board_container_t * brd){
+	int cntr = 0;
+	for(square_t sq = 0; sq < NUM_SQUARES; sq++){
+		piece_id_t pce = get_piece_at_square(brd, sq);
+		if (pce != NO_PIECE){
+			if (IS_MAJOR_PIECE(pce)){
+				cntr++;
+			}
+		}		
+	}
+	return cntr;
+}
+
+int count_minor_pieces(board_container_t * brd){
+	int cntr = 0;
+	for(square_t sq = 0; sq < NUM_SQUARES; sq++){
+		piece_id_t pce = get_piece_at_square(brd, sq);
+		if (pce != NO_PIECE){
+			if (IS_MINOR_PIECE(pce)){
+				cntr++;
+			}
+		}		
+	}
+	return cntr;
+}
+
+
+
+
+
 
 // returns a board with all white pieces
 inline board_t get_white_occupancy_map(board_container_t * the_board)

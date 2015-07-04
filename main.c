@@ -45,16 +45,19 @@ int main(int argc, char **argv)
 	board_container_t * the_board = get_clean_board();
     consume_fen_notation(FEN1, the_board);
     print_board(the_board);
-    
+    ASSERT_BOARD_OK(the_board);
     
 	the_board = get_clean_board();
     consume_fen_notation(FEN2, the_board);
     print_board(the_board);
+    ASSERT_BOARD_OK(the_board);
     
     
 	the_board = get_clean_board();
     consume_fen_notation(FEN3, the_board);
     print_board(the_board);
+    ASSERT_BOARD_OK(the_board);
+
     
     return 0;
 }
