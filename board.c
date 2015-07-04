@@ -70,11 +70,11 @@ void update_piece_material(board_container_t * brd) {
 		if (pce != NO_PIECE){
 			colour_t colour = get_colour(pce);
 			
-			if (IS_BIG_PIECE(pce))
+			if (is_big_piece(pce))
 				brd->big_pieces[colour]++;
-			if (IS_MINOR_PIECE(pce))
+			if (is_minor_piece(pce))
 				brd->minor_pieces[colour]++;
-			if (IS_MAJOR_PIECE(pce))
+			if (is_major_piece(pce))
 				brd->major_pieces[colour]++;
 
 			brd->material[colour] += piece_values[pce];
@@ -289,71 +289,4 @@ inline bool is_square_occupied(board_t board, square_t square)
 }
 
 
-
-int count_big_pieces(board_container_t * brd){
-	int cntr = 0;
-	for(square_t sq = 0; sq < NUM_SQUARES; sq++){
-		piece_id_t pce = get_piece_at_square(brd, sq);
-		if (pce != NO_PIECE){
-			if (IS_BIG_PIECE(pce)){
-				cntr++;
-			}
-		}		
-	}
-	return cntr;
-}
-
-
-int count_major_pieces(board_container_t * brd){
-	int cntr = 0;
-	for(square_t sq = 0; sq < NUM_SQUARES; sq++){
-		piece_id_t pce = get_piece_at_square(brd, sq);
-		if (pce != NO_PIECE){
-			if (IS_MAJOR_PIECE(pce)){
-				cntr++;
-			}
-		}		
-	}
-	return cntr;
-}
-
-int count_minor_pieces(board_container_t * brd){
-	int cntr = 0;
-	for(square_t sq = 0; sq < NUM_SQUARES; sq++){
-		piece_id_t pce = get_piece_at_square(brd, sq);
-		if (pce != NO_PIECE){
-			if (IS_MINOR_PIECE(pce)){
-				cntr++;
-			}
-		}		
-	}
-	return cntr;
-}
-
-
-
-
-
-
-// returns a board with all white pieces
-inline board_t get_white_occupancy_map(board_container_t * the_board)
-{
-    return the_board->piece_boards[W_PAWN]
-				| the_board->piece_boards[W_ROOK]
-				| the_board->piece_boards[W_KNIGHT]
-				| the_board->piece_boards[W_BISHOP]
-				| the_board->piece_boards[W_QUEEN]
-				| the_board->piece_boards[W_KING];
-}
-
-// returns a board with all black pieces
-inline board_t get_black_occupancy_map(board_container_t * the_board)
-{
-    return the_board->piece_boards[B_PAWN]
-				| the_board->piece_boards[B_ROOK]
-				| the_board->piece_boards[B_KNIGHT]
-				| the_board->piece_boards[B_BISHOP]
-				| the_board->piece_boards[B_QUEEN]
-				| the_board->piece_boards[B_KING];
-}
 

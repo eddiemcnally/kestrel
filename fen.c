@@ -144,7 +144,7 @@ int consume_fen_notation(char *fen_string, board_container_t * board_to_setup){
     
     update_piece_material(board_to_setup);
     
-    board_to_setup->position_key = get_position_hashkey(board_to_setup);
+    board_to_setup->board_hash = get_position_hashkey(board_to_setup);
         
     return 0;
 }
@@ -159,7 +159,7 @@ int consume_fen_notation(char *fen_string, board_container_t * board_to_setup){
 
 char *generate_fen_notation(board_container_t * board_to_setup)
 {
-	printf("PosKey:\t0x%016llx\n", board_to_setup->position_key);
+	printf("PosKey:\t0x%016llx\n", board_to_setup->board_hash);
     // TODO
     return malloc(80);
 }

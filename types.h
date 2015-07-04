@@ -22,6 +22,7 @@
 typedef unsigned long long 		board_t;
 typedef unsigned char 			U8;
 typedef unsigned long long 		U64;
+typedef unsigned short 			U16;
 
 
 
@@ -85,11 +86,11 @@ static const int piece_values[NUM_PIECE_TYPES]= {
 // contains information before the current
 // move was made
 typedef struct {
-	int 		move;
-	U8 			castle_perm;
-	square_t 	en_passant;
+	U16 		move;
 	U8 			fifty_move_counter;
-	U64 		position_key;
+	U8 			castle_perm;
+	U64 		board_hash;
+	square_t 	en_passant;
 } undo_t;
 
 
@@ -112,13 +113,12 @@ typedef struct {
 
 
 	// squares where the kings are
-	square_t king_squares[2];
+	square_t king_squares[NUM_COLOURS];
 
 	// the next side to move
 	colour_t side_to_move;
 	
 	// any square where en passent is active
-	// TO DO
 	square_t en_passant;
 
 	// fifty move ounter
@@ -128,32 +128,30 @@ typedef struct {
 	U8 ply;
 	U8 history_ply;
 	
-	// indexed by piece_id_t, contains the number of pieces of that type on the board
+	// indexed by piece_id_t, contains the number of pieces of that 
+	// type on the board
 	U8 pce_num[NUM_PIECE_TYPES];
 
 	// indexed by colour_t, contains number of pieces != PAWN
-	U8 big_pieces[2]; 
+	U8 big_pieces[NUM_COLOURS]; 
 	
 	// indexed by colour_t, contains number of ROOKs and QUEENs
-	U8 major_pieces[2];
+	U8 major_pieces[NUM_COLOURS];
 	
 	// indexed by colour_t, contains number of BISHOPs and KNIGHTs
-	U8 minor_pieces[2];
+	U8 minor_pieces[NUM_COLOURS];
 
 	// indexed by colour_t, contains sum of all piece values
-	U8 material[2];
+	U8 material[NUM_COLOURS];
 
 	// castling permissions
 	U8 castle_perm;
 	
-	// a count of the number of each piece (10 is to account for 
-	// all pawns promoting to either bishops, knights or rooks)
-	int piece_list[NUM_PIECE_TYPES][10];
-
 	// move history
 	undo_t history[MAX_GAME_MOVES];
 	
-	U64 position_key;
+	// a hash of the current board 
+	U64 board_hash;
 	
 } board_container_t;
 

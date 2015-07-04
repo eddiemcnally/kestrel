@@ -33,8 +33,6 @@ void test_fen_parsing_initial_board_layout(void);
 void test_add_to_board(void);
 void test_fen_parsing_general_layout_1(void);
 void test_fen_parsing_general_layout_2(void);
-void test_white_occupancy_map(void);
-void test_black_occupancy_map(void);
 void test_setting_bits_in_a_board(void);
 void test_clearing_bits_in_a_board(void);
 void test_checking_bits_in_a_board(void);
@@ -123,7 +121,7 @@ void test_initial_board_placement()
 	
 	assert_true(the_board->castle_perm == (WQCA | WKCA | BQCA | BKCA));
 
-	assert_true(the_board->position_key != 0);
+	assert_true(the_board->board_hash != 0);
 
 	
 	} void test_clean_board()
@@ -278,55 +276,7 @@ void test_fen_parsing_general_layout_2()
 	
 	assert_true(the_board->en_passant == NO_SQUARE);
 } 
-void test_white_occupancy_map()
-{
-    board_container_t *board = get_clean_board();
-    	add_piece_to_board(board, W_PAWN, a3);
-	add_piece_to_board(board, W_PAWN, b8);
-	add_piece_to_board(board, W_PAWN, a4);
-	add_piece_to_board(board, W_PAWN, d7);
-	add_piece_to_board(board, W_PAWN, g8);
-	add_piece_to_board(board, W_BISHOP, a8);
-	add_piece_to_board(board, W_ROOK, h8);
-	add_piece_to_board(board, W_QUEEN, a5);
-	add_piece_to_board(board, W_KNIGHT, c6);
-	add_piece_to_board(board, W_KNIGHT, b6);
-			board_t a_board = get_white_occupancy_map(board);
-	assert_true(is_square_occupied(a_board, a3));
-	assert_true(is_square_occupied(a_board, b8));
-	assert_true(is_square_occupied(a_board, a4));
-	assert_true(is_square_occupied(a_board, d7));
-	assert_true(is_square_occupied(a_board, g8));
-	assert_true(is_square_occupied(a_board, a8));
-	assert_true(is_square_occupied(a_board, h8));
-	assert_true(is_square_occupied(a_board, a5));
-	assert_true(is_square_occupied(a_board, c6));
-	assert_true(is_square_occupied(a_board, b6));
-} void test_black_occupancy_map()
-{
-    board_container_t *board = get_clean_board();
-    	add_piece_to_board(board, B_PAWN, a3);
-	add_piece_to_board(board, B_PAWN, a1);
-	add_piece_to_board(board, B_PAWN, d7);
-	add_piece_to_board(board, B_PAWN, e8);
-	add_piece_to_board(board, B_PAWN, g8);
-	add_piece_to_board(board, B_BISHOP, f4);
-	add_piece_to_board(board, B_ROOK, h6);
-	add_piece_to_board(board, B_QUEEN, a5);
-	add_piece_to_board(board, B_KNIGHT, g2);
-	add_piece_to_board(board, B_KNIGHT, g8);
-			board_t a_board = get_black_occupancy_map(board);
-	assert_true(is_square_occupied(a_board, a3));
-	assert_true(is_square_occupied(a_board, a1));
-	assert_true(is_square_occupied(a_board, d7));
-	assert_true(is_square_occupied(a_board, e8));
-	assert_true(is_square_occupied(a_board, g8));
-	assert_true(is_square_occupied(a_board, f4));
-	assert_true(is_square_occupied(a_board, h6));
-	assert_true(is_square_occupied(a_board, a5));
-	assert_true(is_square_occupied(a_board, g2));
-	assert_true(is_square_occupied(a_board, g8));
-} void test_setting_bits_in_a_board()
+void test_setting_bits_in_a_board()
 {    	board_t test_brd = 0;
     
 	//
@@ -420,8 +370,6 @@ void test_LSB_clear(void){
 			run_test(test_fen_parsing_initial_board_layout);
 	run_test(test_fen_parsing_general_layout_1);
 	run_test(test_fen_parsing_general_layout_2);
-	run_test(test_white_occupancy_map);
-	run_test(test_black_occupancy_map);
 
 	run_test(test_bit_counting);
 	run_test(test_LSB_clear);

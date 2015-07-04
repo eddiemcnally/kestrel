@@ -23,6 +23,7 @@
 void generate_king_occupancy_masks(board_t * occ_mask_array);
 void generate_knight_occupancy_masks(board_t * occ_mask_array);
 void generate_rook_occupancy_masks(board_t * occ_mask_array);
+void generate_bishop_occupancy_masks(board_t * occ_mask_array);
 void print_knight_occupancy_masks(void);
 void print_king_occupancy_masks(void);
 void print_rook_occupancy_masks(void);

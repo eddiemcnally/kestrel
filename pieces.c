@@ -45,3 +45,81 @@ inline colour_t get_colour(piece_id_t piece){
 	return BLACK;	
 }
 
+
+inline bool is_big_piece(piece_id_t pce){
+	switch(pce){
+		case W_PAWN:
+		case B_PAWN:
+			return true;
+		default:
+			return false;
+	}
+}
+
+inline bool is_major_piece(piece_id_t pce){
+	switch(pce){
+		case W_ROOK:
+		case W_QUEEN:
+		case B_ROOK:
+		case B_QUEEN:
+			return true;
+		default:
+			return false;
+	}
+}
+
+
+inline bool is_minor_piece(piece_id_t pce){
+	switch(pce){
+		case W_BISHOP:
+		case W_KNIGHT:
+		case B_BISHOP:
+		case B_KNIGHT:
+			return true;
+		default:
+			return false;
+	}
+}
+
+
+inline bool isRQ(piece_id_t pce){
+	switch(pce){
+		case W_ROOK:
+		case W_QUEEN:
+		case B_ROOK:
+		case B_QUEEN:
+			return true;
+		default:
+			return false;
+	}
+}
+
+
+inline bool isKi(piece_id_t pce){
+	if ( (pce == B_KING) || (pce == W_KING))
+		return true;
+	return false;
+}
+
+
+
+inline bool isKn(piece_id_t pce){
+	if ( (pce == B_KNIGHT) || (pce == W_KNIGHT))
+		return true;
+	return false;
+}
+
+
+inline bool isBQ(piece_id_t pce){
+	switch(pce){
+		case W_BISHOP:
+		case W_QUEEN:
+		case B_BISHOP:
+		case B_QUEEN:
+			return true;
+		default:
+			return false;
+	}
+}
+
+

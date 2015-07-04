@@ -1,5 +1,5 @@
 /*
- * pieces.h
+ * attack.h
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
  * kestrel is free software: you can redistribute it and/or modify it
@@ -16,30 +16,16 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _PIECES_H_
-#define _PIECES_H_
+#ifndef _ATTACK_H_
+#define _ATTACK_H_
 
 #include <stdbool.h>
 #include "types.h"
 
 
-#define NO_PIECE	((unsigned int)(-1))
+bool is_sq_attacked(const square_t sq, const colour_t attacking_side, const board_container_t * brd);
 
-#define IS_WHITE(piece)			(piece <= W_KING)
-#define IS_BLACK(piece)			(IS_WHITE(piece) == false)
-
-
-char get_piece_label(piece_id_t piece);
-colour_t get_colour(piece_id_t piece);
-
-bool is_big_piece(piece_id_t pce);
-bool is_major_piece(piece_id_t pce);
-bool is_minor_piece(piece_id_t pce);
-
-bool isRQ(piece_id_t pce);
-bool isKi(piece_id_t pce);
-bool isKn(piece_id_t pce);
-bool isBQ(piece_id_t pce);
 
 
 #endif
+

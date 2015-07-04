@@ -52,6 +52,12 @@ enum {
 #define GET_FILE(square)			((square) % 8)
 #define GET_SQUARE(RANK, FILE)		((RANK * 8) + FILE)
 
+#define IS_VALID_RANK(rank)			((rank >= RANK_1) && (rank <= RANK_8))
+#define IS_VALID_FILE(file)			((file >= FILE_A) && (file <= FILE_H))
+
+
+
+
 // castling permissions
 enum {
 	WKCA = 0x01,	// white, king-side
@@ -62,30 +68,10 @@ enum {
 
 
 
-#define IS_WHITE(piece)			(piece <= W_KING)
-#define IS_BLACK(piece)			(IS_WHITE(piece) == false)
-
-
-
-
 
 // some shortcut macros
 #define POP(bb)			pop_1st_bit(bb)
 #define	CNT(bb)			count_bits(bb)
-
-
-
-// indicates if a given piece is anything other than a PAWN
-#define IS_BIG_PIECE(piece)		((piece != W_PAWN) && (piece != B_PAWN))
-
-// indicates if a given piece is either a ROOK or QUEEN
-#define IS_MAJOR_PIECE(piece)	((piece == W_ROOK) || (piece == W_QUEEN) || (piece == B_ROOK) || (piece == B_QUEEN))
-
-// indicates if a given piece is either a BISHOP or KNIGHT
-#define IS_MINOR_PIECE(piece)	((piece == W_BISHOP) || (piece == W_KNIGHT) || (piece == B_BISHOP) || (piece == B_KNIGHT))
-
-
-
 
 
 
@@ -94,8 +80,6 @@ board_container_t * init_board(void);
 board_container_t *get_clean_board(void);
 piece_id_t get_piece_at_square(board_container_t * the_board, square_t square);
 bool add_piece_to_board(board_container_t * board, piece_id_t piece, square_t square);
-board_t get_black_occupancy_map(board_container_t * the_board);
-board_t get_white_occupancy_map(board_container_t * the_board);
 bool is_square_occupied(board_t board, square_t square);
 void set_bit(board_t * brd, square_t sq);
 void clear_bit(board_t * brd, square_t sq);

@@ -96,7 +96,7 @@ void print_board(board_container_t * the_board)
 			(the_board->castle_perm & BKCA) ? 'k' : '-',
 			(the_board->castle_perm & BQCA) ? 'q' : '-'	
 			);
-	printf("PosKey:\t0x%016llx\n",the_board->position_key);
+	printf("PosKey:\t0x%016llx\n",the_board->board_hash);
 
 	printf("\n\n");
 	
@@ -146,8 +146,15 @@ bool ASSERT_BOARD_OK(board_container_t * brd){
 	for(int i = 0; i < NUM_PIECE_TYPES; i++){
 		assert(pce_num[i] == brd->pce_num[i]);
 	}
+	for(int i = 0; i < NUM_PIECE_TYPES; i++){
+		assert(pce_num[i] == CNT(brd->piece_boards[i]));
+	}
 	
-
+	assert(brd->en_passant == NO_SQUARE \
+			|| ( GET_RANK(brd->en_passant)==RANK_6 && brd->side_to_move == WHITE) \
+			|| ( GET_RANK(brd->en_passant)==RANK_3 && brd->side_to_move == BLACK));
+	
+	
 	// check on big, major and minor piece count
 	U8 big_pieces[NUM_COLOURS] = {0}; 
 	U8 major_pieces[NUM_COLOURS] = {0};
@@ -156,13 +163,13 @@ bool ASSERT_BOARD_OK(board_container_t * brd){
 		piece_id_t pce = get_piece_at_square(brd, sq);
 		if (pce != NO_PIECE){
 			colour_t col = get_colour(pce);
-			if (IS_BIG_PIECE(pce)){
+			if (is_big_piece(pce)){
 				big_pieces[col] += 1;
 			}
-			if (IS_MAJOR_PIECE(pce)){
+			if (is_major_piece(pce)){
 				major_pieces[col] += 1;
 			}
-			if (IS_MINOR_PIECE(pce)){
+			if (is_minor_piece(pce)){
 				minor_pieces[col] += 1;
 			}
 		}		
@@ -190,7 +197,7 @@ bool ASSERT_BOARD_OK(board_container_t * brd){
 	
 	
 	// check on position key
-	assert(brd->position_key == get_position_hashkey(brd));
+	assert(brd->board_hash == get_position_hashkey(brd));
 	
 	
 	return true;
