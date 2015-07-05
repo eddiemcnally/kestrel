@@ -30,7 +30,6 @@
 
 
 void overlay_boards(board_container_t * board_container);
-void clear_board(board_container_t * board_to_clear);
 int count_minor_pieces(board_container_t * brd);
 int count_big_pieces(board_container_t * brd);
 int count_major_pieces(board_container_t * brd);
@@ -93,22 +92,6 @@ void update_piece_material(board_container_t * brd) {
 
 
 /*
- * name: clear_board
- * Cleans a board of all pieces
- * @param : board_container_t *	: the board to clear
- * @return : void
- *
- */
-inline void clear_board(board_container_t * board_to_clear)
-{
-    board_to_clear->board = BOARD_EMPTY;
-
-    for (int i = 0; i < NUM_PIECE_TYPES; i++) {
-		board_to_clear->piece_boards[i] = BOARD_EMPTY;
-    }
-}
-
-/*
  * Creates an empty board struct 
  * name: get_clean_board
  * @param			
@@ -117,11 +100,18 @@ inline void clear_board(board_container_t * board_to_clear)
  */
 board_container_t *get_clean_board(void)
 {
-    board_container_t *the_board = malloc(sizeof(board_container_t));
+    board_container_t *brd = malloc(sizeof(board_container_t));
 
-    memset(the_board, 0, sizeof(board_container_t));
+    memset(brd, 0, sizeof(board_container_t));
+    
+    brd->king_squares[WHITE] = NO_SQUARE;
+    brd->king_squares[BLACK] = NO_SQUARE;
 
-    return the_board;
+	for(square_t sq = 0; sq < NUM_SQUARES; sq++){
+		brd->pieces[sq] = NO_PIECE;
+	}
+
+    return brd;
 }
 
 /*
@@ -140,14 +130,17 @@ bool add_piece_to_board(board_container_t * board, piece_id_t piece,
 	
     if (check_bit(&board->board, square) != 0) {
 		// square already occupied
+		assert(check_bit(&board->board, square) != 0);
 		return false;
     } else {
 		// set bit in relevant piece board
-		set_bit(&(board->piece_boards[piece]), square);
+		set_bit(&(board->bitboards[piece]), square);
 
 		// regen flat board
 		overlay_boards(board);
 
+		//printf("adding %d to square %d\n", piece, square);
+		board->pieces[square] = piece;
 		return true;
     }
 }
@@ -157,8 +150,8 @@ inline void overlay_boards(board_container_t * the_board)
 {
     int i = 0;
     board_t flat_board = BOARD_EMPTY;
-    for (i = 0; i < NUM_PIECE_TYPES; i++) {
-		flat_board |= the_board->piece_boards[i];
+    for (i = 0; i < NUM_PIECES; i++) {
+		flat_board |= the_board->bitboards[i];
     }
     the_board->board = flat_board;
 }
@@ -178,22 +171,7 @@ inline piece_id_t get_piece_at_square(board_container_t * the_board,
 {
 	assert((square >= a1) && (square <= h8));
 	
-	// quick check to see if square occupied
-	if (check_bit(&the_board->board, square)){
-		// it is, so find the piece type
-		board_t piece_mask = GET_PIECE_MASK(square);
-
-		for (int pce = 0; pce < NUM_PIECE_TYPES; pce++) {
-			board_t brd = the_board->piece_boards[pce];
-
-			if ((brd & piece_mask) != 0) {
-				// found it
-				return pce;
-			}
-		}
-	} 
-	// no piece on that square
-	return NO_PIECE;
+	return the_board->pieces[square];	
 	
 }
 
@@ -213,6 +191,7 @@ inline void set_bit(board_t * brd, square_t sq)
     *brd = *brd | (board_t) (0x01ull << sq);
 }
 
+
 /*
  *
  * name: clear_bit
@@ -224,7 +203,7 @@ inline void clear_bit(board_t * brd, square_t sq)
 {
 	assert((sq >= a1) && (sq <= h8));
 
-    *brd = *brd & (board_t) (~0x01ull << sq);
+    *brd = *brd & (board_t) (~(0x01ull << sq));
 }
 
 /*

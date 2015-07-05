@@ -16,15 +16,21 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */  
 #include "seatest.h"
-void board_test_fixture(void);
-void piece_test_fixture(void);
-void move_test_fixture(void);
-void all_tests(void) 
+
+void all_tests(void);void board_test_fixture(void);
+void piece_test_fixture(void);
+void my_suite_setup(void) ;
+void occupancy_mask_test_fixture(void);
+void my_suite_teardown(void);
+int main_no_setup_or_teardown(int argc, char **argv);
+int main_do_it_myself(int argc, char **argv);
+int main_do_it_myself_really_simply(int argc, char **argv);
+
+void all_tests(void) 
 {
     	board_test_fixture();
 			piece_test_fixture();
-			move_test_fixture();
-    
+		    	occupancy_mask_test_fixture();
 	// add new test fixtures here.
 } void my_suite_setup(void) 
 {
@@ -64,7 +70,10 @@ Use this if you don't want to use the test runner...
 */ 
 int main_do_it_myself(int argc, char **argv) 
 {
-    	suite_setup(my_suite_setup);
+    
+    if (argc > 1){
+		printf("args:%d", *argv[0]);
+	}	suite_setup(my_suite_setup);
 			suite_teardown(my_suite_teardown);
 			return run_tests(all_tests);
 }
@@ -75,7 +84,9 @@ Use this if you don't want to use the test runner and don't have any global setu
 */ 
 int main_do_it_myself_really_simply(int argc, char **argv) 
 {
-    	return run_tests(all_tests);
+    if (argc > 1){
+		printf("args:%d", *argv[0]);
+	}	return run_tests(all_tests);
 }
 
 

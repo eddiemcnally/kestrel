@@ -130,8 +130,8 @@ void test_initial_board_placement()
     
 	// check all squares are zero
 	assert_true(the_board->board == (board_t) 0);
-    	for (int i = 0; i < NUM_PIECE_TYPES; i++) {
-		assert_true(the_board->piece_boards[i] == (board_t) 0);
+    	for (int i = 0; i < NUM_PIECES; i++) {
+		assert_true(the_board->bitboards[i] == (board_t) 0);
 	} } void test_add_to_board()
 {
 	board_container_t * the_board = get_clean_board();
@@ -284,15 +284,33 @@ void test_fen_parsing_general_layout_2()
 	//
 	set_bit(&test_brd, 22);
 	assert_true(test_brd == 4194304);
+    assert_true(1 == CNT(test_brd));
+    
     	test_brd = 0;
 	set_bit(&test_brd, 0);
     assert_true(test_brd == 1);
+    assert_true(1 == CNT(test_brd));
+
     	test_brd = 0;
     set_bit(&test_brd, 63);
 	assert_true(test_brd == 0x8000000000000000);
-    	test_brd = 0;
+    assert_true(1 == CNT(test_brd));	
+	
+	test_brd = 0;
     set_bit(&test_brd, 31);
     assert_true(test_brd == 2147483648);
+    assert_true(1 == CNT(test_brd));
+    
+    
+    test_brd = 0;
+    set_bit(&test_brd, 31);
+    set_bit(&test_brd, 1);
+    set_bit(&test_brd, 21);
+    set_bit(&test_brd, 55);
+    set_bit(&test_brd, 8);
+    assert_true(test_brd == 0x80000080200102);
+    assert_true(5 == CNT(test_brd));
+    
     } void test_clearing_bits_in_a_board()
 {
     	board_t test_brd = 0;
@@ -301,12 +319,21 @@ void test_fen_parsing_general_layout_2()
 	// Test clearing bits
 	//
 	set_bit(&test_brd, 22);
+	set_bit(&test_brd, 23);	
+	assert_true(2 == CNT(test_brd));
+	assert_true(check_bit(&test_brd, 22));
+	assert_true(check_bit(&test_brd, 23));
     clear_bit(&test_brd, 22);
-    assert_true(test_brd == 0);
-    	set_bit(&test_brd, 1);
+    assert_true(check_bit(&test_brd, 23));
+    assert_true(1 == CNT(test_brd));
+    
+    
+    
+    test_brd = 0;	set_bit(&test_brd, 1);
     clear_bit(&test_brd, 1);
     assert_true(test_brd == 0);
-    	set_bit(&test_brd, 31);
+        test_brd = 0;
+	set_bit(&test_brd, 31);
     clear_bit(&test_brd, 31);
     assert_true(test_brd == 0);
    	set_bit(&test_brd, 32);

@@ -34,7 +34,7 @@ U64 get_side_key(void);
 U64 get_piece_key(piece_id_t piece, square_t square);
 
 //----- hashkeys for positions
-static U64 piece_keys[NUM_PIECE_TYPES][NUM_SQUARES] = {{0}};
+static U64 piece_keys[NUM_PIECES][NUM_SQUARES] = {{0}};
 static U64 side_to_move_key = 0;
 static U64 castle_keys[16] = {0};	// 16 combinations because of 4 bits being used for castle enum
 //-----
@@ -48,7 +48,7 @@ static U64 castle_keys[16] = {0};	// 16 combinations because of 4 bits being use
  */
 void init_hash_keys(){
 	
-	for (int pce = 0; pce < NUM_PIECE_TYPES; pce++){
+	for (int pce = 0; pce < NUM_PIECES; pce++){
 		for(int sq = 0; sq < NUM_SQUARES; sq++){
 			piece_keys[pce][sq] = generate_rand64();
 		}

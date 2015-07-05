@@ -25,7 +25,7 @@
 
 
 // offsets into this array are by type piece_id_t 
-static const char pieceToChar[NUM_PIECE_TYPES] = {
+static const char pieceToChar[NUM_PIECES] = {
     'P', 'R', 'N', 'B', 'Q', 'K', 'p', 'r', 'n', 'b', 'q', 'k'
 };
 

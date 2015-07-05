@@ -60,11 +60,11 @@ typedef enum {
     B_BISHOP 	= 9,
     B_QUEEN 	= 10,
     B_KING 		= 11,
-    NUM_PIECE_TYPES = 12
+    NUM_PIECES 	= 12
 } piece_id_t;
 
 // piece values, indexed into using the piece_id_t enum
-static const int piece_values[NUM_PIECE_TYPES]= {  	
+static const int piece_values[NUM_PIECES]= {  	
 										100,  		// PAWN
 										550, 		// ROOK
 										325, 		// BISHOP
@@ -104,8 +104,8 @@ typedef struct {
  * A container for holding the bitboards
  */
 typedef struct {
-    // an entry for each piece type
-    board_t piece_boards[NUM_PIECE_TYPES];
+    // bitboard entry for each piece
+    board_t bitboards[NUM_PIECES];
 
     // The above array piece arrays overlayed into a single bitboard.
     // In effect, an OR of all elements in piece_boards[]
@@ -130,7 +130,7 @@ typedef struct {
 	
 	// indexed by piece_id_t, contains the number of pieces of that 
 	// type on the board
-	U8 pce_num[NUM_PIECE_TYPES];
+	U8 pce_num[NUM_PIECES];
 
 	// indexed by colour_t, contains number of pieces != PAWN
 	U8 big_pieces[NUM_COLOURS]; 
@@ -143,6 +143,10 @@ typedef struct {
 
 	// indexed by colour_t, contains sum of all piece values
 	U8 material[NUM_COLOURS];
+
+	// contains the pieces on each square
+	piece_id_t pieces[NUM_SQUARES];
+
 
 	// castling permissions
 	U8 castle_perm;

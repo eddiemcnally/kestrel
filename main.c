@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "types.h"
+#include "move.h"
 #include "board.h"
 #include "board_utils.h"
 #include "hashkeys.h"
@@ -41,9 +42,7 @@ int main(int argc, char **argv)
 	
 	init_hash_keys();
 	
-	printf("size of U16 : %lu", sizeof(U16));
-	printf("size of U8 : %lu", sizeof(U8));
-	
+	//print_occupancy_masks(B_KNIGHT);
 	
 	
 	board_container_t * the_board = get_clean_board();

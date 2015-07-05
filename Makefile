@@ -11,8 +11,7 @@
 
 # define any compile-time flags
 	CFLAGS	=	-Wall -g -std=c11 -o3 -Wmissing-prototypes -Wextra \
-				-Wstrict-prototypes -Werror -Wshadow -Wpointer-arith \
-				-Wmissing-prototypes
+				-Wstrict-prototypes -Werror -Wshadow -Wpointer-arith 
 
 # define any directories containing header files other than /usr/include
 #
@@ -34,8 +33,8 @@
 	TEST_SRCS	=	board.c pieces.c board_utils.c move.c init.c hashkeys.c \
 					fen.c utils.c attack.h \
 					test/all_tests.c test/board_test_fixture.c \
-					test/piece_test_fixture.c test/move_test_fixture.c \
-					test/seatest.c
+					test/piece_test_fixture.c test/seatest.c \
+					test/occupancy_mask_test_fixture.c
 
 
 # define the C object files
@@ -63,10 +62,10 @@
 .PHONY:	depend	clean
 
 all:	$(MAIN)
-		@echo  'ece' App build complete
+		@echo  'kestrel' build complete
 
 test:	$(TEST_MAIN)
-		@echo  'test_ece' App build complete
+		@echo  'test_kestrel' build complete
 
 $(MAIN):		$(OBJS)
 				$(CC) $(CFLAGS) $(INCLUDES) -o $(MAIN) $(OBJS) $(LFLAGS) $(LIBS)

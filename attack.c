@@ -23,7 +23,49 @@
 
 bool is_sq_attacked(const square_t sq, const colour_t attacking_side, const board_container_t * brd){
 	
+	// create bitboard for square 
+	board_t sqBB = 0;
+	set_bit(&sqBB, sq);
+	
+	piece_id_t attacking_piece;
+	
+	// ------------------------
+	// check bishops
+	// ------------------------
+	if (attacking_side == WHITE)
+		attacking_piece = W_BISHOP;
+	else
+		attacking_piece = B_BISHOP;
+	
+	board_t bbBishop = brd->bitboards[attacking_piece];
+	while( bbBishop != 0){
+		square_t sqBB = POP(&bbBishop);
+		
+		// get occupancy mask for this piece
+		
+			
+			
+			
+		}
+			
+		
+	}
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 }
+
+
+
+
+
 

@@ -117,8 +117,8 @@ bool ASSERT_BOARD_OK(board_container_t * brd){
 	// check bit boards
 	board_t conflated = 0;
 
-	for (int i = 0; i < NUM_PIECE_TYPES; i++){
-		conflated |= brd->piece_boards[i];	
+	for (int i = 0; i < NUM_PIECES; i++){
+		conflated |= brd->bitboards[i];	
 	}
 	assert(conflated == brd->board);
 
@@ -134,20 +134,31 @@ bool ASSERT_BOARD_OK(board_container_t * brd){
 		}		
 	}
 	
+	// check verbose representation of board
+	for (square_t sq = 0; sq < NUM_SQUARES; sq++){
+		piece_id_t pce = get_piece_at_square(brd, sq);
+		if (pce != NO_PIECE){
+			assert(pce == brd->pieces[sq]);
+		}
+	}
+	
+	
+	
+	
 	// check number of pieces on board
 	// -------------------------------
-	U8 pce_num[NUM_PIECE_TYPES] = {0};
+	U8 pce_num[NUM_PIECES] = {0};
 	for(square_t sq = 0; sq < NUM_SQUARES; sq++){
 		piece_id_t pce = get_piece_at_square(brd, sq);
 		if (pce != NO_PIECE){
 			pce_num[pce]++;
 		}		
 	}
-	for(int i = 0; i < NUM_PIECE_TYPES; i++){
+	for(int i = 0; i < NUM_PIECES; i++){
 		assert(pce_num[i] == brd->pce_num[i]);
 	}
-	for(int i = 0; i < NUM_PIECE_TYPES; i++){
-		assert(pce_num[i] == CNT(brd->piece_boards[i]));
+	for(int i = 0; i < NUM_PIECES; i++){
+		assert(pce_num[i] == CNT(brd->bitboards[i]));
 	}
 	
 	assert(brd->en_passant == NO_SQUARE \
