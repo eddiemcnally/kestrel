@@ -236,6 +236,53 @@ void generate_rook_occupancy_masks(board_t * occ_mask_array)
 
 
 
+void generate_queen_occupancy_masks(board_t * occ_mask_array){
+	// a queen is a rook + bishop
+	generate_bishop_occupancy_masks(occ_mask_array);
+	generate_rook_occupancy_masks(occ_mask_array);
+}
+
+
+// ignores first move and en passant
+void generate_pawn_occupancy_masks(colour_t side, board_t * occ_mask_array){
+
+//              56 57 58 59 60 61 62 63
+//              48 49 50 51 52 53 54 55
+//              40 41 42 43 44 45 46 47 
+//              32 33 34 35 36 37 38 39
+//              24 25 26 27 28 29 30 31
+//              16 17 18 19 20 21 22 23
+//              08 09 10 11 12 13 14 15
+//              00 01 02 03 40 05 06 07
+
+    for (square_t sq = 0; sq < NUM_SQUARES; sq++) {
+		
+		int rank = GET_RANK(sq);
+		int file = GET_FILE(sq);
+
+		board_t b = 0;
+
+		if (side == WHITE){
+			int dest_rank = rank + 1;
+			int dest_file_left = file - 1;
+			int dest_file_right = file + 1;
+			
+			set_dest_sq_if_valid(dest_rank, dest_file_left, &b);
+			set_dest_sq_if_valid(dest_rank, dest_file_right, &b);
+		} else {
+			int dest_rank = rank - 1;
+			int dest_file_left = file - 1;
+			int dest_file_right = file + 1;
+			
+			set_dest_sq_if_valid(dest_rank, dest_file_left, &b);
+			set_dest_sq_if_valid(dest_rank, dest_file_right, &b);
+		}
+		occ_mask_array[sq] = b;
+			
+	}	
+}
+
+
 
 
 void generate_bishop_occupancy_masks(board_t * occ_mask_array)
