@@ -999,9 +999,9 @@ void set_dest_sq_if_valid(int rank, int file, board_t *brd){
  */
 void print_occupancy_masks(piece_id_t pce)
 {
-    board_t *masks = malloc(sizeof(board_t) * NUM_SQUARES);
-    memset(masks, 0, sizeof(board_t) * NUM_SQUARES);
-
+	
+    board_t masks[NUM_SQUARES] = {0};
+    
 	switch(pce){
 		case W_KNIGHT:
 		case B_KNIGHT:
@@ -1039,7 +1039,6 @@ void print_occupancy_masks(piece_id_t pce)
 
     print_out_masks(masks);
 
-    free(masks);
 }
 
 void print_out_masks(board_t * masks)
