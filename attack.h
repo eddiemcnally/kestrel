@@ -24,6 +24,9 @@
 
 
 bool is_sq_attacked(const square_t sq, const colour_t attacking_side, const board_container_t * brd);
+bool is_knight_attacking_square(square_t sq, colour_t attacking_side, const board_container_t * brd);
+bool is_pawn_attacking_square(square_t sq, colour_t attacking_side, const board_container_t * brd);
+bool is_king_attacking_square(square_t sq, colour_t attacking_side, const board_container_t * brd);
 
 
 

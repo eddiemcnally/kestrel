@@ -29,12 +29,12 @@
 
 # define the C source files
 	SRCS		=	main.c board.c pieces.c board_utils.c move.c init.c \
-					hashkeys.c fen.c utils.c attack.h
+					hashkeys.c fen.c utils.c attack.c
 	TEST_SRCS	=	board.c pieces.c board_utils.c move.c init.c hashkeys.c \
-					fen.c utils.c attack.h \
+					fen.c utils.c attack.c \
 					test/all_tests.c test/board_test_fixture.c \
 					test/piece_test_fixture.c test/seatest.c \
-					test/occupancy_mask_test_fixture.c
+					test/occupancy_mask_test_fixture.c test/attack_test_fixture.c
 
 
 # define the C object files

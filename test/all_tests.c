@@ -19,6 +19,7 @@
 
 void all_tests(void);void board_test_fixture(void);
 void piece_test_fixture(void);
+void attack_test_fixture(void);
 void my_suite_setup(void) ;
 void occupancy_mask_test_fixture(void);
 void my_suite_teardown(void);
@@ -31,6 +32,8 @@ void all_tests(void)
     	board_test_fixture();
 			piece_test_fixture();
 		    	occupancy_mask_test_fixture();
+	
+	attack_test_fixture();
 	// add new test fixtures here.
 } void my_suite_setup(void) 
 {

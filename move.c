@@ -861,7 +861,7 @@ void generate_queen_occupancy_masks(board_t * occ_mask_array){
 }
 
 
-board_t get_occ_mask(piece_id_t pce, square_t sq){
+inline board_t get_occ_mask(piece_id_t pce, square_t sq){
 	switch(pce){
 		case W_KNIGHT:
 		case B_KNIGHT:
