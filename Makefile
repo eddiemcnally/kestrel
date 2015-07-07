@@ -1,10 +1,10 @@
 #
 # 'make depend' uses makedepend to automatically generate dependencies
 #               (dependencies are added to end of Makefile)
-# 'make'        build executable file 'ece'
-# 'make all'	makes executable file 'ece'
+# 'make'        build executable file 'kestrel'
+# 'make all'	makes executable file 'kestrel'
 # 'make clean'  removes all .o and executable files
-# 'make test'	makes the unit test executable 'test_ece'
+# 'make test'	makes the unit test executable 'test_kestrel'
 
 # define the C compiler to use
 	CC	=	gcc
@@ -28,13 +28,14 @@
 #LIBS = -lmylib -lm
 
 # define the C source files
-	SRCS		=	main.c board.c pieces.c board_utils.c move.c init.c \
-					hashkeys.c fen.c utils.c attack.c
-	TEST_SRCS	=	board.c pieces.c board_utils.c move.c init.c hashkeys.c \
-					fen.c utils.c attack.c \
+	SRCS		=	main.c board.c pieces.c board_utils.c move.c \
+					init.c hashkeys.c fen.c utils.c attack.c 
+	TEST_SRCS	=	board.c pieces.c board_utils.c move.c init.c \
+					hashkeys.c fen.c utils.c attack.c \
 					test/all_tests.c test/board_test_fixture.c \
 					test/piece_test_fixture.c test/seatest.c \
-					test/occupancy_mask_test_fixture.c test/attack_test_fixture.c
+					test/occupancy_mask_test_fixture.c \
+					test/attack_test_fixture.c
 
 
 # define the C object files

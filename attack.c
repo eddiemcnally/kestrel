@@ -28,101 +28,16 @@
 
 bool is_sq_attacked(const square_t sq, const colour_t attacking_side, const board_container_t * brd){
 	
-	// create bitboard for square under attack 
-	board_t sqBB = 0;
-	set_bit(&sqBB, sq);
 	
-	piece_id_t attacking_piece;
-		
-			
-	// ------------------------
-	// check pawns
-	// ------------------------
-	if (attacking_side == WHITE)
-		attacking_piece = W_PAWN;
-	else
-		attacking_piece = B_PAWN;
-	
-	// get the bitboard representing all pawns on the board of 
-	// this colour
-	board_t bbPawn = brd->bitboards[attacking_piece];
-	while( bbPawn != 0){
-		square_t att_pce_sq = POP(&bbPawn);
-		
-		// get occupancy mask for this piece
-		board_t mask = get_occ_mask(attacking_piece, att_pce_sq);
-		if (mask & sqBB){
-			// a pawn is attaching this square
-			return true;
-		}	
-	}
-	
-			
-	//// ------------------------
-	//// check knights
-	//// ------------------------
-	//if (attacking_side == WHITE)
-		//attacking_piece = W_KNIGHT;
-	//else
-		//attacking_piece = B_KNIGHT;
-	
-	//// get the bitboard representing all knights on the board of 
-	//// this colour
-	//board_t bbKnight = brd->bitboards[attacking_piece];
-	//while( bbKnight != 0){
-		//square_t att_pce_sq = POP(&bbKnight);
-		
-		//// get occupancy mask for this piece
-		//board_t mask = get_occ_mask(attacking_piece, att_pce_sq);
-		//if (mask & sqBB){
-			//// a Knight is attaching this square
-			//return true;
-		//}	
-	//}
+	if (is_knight_attacking_square(sq, attacking_side, brd))
+		return true;
+	if (is_pawn_attacking_square(sq, attacking_side, brd))
+		return true;
+	if (is_king_attacking_square(sq, attacking_side, brd))
+		return true;
 	
 	
-	
-	//// ------------------------
-	//// check bishops
-	//// ------------------------
-	//if (attacking_side == WHITE)
-		//attacking_piece = W_BISHOP;
-	//else
-		//attacking_piece = B_BISHOP;
-	
-	//board_t bbBishop = brd->bitboards[attacking_piece];
-	//while( bbBishop != 0){
-		//square_t att_pce_sq = POP(&bbBishop);
-		
-		//// get occupancy mask for this piece
-		//board_t mask = get_occ_mask(attacking_piece, att_pce_sq);
-		//if (mask & sqBB){
-			//// bishop is attaching this square
-			//return true;
-		//}	
-	//}
-			
-	//// ------------------------
-	//// check rooks
-	//// ------------------------
-	//if (attacking_side == WHITE)
-		//attacking_piece = W_ROOK;
-	//else
-		//attacking_piece = B_ROOK;
-	
-	//board_t bbRook = brd->bitboards[attacking_piece];
-	//while( bbRook != 0){
-		//square_t att_pce_sq = POP(&bbRook);
-		
-		//// get occupancy mask for this piece
-		//board_t mask = get_occ_mask(attacking_piece, att_pce_sq);
-		//if (mask & sqBB){
-
-			//// rook is attaching this square
-			//return true;
-		//}	
-	//}
-		return false;
+	return false;
 }
 
 
