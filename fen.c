@@ -38,6 +38,15 @@
  * Thanks for BlueFever Software for his youtube videos and this code
  */
  
+ 
+ /**
+  * TODO
+  * fix this:
+  * 
+	// black queen attacking e2
+	char * test_fen = "88/1R1PpR2/5P2/1K3p2/3r1p2/k5Pp/4Pq1p/1Q6 w - - 0 1";
+ * there should be 2 white queens, but only shows 1 when printing board
+ */
 int consume_fen_notation(char *fen_string, board_container_t * board_to_setup){
 	
     //example of starting position:

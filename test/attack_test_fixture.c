@@ -33,7 +33,7 @@ void attack_test_fixture(void);
 void test_is_square_being_attacked_by_knight(void);
 void test_is_square_being_attacked_by_pawn(void);
 void test_is_square_being_attacked_by_king(void);
-
+void test_is_square_being_attacked_by_rook_or_queen(void);
 
 
 
@@ -156,6 +156,67 @@ void test_is_square_being_attacked_by_king(void){
 }
 
 
+void test_is_square_being_attacked_by_rook_or_queen(void){
+	
+	// black queen attacking e2
+	char * test_fen = "88/1R1PpR2/5P2/1K3p2/3r1p2/k5Pp/4Pq1p/1Q6 w - - 0 1";
+	
+	board_container_t * brd = get_clean_board();
+	consume_fen_notation(test_fen, brd);
+	//print_board(brd);
+	assert_true(is_rook_or_queen_attacking_square(e2, B_QUEEN, brd));	
+	
+	
+	
+	
+	
+	// c7 attacked by WQ
+	// c7 attacked by WQ (2nd queen)
+	// b5 attacked by WQ
+	// b3 attacked by BR
+	// b3 attacked by BQ
+	// d2 attacked by BQ
+	// b7 attacked by BR	
+	test_fen = "3R4/1Qp2QP1/p7/rrp1K2P/2p2P1p/pPP1kPp1/P1pRP3/1q1q4 w - - 0 1";
+	
+	brd = get_clean_board();
+	consume_fen_notation(test_fen, brd);
+	//print_board(brd);
+	assert_true(is_rook_or_queen_attacking_square(c7, W_QUEEN, brd));	
+	assert_true(is_rook_or_queen_attacking_square(c7, W_QUEEN, brd));	
+	assert_true(is_rook_or_queen_attacking_square(b5, W_QUEEN, brd));	
+	assert_true(is_rook_or_queen_attacking_square(b3, B_ROOK, brd));	
+	assert_true(is_rook_or_queen_attacking_square(b3, B_QUEEN, brd));	
+	assert_true(is_rook_or_queen_attacking_square(d2, B_QUEEN, brd));
+	assert_true(is_rook_or_queen_attacking_square(b7, B_ROOK, brd));
+
+
+
+
+
+
+	// b7 attacked by BR
+	// a5 attacked by WR
+	// b5 attacked by WR
+	// h5 attacked by WR
+	// e6 attacked by BQ
+	// g7 attacked by BQ
+	test_fen = "r7/1Pr2p2/2P1PqP1/pp1R3p/3P1p2/RKP2pP1/2P2pkp/4Q3 w - - 0 1";
+	
+	brd = get_clean_board();
+	consume_fen_notation(test_fen, brd);
+	//print_board(brd);
+	assert_true(is_rook_or_queen_attacking_square(b7, B_ROOK, brd));	
+	assert_true(is_rook_or_queen_attacking_square(a5, W_ROOK, brd));	
+	assert_true(is_rook_or_queen_attacking_square(b5, W_ROOK, brd));	
+	assert_true(is_rook_or_queen_attacking_square(h5, W_ROOK, brd));	
+	assert_true(is_rook_or_queen_attacking_square(e6, B_QUEEN, brd));	
+	assert_true(is_rook_or_queen_attacking_square(g6, B_QUEEN, brd));
+		
+	
+}
+
+
 
 
 
@@ -166,7 +227,7 @@ void attack_test_fixture(void)
 	run_test(test_is_square_being_attacked_by_knight);
 	run_test(test_is_square_being_attacked_by_pawn);
 	run_test(test_is_square_being_attacked_by_king);
-
+	run_test(test_is_square_being_attacked_by_rook_or_queen);
     
     test_fixture_end();		// ends a fixture
 }

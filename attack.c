@@ -19,11 +19,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <assert.h>
 #include "types.h"
 #include "board.h"
 #include "board_utils.h"
 #include "move.h"
 #include "attack.h"
+
+
 
 
 bool is_sq_attacked(const square_t sq, const colour_t attacking_side, const board_container_t * brd){
@@ -74,6 +77,132 @@ inline bool is_knight_attacking_square(square_t sq, colour_t attacking_side, con
 	}
 	return false;
 }
+
+
+
+
+
+
+/**
+ * checks for overlap moves of rook and queen
+ */
+inline bool is_rook_or_queen_attacking_square(square_t sq, piece_id_t attacking_piece, const board_container_t * brd){
+	
+	
+	// create bitboard for square under attack 
+	//board_t sq_bb = 0;
+	//set_bit(&sq_bb, sq);
+	
+	// get the bitboard representing all the attacking piece types
+	board_t att_bb = brd->bitboards[attacking_piece];
+
+	int sq_rank = GET_RANK(sq);
+	int sq_file = GET_FILE(sq);
+	
+	while(att_bb != 0){
+		// square containing the attacking piece
+		square_t att_pce_sq = POP(&att_bb);
+		
+		int att_pce_rank = GET_RANK(att_pce_sq);
+		int att_pce_file = GET_FILE(att_pce_sq);
+		
+		assert(att_pce_sq != sq);
+
+		// if piece is NOT on same rank or file as target square, then 
+		// it's not attacking
+		if(att_pce_rank != sq_rank && att_pce_file != sq_file)
+			continue;
+
+		if (att_pce_rank == sq_rank){
+			// on same rank, find which way to look
+			if (sq_file < att_pce_file){
+				// check left for blocking pieces
+				//printf("sq is < piece\n");
+				for (int file = sq_file; file <= att_pce_file; file++){
+					square_t s = GET_SQUARE(att_pce_rank, file);
+					//printf("test sq %d\n", s);
+					
+					if (sq == s){
+						// hit on dest square...
+						return true;
+					} 
+					board_t sq_bb = 0;
+					set_bit(&sq_bb, s);
+
+					if (is_square_occupied(sq_bb, s)){
+						// intervening square occupied, blocking attack
+						// ...keep looking
+						continue;
+					}					
+				} 				
+			} else {
+				// check right
+				for (int file = att_pce_file; file <= sq_file; file++){
+					square_t s = GET_SQUARE(att_pce_rank, file);
+					if (sq == s){
+						// hit on dest square...
+						return true;
+					} 
+					board_t sq_bb = 0;
+					set_bit(&sq_bb, s);
+
+					if (is_square_occupied(sq_bb, s)){
+						// intervening square occupied, blocking attack
+						// ...keep looking
+						continue;
+					}					
+				}
+			}
+		} else if (att_pce_file == sq_file){
+			if (sq_rank < att_pce_rank){
+				// see if file is empty between piece and square
+				for (int rank = sq_rank; rank <= att_pce_rank; rank++){
+					square_t s = GET_SQUARE(rank, att_pce_file);
+					if (sq == s){
+						// hit on dest square...
+						return true;
+					} 
+					board_t sq_bb = 0;
+					set_bit(&sq_bb, s);
+
+					if (is_square_occupied(sq_bb, s)){
+						// intervening square occupied, blocking attack
+						// ...keep looking
+						continue;
+					}					
+				} 				
+			} else {
+				// see if file between pieces is empty
+				for (int rank = att_pce_rank; rank <= sq_rank; rank++){
+					square_t s = GET_SQUARE(rank, att_pce_file);
+					if (sq == s){
+						// hit on dest square...
+						return true;
+					} 
+					board_t sq_bb = 0;
+					set_bit(&sq_bb, s);
+
+					if (is_square_occupied(sq_bb, s)){
+						// intervening square occupied, blocking attack
+						// ...keep looking
+						continue;
+					}					
+				} 				
+			}
+	
+		} else {
+			assert((att_pce_file != sq_file) && (att_pce_file != sq_file));
+			
+		}			
+	}
+	return false;
+}
+
+
+
+
+
+
 
 
 
