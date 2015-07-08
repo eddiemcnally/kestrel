@@ -54,6 +54,9 @@ int main(int argc, char **argv)
     printf("PAWN : 0x%016llx\n", pawn);
     
     
+    printf("AND'ed : 0x%016llx\n", pawn & rook);
+    
+    
     
     //print_board(the_board);
     //ASSERT_BOARD_OK(the_board);

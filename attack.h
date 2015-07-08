@@ -28,7 +28,7 @@ bool is_knight_attacking_square(square_t sq, colour_t attacking_side, const boar
 bool is_pawn_attacking_square(square_t sq, colour_t attacking_side, const board_container_t * brd);
 bool is_king_attacking_square(square_t sq, colour_t attacking_side, const board_container_t * brd);
 
-bool is_rook_or_queen_attacking_square(square_t sq, piece_id_t attacking_piece, const board_container_t * brd);
+bool is_rook_or_queen_attacking_square_rank_and_file(square_t sq, piece_id_t attacking_piece, const board_container_t * brd);
 
 
 #endif

@@ -164,7 +164,7 @@ void test_is_square_being_attacked_by_rook_or_queen(void){
 	board_container_t * brd = get_clean_board();
 	consume_fen_notation(test_fen, brd);
 	//print_board(brd);
-	assert_true(is_rook_or_queen_attacking_square(e2, B_QUEEN, brd));	
+	assert_true(is_rook_or_queen_attacking_square_rank_and_file(e2, B_QUEEN, brd));	
 	
 	
 	
@@ -182,13 +182,13 @@ void test_is_square_being_attacked_by_rook_or_queen(void){
 	brd = get_clean_board();
 	consume_fen_notation(test_fen, brd);
 	//print_board(brd);
-	assert_true(is_rook_or_queen_attacking_square(c7, W_QUEEN, brd));	
-	assert_true(is_rook_or_queen_attacking_square(c7, W_QUEEN, brd));	
-	assert_true(is_rook_or_queen_attacking_square(b5, W_QUEEN, brd));	
-	assert_true(is_rook_or_queen_attacking_square(b3, B_ROOK, brd));	
-	assert_true(is_rook_or_queen_attacking_square(b3, B_QUEEN, brd));	
-	assert_true(is_rook_or_queen_attacking_square(d2, B_QUEEN, brd));
-	assert_true(is_rook_or_queen_attacking_square(b7, B_ROOK, brd));
+	//assert_true(is_rook_or_queen_attacking_square_rank_and_file(c7, W_QUEEN, brd));	
+	assert_true(is_rook_or_queen_attacking_square_rank_and_file(c7, W_QUEEN, brd));	
+	assert_true(is_rook_or_queen_attacking_square_rank_and_file(b5, W_QUEEN, brd));	
+	assert_true(is_rook_or_queen_attacking_square_rank_and_file(b3, B_ROOK, brd));	
+	assert_true(is_rook_or_queen_attacking_square_rank_and_file(b3, B_QUEEN, brd));	
+	assert_true(is_rook_or_queen_attacking_square_rank_and_file(d2, B_QUEEN, brd));
+	assert_true(is_rook_or_queen_attacking_square_rank_and_file(b7, B_ROOK, brd));
 
 
 
@@ -206,12 +206,12 @@ void test_is_square_being_attacked_by_rook_or_queen(void){
 	brd = get_clean_board();
 	consume_fen_notation(test_fen, brd);
 	//print_board(brd);
-	assert_true(is_rook_or_queen_attacking_square(b7, B_ROOK, brd));	
-	assert_true(is_rook_or_queen_attacking_square(a5, W_ROOK, brd));	
-	assert_true(is_rook_or_queen_attacking_square(b5, W_ROOK, brd));	
-	assert_true(is_rook_or_queen_attacking_square(h5, W_ROOK, brd));	
-	assert_true(is_rook_or_queen_attacking_square(e6, B_QUEEN, brd));	
-	assert_true(is_rook_or_queen_attacking_square(g6, B_QUEEN, brd));
+	assert_true(is_rook_or_queen_attacking_square_rank_and_file(b7, B_ROOK, brd));	
+	assert_true(is_rook_or_queen_attacking_square_rank_and_file(a5, W_ROOK, brd));	
+	assert_true(is_rook_or_queen_attacking_square_rank_and_file(b5, W_ROOK, brd));	
+	assert_true(is_rook_or_queen_attacking_square_rank_and_file(h5, W_ROOK, brd));	
+	assert_true(is_rook_or_queen_attacking_square_rank_and_file(e6, B_QUEEN, brd));	
+	assert_true(is_rook_or_queen_attacking_square_rank_and_file(g6, B_QUEEN, brd));
 		
 	
 }
