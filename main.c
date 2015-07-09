@@ -26,6 +26,7 @@
 #include "board_utils.h"
 #include "hashkeys.h"
 #include "init.h"
+#include "occupancy_mask.h"
 #include "fen.h"
 
 
@@ -46,7 +47,10 @@ int main(int argc, char **argv)
 	board_container_t * the_board = get_clean_board();
     consume_fen_notation(FEN5, the_board);
     
-    board_t rook = get_occ_mask(W_ROOK, a5);
+    board_t rook = GET_ROOK_OCC_MASK(a5);
+    print_occupancy_mask_as_board(&rook, W_ROOK, a5);
+    
+    
     printf("ROOK : 0x%016llx\n", rook);
     
     board_t pawn = 0;

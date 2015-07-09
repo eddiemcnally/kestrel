@@ -34,6 +34,8 @@ void test_is_square_being_attacked_by_knight(void);
 void test_is_square_being_attacked_by_pawn(void);
 void test_is_square_being_attacked_by_king(void);
 void test_is_square_being_attacked_by_rook_or_queen(void);
+void test_is_square_being_attacked_by_rook(void);
+void test_is_square_being_attacked_by_bishop(void);
 
 
 
@@ -63,7 +65,10 @@ void test_is_square_being_attacked_by_knight(void){
 	assert_true(is_knight_attacking_square(g5, WHITE, brd)); 
 	assert_true(is_knight_attacking_square(e4, BLACK, brd)); 
 	assert_true(is_knight_attacking_square(g4, BLACK, brd)); 
-
+	
+	//assert_true(is_knight_attacking_square(a2, WHITE, brd) == false); 
+	//assert_true(is_knight_attacking_square(h7, BLACK, brd) == false); 
+	//assert_true(is_knight_attacking_square(d8, BLACK, brd) == false); 
 
 
 	// - white Knight attacks c6
@@ -156,66 +161,100 @@ void test_is_square_being_attacked_by_king(void){
 }
 
 
-void test_is_square_being_attacked_by_rook_or_queen(void){
-	
-	// black queen attacking e2
-	char * test_fen = "88/1R1PpR2/5P2/1K3p2/3r1p2/k5Pp/4Pq1p/1Q6 w - - 0 1";
+void test_is_square_being_attacked_by_rook(){
+
+
+	// c8 attacked by WR
+	// a6 attacked by BR
+	// g6 attacked by BR
+	// d2 attacked by BR
+	// c2 attacked by WR
+	char * test_fen = "R1qq4/P1k2p1P/Qr4QP/2p2PP1/2prp1p1/2p4p/1PpPPK2/2R5 w - - 0 1";
 	
 	board_container_t * brd = get_clean_board();
 	consume_fen_notation(test_fen, brd);
 	//print_board(brd);
-	assert_true(is_rook_or_queen_attacking_square_rank_and_file(e2, B_QUEEN, brd));	
+	assert_true(is_rook_attacking_square(c8, WHITE, brd)); 
+	assert_true(is_rook_attacking_square(a6, BLACK, brd)); 
+	assert_true(is_rook_attacking_square(g6, BLACK, brd)); 
+	assert_true(is_rook_attacking_square(d2, BLACK, brd)); 
+	assert_true(is_rook_attacking_square(c2, WHITE, brd)); 
 	
 	
 	
 	
-	
-	// c7 attacked by WQ
-	// c7 attacked by WQ (2nd queen)
-	// b5 attacked by WQ
-	// b3 attacked by BR
-	// b3 attacked by BQ
-	// d2 attacked by BQ
-	// b7 attacked by BR	
-	test_fen = "3R4/1Qp2QP1/p7/rrp1K2P/2p2P1p/pPP1kPp1/P1pRP3/1q1q4 w - - 0 1";
-	
-	brd = get_clean_board();
-	consume_fen_notation(test_fen, brd);
-	//print_board(brd);
-	//assert_true(is_rook_or_queen_attacking_square_rank_and_file(c7, W_QUEEN, brd));	
-	assert_true(is_rook_or_queen_attacking_square_rank_and_file(c7, W_QUEEN, brd));	
-	assert_true(is_rook_or_queen_attacking_square_rank_and_file(b5, W_QUEEN, brd));	
-	assert_true(is_rook_or_queen_attacking_square_rank_and_file(b3, B_ROOK, brd));	
-	assert_true(is_rook_or_queen_attacking_square_rank_and_file(b3, B_QUEEN, brd));	
-	assert_true(is_rook_or_queen_attacking_square_rank_and_file(d2, B_QUEEN, brd));
-	assert_true(is_rook_or_queen_attacking_square_rank_and_file(b7, B_ROOK, brd));
-
-
-
-
-
-
-	// b7 attacked by BR
-	// a5 attacked by WR
-	// b5 attacked by WR
-	// h5 attacked by WR
-	// e6 attacked by BQ
-	// g7 attacked by BQ
-	test_fen = "r7/1Pr2p2/2P1PqP1/pp1R3p/3P1p2/RKP2pP1/2P2pkp/4Q3 w - - 0 1";
+	// d8 attacked by WR
+	// f7 attacked by WR
+	// a6 attacked by BR
+	// e6 attacked by WR
+	// e2 attacked by WR
+	// e3 attacked by BR
+	test_fen = "1Q1b1R2/1P1P1p2/Q2ppP1K/r1pp1b2/pP1P1Pp1/NkqPR3/N2pr2P/4q3 w - - 0 1";
 	
 	brd = get_clean_board();
 	consume_fen_notation(test_fen, brd);
 	//print_board(brd);
-	assert_true(is_rook_or_queen_attacking_square_rank_and_file(b7, B_ROOK, brd));	
-	assert_true(is_rook_or_queen_attacking_square_rank_and_file(a5, W_ROOK, brd));	
-	assert_true(is_rook_or_queen_attacking_square_rank_and_file(b5, W_ROOK, brd));	
-	assert_true(is_rook_or_queen_attacking_square_rank_and_file(h5, W_ROOK, brd));	
-	assert_true(is_rook_or_queen_attacking_square_rank_and_file(e6, B_QUEEN, brd));	
-	assert_true(is_rook_or_queen_attacking_square_rank_and_file(g6, B_QUEEN, brd));
-		
+	assert_true(is_rook_attacking_square(d8, WHITE, brd)); 
+	assert_true(is_rook_attacking_square(f7, WHITE, brd)); 
+	assert_true(is_rook_attacking_square(a6, BLACK, brd)); 
+	assert_true(is_rook_attacking_square(e6, WHITE, brd)); 
+	assert_true(is_rook_attacking_square(e2, WHITE, brd));
+	assert_true(is_rook_attacking_square(e3, BLACK, brd));
+	 
+	
+	
+	
+	// a8 attacked by WR
+	// d7 attacked by WR
+	// b6 attacked by WR
+	// d4 attacked by WR
+	// f5 attacked by BR
+	// h6 attacked by BR
+	// f2 attacked by BR
+	// h1 attacked by BR
+	test_fen = "b1qkN3/R2pb1P1/1pp1pPpP/4QP1r/1R1p2P1/P2q1P2/p1pP1N1r/6KQ w - - 0 1";
+	
+	brd = get_clean_board();
+	consume_fen_notation(test_fen, brd);
+	//print_board(brd);
+	assert_true(is_rook_attacking_square(a8, WHITE, brd)); 
+	assert_true(is_rook_attacking_square(d7, WHITE, brd));
+	assert_true(is_rook_attacking_square(b6, WHITE, brd));
+	assert_true(is_rook_attacking_square(d4, WHITE, brd));
+	assert_true(is_rook_attacking_square(f5, BLACK, brd));
+	assert_true(is_rook_attacking_square(h6, BLACK, brd));
+	assert_true(is_rook_attacking_square(f2, BLACK, brd));
+	assert_true(is_rook_attacking_square(h1, BLACK, brd));
+	
+	
 	
 }
 
+
+void test_is_square_being_attacked_by_bishop(void){
+
+	// e7 is attacked by WB
+	// d4 is attacked by WB
+	// f5 is attacked by WB
+	// e2 is attacked by WB
+	// b6 is attacked by WB
+	// d5 is attacked by BB
+	char * test_fen = "6rR/P3b2P/1p2bP2/p1BPkp1p/1P1r1pPp/3B4/PK1ppR1P/8 w - - 0 1";
+	
+	board_container_t * brd = get_clean_board();
+	consume_fen_notation(test_fen, brd);
+	//print_board(brd);
+	assert_true(is_bishop_attacking_square(e7, WHITE, brd)); 
+	//assert_true(is_bishop_attacking_square(d4, WHITE, brd)); 
+	//assert_true(is_bishop_attacking_square(f5, WHITE, brd)); 
+	//assert_true(is_bishop_attacking_square(e2, WHITE, brd)); 
+	//assert_true(is_bishop_attacking_square(b6, WHITE, brd)); 
+	//assert_true(is_bishop_attacking_square(d5, BLACK, brd)); 
+	
+	
+	
+	
+}
 
 
 
@@ -227,7 +266,8 @@ void attack_test_fixture(void)
 	run_test(test_is_square_being_attacked_by_knight);
 	run_test(test_is_square_being_attacked_by_pawn);
 	run_test(test_is_square_being_attacked_by_king);
-	run_test(test_is_square_being_attacked_by_rook_or_queen);
+    run_test(test_is_square_being_attacked_by_rook);
+    run_test(test_is_square_being_attacked_by_bishop);
     
     test_fixture_end();		// ends a fixture
 }

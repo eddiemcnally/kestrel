@@ -18,11 +18,5 @@
 #ifndef _MOVE_H_
 #define _MOVE_H_
 
-#include "types.h"
- 
-void print_occupancy_masks(piece_id_t pce);
-board_t get_occ_mask(piece_id_t pce, square_t sq);
-
-
 
 #endif

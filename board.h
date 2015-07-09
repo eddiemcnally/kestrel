@@ -75,6 +75,19 @@ enum {
 
 
 
+typedef enum{
+	N 	= 	0x01,
+	NE 	= 	0x02,
+	E	=	0x04,
+	SE	=	0x08,
+	S	=	0x10,
+	SW	=	0x20,
+	W	=	0x40,
+	
+
+} direction_t;
+
+
 
 board_container_t * init_board(void);
 board_container_t *get_clean_board(void);

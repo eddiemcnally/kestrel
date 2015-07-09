@@ -25,9 +25,10 @@
 #include "board_utils.h"
 #include "move.h"
 #include "attack.h"
+#include "occupancy_mask.h"
 
-
-
+static bool is_horizontal_or_vertical_blocked(square_t sq_one, square_t sq_two, board_container_t * brd);
+static bool is_diagonally_blocked(square_t sq_one, square_t sq_two, board_container_t * brd);
 
 bool is_sq_attacked(const square_t sq, const colour_t attacking_side, const board_container_t * brd){
 	
@@ -51,27 +52,24 @@ inline bool is_knight_attacking_square(square_t sq, colour_t attacking_side, con
 	
 	piece_id_t attacking_piece;
 
-	if (attacking_side == WHITE){
+	if (attacking_side == WHITE)
 		attacking_piece = W_KNIGHT;
-		//printf("attacking pce = W_KNIGHT");
-	} else {
+	else 
 		attacking_piece = B_KNIGHT;
-		//printf("attacking pce = B_KNIGHT");
-	}
+
 	
 	// get the bitboard representing all knights on the board of 
 	// this colour
 	board_t bbKnight = brd->bitboards[attacking_piece];
 	
-	//printf("BB for knight : 0x%016llx\n", bbKnight);
-	
 	while( bbKnight != 0){
 		square_t att_pce_sq = POP(&bbKnight);
 		
-		// get occupancy mask for this piece
-		board_t mask = get_occ_mask(attacking_piece, att_pce_sq);
-		if (mask & sqBB){
+		// get occupancy mask for this piece and square
+		board_t mask = GET_KNIGHT_OCC_MASK(att_pce_sq);
+		if ((mask & sqBB) != 0){
 			// a Knight is attacking this square
+			
 			return true;
 		}	
 	}
@@ -80,315 +78,199 @@ inline bool is_knight_attacking_square(square_t sq, colour_t attacking_side, con
 
 
 
+bool is_bishop_attacking_square(square_t sq, colour_t attacking_side, board_container_t * brd){
+	// create bitboard for square under attack 
+	board_t sqBB = 0;
+	set_bit(&sqBB, sq);
+	
+	piece_id_t attacking_piece;
 
-
-
-/**
- * checks for overlap moves of rook and queen
- * (horizontal and vertical moves)
- */
-inline bool is_rook_or_queen_attacking_square_rank_and_file(square_t sq, piece_id_t attacking_piece, const board_container_t * brd){
-	square_t s = sq;
-	board_t sq_bb = 0;
+	if (attacking_side == WHITE)
+		attacking_piece = W_BISHOP;
+	else 
+		attacking_piece = B_BISHOP;
 
 	
-	// get the bitboard representing all the attacking piece types
-	board_t att_bb = brd->bitboards[attacking_piece];
-
-
-	int sq_rank = GET_RANK(sq);
-	int sq_file = GET_FILE(sq);
+	// get the bitboard representing all bishops on the board of 
+	// this colour
+	board_t bbBishop = brd->bitboards[attacking_piece];
 	
-	while(att_bb != 0){
-		// square containing the attacking piece
-		square_t att_pce_sq = POP(&att_bb);
+	while( bbBishop != 0){
+		square_t att_pce_sq = POP(&bbBishop);
 		
-		int att_pce_rank = GET_RANK(att_pce_sq);
-		int att_pce_file = GET_FILE(att_pce_sq);
-		
-		assert(att_pce_sq != sq);
-
-		// if piece is NOT on same rank or file as target square, then 
-		// it's not attacking
-		if(att_pce_rank != sq_rank && att_pce_file != sq_file)
-			continue;
-		
-
-		if (att_pce_rank == sq_rank){
-			// on same rank, find which way to look
-			if (sq_file < att_pce_file){
-				// check left for blocking pieces
-				//printf("sq is < piece\n");
-				for (int file = sq_file; file <= att_pce_file; file++){
-					s = GET_SQUARE(att_pce_rank, file);
-					//printf("test sq %d\n", s);
-					
-					if (sq == s){
-						// hit on dest square...
-						return true;
-					} 
-					sq_bb = 0;
-					set_bit(&sq_bb, s);
-
-					if (is_square_occupied(sq_bb, s)){
-						// intervening square occupied, blocking attack
-						// ...keep looking
-						continue;
-					}					
-				} 				
-			} else {
-				// check right
-				for (int file = att_pce_file; file <= sq_file; file++){
-					s = GET_SQUARE(att_pce_rank, file);
-					if (sq == s){
-						// hit on dest square...
-						return true;
-					} 
-					sq_bb = 0;
-					set_bit(&sq_bb, s);
-
-					if (is_square_occupied(sq_bb, s)){
-						// intervening square occupied, blocking attack
-						// ...keep looking
-						continue;
-					}					
-				}
-			}
-		} else if (att_pce_file == sq_file){
-			if (sq_rank < att_pce_rank){
-				// see if file is empty between piece and square
-				for (int rank = sq_rank; rank <= att_pce_rank; rank++){
-					s = GET_SQUARE(rank, att_pce_file);
-					if (sq == s){
-						// hit on dest square...
-						return true;
-					} 
-					sq_bb = 0;
-					set_bit(&sq_bb, s);
-
-					if (is_square_occupied(sq_bb, s)){
-						// intervening square occupied, blocking attack
-						// ...keep looking
-						continue;
-					}					
-				} 				
-			} else {
-				// see if file between pieces is empty
-				for (int rank = att_pce_rank; rank <= sq_rank; rank++){
-					s = GET_SQUARE(rank, att_pce_file);
-					if (sq == s){
-						// hit on dest square...
-						return true;
-					} 
-					sq_bb = 0;
-					set_bit(&sq_bb, s);
-
-					if (is_square_occupied(sq_bb, s)){
-						// intervening square occupied, blocking attack
-						// ...keep looking
-						continue;
-					}					
-				} 				
-			}
-	
-		} else {
-			assert((att_pce_file != sq_file) && (att_pce_file != sq_file));
-		}			
+		// get occupancy mask for this piece and square
+		board_t mask = GET_ROOK_OCC_MASK(att_pce_sq);
+		if (mask & sqBB){
+			// a bishop is possibly attacking this square
+			// search for any blocking pieces
+			bool blocked = is_diagonally_blocked(sq, att_pce_sq, brd);
+			if (!blocked)
+				return true;
+		}	
 	}
 	return false;
 }
 
 
 
-
-
-
-
-
-/**
- * checks for overlap moves of rook and queen
- * (horizontal and vertical moves)
- */
-//static inline bool is_bishop_or_queen_attacking_square_diagonally(square_t sq, piece_id_t attacking_piece, const board_container_t * brd){
-		
-	//// get the bitboard representing all the attacking piece types
-	//board_t att_bb = brd->bitboards[attacking_piece];
-
-	//int sq_rank = GET_RANK(sq);
-	//int sq_file = GET_FILE(sq);
-
-	
-	//while(att_bb != 0){
-		//// square containing the attacking piece
-		//square_t att_pce_sq = POP(&att_bb);
-
-		//int att_pce_rank = GET_RANK(att_pce_sq);
-		//int att_pce_file = GET_FILE(att_pce_sq);
-
-		//assert(att_pce_sq != sq);
-
-		//if ((sq_rank < att_pce_rank) && (sq_file < att_pce_rank)){
-			//int rank = sq_rank;
-			//int file = sq_file;
-			
-			//while( (sq_rank <= RANK_8) && (sq_file <= FILE_H)){
-				//square_t s = GET_SQUARE(rank, file);
-				////printf("test sq %d\n", s);					
-				//if (sq == s){
-					//// hit on dest square...
-					//return true;
-				//} 
-				//board_t sq_bb = 0;
-				//set_bit(&sq_bb, s);
-				//if (is_square_occupied(sq_bb, s)){
-					//// intervening square occupied, blocking attack
-					//// ...keep looking
-					//continue;
-				//}
-				//rank++;
-				//file++;
-			//}
-		//} else if ((sq_rank < att_pce_rank) && (sq_file > att_pce_rank)){
-			//int rank = sq_rank;
-			//int file = sq_file;
-			
-			//while( (sq_rank <= RANK_8) && (sq_file <= FILE_H)){
-				//square_t s = GET_SQUARE(rank, file);
-				////printf("test sq %d\n", s);					
-				//if (sq == s){
-					//// hit on dest square...
-					//return true;
-				//} 
-				//board_t sq_bb = 0;
-				//set_bit(&sq_bb, s);
-				//if (is_square_occupied(sq_bb, s)){
-					//// intervening square occupied, blocking attack
-					//// ...keep looking
-					//continue;
-				//}
-				//rank++;
-				//file++;
-			//}
-		//} 
-
-
-
-
-
-
-
-		//// if piece is NOT on same rank or file as target square, then 
-		//// it's not attacking
-		//if(att_pce_rank != sq_rank && att_pce_file != sq_file)
-			//continue;
-
-		//if (att_pce_rank == sq_rank){
-			//// on same rank, find which way to look
-			//if (sq_file < att_pce_file){
-				//// check left for blocking pieces
-				////printf("sq is < piece\n");
-				//for (int file = sq_file; file <= att_pce_file; file++){
-					//square_t s = GET_SQUARE(att_pce_rank, file);
-					////printf("test sq %d\n", s);
-					
-					//if (sq == s){
-						//// hit on dest square...
-						//return true;
-					//} 
-					//board_t sq_bb = 0;
-					//set_bit(&sq_bb, s);
-
-					//if (is_square_occupied(sq_bb, s)){
-						//// intervening square occupied, blocking attack
-						//// ...keep looking
-						//continue;
-					//}					
-				//} 				
-			//} else {
-				//// check right
-				//for (int file = att_pce_file; file <= sq_file; file++){
-					//square_t s = GET_SQUARE(att_pce_rank, file);
-					//if (sq == s){
-						//// hit on dest square...
-						//return true;
-					//} 
-					//board_t sq_bb = 0;
-					//set_bit(&sq_bb, s);
-
-					//if (is_square_occupied(sq_bb, s)){
-						//// intervening square occupied, blocking attack
-						//// ...keep looking
-						//continue;
-					//}					
-				//}
-			//}
-		//} else if (att_pce_file == sq_file){
-			//if (sq_rank < att_pce_rank){
-				//// see if file is empty between piece and square
-				//for (int rank = sq_rank; rank <= att_pce_rank; rank++){
-					//square_t s = GET_SQUARE(rank, att_pce_file);
-					//if (sq == s){
-						//// hit on dest square...
-						//return true;
-					//} 
-					//board_t sq_bb = 0;
-					//set_bit(&sq_bb, s);
-
-					//if (is_square_occupied(sq_bb, s)){
-						//// intervening square occupied, blocking attack
-						//// ...keep looking
-						//continue;
-					//}					
-				//} 				
-			//} else {
-				//// see if file between pieces is empty
-				//for (int rank = att_pce_rank; rank <= sq_rank; rank++){
-					//square_t s = GET_SQUARE(rank, att_pce_file);
-					//if (sq == s){
-						//// hit on dest square...
-						//return true;
-					//} 
-					//board_t sq_bb = 0;
-					//set_bit(&sq_bb, s);
-
-					//if (is_square_occupied(sq_bb, s)){
-						//// intervening square occupied, blocking attack
-						//// ...keep looking
-						//continue;
-					//}					
-				//} 				
-			//}
-	
-		//} else {
-			//assert((att_pce_file != sq_file) && (att_pce_file != sq_file));
-		//}			
-	//}
-	//return false;
-//}
-
-
-
-
-
-
-
-
-inline bool is_pawn_attacking_square(square_t sq, colour_t attacking_side, const board_container_t * brd){
-	
+bool is_rook_attacking_square(square_t sq, colour_t attacking_side, board_container_t * brd){
 	// create bitboard for square under attack 
 	board_t sqBB = 0;
 	set_bit(&sqBB, sq);
 	
 	piece_id_t attacking_piece;
+
+	if (attacking_side == WHITE)
+		attacking_piece = W_ROOK;
+	else 
+		attacking_piece = B_ROOK;
+
+	
+	// get the bitboard representing all rooks on the board of 
+	// this colour
+	board_t bbRook = brd->bitboards[attacking_piece];
+	
+	while( bbRook != 0){
+		square_t att_pce_sq = POP(&bbRook);
 		
-			
+		// get occupancy mask for this piece and square
+		board_t mask = GET_ROOK_OCC_MASK(att_pce_sq);
+		if (mask & sqBB){
+			// a Rook is possibly attacking this square
+			// search for any blocking pieces
+			bool blocked = is_horizontal_or_vertical_blocked(sq, att_pce_sq, brd);
+			if (!blocked)
+				return true;
+		}	
+	}
+	return false;
+}
+
+
+static inline bool is_horizontal_or_vertical_blocked(square_t sq_one, square_t sq_two, board_container_t * brd){
+	
+	int sq_one_rank = GET_RANK(sq_one);
+	int sq_one_file = GET_FILE(sq_one);
+	
+	int sq_two_rank = GET_RANK(sq_two);
+	int sq_two_file = GET_FILE(sq_two);
+	
+	if (sq_one_rank == sq_two_rank){
+		// search horizontally
+		if (sq_one_file < sq_two_file){
+			// search left
+			for(int i = sq_one_file + 1; i < sq_two_file; i++){
+				square_t s = GET_SQUARE(sq_one_rank, i);
+				if (is_square_occupied(brd->board, s))
+					return true;
+			} 
+		} else{
+			// search right
+			for(int i = sq_two_file + 1; i < sq_one_file; i++){
+				square_t s = GET_SQUARE(sq_one_rank, i);
+				if (is_square_occupied(brd->board, s))
+					return true;
+			}
+		}
+		return false;
+	} else if (sq_one_file == sq_two_file){
+		// search vertically
+		if (sq_one_rank < sq_two_rank){
+			// search up
+			for(int i = sq_one_rank + 1; i < sq_two_rank; i++){
+				square_t s = GET_SQUARE(i, sq_one_file);
+				if (is_square_occupied(brd->board, s))
+					return true;
+			} 
+		} else{
+			// search down
+			for(int i = sq_two_rank + 1; i < sq_one_rank; i++){
+				square_t s = GET_SQUARE(i, sq_one_file);
+				if (is_square_occupied(brd->board, s))
+					return true;
+			}
+		}
+		return false;
+	} else {
+		// problem
+		assert(sq_one_rank == sq_two_rank);
+	}
+	return false;	
+}
+
+
+
+static inline bool is_diagonally_blocked(square_t sq_one, square_t sq_two, board_container_t * brd){
+	
+	assert(sq_one != sq_two);
+	
+//              56 57 58 59 60 61 62 63
+//              48 49 50 51 52 53 54 55
+//              40 41 42 43 44 45 46 47 
+//              32 33 34 35 36 37 38 39
+//              24 25 26 27 28 29 30 31
+//              16 17 18 19 20 21 22 23
+//              08 09 10 11 12 13 14 15
+//              00 01 02 03 40 05 06 07
+	
+	if (sq_one < sq_two){
+		// search up and right from sq_one
+		square_t sq = sq_one + 9;
+		while (sq < sq_two){
+			if (is_square_occupied(brd->board, sq)){
+				return true;
+			}
+			sq += 9;
+		}
+		// search up and left
+		sq = sq_one + 7;
+		while (sq < sq_two){
+			if (is_square_occupied(brd->board, sq)){
+				return true;
+			}
+			sq += 7;
+		}
+		return false;
+	} else {
+		// search up and right from sq_two
+		square_t sq = sq_two + 9;
+		while (sq < sq_one){
+			if (is_square_occupied(brd->board, sq)){
+				return true;
+			}
+			sq += 9;
+		}
+		// search up and left from sq_two
+		sq = sq_two + 7;
+		while (sq < sq_one){
+			if (is_square_occupied(brd->board, sq)){
+				return true;
+			}
+			sq += 7;
+		}
+		return false;
+	}
+}
+
+
+
+
+inline bool is_pawn_attacking_square(square_t sq, colour_t attacking_side, const board_container_t * brd){
+		
+	piece_id_t attacking_piece;
+	
+	// create bitboard for square under attack 
+	board_t sqBB = 0;
+	set_bit(&sqBB, sq);
+	
 	// ------------------------
-	// check pawns
+	// check pwhich pawn
 	// ------------------------
 	if (attacking_side == WHITE)
 		attacking_piece = W_PAWN;
 	else
 		attacking_piece = B_PAWN;
+	
 	
 	// get the bitboard representing all pawns on the board of 
 	// this colour
@@ -397,9 +279,14 @@ inline bool is_pawn_attacking_square(square_t sq, colour_t attacking_side, const
 		square_t att_pce_sq = POP(&bbPawn);
 		
 		// get occupancy mask for this piece
-		board_t mask = get_occ_mask(attacking_piece, att_pce_sq);
+		board_t mask = 0;
+		if (attacking_side == WHITE)
+			mask = GET_WHITE_PAWN_OCC_MASK(att_pce_sq);
+		else
+			mask = GET_BLACK_PAWN_OCC_MASK(att_pce_sq);
+		
 		if (mask & sqBB){
-			// a pawn is attaching this square
+			// a pawn is attacking this square
 			return true;
 		}	
 	}
@@ -432,8 +319,8 @@ inline bool is_king_attacking_square(square_t sq, colour_t attacking_side, const
 	while( bbPawn != 0){
 		square_t att_pce_sq = POP(&bbPawn);
 		
-		// get occupancy mask for this piece
-		board_t mask = get_occ_mask(attacking_piece, att_pce_sq);
+		// get occupancy mask for this square
+		board_t mask = GET_KING_OCC_MASK(att_pce_sq);
 		if (mask & sqBB){
 			// a king is attaching this square
 			return true;

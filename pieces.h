@@ -42,4 +42,7 @@ bool isKn(piece_id_t pce);
 bool isBQ(piece_id_t pce);
 
 
+
+
+
 #endif
