@@ -245,11 +245,11 @@ void test_is_square_being_attacked_by_bishop(void){
 	consume_fen_notation(test_fen, brd);
 	//print_board(brd);
 	assert_true(is_bishop_attacking_square(e7, WHITE, brd)); 
-	//assert_true(is_bishop_attacking_square(d4, WHITE, brd)); 
-	//assert_true(is_bishop_attacking_square(f5, WHITE, brd)); 
-	//assert_true(is_bishop_attacking_square(e2, WHITE, brd)); 
-	//assert_true(is_bishop_attacking_square(b6, WHITE, brd)); 
-	//assert_true(is_bishop_attacking_square(d5, BLACK, brd)); 
+	assert_true(is_bishop_attacking_square(d4, WHITE, brd)); 
+	assert_true(is_bishop_attacking_square(f5, WHITE, brd)); 
+	assert_true(is_bishop_attacking_square(e2, WHITE, brd)); 
+	assert_true(is_bishop_attacking_square(b6, WHITE, brd)); 
+	assert_true(is_bishop_attacking_square(d5, BLACK, brd)); 
 	
 	
 	

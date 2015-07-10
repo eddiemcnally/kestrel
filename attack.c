@@ -99,10 +99,17 @@ bool is_bishop_attacking_square(square_t sq, colour_t attacking_side, board_cont
 		square_t att_pce_sq = POP(&bbBishop);
 		
 		// get occupancy mask for this piece and square
-		board_t mask = GET_ROOK_OCC_MASK(att_pce_sq);
+		board_t mask = GET_BISHOP_OCC_MASK(att_pce_sq);
+		
+		//printf("bishop mask 0x%016llx\n", mask);
+		//printf("square mask 0x%016llx\n", sqBB);
+		
+		//printf("square & mask 0x%016llx\n", mask & sqBB);
 		if (mask & sqBB){
 			// a bishop is possibly attacking this square
 			// search for any blocking pieces
+			
+			//printf("doing block check\n");
 			bool blocked = is_diagonally_blocked(sq, att_pce_sq, brd);
 			if (!blocked)
 				return true;
@@ -213,40 +220,76 @@ static inline bool is_diagonally_blocked(square_t sq_one, square_t sq_two, board
 //              08 09 10 11 12 13 14 15
 //              00 01 02 03 40 05 06 07
 	
+	//printf("*****sq1 %d, sq2 %d\n", sq_one, sq_two);
+	
 	if (sq_one < sq_two){
-		// search up and right from sq_one
-		square_t sq = sq_one + 9;
-		while (sq < sq_two){
-			if (is_square_occupied(brd->board, sq)){
-				return true;
+		if ( ((sq_two - sq_one) % 9) == 0){
+			// search up and right from sq_one
+			square_t sq = sq_one + 9;
+			int sq_rank = GET_RANK(sq);
+			int sq_file = GET_FILE(sq);
+			
+			while ((sq < sq_two) && (sq_file <= FILE_H) && (sq_rank <= RANK_8)){
+				//printf("111checking square %d\n", sq);
+				if (is_square_occupied(brd->board, sq)){
+					return true;
+				}
+				sq += 9;
+				sq_rank = GET_RANK(sq);
+				sq_file = GET_FILE(sq);
+			}			
+		} else{
+			// search up and left
+			square_t sq = sq_one + 7;
+			int sq_rank = GET_RANK(sq);
+			int sq_file = GET_FILE(sq);
+			
+			while ((sq < sq_two) && (sq_file >= FILE_A) && (sq_rank <= RANK_8) ){
+				//printf("222checking square %d\n", sq);
+				if (is_square_occupied(brd->board, sq)){
+					return true;
+				}
+				sq += 7;
+				sq_rank = GET_RANK(sq);
+				sq_file = GET_FILE(sq);
+				
 			}
-			sq += 9;
-		}
-		// search up and left
-		sq = sq_one + 7;
-		while (sq < sq_two){
-			if (is_square_occupied(brd->board, sq)){
-				return true;
-			}
-			sq += 7;
-		}
+		}		
 		return false;
 	} else {
-		// search up and right from sq_two
-		square_t sq = sq_two + 9;
-		while (sq < sq_one){
-			if (is_square_occupied(brd->board, sq)){
-				return true;
+		if ( ((sq_one - sq_two) % 9) == 0){
+			
+			// search down and left from sq_two
+			square_t sq = sq_two - 9;
+			int sq_rank = GET_RANK(sq);
+			int sq_file = GET_FILE(sq);
+			
+			while ((sq < sq_one) && (sq_rank >= RANK_1) && (sq_file <= FILE_A)){
+
+				//printf("333checking square %d\n", sq);
+				if (is_square_occupied(brd->board, sq)){
+					return true;
+				}
+				sq -= 9;
+				sq_rank = GET_RANK(sq);
+				sq_file = GET_FILE(sq);
 			}
-			sq += 9;
-		}
-		// search up and left from sq_two
-		sq = sq_two + 7;
-		while (sq < sq_one){
-			if (is_square_occupied(brd->board, sq)){
-				return true;
+		} else{
+			// search down and right from sq_two
+			square_t sq = sq_two - 7;
+			int sq_rank = GET_RANK(sq);
+			int sq_file = GET_FILE(sq);
+
+			while ((sq < sq_one) && (sq_file >= FILE_H) && (sq_rank >= RANK_1)){
+				//printf("444checking square %d\n", sq);
+
+				if (is_square_occupied(brd->board, sq)){
+					return true;
+				}
+				sq -= 7;
+				sq_rank = GET_RANK(sq);
+				sq_file = GET_FILE(sq);
 			}
-			sq += 7;
 		}
 		return false;
 	}

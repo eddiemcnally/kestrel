@@ -11,7 +11,8 @@
 
 # define any compile-time flags
 	CFLAGS	=	-Wall -g -std=c11 -o3 -Wmissing-prototypes -Wextra \
-				-Wstrict-prototypes -Werror -Wshadow -Wpointer-arith 
+				-Wstrict-prototypes -Werror -Wshadow -Wpointer-arith \
+				-Winline 
 
 # define any directories containing header files other than /usr/include
 #
