@@ -29,12 +29,13 @@ int main_do_it_myself_really_simply(int argc, char **argv);
 
 void all_tests(void) 
 {
-    	board_test_fixture();
+   	// add new test fixtures here.
+	board_test_fixture();
 			piece_test_fixture();
-		    	occupancy_mask_test_fixture();
+	 	occupancy_mask_test_fixture();
 	
 	attack_test_fixture();
-	// add new test fixtures here.
+
 } void my_suite_setup(void) 
 {
     

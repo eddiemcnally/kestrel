@@ -27,19 +27,23 @@
 #include "attack.h"
 #include "occupancy_mask.h"
 
-static bool is_horizontal_or_vertical_blocked(square_t sq_one, square_t sq_two, board_container_t * brd);
-static bool is_diagonally_blocked(square_t sq_one, square_t sq_two, board_container_t * brd);
+bool is_horizontal_or_vertical_blocked(square_t sq_one, square_t sq_two, const board_container_t * brd);
+bool is_diagonally_blocked(square_t sq_one, square_t sq_two, const board_container_t * brd);
 
 bool is_sq_attacked(const square_t sq, const colour_t attacking_side, const board_container_t * brd){
-	
-	
+		
 	if (is_knight_attacking_square(sq, attacking_side, brd))
 		return true;
 	if (is_pawn_attacking_square(sq, attacking_side, brd))
 		return true;
 	if (is_king_attacking_square(sq, attacking_side, brd))
 		return true;
-	
+	if (is_queen_attacking_square(sq, attacking_side, brd))	
+		return true;
+	if (is_bishop_attacking_square(sq, attacking_side, brd))
+		return true;
+	if (is_rook_attacking_square(sq, attacking_side, brd))
+		return true;
 	
 	return false;
 }
@@ -78,7 +82,7 @@ inline bool is_knight_attacking_square(square_t sq, colour_t attacking_side, con
 
 
 
-bool is_bishop_attacking_square(square_t sq, colour_t attacking_side, board_container_t * brd){
+bool is_bishop_attacking_square(square_t sq, colour_t attacking_side, const board_container_t * brd){
 	// create bitboard for square under attack 
 	board_t sqBB = 0;
 	set_bit(&sqBB, sq);
@@ -120,7 +124,7 @@ bool is_bishop_attacking_square(square_t sq, colour_t attacking_side, board_cont
 
 
 
-bool is_rook_attacking_square(square_t sq, colour_t attacking_side, board_container_t * brd){
+bool is_rook_attacking_square(square_t sq, colour_t attacking_side, const board_container_t * brd){
 	// create bitboard for square under attack 
 	board_t sqBB = 0;
 	set_bit(&sqBB, sq);
@@ -137,6 +141,7 @@ bool is_rook_attacking_square(square_t sq, colour_t attacking_side, board_contai
 	// this colour
 	board_t bbRook = brd->bitboards[attacking_piece];
 	
+	// check all rooks
 	while( bbRook != 0){
 		square_t att_pce_sq = POP(&bbRook);
 		
@@ -145,156 +150,16 @@ bool is_rook_attacking_square(square_t sq, colour_t attacking_side, board_contai
 		if (mask & sqBB){
 			// a Rook is possibly attacking this square
 			// search for any blocking pieces
-			bool blocked = is_horizontal_or_vertical_blocked(sq, att_pce_sq, brd);
-			if (!blocked)
+			if (is_horizontal_or_vertical_blocked(sq, att_pce_sq, brd)){
+				continue;
+			} else{
+				// square is being attacked by a rook
 				return true;
+			}
 		}	
 	}
 	return false;
 }
-
-
-static inline bool is_horizontal_or_vertical_blocked(square_t sq_one, square_t sq_two, board_container_t * brd){
-	
-	int sq_one_rank = GET_RANK(sq_one);
-	int sq_one_file = GET_FILE(sq_one);
-	
-	int sq_two_rank = GET_RANK(sq_two);
-	int sq_two_file = GET_FILE(sq_two);
-	
-	if (sq_one_rank == sq_two_rank){
-		// search horizontally
-		if (sq_one_file < sq_two_file){
-			// search left
-			for(int i = sq_one_file + 1; i < sq_two_file; i++){
-				square_t s = GET_SQUARE(sq_one_rank, i);
-				if (is_square_occupied(brd->board, s))
-					return true;
-			} 
-		} else{
-			// search right
-			for(int i = sq_two_file + 1; i < sq_one_file; i++){
-				square_t s = GET_SQUARE(sq_one_rank, i);
-				if (is_square_occupied(brd->board, s))
-					return true;
-			}
-		}
-		return false;
-	} else if (sq_one_file == sq_two_file){
-		// search vertically
-		if (sq_one_rank < sq_two_rank){
-			// search up
-			for(int i = sq_one_rank + 1; i < sq_two_rank; i++){
-				square_t s = GET_SQUARE(i, sq_one_file);
-				if (is_square_occupied(brd->board, s))
-					return true;
-			} 
-		} else{
-			// search down
-			for(int i = sq_two_rank + 1; i < sq_one_rank; i++){
-				square_t s = GET_SQUARE(i, sq_one_file);
-				if (is_square_occupied(brd->board, s))
-					return true;
-			}
-		}
-		return false;
-	} else {
-		// problem
-		assert(sq_one_rank == sq_two_rank);
-	}
-	return false;	
-}
-
-
-
-static inline bool is_diagonally_blocked(square_t sq_one, square_t sq_two, board_container_t * brd){
-	
-	assert(sq_one != sq_two);
-	
-//              56 57 58 59 60 61 62 63
-//              48 49 50 51 52 53 54 55
-//              40 41 42 43 44 45 46 47 
-//              32 33 34 35 36 37 38 39
-//              24 25 26 27 28 29 30 31
-//              16 17 18 19 20 21 22 23
-//              08 09 10 11 12 13 14 15
-//              00 01 02 03 40 05 06 07
-	
-	//printf("*****sq1 %d, sq2 %d\n", sq_one, sq_two);
-	
-	if (sq_one < sq_two){
-		if ( ((sq_two - sq_one) % 9) == 0){
-			// search up and right from sq_one
-			square_t sq = sq_one + 9;
-			int sq_rank = GET_RANK(sq);
-			int sq_file = GET_FILE(sq);
-			
-			while ((sq < sq_two) && (sq_file <= FILE_H) && (sq_rank <= RANK_8)){
-				//printf("111checking square %d\n", sq);
-				if (is_square_occupied(brd->board, sq)){
-					return true;
-				}
-				sq += 9;
-				sq_rank = GET_RANK(sq);
-				sq_file = GET_FILE(sq);
-			}			
-		} else{
-			// search up and left
-			square_t sq = sq_one + 7;
-			int sq_rank = GET_RANK(sq);
-			int sq_file = GET_FILE(sq);
-			
-			while ((sq < sq_two) && (sq_file >= FILE_A) && (sq_rank <= RANK_8) ){
-				//printf("222checking square %d\n", sq);
-				if (is_square_occupied(brd->board, sq)){
-					return true;
-				}
-				sq += 7;
-				sq_rank = GET_RANK(sq);
-				sq_file = GET_FILE(sq);
-				
-			}
-		}		
-		return false;
-	} else {
-		if ( ((sq_one - sq_two) % 9) == 0){
-			
-			// search down and left from sq_two
-			square_t sq = sq_two - 9;
-			int sq_rank = GET_RANK(sq);
-			int sq_file = GET_FILE(sq);
-			
-			while ((sq < sq_one) && (sq_rank >= RANK_1) && (sq_file <= FILE_A)){
-
-				//printf("333checking square %d\n", sq);
-				if (is_square_occupied(brd->board, sq)){
-					return true;
-				}
-				sq -= 9;
-				sq_rank = GET_RANK(sq);
-				sq_file = GET_FILE(sq);
-			}
-		} else{
-			// search down and right from sq_two
-			square_t sq = sq_two - 7;
-			int sq_rank = GET_RANK(sq);
-			int sq_file = GET_FILE(sq);
-
-			while ((sq < sq_one) && (sq_file >= FILE_H) && (sq_rank >= RANK_1)){
-				//printf("444checking square %d\n", sq);
-
-				if (is_square_occupied(brd->board, sq)){
-					return true;
-				}
-				sq -= 7;
-				sq_rank = GET_RANK(sq);
-				sq_file = GET_FILE(sq);
-			}
-		}
-		return false;
-	}
-}
-
 
 
 
@@ -339,6 +204,67 @@ inline bool is_pawn_attacking_square(square_t sq, colour_t attacking_side, const
 
 
 
+inline bool is_queen_attacking_square(square_t sq, colour_t attacking_side, const board_container_t * brd){
+	
+	// create bitboard for square under attack 
+	board_t sqBB = 0;
+	set_bit(&sqBB, sq);
+	
+	piece_id_t attacking_piece;
+		
+			
+	// ------------------------
+	// check king
+	// ------------------------
+	if (attacking_side == WHITE)
+		attacking_piece = W_QUEEN;
+	else
+		attacking_piece = B_QUEEN;
+
+	
+	// get the bitboard representing all queens on the board of 
+	// this colour
+	board_t bbQueen = brd->bitboards[attacking_piece];
+	
+	//printf("#queens %d\n", CNT(bbQueen));
+
+	// check *all* queens to see if blocked.
+	while( bbQueen != 0){
+		square_t att_pce_sq = POP(&bbQueen);
+		
+		// get occupancy mask for this square
+		board_t mask = GET_QUEEN_OCC_MASK(att_pce_sq);
+		
+		//printf("att_pce_sq %d\n", att_pce_sq);
+		//printf("sq %d queen mask 0x%016llx\n", sq, mask);
+		//printf("square mask 0x%016llx\n", sqBB);
+		//printf("square & mask 0x%016llx\n", mask & sqBB);
+	
+				
+		if (mask & sqBB){
+			// the queen is potentially attacking this square.
+			// Need to see if any blocking pieces
+			
+			if (is_diagonally_blocked(sq, att_pce_sq, brd)){
+				//printf("diag blocked: sq %d, att_pce_sq %d\n", sq, att_pce_sq);
+				continue;
+			} else if (is_horizontal_or_vertical_blocked(sq, att_pce_sq, brd)){
+				//printf("vert/hor blocked: sq %d, att_pce_sq %d\n", sq, att_pce_sq);
+				continue;
+			} else{
+				// not blocked => a queen is attacking square
+				return true;
+			}				
+		} 
+	}
+	
+	return false;
+
+}
+
+
+
+
 inline bool is_king_attacking_square(square_t sq, colour_t attacking_side, const board_container_t * brd){
 	
 	// create bitboard for square under attack 
@@ -356,7 +282,7 @@ inline bool is_king_attacking_square(square_t sq, colour_t attacking_side, const
 	else
 		attacking_piece = B_KING;
 	
-	// get the bitboard representing all pawns on the board of 
+	// get the bitboard representing the king on the board of 
 	// this colour
 	board_t bbPawn = brd->bitboards[attacking_piece];
 	while( bbPawn != 0){
@@ -371,3 +297,152 @@ inline bool is_king_attacking_square(square_t sq, colour_t attacking_side, const
 	}
 	return false;
 }
+
+
+
+bool is_horizontal_or_vertical_blocked(square_t sq_one, square_t sq_two, const board_container_t * brd){
+	
+	int sq_one_rank = GET_RANK(sq_one);
+	int sq_one_file = GET_FILE(sq_one);
+	
+	int sq_two_rank = GET_RANK(sq_two);
+	int sq_two_file = GET_FILE(sq_two);
+	
+	if (sq_one_rank == sq_two_rank){
+		// search horizontally
+		if (sq_one_file < sq_two_file){
+			// search left
+			for(int i = sq_one_file + 1; i < sq_two_file; i++){
+				square_t s = GET_SQUARE(sq_one_rank, i);
+				if (is_square_occupied(brd->board, s))
+					return true;
+			} 
+		} else{
+			// search right
+			for(int i = sq_two_file + 1; i < sq_one_file; i++){
+				square_t s = GET_SQUARE(sq_one_rank, i);
+				if (is_square_occupied(brd->board, s))
+					return true;
+			}
+		}
+		return false;
+	} else if (sq_one_file == sq_two_file){
+		// search vertically
+		if (sq_one_rank < sq_two_rank){
+			// search up
+			for(int i = sq_one_rank + 1; i < sq_two_rank; i++){
+				square_t s = GET_SQUARE(i, sq_one_file);
+				if (is_square_occupied(brd->board, s))
+					return true;
+			} 
+		} else{
+			// search down
+			for(int i = sq_two_rank + 1; i < sq_one_rank; i++){
+				square_t s = GET_SQUARE(i, sq_one_file);
+				if (is_square_occupied(brd->board, s))
+					return true;
+			}
+		}
+		return false;
+	} 
+	return false;	
+}
+
+
+
+bool is_diagonally_blocked(square_t sq_one, square_t sq_two, const board_container_t * brd){
+	
+	assert(sq_one != sq_two);
+	
+//              56 57 58 59 60 61 62 63
+//              48 49 50 51 52 53 54 55
+//              40 41 42 43 44 45 46 47 
+//              32 33 34 35 36 37 38 39
+//              24 25 26 27 28 29 30 31
+//              16 17 18 19 20 21 22 23
+//              08 09 10 11 12 13 14 15
+//              00 01 02 03 40 05 06 07
+	
+	//printf("*****sq1 %d, sq2 %d\n", sq_one, sq_two);
+	
+	if (sq_one < sq_two){
+		//printf("111");
+		if ( ((sq_two - sq_one) % 9) == 0){
+			// search up and right from sq_one
+			square_t sq = sq_one + 9;
+			int sq_rank = GET_RANK(sq);
+			int sq_file = GET_FILE(sq);
+			
+			while ((sq < sq_two) && (sq_file <= FILE_H) && (sq_rank <= RANK_8)){
+				//printf("111checking square %d\n", sq);
+				if (is_square_occupied(brd->board, sq)){
+					return true;
+				}
+				sq += 9;
+				sq_rank = GET_RANK(sq);
+				sq_file = GET_FILE(sq);
+			}			
+		} else{
+			//printf("222");
+
+			// search up and left
+			square_t sq = sq_one + 7;
+			int sq_rank = GET_RANK(sq);
+			int sq_file = GET_FILE(sq);
+			
+			while ((sq < sq_two) && (sq_file >= FILE_A) && (sq_rank <= RANK_8) ){
+				//printf("222checking square %d\n", sq);
+				if (is_square_occupied(brd->board, sq)){
+					return true;
+				}
+				sq += 7;
+				sq_rank = GET_RANK(sq);
+				sq_file = GET_FILE(sq);
+				
+			}
+		}		
+		return false;
+	} else {
+		if ( ((sq_one - sq_two) % 9) == 0){
+			//printf("333");
+
+			// search down and left from sq_one
+			square_t sq = sq_one - 9;
+			int sq_rank = GET_RANK(sq);
+			int sq_file = GET_FILE(sq);
+			
+			while ((sq > sq_two) && (sq_rank >= RANK_1) && (sq_file >= FILE_A)){
+
+				//printf("333checking square %d\n", sq);
+				if (is_square_occupied(brd->board, sq)){
+					//printf("333 sq %d occupied\n", sq);
+					return true;
+				}
+				sq -= 9;
+				sq_rank = GET_RANK(sq);
+				sq_file = GET_FILE(sq);
+			}
+		} else{
+			//printf("444");
+
+			// search down and right from sq_two
+			square_t sq = sq_one - 7;
+			int sq_rank = GET_RANK(sq);
+			int sq_file = GET_FILE(sq);
+
+			while ((sq < sq_one) && (sq_file >= FILE_H) && (sq_rank >= RANK_1)){
+				//printf("444checking square %d\n", sq);
+
+				if (is_square_occupied(brd->board, sq)){
+					return true;
+				}
+				sq -= 7;
+				sq_rank = GET_RANK(sq);
+				sq_file = GET_FILE(sq);
+			}
+		}
+		return false;
+	}
+}
+
+
