@@ -23,6 +23,7 @@ typedef unsigned long long 		board_t;
 typedef unsigned char 			U8;
 typedef unsigned long long 		U64;
 typedef unsigned short 			U16;
+typedef unsigned int			U32;
 
 
 

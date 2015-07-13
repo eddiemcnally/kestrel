@@ -28,7 +28,7 @@
 #include "init.h"
 #include "occupancy_mask.h"
 #include "fen.h"
-
+#include "move.h"
 
 #define FEN1 	"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 #define FEN2  	"rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"
@@ -60,7 +60,7 @@ int main(int argc, char **argv)
     
     printf("AND'ed : 0x%016llx\n", pawn & rook);
     
-    
+   
     
     //print_board(the_board);
     //ASSERT_BOARD_OK(the_board);
@@ -70,20 +70,20 @@ int main(int argc, char **argv)
 	//print_occupancy_masks(B_KNIGHT);
 
     
-	//the_board = get_clean_board();
-    //consume_fen_notation(FEN2, the_board);
-    //print_board(the_board);
-    //ASSERT_BOARD_OK(the_board);
+	the_board = get_clean_board();
+    consume_fen_notation(FEN2, the_board);
+    print_board(the_board);
+    ASSERT_BOARD_OK(the_board);
         
-	//the_board = get_clean_board();
-    //consume_fen_notation(FEN3, the_board);
-    //print_board(the_board);
-    //ASSERT_BOARD_OK(the_board);
+	the_board = get_clean_board();
+    consume_fen_notation(FEN3, the_board);
+    print_board(the_board);
+    ASSERT_BOARD_OK(the_board);
 
-	//the_board = get_clean_board();
-    //consume_fen_notation(FEN4, the_board);
-    //print_board(the_board);
-    //ASSERT_BOARD_OK(the_board);
+	the_board = get_clean_board();
+    consume_fen_notation(FEN4, the_board);
+    print_board(the_board);
+    ASSERT_BOARD_OK(the_board);
 
     
     return 0;

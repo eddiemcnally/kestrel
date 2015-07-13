@@ -102,6 +102,28 @@ void print_board(board_container_t * the_board)
 	
 }
 
+/*
+ * Prints out a square as file/rank, eg a2
+ * name: print_square
+ * @param
+ * @return
+ * 
+ */
+char * print_square(const square_t sq) {
+	
+	static char square_text[3];
+	
+	int file = GET_FILE(sq);
+	int rank = GET_RANK(sq);
+	
+	sprintf(square_text, "%c%c", ('a'+file), ('1'+rank));
+	
+	return square_text;
+
+}
+
+
+
 
 /*
  * Validates the contents of a board struct.

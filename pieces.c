@@ -110,6 +110,27 @@ inline bool isKn(piece_id_t pce){
 }
 
 
+inline bool isR(piece_id_t pce){
+	switch(pce){
+		case W_ROOK:
+		case B_ROOK:
+			return true;
+		default:
+			return false;
+	}
+}
+
+
+inline bool isB(piece_id_t pce){
+	switch(pce){
+		case W_BISHOP:
+		case B_BISHOP:
+			return true;
+		default:
+			return false;
+	}
+}
+
 inline bool isBQ(piece_id_t pce){
 	switch(pce){
 		case W_BISHOP:

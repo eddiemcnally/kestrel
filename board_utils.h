@@ -24,6 +24,6 @@
 
 void print_board(board_container_t * the_board);
 bool ASSERT_BOARD_OK(board_container_t * brd);
-
+char * print_square(const square_t sq);
 
 #endif

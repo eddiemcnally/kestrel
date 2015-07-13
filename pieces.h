@@ -40,6 +40,10 @@ bool isRQ(piece_id_t pce);
 bool isKi(piece_id_t pce);
 bool isKn(piece_id_t pce);
 bool isBQ(piece_id_t pce);
+bool isR(piece_id_t pce);
+bool isB(piece_id_t pce);
+
+
 
 
 
