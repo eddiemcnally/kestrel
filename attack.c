@@ -48,11 +48,21 @@ bool is_sq_attacked(const square_t sq, const colour_t attacking_side, const boar
 	return false;
 }
 
-
+//              56 57 58 59 60 61 62 63
+//              48 49 50 51 52 53 54 55
+//              40 41 42 43 44 45 46 47 
+//              32 33 34 35 36 37 38 39
+//              24 25 26 27 28 29 30 31
+//              16 17 18 19 20 21 22 23
+//              08 09 10 11 12 13 14 15
+//              00 01 02 03 40 05 06 07
+	
 inline bool is_knight_attacking_square(square_t sq, colour_t attacking_side, const board_container_t * brd){
 	// create bitboard for square under attack 
 	board_t sqBB = 0;
 	set_bit(&sqBB, sq);
+	
+	//printf("*** checking sq %d\n", sq);
 	
 	piece_id_t attacking_piece;
 
@@ -66,14 +76,25 @@ inline bool is_knight_attacking_square(square_t sq, colour_t attacking_side, con
 	// this colour
 	board_t bbKnight = brd->bitboards[attacking_piece];
 	
+	
+	//printf("#knights %d\n", CNT(bbKnight));
+
+	
 	while( bbKnight != 0){
 		square_t att_pce_sq = POP(&bbKnight);
 		
 		// get occupancy mask for this piece and square
 		board_t mask = GET_KNIGHT_OCC_MASK(att_pce_sq);
+		
+			
+		//printf("att_pce_sq %d\n", att_pce_sq);
+		//printf("sq %d knight mask 0x%016llx\n", sq, mask);
+		//printf("square mask 0x%016llx\n", sqBB);
+		//printf("square & mask 0x%016llx\n", mask & sqBB);
+	
+		
 		if ((mask & sqBB) != 0){
 			// a Knight is attacking this square
-			
 			return true;
 		}	
 	}
