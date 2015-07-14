@@ -57,7 +57,7 @@ void print_board(BOARD * the_board)
 		printf("%d  ",rank+1);	// enum is zero-based
 		for(int file = FILE_A; file <= FILE_H; file++) {
 			SQUARE sq = GET_SQUARE(rank, file);
-			PIECE pce = get_piece_at_square(the_board, sq);
+			enum piece pce = get_piece_at_square(the_board, sq);
 			if (pce != NO_PIECE){
 				char c = get_piece_label(pce);
 				printf("%3c", c);
@@ -146,7 +146,7 @@ bool ASSERT_BOARD_OK(BOARD * brd){
 
 	// check where Kings are
 	for(SQUARE sq = 0; sq < NUM_SQUARES; sq++){
-		PIECE pce = get_piece_at_square(brd, sq);
+		enum piece pce = get_piece_at_square(brd, sq);
 		if (pce != NO_PIECE){
 			if (pce == W_KING){
 				assert(sq == brd->king_squares[WHITE]);
@@ -158,7 +158,7 @@ bool ASSERT_BOARD_OK(BOARD * brd){
 	
 	// check verbose representation of board
 	for (SQUARE sq = 0; sq < NUM_SQUARES; sq++){
-		PIECE pce = get_piece_at_square(brd, sq);
+		enum piece pce = get_piece_at_square(brd, sq);
 		if (pce != NO_PIECE){
 			assert(pce == brd->pieces[sq]);
 		}
@@ -171,7 +171,7 @@ bool ASSERT_BOARD_OK(BOARD * brd){
 	// -------------------------------
 	U8 pce_num[NUM_PIECES] = {0};
 	for(SQUARE sq = 0; sq < NUM_SQUARES; sq++){
-		PIECE pce = get_piece_at_square(brd, sq);
+		enum piece pce = get_piece_at_square(brd, sq);
 		if (pce != NO_PIECE){
 			pce_num[pce]++;
 		}		
@@ -193,7 +193,7 @@ bool ASSERT_BOARD_OK(BOARD * brd){
 	U8 major_pieces[NUM_COLOURS] = {0};
 	U8 minor_pieces[NUM_COLOURS] = {0};
 	for(SQUARE sq = 0; sq < NUM_SQUARES; sq++){
-		PIECE pce = get_piece_at_square(brd, sq);
+		enum piece pce = get_piece_at_square(brd, sq);
 		if (pce != NO_PIECE){
 			COLOUR col = get_colour(pce);
 			if (is_big_piece(pce)){
@@ -219,7 +219,7 @@ bool ASSERT_BOARD_OK(BOARD * brd){
 	// calc and verify the material count
 	U8 material[NUM_COLOURS] = {0};
 	for(SQUARE sq = 0; sq < NUM_SQUARES; sq++){
-		PIECE pce = get_piece_at_square(brd, sq);
+		enum piece pce = get_piece_at_square(brd, sq);
 		if (pce != NO_PIECE){
 			COLOUR col = get_colour(pce);
 			material[col] += piece_values[pce];

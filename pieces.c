@@ -24,7 +24,7 @@
 #include "pieces.h"
 
 
-// offsets into this array are by type PIECE 
+// offsets into this array are by type enum piece 
 static const char pieceToChar[NUM_PIECES] = {
 	'P', 'R', 'N', 'B', 'Q', 'K', 'p', 'r', 'n', 'b', 'q', 'k'
 };
@@ -33,30 +33,30 @@ static const char pieceToChar[NUM_PIECES] = {
 /**
  * Takes a typed piece and returns a human-readable representation
  */
-inline char get_piece_label(PIECE piece)
+inline char get_piece_label(enum piece piece)
 {
 	return pieceToChar[piece];
 }
 
 
-inline COLOUR get_colour(PIECE piece){
+inline COLOUR get_colour(enum piece piece){
 	if (IS_WHITE(piece))
 		return WHITE;
 	return BLACK;	
 }
 
 
-inline bool is_big_piece(PIECE pce){
+inline bool is_big_piece(enum piece pce){
 	switch(pce){
 		case W_PAWN:
 		case B_PAWN:
-			return true;
-		default:
 			return false;
+		default:
+			return true;
 	}
 }
 
-inline bool is_major_piece(PIECE pce){
+inline bool is_major_piece(enum piece pce){
 	switch(pce){
 		case W_ROOK:
 		case W_QUEEN:
@@ -69,7 +69,7 @@ inline bool is_major_piece(PIECE pce){
 }
 
 
-inline bool is_minor_piece(PIECE pce){
+inline bool is_minor_piece(enum piece pce){
 	switch(pce){
 		case W_BISHOP:
 		case W_KNIGHT:
@@ -82,7 +82,7 @@ inline bool is_minor_piece(PIECE pce){
 }
 
 
-inline bool isRQ(PIECE pce){
+inline bool isRQ(enum piece pce){
 	switch(pce){
 		case W_ROOK:
 		case W_QUEEN:
@@ -95,7 +95,7 @@ inline bool isRQ(PIECE pce){
 }
 
 
-inline bool isKi(PIECE pce){
+inline bool isKi(enum piece pce){
 	if ( (pce == B_KING) || (pce == W_KING))
 		return true;
 	return false;
@@ -103,14 +103,14 @@ inline bool isKi(PIECE pce){
 
 
 
-inline bool isKn(PIECE pce){
+inline bool isKn(enum piece pce){
 	if ( (pce == B_KNIGHT) || (pce == W_KNIGHT))
 		return true;
 	return false;
 }
 
 
-inline bool isR(PIECE pce){
+inline bool isR(enum piece pce){
 	switch(pce){
 		case W_ROOK:
 		case B_ROOK:
@@ -121,7 +121,7 @@ inline bool isR(PIECE pce){
 }
 
 
-inline bool isB(PIECE pce){
+inline bool isB(enum piece pce){
 	switch(pce){
 		case W_BISHOP:
 		case B_BISHOP:
@@ -131,7 +131,7 @@ inline bool isB(PIECE pce){
 	}
 }
 
-inline bool isBQ(PIECE pce){
+inline bool isBQ(enum piece pce){
 	switch(pce){
 		case W_BISHOP:
 		case W_QUEEN:

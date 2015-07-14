@@ -20,8 +20,17 @@
 #include "board.h"
 #include "pieces.h"
 
+void test_rank_file_macros(void);
+void test_piece_colour_macro(void);
+void test_piece_classification_IS_BIG_PIECE(void);
+void test_piece_classification_IS_MAJOR_PIECE(void);
+void test_piece_classification_IS_MINOR_PIECE(void);
+void test_piece_to_char_conversion(void);
+void piece_test_fixture(void);
 
-void test_rank_file_macros(){
+
+
+void test_rank_file_macros(void){
 	
 	// offsets into ranks enum
 	assert_true(0 == GET_RANK(a1));
@@ -46,10 +55,7 @@ void test_rank_file_macros(){
 
 
 
-#define IS_WHITE(piece)			(piece <= W_KING)
-#define IS_BLACK(piece)			(IS_WHITE(piece) == false)
-
-void test_piece_colour_macro(){
+void test_piece_colour_macro(void){
 	assert_true(true == IS_WHITE(W_PAWN));
 	assert_true(true == IS_WHITE(W_ROOK));
 	assert_true(true == IS_WHITE(W_BISHOP));
@@ -82,64 +88,67 @@ void test_piece_colour_macro(){
 
 
 
-void test_piece_classification_IS_BIG_PIECE(){
-	assert_true(IS_BIG_PIECE(W_PAWN) 	== false);
-	assert_true(IS_BIG_PIECE(B_PAWN) 	== false);
+void test_piece_classification_IS_BIG_PIECE(void){
 	
-	assert_true(IS_BIG_PIECE(W_ROOK) 	== true);
-	assert_true(IS_BIG_PIECE(W_BISHOP) 	== true);
-	assert_true(IS_BIG_PIECE(W_KNIGHT) 	== true);
-	assert_true(IS_BIG_PIECE(W_QUEEN) 	== true);
-	assert_true(IS_BIG_PIECE(W_KING) 	== true);
+	printf("is_big_piece(W_PAWN) %d\n", (int)is_big_piece(W_PAWN));
+	
+	assert_false(is_big_piece(W_PAWN));
+	assert_false(is_big_piece(B_PAWN));
+	
+	assert_true(is_big_piece(W_ROOK) 	== true);
+	assert_true(is_big_piece(W_BISHOP) 	== true);
+	assert_true(is_big_piece(W_KNIGHT) 	== true);
+	assert_true(is_big_piece(W_QUEEN) 	== true);
+	assert_true(is_big_piece(W_KING) 	== true);
 
-	assert_true(IS_BIG_PIECE(B_ROOK) 	== true);
-	assert_true(IS_BIG_PIECE(B_BISHOP) 	== true);
-	assert_true(IS_BIG_PIECE(B_KNIGHT) 	== true);
-	assert_true(IS_BIG_PIECE(B_QUEEN) 	== true);
-	assert_true(IS_BIG_PIECE(B_KING) 	== true);
+	assert_true(is_big_piece(B_ROOK) 	== true);
+	assert_true(is_big_piece(B_BISHOP) 	== true);
+	assert_true(is_big_piece(B_KNIGHT) 	== true);
+	assert_true(is_big_piece(B_QUEEN) 	== true);
+	assert_true(is_big_piece(B_KING) 	== true);
 
 }
 
-void test_piece_classification_IS_MAJOR_PIECE(){
+void test_piece_classification_IS_MAJOR_PIECE(void){
 	
-	assert_true(IS_MAJOR_PIECE(W_PAWN)		== false);
-	assert_true(IS_MAJOR_PIECE(B_PAWN)		== false);
-	assert_true(IS_MAJOR_PIECE(W_BISHOP)	== false);
-	assert_true(IS_MAJOR_PIECE(B_BISHOP)	== false);
-	assert_true(IS_MAJOR_PIECE(W_KNIGHT)	== false);
-	assert_true(IS_MAJOR_PIECE(B_KNIGHT)	== false);
+	assert_true(is_major_piece(W_PAWN)		== false);
+	assert_true(is_major_piece(B_PAWN)		== false);
+	assert_true(is_major_piece(W_BISHOP)	== false);
+	assert_true(is_major_piece(B_BISHOP)	== false);
+	assert_true(is_major_piece(W_KNIGHT)	== false);
+	assert_true(is_major_piece(B_KNIGHT)	== false);
 	
-	assert_true(IS_BIG_PIECE(B_ROOK)	== true);
-	assert_true(IS_BIG_PIECE(B_QUEEN)	== true);
-	assert_true(IS_BIG_PIECE(W_QUEEN)	== true);
-	assert_true(IS_BIG_PIECE(W_ROOK)	== true);
-
-
-}
-
-
-
-void test_piece_classification_IS_MINOR_PIECE(){
-	
-	assert_true(IS_MINOR_PIECE(W_PAWN)		== false);
-	assert_true(IS_MINOR_PIECE(B_PAWN)		== false);
-	assert_true(IS_MINOR_PIECE(W_ROOK)		== false);
-	assert_true(IS_MINOR_PIECE(B_ROOK)		== false);
-	assert_true(IS_MINOR_PIECE(W_QUEEN)		== false);
-	assert_true(IS_MINOR_PIECE(B_QUEEN)		== false);
-	
-	assert_true(IS_MINOR_PIECE(B_BISHOP)	== true);
-	assert_true(IS_MINOR_PIECE(B_KNIGHT)	== true);
-	assert_true(IS_MINOR_PIECE(W_BISHOP)	== true);
-	assert_true(IS_MINOR_PIECE(W_KNIGHT)	== true);
+	assert_true(is_big_piece(B_ROOK)	== true);
+	assert_true(is_big_piece(B_QUEEN)	== true);
+	assert_true(is_big_piece(W_QUEEN)	== true);
+	assert_true(is_big_piece(W_ROOK)	== true);
 
 
 }
 
 
 
+void test_piece_classification_IS_MINOR_PIECE(void){
+	
+	assert_true(is_minor_piece(W_PAWN)		== false);
+	assert_true(is_minor_piece(B_PAWN)		== false);
+	assert_true(is_minor_piece(W_ROOK)		== false);
+	assert_true(is_minor_piece(B_ROOK)		== false);
+	assert_true(is_minor_piece(W_QUEEN)		== false);
+	assert_true(is_minor_piece(B_QUEEN)		== false);
+	
+	assert_true(is_minor_piece(B_BISHOP)	== true);
+	assert_true(is_minor_piece(B_KNIGHT)	== true);
+	assert_true(is_minor_piece(W_BISHOP)	== true);
+	assert_true(is_minor_piece(W_KNIGHT)	== true);
 
-void test_piece_to_char_conversion()
+
+}
+
+
+
+
+void test_piece_to_char_conversion(void)
 {
 			assert_true('P' == get_piece_label(W_PAWN));
 	assert_true('p' == get_piece_label(B_PAWN));

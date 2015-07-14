@@ -66,7 +66,7 @@ inline bool is_knight_attacking_square(SQUARE sq, COLOUR attacking_side, const B
 	
 	//printf("*** checking sq %d\n", sq);
 	
-	PIECE attacking_piece;
+	enum piece attacking_piece;
 
 	if (attacking_side == WHITE)
 		attacking_piece = W_KNIGHT;
@@ -110,7 +110,7 @@ bool is_bishop_attacking_square(SQUARE sq, COLOUR attacking_side, const BOARD * 
 	BITBOARD sqBB = 0;
 	set_bit(&sqBB, sq);
 	
-	PIECE attacking_piece;
+	enum piece attacking_piece;
 
 	if (attacking_side == WHITE)
 		attacking_piece = W_BISHOP;
@@ -152,7 +152,7 @@ bool is_rook_attacking_square(SQUARE sq, COLOUR attacking_side, const BOARD * br
 	BITBOARD sqBB = 0;
 	set_bit(&sqBB, sq);
 	
-	PIECE attacking_piece;
+	enum piece attacking_piece;
 
 	if (attacking_side == WHITE)
 		attacking_piece = W_ROOK;
@@ -188,7 +188,7 @@ bool is_rook_attacking_square(SQUARE sq, COLOUR attacking_side, const BOARD * br
 
 inline bool is_pawn_attacking_square(SQUARE sq, COLOUR attacking_side, const BOARD * brd){
 		
-	PIECE attacking_piece;
+	enum piece attacking_piece;
 	
 	// create bitboard for square under attack 
 	BITBOARD sqBB = 0;
@@ -233,7 +233,7 @@ inline bool is_queen_attacking_square(SQUARE sq, COLOUR attacking_side, const BO
 	BITBOARD sqBB = 0;
 	set_bit(&sqBB, sq);
 	
-	PIECE attacking_piece;
+	enum piece attacking_piece;
 		
 			
 	// ------------------------
@@ -294,7 +294,7 @@ inline bool is_king_attacking_square(SQUARE sq, COLOUR attacking_side, const BOA
 	BITBOARD sqBB = 0;
 	set_bit(&sqBB, sq);
 	
-	PIECE attacking_piece;
+	enum piece attacking_piece;
 		
 			
 	// ------------------------

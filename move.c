@@ -41,7 +41,7 @@ char * print_move(const MOVE * m) {
 	int to_file = GET_FILE(TOSQ(m->move));
 	int to_rank = GET_RANK(TOSQ(m->move));
 	
-	PIECE promoted_pce = PROMOTED(m->move);
+	enum piece promoted_pce = PROMOTED(m->move);
 	
 	if(promoted_pce > 0) {
 		char pchar = 'q';	

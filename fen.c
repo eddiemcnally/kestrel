@@ -60,7 +60,7 @@ int consume_fen_notation(char *fen_string, BOARD * board_to_setup){
 	int count = 0;
 	
 	while((rank >= RANK_1) && *fen_string){
-		PIECE piece_to_add = NO_PIECE;
+		enum piece piece_to_add = NO_PIECE;
 		count = 1;
 		
 		switch (*fen_string) {

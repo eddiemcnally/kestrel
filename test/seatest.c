@@ -12,7 +12,7 @@ int seatest_is_string_equal_i(const char *s1, const char *s2)
 #else
 #include <strings.h>
 
-unsigned int GetTickCount()
+unsigned int GetTickCount(void)
 {
     return 0;
 }
@@ -74,7 +74,7 @@ void suite_teardown(seatest_void_void teardown)
     seatest_suite_teardown_func = teardown;
 }
 
-int seatest_is_display_only()
+int seatest_is_display_only(void)
 {
     return seatest_display_only;
 }
@@ -274,6 +274,7 @@ void seatest_assert_string_doesnt_contain(char *expected, char *actual,
 
 void seatest_run_test(char *fixture, char *test)
 {
+    
     sea_tests_run++;
 }
 

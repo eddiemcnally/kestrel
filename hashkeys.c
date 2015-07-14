@@ -31,7 +31,7 @@
 
 U64 get_castle_key(unsigned int castle_map);
 U64 get_side_key(void);
-U64 get_piece_key(PIECE piece, SQUARE square);
+U64 get_piece_key(enum piece piece, SQUARE square);
 
 //----- hashkeys for positions
 static U64 piece_keys[NUM_PIECES][NUM_SQUARES] = {{0}};
@@ -94,7 +94,7 @@ inline U64 get_side_key(void){
  * @return:	the U64 hashkey
  * 
  */
-inline U64 get_piece_key(PIECE piece, SQUARE square){
+inline U64 get_piece_key(enum piece piece, SQUARE square){
 
 	assert((square >= a1) && (square <= h8));
 	assert((piece >= W_PAWN) && (piece <= B_KING));
@@ -116,7 +116,7 @@ U64 get_position_hashkey(BOARD *brd){
 	U64 retval = 0;
 	
 	for(int sq = 0; sq < NUM_SQUARES; sq++){
-		PIECE pce = get_piece_at_square(brd, sq);
+		enum piece pce = get_piece_at_square(brd, sq);
 		
 		if (pce != NO_PIECE){
 			retval ^= get_piece_key(pce, sq);

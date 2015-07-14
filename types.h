@@ -48,7 +48,7 @@ typedef enum {
 } SQUARE;
 
 
-typedef enum {
+enum piece{
 	W_PAWN 		= 0,
 	W_ROOK 		= 1,
 	W_KNIGHT 	= 2,
@@ -62,9 +62,9 @@ typedef enum {
 	B_QUEEN 	= 10,
 	B_KING 		= 11,
 	NUM_PIECES 	= 12
-} PIECE;
+};
 
-// piece values, indexed into using the PIECE enum
+// piece values, indexed into using the enum piece enum
 static const int piece_values[NUM_PIECES]= {  	
 	100,  		// PAWN
 	550, 		// ROOK
@@ -129,7 +129,7 @@ typedef struct {
 	U8 ply;
 	U8 history_ply;
 	
-	// indexed by PIECE, contains the number of pieces of that 
+	// indexed by enum piece, contains the number of pieces of that 
 	// type on the board
 	U8 pce_num[NUM_PIECES];
 
@@ -146,7 +146,7 @@ typedef struct {
 	U8 material[NUM_COLOURS];
 
 	// contains the pieces on each square
-	PIECE pieces[NUM_SQUARES];
+	enum piece pieces[NUM_SQUARES];
 
 
 	// castling permissions

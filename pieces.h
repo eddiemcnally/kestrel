@@ -29,19 +29,19 @@
 #define IS_BLACK(piece)		(IS_WHITE(piece) == false)
 
 
-char get_piece_label(PIECE piece);
-COLOUR get_colour(PIECE piece);
+char get_piece_label(enum piece piece);
+COLOUR get_colour(enum piece piece);
 
-bool is_big_piece(PIECE pce);
-bool is_major_piece(PIECE pce);
-bool is_minor_piece(PIECE pce);
+bool is_big_piece(enum piece pce);
+bool is_major_piece(enum piece pce);
+bool is_minor_piece(enum piece pce);
 
-bool isRQ(PIECE pce);
-bool isKi(PIECE pce);
-bool isKn(PIECE pce);
-bool isBQ(PIECE pce);
-bool isR(PIECE pce);
-bool isB(PIECE pce);
+bool isRQ(enum piece pce);
+bool isKi(enum piece pce);
+bool isKn(enum piece pce);
+bool isBQ(enum piece pce);
+bool isR(enum piece pce);
+bool isB(enum piece pce);
 
 
 

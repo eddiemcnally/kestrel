@@ -78,8 +78,8 @@ enum {
 
 BOARD * init_board(void);
 BOARD *get_clean_board(void);
-PIECE get_piece_at_square(BOARD * the_board, SQUARE square);
-bool add_piece_to_board(BOARD * board, PIECE piece, SQUARE square);
+enum piece get_piece_at_square(BOARD * the_board, SQUARE square);
+bool add_piece_to_board(BOARD * board, enum piece piece, SQUARE square);
 bool is_square_occupied(BITBOARD board, SQUARE square);
 void set_bit(BITBOARD * brd, SQUARE sq);
 void clear_bit(BITBOARD * brd, SQUARE sq);

@@ -19,6 +19,12 @@ Typedefs
 /*
 Declarations
  */ 
+unsigned int GetTickCount(void);
+void _getch(void);
+int seatest_is_display_only(void);
+int seatest_is_string_equal_i(const char *s1, const char *s2);
+
+ 
 void (*seatest_simple_test_result) (int passed, char *reason,
 				    const char *function,
 				    unsigned int line);

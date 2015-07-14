@@ -26,9 +26,9 @@
 
 #include "types.h"
  
-BITBOARD get_occ_mask(PIECE pce, SQUARE sq);
-void print_occupancy_masks(PIECE pce);
-void print_occupancy_mask_as_board(BITBOARD * mask, PIECE pce, SQUARE square);
+BITBOARD get_occ_mask(enum piece pce, SQUARE sq);
+void print_occupancy_masks(enum piece pce);
+void print_occupancy_mask_as_board(BITBOARD * mask, enum piece pce, SQUARE square);
 void print_out_masks(BITBOARD * masks);
 
 

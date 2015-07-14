@@ -67,7 +67,7 @@ void update_piece_material(BOARD * brd)
 {	
 
 	for(SQUARE sq; sq < NUM_SQUARES; sq++) {
-		PIECE pce = get_piece_at_square(brd, sq);
+		enum piece pce = get_piece_at_square(brd, sq);
 		if (pce != NO_PIECE){
 			COLOUR colour = get_colour(pce);
 			
@@ -123,7 +123,7 @@ BOARD *get_clean_board(void)
  * @return : true if OK, false if piece already on that square
  *
  */
-bool add_piece_to_board(BOARD * board, PIECE piece,
+bool add_piece_to_board(BOARD * board, enum piece piece,
 			SQUARE square)
 {
 	assert((square >= a1) && (square <= h8));
@@ -168,7 +168,7 @@ inline void overlay_boards(BOARD * the_board)
  * TODO - possibly replace this with a cache lookup on a new board array
  */
 
-inline PIECE get_piece_at_square(BOARD * the_board,
+inline enum piece get_piece_at_square(BOARD * the_board,
 			       SQUARE square)
 {
 	assert((square >= a1) && (square <= h8));

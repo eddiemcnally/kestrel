@@ -481,7 +481,7 @@ void set_dest_sq_if_valid(int rank, int file, BITBOARD *brd){
  * @return 	-
  * 
  */
-void print_occupancy_masks(PIECE pce)
+void print_occupancy_masks(enum piece pce)
 {
 	
 	BITBOARD masks[NUM_SQUARES] = {0};
@@ -530,7 +530,7 @@ void print_occupancy_masks(PIECE pce)
 /**
  * Thanks again to Bluefever Software for this code
  */
-void print_occupancy_mask_as_board(BITBOARD * mask, PIECE pce, SQUARE square)
+void print_occupancy_mask_as_board(BITBOARD * mask, enum piece pce, SQUARE square)
 {
 
 	//int sq,piece;
