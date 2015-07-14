@@ -18,8 +18,8 @@
 #ifndef _FEN_H_
 #define _FEN_H_
 
-int consume_fen_notation(char *fen_string, BOARD * board_to_setup);
-char *generate_fen_notation(BOARD * board_to_setup);
+int consume_fen_notation(char *fen_string, struct board * board_to_setup);
+char *generate_fen_notation(struct board * board_to_setup);
 
 // starting FEN position
 #define STARTING_FEN 	"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"

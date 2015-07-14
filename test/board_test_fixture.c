@@ -26,7 +26,7 @@
 #include "fen.h"
 #include "pieces.h"
 
-void verify_initial_board_placement(BOARD * the_board);
+void verify_initial_board_placement(struct board * the_board);
 void test_initial_board_placement(void);
 void test_clean_board(void);
 void test_fen_parsing_initial_board_layout(void);
@@ -44,7 +44,7 @@ void board_test_fixture(void);
  */ 
 void test_initial_board_placement() 
 {
-	init_hash_keys();	BOARD * the_board = init_board();
+	init_hash_keys();	struct board * the_board = init_board();
     	assert_true(W_ROOK == get_piece_at_square(the_board, a1));
 	assert_true(W_KNIGHT == get_piece_at_square(the_board, b1));
 	assert_true(W_BISHOP == get_piece_at_square(the_board, c1));
@@ -126,15 +126,15 @@ void test_initial_board_placement()
 	
 	} void test_clean_board()
 {
-    	BOARD * the_board = get_clean_board();
+    	struct board * the_board = get_clean_board();
     
 	// check all squares are zero
-	assert_true(the_board->board == (BITBOARD) 0);
+	assert_true(the_board->board == (U64) 0);
     	for (int i = 0; i < NUM_PIECES; i++) {
-		assert_true(the_board->bitboards[i] == (BITBOARD) 0);
+		assert_true(the_board->bitboards[i] == (U64) 0);
 	} } void test_add_to_board()
 {
-	BOARD * the_board = get_clean_board();
+	struct board * the_board = get_clean_board();
     	add_piece_to_board(the_board, W_PAWN, a8);
 	add_piece_to_board(the_board, B_QUEEN, g3);
 	add_piece_to_board(the_board, W_PAWN, b6);
@@ -143,14 +143,14 @@ void test_initial_board_placement()
 		
 	// add again, to check error handling
 	assert_true(add_piece_to_board(the_board, W_PAWN, a8) == false);
-	assert_true(get_piece_at_square(the_board, a8) == (PIECE) W_PAWN);
-	assert_true(get_piece_at_square(the_board, g3) == (PIECE) B_QUEEN);
-	assert_true(get_piece_at_square(the_board, b6) == (PIECE) W_PAWN);
-	assert_true(get_piece_at_square(the_board, a4) == (PIECE) W_KING);
-	assert_true(get_piece_at_square(the_board, h8) == (PIECE) W_ROOK);
+	assert_true(get_piece_at_square(the_board, a8) == (enum piece) W_PAWN);
+	assert_true(get_piece_at_square(the_board, g3) == (enum piece) B_QUEEN);
+	assert_true(get_piece_at_square(the_board, b6) == (enum piece) W_PAWN);
+	assert_true(get_piece_at_square(the_board, a4) == (enum piece) W_KING);
+	assert_true(get_piece_at_square(the_board, h8) == (enum piece) W_ROOK);
 } void test_fen_parsing_initial_board_layout()
 {
-    	BOARD * the_board = get_clean_board();
+    	struct board * the_board = get_clean_board();
     
 	// this is the initial bpard setup
 	char *test_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
@@ -203,7 +203,7 @@ void test_initial_board_placement()
 	
 	assert_true(the_board->en_passant == NO_SQUARE);
 	} void test_fen_parsing_general_layout_1()
-{   	BOARD * the_board = get_clean_board();
+{   	struct board * the_board = get_clean_board();
     
 	// this is the initial board setup
 	char *test_fen = "k7/8/8/4N3/8/8/8/3K4 b - - 13 56";
@@ -224,7 +224,7 @@ void test_initial_board_placement()
 } 
 void test_fen_parsing_general_layout_2()
 {
-	BOARD * the_board = get_clean_board();
+	struct board * the_board = get_clean_board();
     
 
 	// this is the initial board setup
@@ -275,7 +275,7 @@ void test_fen_parsing_general_layout_2()
 	assert_true(the_board->en_passant == NO_SQUARE);
 } 
 void test_setting_bits_in_a_board()
-{    	BITBOARD test_brd = 0;
+{    	U64 test_brd = 0;
     
 	//
 	// Test setting bits
@@ -311,7 +311,7 @@ void test_fen_parsing_general_layout_2()
     
     } void test_clearing_bits_in_a_board()
 {
-    	BITBOARD test_brd = 0;
+    	U64 test_brd = 0;
     
 	//
 	// Test clearing bits
@@ -341,7 +341,7 @@ void test_fen_parsing_general_layout_2()
 	clear_bit(&test_brd, 63);
 	assert_true(test_brd == 0);
 } void test_checking_bits_in_a_board(void)
-{			BITBOARD test_brd = 0;
+{			U64 test_brd = 0;
 
 	for (int i = 0; i < NUM_SQUARES; i++){
 		set_bit(&test_brd, i);
@@ -354,7 +354,7 @@ void test_fen_parsing_general_layout_2()
 
 
 void test_bit_counting(void){
-	BITBOARD brd = 0;
+	U64 brd = 0;
 	
 	set_bit(&brd, d3);
 	set_bit(&brd, a7);
@@ -369,7 +369,7 @@ void test_bit_counting(void){
 
 
 void test_LSB_clear(void){
-	BITBOARD brd = 0;
+	U64 brd = 0;
 	
 	set_bit(&brd, d3);
 	set_bit(&brd, a7);

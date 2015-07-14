@@ -31,17 +31,17 @@
  * @return
  * 
  */
-char * print_move(const MOVE * m) {
+char * print_move(const struct move * m) {
 
 	static char move_string[6];
 	
-	int from_file = GET_FILE(FROMSQ(m->move));
-	int from_rank = GET_RANK(FROMSQ(m->move));
+	int from_file = GET_FILE(FROMSQ(m->move_bitmap));
+	int from_rank = GET_RANK(FROMSQ(m->move_bitmap));
 	
-	int to_file = GET_FILE(TOSQ(m->move));
-	int to_rank = GET_RANK(TOSQ(m->move));
+	int to_file = GET_FILE(TOSQ(m->move_bitmap));
+	int to_rank = GET_RANK(TOSQ(m->move_bitmap));
 	
-	enum piece promoted_pce = PROMOTED(m->move);
+	enum piece promoted_pce = PROMOTED(m->move_bitmap);
 	
 	if(promoted_pce > 0) {
 		char pchar = 'q';	

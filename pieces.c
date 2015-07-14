@@ -39,7 +39,7 @@ inline char get_piece_label(enum piece piece)
 }
 
 
-inline COLOUR get_colour(enum piece piece){
+inline enum colour get_colour(enum piece piece){
 	if (IS_WHITE(piece))
 		return WHITE;
 	return BLACK;	

@@ -44,16 +44,16 @@ int main(int argc, char **argv)
 	
 	init_hash_keys();
 
-	BOARD * the_board = get_clean_board();
+	struct board * the_board = get_clean_board();
 	consume_fen_notation(FEN5, the_board);
     
-	BITBOARD rook = GET_ROOK_OCC_MASK(a5);
+	U64 rook = GET_ROOK_OCC_MASK(a5);
 	print_occupancy_mask_as_board(&rook, W_ROOK, a5);
     
     
 	printf("ROOK : 0x%016llx\n", rook);
     
-	BITBOARD pawn = 0;
+	U64 pawn = 0;
 	set_bit(&pawn, g5);
 	printf("PAWN : 0x%016llx\n", pawn);
     

@@ -47,7 +47,7 @@
 	char * test_fen = "88/1R1PpR2/5P2/1K3p2/3r1p2/k5Pp/4Pq1p/1Q6 w - - 0 1";
  * there should be 2 white queens, but only shows 1 when printing board
  */
-int consume_fen_notation(char *fen_string, BOARD * board_to_setup){
+int consume_fen_notation(char *fen_string, struct board * board_to_setup){
 	
 	//example of starting position:
 	//              rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
@@ -162,12 +162,12 @@ int consume_fen_notation(char *fen_string, BOARD * board_to_setup){
 /*
  * 
  * name: generate_fen_notation
- * @param 	BOARD *	the board to generate	
+ * @param 	struct board *	the board to generate	
  * @return 	cnar *	string representing fen notation
  * 
  */
 
-char *generate_fen_notation(BOARD * board_to_setup)
+char *generate_fen_notation(struct board * board_to_setup)
 {
 	printf("PosKey:\t0x%016llx\n", board_to_setup->board_hash);
 	// TODO

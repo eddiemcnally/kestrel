@@ -30,7 +30,7 @@
 
 
 char get_piece_label(enum piece piece);
-COLOUR get_colour(enum piece piece);
+enum colour get_colour(enum piece piece);
 
 bool is_big_piece(enum piece pce);
 bool is_major_piece(enum piece pce);

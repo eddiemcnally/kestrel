@@ -24,7 +24,7 @@
 #include "board.h"
 
 
-#define	BOARD_EMPTY	((BITBOARD)0x0ull)
+#define	BOARD_EMPTY	((U64)0x0ull)
 
 #define NUM_RANKS 	8
 #define NUM_FILES	8
@@ -42,18 +42,18 @@ enum {
 
 
 
-#define	NO_SQUARE	((SQUARE)(-1))
+#define	NO_SQUARE	((enum square)(-1))
 
-#define GET_PIECE_MASK(square)		((BITBOARD)(0x01ull << (int)(square)))
+#define GET_PIECE_MASK(square)	((U64)(0x01ull << (int)(square)))
 
 
 // zero-based
-#define GET_RANK(square)			((square) / 8)
-#define GET_FILE(square)			((square) % 8)
-#define GET_SQUARE(RANK, FILE)		((RANK * 8) + FILE)
+#define GET_RANK(square)	((square) / 8)
+#define GET_FILE(square)	((square) % 8)
+#define GET_SQUARE(RANK, FILE)	((RANK * 8) + FILE)
 
-#define IS_VALID_RANK(rank)			((rank >= RANK_1) && (rank <= RANK_8))
-#define IS_VALID_FILE(file)			((file >= FILE_A) && (file <= FILE_H))
+#define IS_VALID_RANK(rank)	((rank >= RANK_1) && (rank <= RANK_8))
+#define IS_VALID_FILE(file)	((file >= FILE_A) && (file <= FILE_H))
 
 
 
@@ -76,17 +76,17 @@ enum {
 
 
 
-BOARD * init_board(void);
-BOARD *get_clean_board(void);
-enum piece get_piece_at_square(BOARD * the_board, SQUARE square);
-bool add_piece_to_board(BOARD * board, enum piece piece, SQUARE square);
-bool is_square_occupied(BITBOARD board, SQUARE square);
-void set_bit(BITBOARD * brd, SQUARE sq);
-void clear_bit(BITBOARD * brd, SQUARE sq);
-bool check_bit(BITBOARD * brd, SQUARE sq);
-U8 count_bits(BITBOARD bb);
-U8 pop_1st_bit(BITBOARD *bb);
-void update_piece_material(BOARD * brd);
+struct board * init_board(void);
+struct board *get_clean_board(void);
+enum piece get_piece_at_square(struct board * the_board, enum square square);
+bool add_piece_to_board(struct board * board, enum piece piece, enum square square);
+bool is_square_occupied(U64 board, enum square square);
+void set_bit(U64 * brd, enum square sq);
+void clear_bit(U64 * brd, enum square sq);
+bool check_bit(U64 * brd, enum square sq);
+U8 count_bits(U64 bb);
+U8 pop_1st_bit(U64 *bb);
+void update_piece_material(struct board * brd);
 
 
 #endif

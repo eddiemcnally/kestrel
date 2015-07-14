@@ -34,16 +34,16 @@
  * 0000 1111 0000 0000 0000 0000 0000 -> Promoted Piece
  * 0001 0000 0000 0000 0000 0000 0000 -> Castle
  */
-typedef struct{
-	U32 move;
+struct move{
+	U32 move_bitmap;
 	U32 score;
-} MOVE;
+};
 
 
-typedef struct{
-	MOVE 	moves[MAX_POSITION_MOVES];
+struct move_list{
+	struct move moves[MAX_POSITION_MOVES];
 	U16	move_count;
-} MOVELIST;
+};
 
 //--- macros for setting the 'move' field in the MOVE struct
 #define FROMSQ(m) 		((m) & 0x7F)
@@ -63,7 +63,7 @@ typedef struct{
 
 
 
-char * print_move(const MOVE * m);
+char * print_move(const struct move * m);
 
 
 #endif

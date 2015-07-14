@@ -26,16 +26,16 @@
 
 #include "types.h"
  
-BITBOARD get_occ_mask(enum piece pce, SQUARE sq);
+U64 get_occ_mask(enum piece pce, enum square sq);
 void print_occupancy_masks(enum piece pce);
-void print_occupancy_mask_as_board(BITBOARD * mask, enum piece pce, SQUARE square);
-void print_out_masks(BITBOARD * masks);
+void print_occupancy_mask_as_board(U64 * mask, enum piece pce, enum square square);
+void print_out_masks(U64 * masks);
 
 
 
 
 // elem [0] is a1, [63] is h8
-static const BITBOARD black_pawn_occupancy_masks[NUM_SQUARES] = {
+static const U64 black_pawn_occupancy_masks[NUM_SQUARES] = {
 	0x0000000000000000,
 	0x0000000000000000,
 	0x0000000000000000,
@@ -103,7 +103,7 @@ static const BITBOARD black_pawn_occupancy_masks[NUM_SQUARES] = {
 };
 
 // elem [0] is a1, [63] is h8
-static const BITBOARD white_pawn_occupancy_masks[NUM_SQUARES] = {
+static const U64 white_pawn_occupancy_masks[NUM_SQUARES] = {
 	0x0000000000000000,
 	0x0000000000000000,
 	0x0000000000000000,
@@ -171,7 +171,7 @@ static const BITBOARD white_pawn_occupancy_masks[NUM_SQUARES] = {
 };
 
 // elem [0] is a1, [63] is h8
-static const BITBOARD knight_occupancy_masks[NUM_SQUARES] = {
+static const U64 knight_occupancy_masks[NUM_SQUARES] = {
 	0x0000000000020400,
 	0x0000000000050800,
 	0x00000000000a1100,
@@ -238,7 +238,7 @@ static const BITBOARD knight_occupancy_masks[NUM_SQUARES] = {
 	0x0020400000000000
 };
 
-static const BITBOARD bishop_occupancy_masks[NUM_SQUARES] = {
+static const U64 bishop_occupancy_masks[NUM_SQUARES] = {
 	0x8040201008040200,
 	0x0080402010080500,
 	0x0000804020110a00,
@@ -305,7 +305,7 @@ static const BITBOARD bishop_occupancy_masks[NUM_SQUARES] = {
 	0x0040201008040201
 };
 
-static const BITBOARD queen_occupancy_masks[NUM_SQUARES] = {
+static const U64 queen_occupancy_masks[NUM_SQUARES] = {
 	0x81412111090503fe,
 	0x02824222120a07fd,
 	0x0404844424150efb,
@@ -373,7 +373,7 @@ static const BITBOARD queen_occupancy_masks[NUM_SQUARES] = {
 };
 
 // elem [0] is a1, [63] is h8
-static const BITBOARD king_occupancy_masks[NUM_SQUARES] = {
+static const U64 king_occupancy_masks[NUM_SQUARES] = {
 
 	0x0000000000000302,
 	0x0000000000000705,
@@ -442,7 +442,7 @@ static const BITBOARD king_occupancy_masks[NUM_SQUARES] = {
 };
 
 
-static const BITBOARD rook_occupancy_masks[NUM_SQUARES] = {
+static const U64 rook_occupancy_masks[NUM_SQUARES] = {
 	0x01010101010101fe,
 	0x02020202020202fd,
 	0x04040404040404fb,

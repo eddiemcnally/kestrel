@@ -29,10 +29,10 @@
 #include "pieces.h"
 
 
-void overlay_boards(BOARD * board_container);
-int count_minor_pieces(BOARD * brd);
-int count_big_pieces(BOARD * brd);
-int count_major_pieces(BOARD * brd);
+void overlay_boards(struct board * board_container);
+int count_minor_pieces(struct board * brd);
+int count_big_pieces(struct board * brd);
+int count_major_pieces(struct board * brd);
 
 
 static const U8 BitTable[64] = {
@@ -53,9 +53,9 @@ static const U8 BitTable[64] = {
  * @return	a new board
  * 
  */
-BOARD * init_board(void)
+struct board * init_board(void)
 {
-	BOARD * brd = get_clean_board();
+	struct board * brd = get_clean_board();
 		
 	consume_fen_notation(STARTING_FEN, brd);
 	
@@ -63,13 +63,13 @@ BOARD * init_board(void)
 }
 
 
-void update_piece_material(BOARD * brd) 
+void update_piece_material(struct board * brd) 
 {	
 
-	for(SQUARE sq; sq < NUM_SQUARES; sq++) {
+	for(enum square sq; sq < NUM_SQUARES; sq++) {
 		enum piece pce = get_piece_at_square(brd, sq);
 		if (pce != NO_PIECE){
-			COLOUR colour = get_colour(pce);
+			enum colour colour = get_colour(pce);
 			
 			if (is_big_piece(pce))
 				brd->big_pieces[colour]++;
@@ -100,16 +100,16 @@ void update_piece_material(BOARD * brd)
  * @return	ptr to a created board struct
  * 
  */
-BOARD *get_clean_board(void)
+struct board *get_clean_board(void)
 {
-	BOARD *brd = malloc(sizeof(BOARD));
+	struct board *brd = malloc(sizeof(struct board));
 
-	memset(brd, 0, sizeof(BOARD));
+	memset(brd, 0, sizeof(struct board));
     
 	brd->king_squares[WHITE] = NO_SQUARE;
 	brd->king_squares[BLACK] = NO_SQUARE;
 
-	for(SQUARE sq = 0; sq < NUM_SQUARES; sq++){
+	for(enum square sq = 0; sq < NUM_SQUARES; sq++){
 		brd->pieces[sq] = NO_PIECE;
 	}
 
@@ -123,8 +123,8 @@ BOARD *get_clean_board(void)
  * @return : true if OK, false if piece already on that square
  *
  */
-bool add_piece_to_board(BOARD * board, enum piece piece,
-			SQUARE square)
+bool add_piece_to_board(struct board * board, enum piece piece,
+			enum square square)
 {
 	assert((square >= a1) && (square <= h8));
 	assert((piece >= W_PAWN) && (piece <= B_KING));
@@ -148,10 +148,10 @@ bool add_piece_to_board(BOARD * board, enum piece piece,
 }
 
 
-inline void overlay_boards(BOARD * the_board)
+inline void overlay_boards(struct board * the_board)
 {
 	int i = 0;
-	BITBOARD flat_board = BOARD_EMPTY;
+	U64 flat_board = BOARD_EMPTY;
 	for (i = 0; i < NUM_PIECES; i++) {
 		flat_board |= the_board->bitboards[i];
 	}
@@ -168,8 +168,8 @@ inline void overlay_boards(BOARD * the_board)
  * TODO - possibly replace this with a cache lookup on a new board array
  */
 
-inline enum piece get_piece_at_square(BOARD * the_board,
-			       SQUARE square)
+inline enum piece get_piece_at_square(struct board * the_board,
+			       enum square square)
 {
 	assert((square >= a1) && (square <= h8));
 	
@@ -185,11 +185,11 @@ inline enum piece get_piece_at_square(BOARD * the_board,
  * @return : void
  *
  */
-inline void set_bit(BITBOARD * brd, SQUARE sq)
+inline void set_bit(U64 * brd, enum square sq)
 {
 	assert((sq >= a1) && (sq <= h8));
 
-	*brd = *brd | (BITBOARD) (0x01ull << sq);
+	*brd = *brd | (U64) (0x01ull << sq);
 }
 
 
@@ -200,11 +200,11 @@ inline void set_bit(BITBOARD * brd, SQUARE sq)
  * @return : void
  *
  */
-inline void clear_bit(BITBOARD * brd, SQUARE sq)
+inline void clear_bit(U64 * brd, enum square sq)
 {
 	assert((sq >= a1) && (sq <= h8));
 
-	*brd = *brd & (BITBOARD) (~(0x01ull << sq));
+	*brd = *brd & (U64) (~(0x01ull << sq));
 }
 
 /*
@@ -214,7 +214,7 @@ inline void clear_bit(BITBOARD * brd, SQUARE sq)
  * @return : bool false if unset, bool true otherwise
  *
  */
-inline bool check_bit(BITBOARD * brd, SQUARE sq)
+inline bool check_bit(U64 * brd, enum square sq)
 {
 	assert((sq >= a1) && (sq <= h8));
 	
@@ -225,13 +225,13 @@ inline bool check_bit(BITBOARD * brd, SQUARE sq)
 }
 
 /*
- * Counts set bits in a BITBOARD 
+ * Counts set bits in a U64 
  * name: count_bits
  * @param 	the board
  * @return	the number of set bits
  * 
  */
-inline U8 count_bits(BITBOARD bb)
+inline U8 count_bits(U64 bb)
 {
 	U8 cntr;
 	for (cntr = 0; bb; cntr++)	{
@@ -245,13 +245,13 @@ inline U8 count_bits(BITBOARD bb)
 /*
  * Clears the LSB of the board, and returns the bit # that was cleared. 
  * name: pop_1st_bit
- * @param	ptr to BITBOARD
+ * @param	ptr to U64
  * @return	index of bit cleared.
  * 
  */
-inline U8 pop_1st_bit(BITBOARD *bb) 
+inline U8 pop_1st_bit(U64 *bb) 
 {
-	BITBOARD b = *bb ^ (*bb - 1);
+	U64 b = *bb ^ (*bb - 1);
 	unsigned int fold = (unsigned) ((b & 0xffffffff) ^ (b >> 32));
 	*bb &= (*bb - 1);
 	return BitTable[(fold * 0x783a9b23) >> 26];
@@ -260,7 +260,7 @@ inline U8 pop_1st_bit(BITBOARD *bb)
 
 
 
-inline bool is_square_occupied(BITBOARD board, SQUARE square)
+inline bool is_square_occupied(U64 board, enum square square)
 {
 	assert((square >= a1) && (square <= h8));
 

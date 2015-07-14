@@ -47,7 +47,7 @@ void test_is_square_being_attacked_by_knight(void){
 	// knight attacks e5
 	char * test_fen = "rnbqkbnr/pppp1ppp/8/4p3/8/5N2/PPPPPPPP/RNBQKB1R w KQkq e6 0 2";
 	
-	BOARD * brd = get_clean_board();
+	struct board * brd = get_clean_board();
 	consume_fen_notation(test_fen, brd);
 	//print_board(brd);
 	assert_true(is_knight_attacking_square(e5, WHITE, brd)); 
@@ -119,7 +119,7 @@ void test_is_square_being_attacked_by_pawn(void){
 	// white pawn attacks g5
 	char * test_fen_1 = "r2qkb1r/p1pb1p2/2n2n2/1p1pp1pp/2BPP1QP/BPN2N2/P1P2PP1/R3K2R b KQkq - 1 9";
 	
-	BOARD * brd = get_clean_board();
+	struct board * brd = get_clean_board();
 	consume_fen_notation(test_fen_1, brd);
 	//print_board(brd);
 	assert_true(is_pawn_attacking_square(c4, BLACK, brd)); 
@@ -154,7 +154,7 @@ void test_is_square_being_attacked_by_king(void){
 	// white king attacks f2
 	char * test_fen = "8/p3p1P1/2p5/pkP5/8/1p1pP1P1/pP1P1pK1/8 w - - 0 1";
 	
-	BOARD * brd = get_clean_board();
+	struct board * brd = get_clean_board();
 	consume_fen_notation(test_fen, brd);
 	//print_board(brd);
 	assert_true(is_king_attacking_square(c5, BLACK, brd)); 
@@ -220,7 +220,7 @@ void test_is_square_attacked_by_queen(void){
 	// f7 attacked by BQ
 	char * test_fen = "1n6/2pqpPq1/2Pp2pk/2NP3p/2K2p1p/P1pn1Q2/2PPQPP1/7N w - - 0 1";
 	
-	BOARD * brd = get_clean_board();
+	struct board * brd = get_clean_board();
 	consume_fen_notation(test_fen, brd);
 	//print_board(brd);
 	assert_true(is_queen_attacking_square(c6, BLACK, brd)); 
@@ -266,7 +266,7 @@ void test_is_square_being_attacked_by_rook(void){
 	// c2 attacked by WR
 	char * test_fen = "R1qq4/P1k2p1P/Qr4QP/2p2PP1/2prp1p1/2p4p/1PpPPK2/2R5 w - - 0 1";
 	
-	BOARD * brd = get_clean_board();
+	struct board * brd = get_clean_board();
 	consume_fen_notation(test_fen, brd);
 	//print_board(brd);
 	assert_true(is_rook_attacking_square(c8, WHITE, brd)); 
@@ -336,7 +336,7 @@ void test_is_square_being_attacked_by_bishop(void){
 	// d5 is attacked by BB
 	char * test_fen = "6rR/P3b2P/1p2bP2/p1BPkp1p/1P1r1pPp/3B4/PK1ppR1P/8 w - - 0 1";
 	
-	BOARD * brd = get_clean_board();
+	struct board * brd = get_clean_board();
 	consume_fen_notation(test_fen, brd);
 	//print_board(brd);
 	assert_true(is_bishop_attacking_square(e7, WHITE, brd)); 
@@ -391,7 +391,7 @@ void test_is_blocked_up_or_down(void){
 	// Qg3 blocked on d3 for attack on b3
 	char * test_fen = "1b4b1/7k/1Q3R2/1RQ4B/K4B2/Nn1n2qN/1r4r1/5q2 w - - 0 1";
 	
-	BOARD * brd = get_clean_board();
+	struct board * brd = get_clean_board();
 	consume_fen_notation(test_fen, brd);
 	//print_board(brd);
 	assert_true(is_horizontal_or_vertical_blocked(g3, b3, brd)); 
@@ -420,7 +420,7 @@ void test_is_blocked_diagonally(void){
 	// Bd5 blocked for attack on f7
 	char * test_fen = "2k5/5qb1/3qn1rN/3B3R/8/3RK2Q/1r5N/2nbB2Q w - - 0 1";
 	
-	BOARD * brd = get_clean_board();
+	struct board * brd = get_clean_board();
 	consume_fen_notation(test_fen, brd);
 	//print_board(brd);
 	assert_true(is_diagonally_blocked(f7, d5, brd)); 
@@ -471,7 +471,7 @@ void test_is_blocked_diagonally(void){
 void test_is_square_under_attack(void){
 	char * test_fen = "2b5/PP2K3/pP1n2R1/2P3P1/2r1p1N1/2pPn3/B1pp1Pkq/4QqB1 w - - 0 1";
 	
-	BOARD * brd = get_clean_board();
+	struct board * brd = get_clean_board();
 	consume_fen_notation(test_fen, brd);
 	//print_board(brd);
 	assert_true(is_sq_attacked(b7, BLACK, brd)); 

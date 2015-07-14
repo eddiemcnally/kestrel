@@ -21,7 +21,7 @@
 
 
 void init_hash_keys(void);
-U64 get_position_hashkey(BOARD *brd);
+U64 get_position_hashkey(struct board *brd);
 
 
 #endif

@@ -19,23 +19,20 @@
 #define _TYPES_H_
 
 
-typedef unsigned long long 		BITBOARD;
 typedef unsigned char 			U8;
-typedef unsigned long long 		U64;
 typedef unsigned short 			U16;
 typedef unsigned int			U32;
+typedef unsigned long long 		U64;
 
 
-
-
-typedef enum {
+enum colour {
 	BLACK,
 	WHITE,
 	NUM_COLOURS
-} COLOUR;
+};
 
 
-typedef enum {
+enum square {
 	a1 = 0, b1, c1, d1, e1, f1, g1, h1,
 	a2,	b2, c2, d2, e2, f2, g2, h2,
 	a3,	b3, c3, d3, e3, f3, g3, h3,
@@ -45,7 +42,7 @@ typedef enum {
 	a7,	b7, c7, d7, e7, f7, g7, h7,
 	a8,	b8, c8, d8, e8, f8, g8, h8,
 	NUM_SQUARES
-} SQUARE;
+} ;
 
 
 enum piece{
@@ -86,13 +83,13 @@ static const int piece_values[NUM_PIECES]= {
 
 // contains information before the current
 // move was made
-typedef struct {
+struct undo {
 	U16 	move;
 	U8 	fifty_move_counter;
 	U8 	castle_perm;
 	U64 	board_hash;
-	SQUARE 	en_passant;
-} undo_t;
+	enum square 	en_passant;
+};
 
 
 
@@ -105,22 +102,22 @@ typedef struct {
 /**
  * A container for holding the bitboards
  */
-typedef struct {
+struct board{
 	// bitboard entry for each piece
-	BITBOARD bitboards[NUM_PIECES];
+	U64 bitboards[NUM_PIECES];
 
 	// The above array piece arrays overlayed into a single bitboard.
 	// In effect, an OR of all elements in piece_boards[]
-	BITBOARD board;
+	U64 board;
 
 	// squares where the kings are
-	SQUARE king_squares[NUM_COLOURS];
+	enum square king_squares[NUM_COLOURS];
 
 	// the next side to move
-	COLOUR side_to_move;
+	enum colour side_to_move;
 	
 	// any square where en passent is active
-	SQUARE en_passant;
+	enum square en_passant;
 
 	// fifty move ounter
 	U8 fifty_move_counter;
@@ -133,16 +130,16 @@ typedef struct {
 	// type on the board
 	U8 pce_num[NUM_PIECES];
 
-	// indexed by COLOUR, contains number of pieces != PAWN
+	// indexed by enum colour, contains number of pieces != PAWN
 	U8 big_pieces[NUM_COLOURS]; 
 	
-	// indexed by COLOUR, contains number of ROOKs and QUEENs
+	// indexed by enum colour, contains number of ROOKs and QUEENs
 	U8 major_pieces[NUM_COLOURS];
 	
-	// indexed by COLOUR, contains number of BISHOPs and KNIGHTs
+	// indexed by enum colour, contains number of BISHOPs and KNIGHTs
 	U8 minor_pieces[NUM_COLOURS];
 
-	// indexed by COLOUR, contains sum of all piece values
+	// indexed by enum colour, contains sum of all piece values
 	U8 material[NUM_COLOURS];
 
 	// contains the pieces on each square
@@ -153,12 +150,12 @@ typedef struct {
 	U8 castle_perm;
 	
 	// move history
-	undo_t history[MAX_GAME_MOVES];
+	struct undo history[MAX_GAME_MOVES];
 	
 	// a hash of the current board 
 	U64 board_hash;
 	
-} BOARD;
+} ;
 
 
 #endif

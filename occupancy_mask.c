@@ -25,15 +25,15 @@
 #include "pieces.h"
 #include "occupancy_mask.h"
 
-void generate_king_occupancy_masks(BITBOARD * occ_mask_array);
-void generate_knight_occupancy_masks(BITBOARD * occ_mask_array);
-void generate_rook_occupancy_masks(BITBOARD * occ_mask_array);
-void generate_bishop_occupancy_masks(BITBOARD * occ_mask_array);
-void generate_queen_occupancy_masks(BITBOARD * occ_mask_array);
-void generate_white_pawn_occupancy_masks(BITBOARD * occ_mask_array);
-void generate_black_pawn_occupancy_masks(BITBOARD * occ_mask_array);
-void print_out_masks(BITBOARD * masks);
-void set_dest_sq_if_valid(int rank, int file, BITBOARD *brd);
+void generate_king_occupancy_masks(U64 * occ_mask_array);
+void generate_knight_occupancy_masks(U64 * occ_mask_array);
+void generate_rook_occupancy_masks(U64 * occ_mask_array);
+void generate_bishop_occupancy_masks(U64 * occ_mask_array);
+void generate_queen_occupancy_masks(U64 * occ_mask_array);
+void generate_white_pawn_occupancy_masks(U64 * occ_mask_array);
+void generate_black_pawn_occupancy_masks(U64 * occ_mask_array);
+void print_out_masks(U64 * masks);
+void set_dest_sq_if_valid(int rank, int file, U64 *brd);
 
 
 /*
@@ -43,10 +43,10 @@ void set_dest_sq_if_valid(int rank, int file, BITBOARD *brd);
  * @return	filled out array.
  * 
  */
-void generate_king_occupancy_masks(BITBOARD * occ_mask_array)
+void generate_king_occupancy_masks(U64 * occ_mask_array)
 {
 	
-	for (SQUARE sq = 0; sq < NUM_SQUARES; sq++) {
+	for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
 		// valid king moves, and resulting distance vector
 		// +7, +8, +9
 		// -1,  K, +1
@@ -62,7 +62,7 @@ void generate_king_occupancy_masks(BITBOARD * occ_mask_array)
 		int rank = GET_RANK(sq);
 		int file = GET_FILE(sq);
 		
-		BITBOARD b = 0;
+		U64 b = 0;
 
 		// left 1 file, up 1 rank
 		dest_rank = rank + 1;
@@ -121,7 +121,7 @@ void generate_king_occupancy_masks(BITBOARD * occ_mask_array)
  * @return	filled out array.
  * 
  */
-void generate_knight_occupancy_masks(BITBOARD * occ_mask_array)
+void generate_knight_occupancy_masks(U64 * occ_mask_array)
 {
 	
 //              56 57 58 59 60 61 62 63
@@ -133,7 +133,7 @@ void generate_knight_occupancy_masks(BITBOARD * occ_mask_array)
 //              08 09 10 11 12 13 14 15
 //              00 01 02 03 40 05 06 07
 
-	for (SQUARE sq = 0; sq < NUM_SQUARES; sq++) {
+	for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
 		int dest_rank = 0;
 		int dest_file = 0;
 		
@@ -150,7 +150,7 @@ void generate_knight_occupancy_masks(BITBOARD * occ_mask_array)
 		
 		//printf("rank/file: %d/%d\n", rank, file);
 		
-		BITBOARD b = 0;
+		U64 b = 0;
 
 		// left 1 file, up 2 ranks
 		dest_rank = rank + 2;
@@ -232,7 +232,7 @@ void generate_knight_occupancy_masks(BITBOARD * occ_mask_array)
  * 
  * NOTE: ignores en-passent (for now!)
  */
-void generate_white_pawn_occupancy_masks(BITBOARD * occ_mask_array)
+void generate_white_pawn_occupancy_masks(U64 * occ_mask_array)
 {
 	
 //              56 57 58 59 60 61 62 63
@@ -244,7 +244,7 @@ void generate_white_pawn_occupancy_masks(BITBOARD * occ_mask_array)
 //              08 09 10 11 12 13 14 15
 //              00 01 02 03 40 05 06 07
 	
-	for (SQUARE sq = a2; sq < a8; sq++) {
+	for (enum square sq = a2; sq < a8; sq++) {
 		// a2 n=> start at 2nd rank and ignore the 8th rank
 		
 		int dest_rank = 0;
@@ -259,7 +259,7 @@ void generate_white_pawn_occupancy_masks(BITBOARD * occ_mask_array)
 		int rank = GET_RANK(sq);
 		int file = GET_FILE(sq);
 		
-		BITBOARD b = 0;
+		U64 b = 0;
 
 		// left 1 file, up 1 rank
 		dest_rank = rank + 1;
@@ -285,7 +285,7 @@ void generate_white_pawn_occupancy_masks(BITBOARD * occ_mask_array)
  * 
  * NOTE: ignores en-passent (for now!)
  */
-void generate_black_pawn_occupancy_masks(BITBOARD * occ_mask_array)
+void generate_black_pawn_occupancy_masks(U64 * occ_mask_array)
 {
 	
 //              56 57 58 59 60 61 62 63
@@ -296,7 +296,7 @@ void generate_black_pawn_occupancy_masks(BITBOARD * occ_mask_array)
 //              16 17 18 19 20 21 22 23
 //              08 09 10 11 12 13 14 15
 //              00 01 02 03 40 05 06 07
-	for (SQUARE sq = h7; sq >= a2; sq--) {
+	for (enum square sq = h7; sq >= a2; sq--) {
 		// ignore top and bottom rank
 		
 		int dest_rank = 0;
@@ -311,7 +311,7 @@ void generate_black_pawn_occupancy_masks(BITBOARD * occ_mask_array)
 		int rank = GET_RANK(sq);
 		int file = GET_FILE(sq);
 		
-		BITBOARD b = 0;
+		U64 b = 0;
 
 		// left 1 file, down 1 rank
 		dest_rank = rank - 1;
@@ -331,7 +331,7 @@ void generate_black_pawn_occupancy_masks(BITBOARD * occ_mask_array)
 
 
 
-void generate_rook_occupancy_masks(BITBOARD * occ_mask_array)
+void generate_rook_occupancy_masks(U64 * occ_mask_array)
 {
 
 //              56 57 58 59 60 61 62 63
@@ -343,12 +343,12 @@ void generate_rook_occupancy_masks(BITBOARD * occ_mask_array)
 //              08 09 10 11 12 13 14 15
 //              00 01 02 03 40 05 06 07
 
-	for (SQUARE sq = 0; sq < NUM_SQUARES; sq++) {
+	for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
 		
 		int rank = GET_RANK(sq);
 		int file = GET_FILE(sq);
 		
-		BITBOARD b = 0;
+		U64 b = 0;
 		
 		// move up the ranks of this file
 		for (int i = RANK_1; i <= RANK_8; i++){
@@ -369,11 +369,11 @@ void generate_rook_occupancy_masks(BITBOARD * occ_mask_array)
 
 
 
-void generate_queen_occupancy_masks(BITBOARD * occ_mask_array)
+void generate_queen_occupancy_masks(U64 * occ_mask_array)
 {
 	// a queen is a rook + bishop, so create a temp mask array
-	BITBOARD temp_bishop_mask [NUM_SQUARES] = {0}; 
-	BITBOARD temp_rook_mask [NUM_SQUARES] = {0}; 
+	U64 temp_bishop_mask [NUM_SQUARES] = {0}; 
+	U64 temp_rook_mask [NUM_SQUARES] = {0}; 
 		
 	generate_bishop_occupancy_masks(temp_bishop_mask);
 	generate_rook_occupancy_masks(temp_rook_mask);
@@ -388,7 +388,7 @@ void generate_queen_occupancy_masks(BITBOARD * occ_mask_array)
 
 
 
-void generate_bishop_occupancy_masks(BITBOARD * occ_mask_array)
+void generate_bishop_occupancy_masks(U64 * occ_mask_array)
 {
 
 //              56 57 58 59 60 61 62 63
@@ -400,7 +400,7 @@ void generate_bishop_occupancy_masks(BITBOARD * occ_mask_array)
 //              08 09 10 11 12 13 14 15
 //              00 01 02 03 40 05 06 07
 
-	for (SQUARE sq = 0; sq < NUM_SQUARES; sq++) {
+	for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
 						
 		int rank = GET_RANK(sq);
 		int file = GET_FILE(sq);
@@ -409,7 +409,7 @@ void generate_bishop_occupancy_masks(BITBOARD * occ_mask_array)
 		
 		int dest_rank = 0;
 		int dest_file = 0;
-		BITBOARD b = 0;
+		U64 b = 0;
 		
 		// move left and down
 		dest_rank = rank;
@@ -463,7 +463,7 @@ void generate_bishop_occupancy_masks(BITBOARD * occ_mask_array)
 
 
 
-void set_dest_sq_if_valid(int rank, int file, BITBOARD *brd){
+void set_dest_sq_if_valid(int rank, int file, U64 *brd){
 	if ( IS_VALID_FILE(file) && IS_VALID_RANK(rank) ){
 		int dest_sq = GET_SQUARE(rank, file);
 		set_bit(brd, dest_sq);
@@ -484,7 +484,7 @@ void set_dest_sq_if_valid(int rank, int file, BITBOARD *brd){
 void print_occupancy_masks(enum piece pce)
 {
 	
-	BITBOARD masks[NUM_SQUARES] = {0};
+	U64 masks[NUM_SQUARES] = {0};
     
 	switch(pce){
 		case W_KNIGHT:
@@ -530,7 +530,7 @@ void print_occupancy_masks(enum piece pce)
 /**
  * Thanks again to Bluefever Software for this code
  */
-void print_occupancy_mask_as_board(BITBOARD * mask, enum piece pce, SQUARE square)
+void print_occupancy_mask_as_board(U64 * mask, enum piece pce, enum square square)
 {
 
 	//int sq,piece;
@@ -540,7 +540,7 @@ void print_occupancy_mask_as_board(BITBOARD * mask, enum piece pce, SQUARE squar
 	for(int rank = RANK_8; rank >= RANK_1; rank--) {
 		printf("%d  ",rank+1);	// enum is zero-based
 		for(int file = FILE_A; file <= FILE_H; file++) {
-			SQUARE sq = GET_SQUARE(rank, file);
+			enum square sq = GET_SQUARE(rank, file);
 			if (square == sq){
 				char c = get_piece_label(pce);
 				printf("%3c", c);
@@ -567,7 +567,7 @@ void print_occupancy_mask_as_board(BITBOARD * mask, enum piece pce, SQUARE squar
 
 
 
-void print_out_masks(BITBOARD * masks)
+void print_out_masks(U64 * masks)
 {
 	for (int i = 0; i < NUM_SQUARES; i++) {
 		printf("0x%016llx\n", masks[i]);

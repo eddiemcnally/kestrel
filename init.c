@@ -25,9 +25,9 @@
 #include "init.h"
 
 
-BOARD * init_game(void){
+struct board * init_game(void){
 	init_hash_keys();
-	BOARD * brd = init_board();
+	struct board * brd = init_board();
 	
 	return brd;	
 }
