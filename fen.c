@@ -47,20 +47,20 @@
 	char * test_fen = "88/1R1PpR2/5P2/1K3p2/3r1p2/k5Pp/4Pq1p/1Q6 w - - 0 1";
  * there should be 2 white queens, but only shows 1 when printing board
  */
-int consume_fen_notation(char *fen_string, board_container_t * board_to_setup){
+int consume_fen_notation(char *fen_string, BOARD * board_to_setup){
 	
-    //example of starting position:
-    //              rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
-    // 
-    // definition of FEN notation: 
-    //              https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
+	//example of starting position:
+	//              rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+	// 
+	// definition of FEN notation: 
+	//              https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
 
 	int rank = RANK_8;
 	int file = FILE_A;
 	int count = 0;
 	
 	while((rank >= RANK_1) && *fen_string){
-	    piece_id_t piece_to_add = NO_PIECE;
+		PIECE piece_to_add = NO_PIECE;
 		count = 1;
 		
 		switch (*fen_string) {
@@ -77,54 +77,55 @@ int consume_fen_notation(char *fen_string, board_container_t * board_to_setup){
 			case 'Q': piece_to_add = W_QUEEN; 	break;
 			case 'K': piece_to_add = W_KING; 	break;
 	
-            case '1':
-            case '2':
-            case '3':
-            case '4':
-            case '5':
-            case '6':
-            case '7':
-            case '8':
-                count = (*fen_string) - '0';
-                break;
+			case '1':
+			case '2':
+			case '3':
+			case '4':
+			case '5':
+			case '6':
+			case '7':
+			case '8':
+				count = (*fen_string) - '0';
+				break;
 
-            case '/':
-            case ' ':
-                rank--;
-                file = FILE_A;
-                fen_string++;
-                continue;              
+			case '/':
+			case ' ':
+				rank--;
+				file = FILE_A;
+				fen_string++;
+				continue;              
 
-            default:
-                printf("FEN error \n");
-                return -1;
-        }		
+			default:
+				printf("FEN error \n");
+				return -1;
+			}
+				
 		
 		for (int i = 0; i < count; i++) {			
-            if (piece_to_add != NO_PIECE) {
+			if (piece_to_add != NO_PIECE) {
 				int sq = GET_SQUARE(rank, file);
 				add_piece_to_board(board_to_setup, piece_to_add, sq);
 				
 				//print_board(board_to_setup);
-            }
+			}
 			file++;
-        }	
+		}	
 		
 		fen_string++;
 	}
 	
-    //assert((*fen_string == 'w') || (*fen_string == 'b'));
+	//assert((*fen_string == 'w') || (*fen_string == 'b'));
     
-    if (*fen_string == 'w'){
+	if (*fen_string == 'w'){
 		board_to_setup->side_to_move = WHITE;
 	} else{
 		board_to_setup->side_to_move = BLACK;
 	}
     
-    // skip 'w' or 'b', and the next space
-    fen_string += 2;
+	// skip 'w' or 'b', and the next space
+	fen_string += 2;
     
-    for(int i = 0; i < 4; i++){
+	for(int i = 0; i < 4; i++){
 		if (*fen_string == ' '){
 			break;
 		}
@@ -151,24 +152,24 @@ int consume_fen_notation(char *fen_string, board_container_t * board_to_setup){
 		board_to_setup->en_passant = NO_SQUARE;
 	}
     
-    update_piece_material(board_to_setup);
+	update_piece_material(board_to_setup);
     
-    board_to_setup->board_hash = get_position_hashkey(board_to_setup);
+	board_to_setup->board_hash = get_position_hashkey(board_to_setup);
         
-    return 0;
+	return 0;
 }
 
 /*
  * 
  * name: generate_fen_notation
- * @param 	board_container_t *	the board to generate	
+ * @param 	BOARD *	the board to generate	
  * @return 	cnar *	string representing fen notation
  * 
  */
 
-char *generate_fen_notation(board_container_t * board_to_setup)
+char *generate_fen_notation(BOARD * board_to_setup)
 {
 	printf("PosKey:\t0x%016llx\n", board_to_setup->board_hash);
-    // TODO
-    return malloc(80);
+	// TODO
+	return malloc(80);
 }

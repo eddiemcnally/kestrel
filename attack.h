@@ -22,16 +22,16 @@
 #include <stdbool.h>
 #include "types.h"
 
-bool is_bishop_attacking_square(square_t sq, colour_t attacking_side, const board_container_t * brd);
-bool is_sq_attacked(const square_t sq, const colour_t attacking_side, const board_container_t * brd);
-bool is_knight_attacking_square(square_t sq, colour_t attacking_side, const board_container_t * brd);
-bool is_pawn_attacking_square(square_t sq, colour_t attacking_side, const board_container_t * brd);
-bool is_king_attacking_square(square_t sq, colour_t attacking_side, const board_container_t * brd);
-bool is_rook_attacking_square(square_t sq, colour_t attacking_side, const board_container_t * brd);
-bool is_queen_attacking_square(square_t sq, colour_t attacking_side, const board_container_t * brd);
+bool is_bishop_attacking_square(SQUARE sq, COLOUR attacking_side, const BOARD * brd);
+bool is_sq_attacked(const SQUARE sq, const COLOUR attacking_side, const BOARD * brd);
+bool is_knight_attacking_square(SQUARE sq, COLOUR attacking_side, const BOARD * brd);
+bool is_pawn_attacking_square(SQUARE sq, COLOUR attacking_side, const BOARD * brd);
+bool is_king_attacking_square(SQUARE sq, COLOUR attacking_side, const BOARD * brd);
+bool is_rook_attacking_square(SQUARE sq, COLOUR attacking_side, const BOARD * brd);
+bool is_queen_attacking_square(SQUARE sq, COLOUR attacking_side, const BOARD * brd);
 
-bool is_horizontal_or_vertical_blocked(square_t sq_one, square_t sq_two, const board_container_t * brd);
-bool is_diagonally_blocked(square_t sq_one, square_t sq_two, const board_container_t * brd);
+bool is_horizontal_or_vertical_blocked(SQUARE sq_one, SQUARE sq_two, const BOARD * brd);
+bool is_diagonally_blocked(SQUARE sq_one, SQUARE sq_two, const BOARD * brd);
 
 
 #endif

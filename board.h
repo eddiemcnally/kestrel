@@ -24,7 +24,7 @@
 #include "board.h"
 
 
-#define	BOARD_EMPTY	((board_t)0x0ull)
+#define	BOARD_EMPTY	((BITBOARD)0x0ull)
 
 #define NUM_RANKS 	8
 #define NUM_FILES	8
@@ -42,9 +42,9 @@ enum {
 
 
 
-#define	NO_SQUARE	((square_t)(-1))
+#define	NO_SQUARE	((SQUARE)(-1))
 
-#define GET_PIECE_MASK(square)		((board_t)(0x01ull << (int)(square)))
+#define GET_PIECE_MASK(square)		((BITBOARD)(0x01ull << (int)(square)))
 
 
 // zero-based
@@ -75,31 +75,18 @@ enum {
 
 
 
-typedef enum{
-	N 	= 	0x01,
-	NE 	= 	0x02,
-	E	=	0x04,
-	SE	=	0x08,
-	S	=	0x10,
-	SW	=	0x20,
-	W	=	0x40,
-	
 
-} direction_t;
-
-
-
-board_container_t * init_board(void);
-board_container_t *get_clean_board(void);
-piece_id_t get_piece_at_square(board_container_t * the_board, square_t square);
-bool add_piece_to_board(board_container_t * board, piece_id_t piece, square_t square);
-bool is_square_occupied(board_t board, square_t square);
-void set_bit(board_t * brd, square_t sq);
-void clear_bit(board_t * brd, square_t sq);
-bool check_bit(board_t * brd, square_t sq);
-U8 count_bits(board_t bb);
-U8 pop_1st_bit(board_t *bb);
-void update_piece_material(board_container_t * brd);
+BOARD * init_board(void);
+BOARD *get_clean_board(void);
+PIECE get_piece_at_square(BOARD * the_board, SQUARE square);
+bool add_piece_to_board(BOARD * board, PIECE piece, SQUARE square);
+bool is_square_occupied(BITBOARD board, SQUARE square);
+void set_bit(BITBOARD * brd, SQUARE sq);
+void clear_bit(BITBOARD * brd, SQUARE sq);
+bool check_bit(BITBOARD * brd, SQUARE sq);
+U8 count_bits(BITBOARD bb);
+U8 pop_1st_bit(BITBOARD *bb);
+void update_piece_material(BOARD * brd);
 
 
 #endif

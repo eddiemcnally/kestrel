@@ -31,7 +31,7 @@
  * @return
  * 
  */
-char * print_move(const move_t * m) {
+char * print_move(const MOVE * m) {
 
 	static char move_string[6];
 	
@@ -41,7 +41,7 @@ char * print_move(const move_t * m) {
 	int to_file = GET_FILE(TOSQ(m->move));
 	int to_rank = GET_RANK(TOSQ(m->move));
 	
-	piece_id_t promoted_pce = PROMOTED(m->move);
+	PIECE promoted_pce = PROMOTED(m->move);
 	
 	if(promoted_pce > 0) {
 		char pchar = 'q';	
@@ -59,4 +59,3 @@ char * print_move(const move_t * m) {
 	
 	return move_string;
 }
-

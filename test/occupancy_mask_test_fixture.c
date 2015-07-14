@@ -52,7 +52,7 @@ void test_king_occupancy_mask(void)
 //              08 09 10 11 12 13 14 15
 //              00 01 02 03 40 05 06 07
 
-	board_t mask = GET_KING_OCC_MASK(a3);
+	BITBOARD mask = GET_KING_OCC_MASK(a3);
 	assert_true(check_bit(&mask, a4));
 	assert_true(check_bit(&mask, a2));
 	assert_true(check_bit(&mask, b2));
@@ -112,7 +112,7 @@ void test_rook_occupancy_mask(void)
 //              08 09 10 11 12 13 14 15
 //              00 01 02 03 40 05 06 07
 
-	board_t mask = GET_ROOK_OCC_MASK(a1);
+	BITBOARD mask = GET_ROOK_OCC_MASK(a1);
 	//printf("0x%016llx\n", mask);	
 	assert_true(check_bit(&mask, a2));
 	assert_true(check_bit(&mask, a3));
@@ -183,7 +183,7 @@ void test_white_pawn_occupancy_mask(void)
 //              08 09 10 11 12 13 14 15
 //              00 01 02 03 40 05 06 07
 
-	board_t mask = GET_WHITE_PAWN_OCC_MASK(a2);
+	BITBOARD mask = GET_WHITE_PAWN_OCC_MASK(a2);
 	//printf("0x%016llx\n", mask);	
 	assert_true(check_bit(&mask, b3));
 	assert_true(1 == CNT(mask));
@@ -230,7 +230,7 @@ void test_black_pawn_occupancy_mask(void)
 //              08 09 10 11 12 13 14 15
 //              00 01 02 03 40 05 06 07
 
-	board_t mask = GET_BLACK_PAWN_OCC_MASK(a7);
+	BITBOARD mask = GET_BLACK_PAWN_OCC_MASK(a7);
 	//printf("0x%016llx\n", mask);	
 	assert_true(check_bit(&mask, b6));
 	assert_true(1 == CNT(mask));
@@ -279,7 +279,7 @@ void test_knight_occupancy_mask(void)
 //              00 01 02 03 40 05 06 07
 
 
-	board_t mask = GET_KNIGHT_OCC_MASK(a1);
+	BITBOARD mask = GET_KNIGHT_OCC_MASK(a1);
 	assert_true(check_bit(&mask, c2));
 	assert_true(check_bit(&mask, b3));
 	assert_true(2 == CNT(mask));
@@ -331,7 +331,7 @@ void test_queen_occupancy_mask(void){
 //              08 09 10 11 12 13 14 15
 //              00 01 02 03 40 05 06 07
 
-	board_t mask = GET_QUEEN_OCC_MASK(h8);
+	BITBOARD mask = GET_QUEEN_OCC_MASK(h8);
 	assert_true(check_bit(&mask, h7));
 	assert_true(check_bit(&mask, h6));
 	assert_true(check_bit(&mask, h5));
@@ -372,7 +372,7 @@ void test_bishop_occupancy_mask(void){
 //              08 09 10 11 12 13 14 15
 //              00 01 02 03 40 05 06 07
 
-	board_t mask = GET_BISHOP_OCC_MASK(h8);
+	BITBOARD mask = GET_BISHOP_OCC_MASK(h8);
 	assert_true(check_bit(&mask, g7));
 	assert_true(check_bit(&mask, f6));
 	assert_true(check_bit(&mask, e5));
@@ -409,15 +409,15 @@ void test_bishop_occupancy_mask(void){
 
 void occupancy_mask_test_fixture(void)
 {
-    test_fixture_start();	// starts a fixture
+	test_fixture_start();	// starts a fixture
 
-    run_test(test_king_occupancy_mask);
-    run_test(test_knight_occupancy_mask);
-    run_test(test_rook_occupancy_mask);
-    run_test(test_queen_occupancy_mask);
-    run_test(test_bishop_occupancy_mask);
-    run_test(test_white_pawn_occupancy_mask);
-    run_test(test_black_pawn_occupancy_mask);
-    
-    test_fixture_end();		// ends a fixture
+	run_test(test_king_occupancy_mask);
+	run_test(test_knight_occupancy_mask);
+	run_test(test_rook_occupancy_mask);
+	run_test(test_queen_occupancy_mask);
+	run_test(test_bishop_occupancy_mask);
+	run_test(test_white_pawn_occupancy_mask);
+	run_test(test_black_pawn_occupancy_mask);
+
+	test_fixture_end();		// ends a fixture
 }

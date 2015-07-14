@@ -25,23 +25,23 @@
 
 #define NO_PIECE	((unsigned int)(-1))
 
-#define IS_WHITE(piece)			(piece <= W_KING)
-#define IS_BLACK(piece)			(IS_WHITE(piece) == false)
+#define IS_WHITE(piece)		(piece <= W_KING)
+#define IS_BLACK(piece)		(IS_WHITE(piece) == false)
 
 
-char get_piece_label(piece_id_t piece);
-colour_t get_colour(piece_id_t piece);
+char get_piece_label(PIECE piece);
+COLOUR get_colour(PIECE piece);
 
-bool is_big_piece(piece_id_t pce);
-bool is_major_piece(piece_id_t pce);
-bool is_minor_piece(piece_id_t pce);
+bool is_big_piece(PIECE pce);
+bool is_major_piece(PIECE pce);
+bool is_minor_piece(PIECE pce);
 
-bool isRQ(piece_id_t pce);
-bool isKi(piece_id_t pce);
-bool isKn(piece_id_t pce);
-bool isBQ(piece_id_t pce);
-bool isR(piece_id_t pce);
-bool isB(piece_id_t pce);
+bool isRQ(PIECE pce);
+bool isKi(PIECE pce);
+bool isKn(PIECE pce);
+bool isBQ(PIECE pce);
+bool isR(PIECE pce);
+bool isB(PIECE pce);
 
 
 

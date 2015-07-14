@@ -46,7 +46,7 @@ static const char files[] 	= "abcdefgh";
 /**
  * Thanks again to Bluefever Software for this code
  */
-void print_board(board_container_t * the_board)
+void print_board(BOARD * the_board)
 {
 
 	//int sq,piece;
@@ -56,8 +56,8 @@ void print_board(board_container_t * the_board)
 	for(int rank = RANK_8; rank >= RANK_1; rank--) {
 		printf("%d  ",rank+1);	// enum is zero-based
 		for(int file = FILE_A; file <= FILE_H; file++) {
-			square_t sq = GET_SQUARE(rank, file);
-			piece_id_t pce = get_piece_at_square(the_board, sq);
+			SQUARE sq = GET_SQUARE(rank, file);
+			PIECE pce = get_piece_at_square(the_board, sq);
 			if (pce != NO_PIECE){
 				char c = get_piece_label(pce);
 				printf("%3c", c);
@@ -109,7 +109,7 @@ void print_board(board_container_t * the_board)
  * @return
  * 
  */
-char * print_square(const square_t sq) {
+char * print_square(const SQUARE sq) {
 	
 	static char square_text[3];
 	
@@ -134,10 +134,10 @@ char * print_square(const square_t sq) {
  * 
  */
 
-bool ASSERT_BOARD_OK(board_container_t * brd){
+bool ASSERT_BOARD_OK(BOARD * brd){
 
 	// check bit boards
-	board_t conflated = 0;
+	BITBOARD conflated = 0;
 
 	for (int i = 0; i < NUM_PIECES; i++){
 		conflated |= brd->bitboards[i];	
@@ -145,8 +145,8 @@ bool ASSERT_BOARD_OK(board_container_t * brd){
 	assert(conflated == brd->board);
 
 	// check where Kings are
-	for(square_t sq = 0; sq < NUM_SQUARES; sq++){
-		piece_id_t pce = get_piece_at_square(brd, sq);
+	for(SQUARE sq = 0; sq < NUM_SQUARES; sq++){
+		PIECE pce = get_piece_at_square(brd, sq);
 		if (pce != NO_PIECE){
 			if (pce == W_KING){
 				assert(sq == brd->king_squares[WHITE]);
@@ -157,8 +157,8 @@ bool ASSERT_BOARD_OK(board_container_t * brd){
 	}
 	
 	// check verbose representation of board
-	for (square_t sq = 0; sq < NUM_SQUARES; sq++){
-		piece_id_t pce = get_piece_at_square(brd, sq);
+	for (SQUARE sq = 0; sq < NUM_SQUARES; sq++){
+		PIECE pce = get_piece_at_square(brd, sq);
 		if (pce != NO_PIECE){
 			assert(pce == brd->pieces[sq]);
 		}
@@ -170,8 +170,8 @@ bool ASSERT_BOARD_OK(board_container_t * brd){
 	// check number of pieces on board
 	// -------------------------------
 	U8 pce_num[NUM_PIECES] = {0};
-	for(square_t sq = 0; sq < NUM_SQUARES; sq++){
-		piece_id_t pce = get_piece_at_square(brd, sq);
+	for(SQUARE sq = 0; sq < NUM_SQUARES; sq++){
+		PIECE pce = get_piece_at_square(brd, sq);
 		if (pce != NO_PIECE){
 			pce_num[pce]++;
 		}		
@@ -192,10 +192,10 @@ bool ASSERT_BOARD_OK(board_container_t * brd){
 	U8 big_pieces[NUM_COLOURS] = {0}; 
 	U8 major_pieces[NUM_COLOURS] = {0};
 	U8 minor_pieces[NUM_COLOURS] = {0};
-	for(square_t sq = 0; sq < NUM_SQUARES; sq++){
-		piece_id_t pce = get_piece_at_square(brd, sq);
+	for(SQUARE sq = 0; sq < NUM_SQUARES; sq++){
+		PIECE pce = get_piece_at_square(brd, sq);
 		if (pce != NO_PIECE){
-			colour_t col = get_colour(pce);
+			COLOUR col = get_colour(pce);
 			if (is_big_piece(pce)){
 				big_pieces[col] += 1;
 			}
@@ -218,10 +218,10 @@ bool ASSERT_BOARD_OK(board_container_t * brd){
 
 	// calc and verify the material count
 	U8 material[NUM_COLOURS] = {0};
-	for(square_t sq = 0; sq < NUM_SQUARES; sq++){
-		piece_id_t pce = get_piece_at_square(brd, sq);
+	for(SQUARE sq = 0; sq < NUM_SQUARES; sq++){
+		PIECE pce = get_piece_at_square(brd, sq);
 		if (pce != NO_PIECE){
-			colour_t col = get_colour(pce);
+			COLOUR col = get_colour(pce);
 			material[col] += piece_values[pce];
 		}		
 	}

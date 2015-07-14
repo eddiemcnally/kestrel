@@ -22,8 +22,8 @@
 #include <stdbool.h>
 #include "types.h"
 
-void print_board(board_container_t * the_board);
-bool ASSERT_BOARD_OK(board_container_t * brd);
-char * print_square(const square_t sq);
+void print_board(BOARD * the_board);
+bool ASSERT_BOARD_OK(BOARD * brd);
+char * print_square(const SQUARE sq);
 
 #endif

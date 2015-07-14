@@ -44,47 +44,46 @@ int main(int argc, char **argv)
 	
 	init_hash_keys();
 
-	board_container_t * the_board = get_clean_board();
-    consume_fen_notation(FEN5, the_board);
+	BOARD * the_board = get_clean_board();
+	consume_fen_notation(FEN5, the_board);
     
-    board_t rook = GET_ROOK_OCC_MASK(a5);
-    print_occupancy_mask_as_board(&rook, W_ROOK, a5);
-    
-    
-    printf("ROOK : 0x%016llx\n", rook);
-    
-    board_t pawn = 0;
-    set_bit(&pawn, g5);
-    printf("PAWN : 0x%016llx\n", pawn);
+	BITBOARD rook = GET_ROOK_OCC_MASK(a5);
+	print_occupancy_mask_as_board(&rook, W_ROOK, a5);
     
     
-    printf("AND'ed : 0x%016llx\n", pawn & rook);
+	printf("ROOK : 0x%016llx\n", rook);
+    
+	BITBOARD pawn = 0;
+	set_bit(&pawn, g5);
+	printf("PAWN : 0x%016llx\n", pawn);
+    
+    
+	printf("AND'ed : 0x%016llx\n", pawn & rook);
     
    
     
-    //print_board(the_board);
-    //ASSERT_BOARD_OK(the_board);
+	//print_board(the_board);
+	//ASSERT_BOARD_OK(the_board);
 
 
-	
 	//print_occupancy_masks(B_KNIGHT);
 
     
 	the_board = get_clean_board();
-    consume_fen_notation(FEN2, the_board);
-    print_board(the_board);
-    ASSERT_BOARD_OK(the_board);
+	consume_fen_notation(FEN2, the_board);
+	print_board(the_board);
+	ASSERT_BOARD_OK(the_board);
         
 	the_board = get_clean_board();
-    consume_fen_notation(FEN3, the_board);
-    print_board(the_board);
-    ASSERT_BOARD_OK(the_board);
+	consume_fen_notation(FEN3, the_board);
+	print_board(the_board);
+	ASSERT_BOARD_OK(the_board);
 
 	the_board = get_clean_board();
-    consume_fen_notation(FEN4, the_board);
-    print_board(the_board);
-    ASSERT_BOARD_OK(the_board);
+	consume_fen_notation(FEN4, the_board);
+	print_board(the_board);
+	ASSERT_BOARD_OK(the_board);
 
     
-    return 0;
+	return 0;
 }

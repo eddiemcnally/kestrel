@@ -27,10 +27,12 @@
 #include "attack.h"
 #include "occupancy_mask.h"
 
-bool is_horizontal_or_vertical_blocked(square_t sq_one, square_t sq_two, const board_container_t * brd);
-bool is_diagonally_blocked(square_t sq_one, square_t sq_two, const board_container_t * brd);
+bool is_horizontal_or_vertical_blocked(SQUARE sq_one, SQUARE sq_two, const BOARD * brd);
+bool is_diagonally_blocked(SQUARE sq_one, SQUARE sq_two, const BOARD * brd);
 
-bool is_sq_attacked(const square_t sq, const colour_t attacking_side, const board_container_t * brd){
+
+
+bool is_sq_attacked(const SQUARE sq, const COLOUR attacking_side, const BOARD * brd){
 		
 	if (is_knight_attacking_square(sq, attacking_side, brd))
 		return true;
@@ -57,14 +59,14 @@ bool is_sq_attacked(const square_t sq, const colour_t attacking_side, const boar
 //              08 09 10 11 12 13 14 15
 //              00 01 02 03 40 05 06 07
 	
-inline bool is_knight_attacking_square(square_t sq, colour_t attacking_side, const board_container_t * brd){
+inline bool is_knight_attacking_square(SQUARE sq, COLOUR attacking_side, const BOARD * brd){
 	// create bitboard for square under attack 
-	board_t sqBB = 0;
+	BITBOARD sqBB = 0;
 	set_bit(&sqBB, sq);
 	
 	//printf("*** checking sq %d\n", sq);
 	
-	piece_id_t attacking_piece;
+	PIECE attacking_piece;
 
 	if (attacking_side == WHITE)
 		attacking_piece = W_KNIGHT;
@@ -74,17 +76,17 @@ inline bool is_knight_attacking_square(square_t sq, colour_t attacking_side, con
 	
 	// get the bitboard representing all knights on the board of 
 	// this colour
-	board_t bbKnight = brd->bitboards[attacking_piece];
+	BITBOARD bbKnight = brd->bitboards[attacking_piece];
 	
 	
 	//printf("#knights %d\n", CNT(bbKnight));
 
 	
 	while( bbKnight != 0){
-		square_t att_pce_sq = POP(&bbKnight);
+		SQUARE att_pce_sq = POP(&bbKnight);
 		
 		// get occupancy mask for this piece and square
-		board_t mask = GET_KNIGHT_OCC_MASK(att_pce_sq);
+		BITBOARD mask = GET_KNIGHT_OCC_MASK(att_pce_sq);
 		
 			
 		//printf("att_pce_sq %d\n", att_pce_sq);
@@ -103,12 +105,12 @@ inline bool is_knight_attacking_square(square_t sq, colour_t attacking_side, con
 
 
 
-bool is_bishop_attacking_square(square_t sq, colour_t attacking_side, const board_container_t * brd){
+bool is_bishop_attacking_square(SQUARE sq, COLOUR attacking_side, const BOARD * brd){
 	// create bitboard for square under attack 
-	board_t sqBB = 0;
+	BITBOARD sqBB = 0;
 	set_bit(&sqBB, sq);
 	
-	piece_id_t attacking_piece;
+	PIECE attacking_piece;
 
 	if (attacking_side == WHITE)
 		attacking_piece = W_BISHOP;
@@ -118,13 +120,13 @@ bool is_bishop_attacking_square(square_t sq, colour_t attacking_side, const boar
 	
 	// get the bitboard representing all bishops on the board of 
 	// this colour
-	board_t bbBishop = brd->bitboards[attacking_piece];
+	BITBOARD bbBishop = brd->bitboards[attacking_piece];
 	
 	while( bbBishop != 0){
-		square_t att_pce_sq = POP(&bbBishop);
+		SQUARE att_pce_sq = POP(&bbBishop);
 		
 		// get occupancy mask for this piece and square
-		board_t mask = GET_BISHOP_OCC_MASK(att_pce_sq);
+		BITBOARD mask = GET_BISHOP_OCC_MASK(att_pce_sq);
 		
 		//printf("bishop mask 0x%016llx\n", mask);
 		//printf("square mask 0x%016llx\n", sqBB);
@@ -145,12 +147,12 @@ bool is_bishop_attacking_square(square_t sq, colour_t attacking_side, const boar
 
 
 
-bool is_rook_attacking_square(square_t sq, colour_t attacking_side, const board_container_t * brd){
+bool is_rook_attacking_square(SQUARE sq, COLOUR attacking_side, const BOARD * brd){
 	// create bitboard for square under attack 
-	board_t sqBB = 0;
+	BITBOARD sqBB = 0;
 	set_bit(&sqBB, sq);
 	
-	piece_id_t attacking_piece;
+	PIECE attacking_piece;
 
 	if (attacking_side == WHITE)
 		attacking_piece = W_ROOK;
@@ -160,14 +162,14 @@ bool is_rook_attacking_square(square_t sq, colour_t attacking_side, const board_
 	
 	// get the bitboard representing all rooks on the board of 
 	// this colour
-	board_t bbRook = brd->bitboards[attacking_piece];
+	BITBOARD bbRook = brd->bitboards[attacking_piece];
 	
 	// check all rooks
 	while( bbRook != 0){
-		square_t att_pce_sq = POP(&bbRook);
+		SQUARE att_pce_sq = POP(&bbRook);
 		
 		// get occupancy mask for this piece and square
-		board_t mask = GET_ROOK_OCC_MASK(att_pce_sq);
+		BITBOARD mask = GET_ROOK_OCC_MASK(att_pce_sq);
 		if (mask & sqBB){
 			// a Rook is possibly attacking this square
 			// search for any blocking pieces
@@ -184,12 +186,12 @@ bool is_rook_attacking_square(square_t sq, colour_t attacking_side, const board_
 
 
 
-inline bool is_pawn_attacking_square(square_t sq, colour_t attacking_side, const board_container_t * brd){
+inline bool is_pawn_attacking_square(SQUARE sq, COLOUR attacking_side, const BOARD * brd){
 		
-	piece_id_t attacking_piece;
+	PIECE attacking_piece;
 	
 	// create bitboard for square under attack 
-	board_t sqBB = 0;
+	BITBOARD sqBB = 0;
 	set_bit(&sqBB, sq);
 	
 	// ------------------------
@@ -203,12 +205,12 @@ inline bool is_pawn_attacking_square(square_t sq, colour_t attacking_side, const
 	
 	// get the bitboard representing all pawns on the board of 
 	// this colour
-	board_t bbPawn = brd->bitboards[attacking_piece];
+	BITBOARD bbPawn = brd->bitboards[attacking_piece];
 	while( bbPawn != 0){
-		square_t att_pce_sq = POP(&bbPawn);
+		SQUARE att_pce_sq = POP(&bbPawn);
 		
 		// get occupancy mask for this piece
-		board_t mask = 0;
+		BITBOARD mask = 0;
 		if (attacking_side == WHITE)
 			mask = GET_WHITE_PAWN_OCC_MASK(att_pce_sq);
 		else
@@ -225,13 +227,13 @@ inline bool is_pawn_attacking_square(square_t sq, colour_t attacking_side, const
 
 
 
-inline bool is_queen_attacking_square(square_t sq, colour_t attacking_side, const board_container_t * brd){
+inline bool is_queen_attacking_square(SQUARE sq, COLOUR attacking_side, const BOARD * brd){
 	
 	// create bitboard for square under attack 
-	board_t sqBB = 0;
+	BITBOARD sqBB = 0;
 	set_bit(&sqBB, sq);
 	
-	piece_id_t attacking_piece;
+	PIECE attacking_piece;
 		
 			
 	// ------------------------
@@ -245,16 +247,16 @@ inline bool is_queen_attacking_square(square_t sq, colour_t attacking_side, cons
 	
 	// get the bitboard representing all queens on the board of 
 	// this colour
-	board_t bbQueen = brd->bitboards[attacking_piece];
+	BITBOARD bbQueen = brd->bitboards[attacking_piece];
 	
 	//printf("#queens %d\n", CNT(bbQueen));
 
 	// check *all* queens to see if blocked.
 	while( bbQueen != 0){
-		square_t att_pce_sq = POP(&bbQueen);
+		SQUARE att_pce_sq = POP(&bbQueen);
 		
 		// get occupancy mask for this square
-		board_t mask = GET_QUEEN_OCC_MASK(att_pce_sq);
+		BITBOARD mask = GET_QUEEN_OCC_MASK(att_pce_sq);
 		
 		//printf("att_pce_sq %d\n", att_pce_sq);
 		//printf("sq %d queen mask 0x%016llx\n", sq, mask);
@@ -286,13 +288,13 @@ inline bool is_queen_attacking_square(square_t sq, colour_t attacking_side, cons
 
 
 
-inline bool is_king_attacking_square(square_t sq, colour_t attacking_side, const board_container_t * brd){
+inline bool is_king_attacking_square(SQUARE sq, COLOUR attacking_side, const BOARD * brd){
 	
 	// create bitboard for square under attack 
-	board_t sqBB = 0;
+	BITBOARD sqBB = 0;
 	set_bit(&sqBB, sq);
 	
-	piece_id_t attacking_piece;
+	PIECE attacking_piece;
 		
 			
 	// ------------------------
@@ -305,12 +307,12 @@ inline bool is_king_attacking_square(square_t sq, colour_t attacking_side, const
 	
 	// get the bitboard representing the king on the board of 
 	// this colour
-	board_t bbPawn = brd->bitboards[attacking_piece];
+	BITBOARD bbPawn = brd->bitboards[attacking_piece];
 	while( bbPawn != 0){
-		square_t att_pce_sq = POP(&bbPawn);
+		SQUARE att_pce_sq = POP(&bbPawn);
 		
 		// get occupancy mask for this square
-		board_t mask = GET_KING_OCC_MASK(att_pce_sq);
+		BITBOARD mask = GET_KING_OCC_MASK(att_pce_sq);
 		if (mask & sqBB){
 			// a king is attaching this square
 			return true;
@@ -321,7 +323,7 @@ inline bool is_king_attacking_square(square_t sq, colour_t attacking_side, const
 
 
 
-bool is_horizontal_or_vertical_blocked(square_t sq_one, square_t sq_two, const board_container_t * brd){
+bool is_horizontal_or_vertical_blocked(SQUARE sq_one, SQUARE sq_two, const BOARD * brd){
 	
 	int sq_one_rank = GET_RANK(sq_one);
 	int sq_one_file = GET_FILE(sq_one);
@@ -334,14 +336,14 @@ bool is_horizontal_or_vertical_blocked(square_t sq_one, square_t sq_two, const b
 		if (sq_one_file < sq_two_file){
 			// search left
 			for(int i = sq_one_file + 1; i < sq_two_file; i++){
-				square_t s = GET_SQUARE(sq_one_rank, i);
+				SQUARE s = GET_SQUARE(sq_one_rank, i);
 				if (is_square_occupied(brd->board, s))
 					return true;
 			} 
 		} else{
 			// search right
 			for(int i = sq_two_file + 1; i < sq_one_file; i++){
-				square_t s = GET_SQUARE(sq_one_rank, i);
+				SQUARE s = GET_SQUARE(sq_one_rank, i);
 				if (is_square_occupied(brd->board, s))
 					return true;
 			}
@@ -352,14 +354,14 @@ bool is_horizontal_or_vertical_blocked(square_t sq_one, square_t sq_two, const b
 		if (sq_one_rank < sq_two_rank){
 			// search up
 			for(int i = sq_one_rank + 1; i < sq_two_rank; i++){
-				square_t s = GET_SQUARE(i, sq_one_file);
+				SQUARE s = GET_SQUARE(i, sq_one_file);
 				if (is_square_occupied(brd->board, s))
 					return true;
 			} 
 		} else{
 			// search down
 			for(int i = sq_two_rank + 1; i < sq_one_rank; i++){
-				square_t s = GET_SQUARE(i, sq_one_file);
+				SQUARE s = GET_SQUARE(i, sq_one_file);
 				if (is_square_occupied(brd->board, s))
 					return true;
 			}
@@ -371,7 +373,7 @@ bool is_horizontal_or_vertical_blocked(square_t sq_one, square_t sq_two, const b
 
 
 
-bool is_diagonally_blocked(square_t sq_one, square_t sq_two, const board_container_t * brd){
+bool is_diagonally_blocked(SQUARE sq_one, SQUARE sq_two, const BOARD * brd){
 	
 	assert(sq_one != sq_two);
 	
@@ -390,7 +392,7 @@ bool is_diagonally_blocked(square_t sq_one, square_t sq_two, const board_contain
 		//printf("111");
 		if ( ((sq_two - sq_one) % 9) == 0){
 			// search up and right from sq_one
-			square_t sq = sq_one + 9;
+			SQUARE sq = sq_one + 9;
 			int sq_rank = GET_RANK(sq);
 			int sq_file = GET_FILE(sq);
 			
@@ -407,7 +409,7 @@ bool is_diagonally_blocked(square_t sq_one, square_t sq_two, const board_contain
 			//printf("222");
 
 			// search up and left
-			square_t sq = sq_one + 7;
+			SQUARE sq = sq_one + 7;
 			int sq_rank = GET_RANK(sq);
 			int sq_file = GET_FILE(sq);
 			
@@ -428,7 +430,7 @@ bool is_diagonally_blocked(square_t sq_one, square_t sq_two, const board_contain
 			//printf("333");
 
 			// search down and left from sq_one
-			square_t sq = sq_one - 9;
+			SQUARE sq = sq_one - 9;
 			int sq_rank = GET_RANK(sq);
 			int sq_file = GET_FILE(sq);
 			
@@ -447,7 +449,7 @@ bool is_diagonally_blocked(square_t sq_one, square_t sq_two, const board_contain
 			//printf("444");
 
 			// search down and right from sq_two
-			square_t sq = sq_one - 7;
+			SQUARE sq = sq_one - 7;
 			int sq_rank = GET_RANK(sq);
 			int sq_file = GET_FILE(sq);
 

@@ -24,29 +24,29 @@
 #include "pieces.h"
 
 
-// offsets into this array are by type piece_id_t 
+// offsets into this array are by type PIECE 
 static const char pieceToChar[NUM_PIECES] = {
-    'P', 'R', 'N', 'B', 'Q', 'K', 'p', 'r', 'n', 'b', 'q', 'k'
+	'P', 'R', 'N', 'B', 'Q', 'K', 'p', 'r', 'n', 'b', 'q', 'k'
 };
 
 
 /**
  * Takes a typed piece and returns a human-readable representation
  */
-inline char get_piece_label(piece_id_t piece)
+inline char get_piece_label(PIECE piece)
 {
-    return pieceToChar[piece];
+	return pieceToChar[piece];
 }
 
 
-inline colour_t get_colour(piece_id_t piece){
+inline COLOUR get_colour(PIECE piece){
 	if (IS_WHITE(piece))
 		return WHITE;
 	return BLACK;	
 }
 
 
-inline bool is_big_piece(piece_id_t pce){
+inline bool is_big_piece(PIECE pce){
 	switch(pce){
 		case W_PAWN:
 		case B_PAWN:
@@ -56,7 +56,7 @@ inline bool is_big_piece(piece_id_t pce){
 	}
 }
 
-inline bool is_major_piece(piece_id_t pce){
+inline bool is_major_piece(PIECE pce){
 	switch(pce){
 		case W_ROOK:
 		case W_QUEEN:
@@ -69,7 +69,7 @@ inline bool is_major_piece(piece_id_t pce){
 }
 
 
-inline bool is_minor_piece(piece_id_t pce){
+inline bool is_minor_piece(PIECE pce){
 	switch(pce){
 		case W_BISHOP:
 		case W_KNIGHT:
@@ -82,7 +82,7 @@ inline bool is_minor_piece(piece_id_t pce){
 }
 
 
-inline bool isRQ(piece_id_t pce){
+inline bool isRQ(PIECE pce){
 	switch(pce){
 		case W_ROOK:
 		case W_QUEEN:
@@ -95,7 +95,7 @@ inline bool isRQ(piece_id_t pce){
 }
 
 
-inline bool isKi(piece_id_t pce){
+inline bool isKi(PIECE pce){
 	if ( (pce == B_KING) || (pce == W_KING))
 		return true;
 	return false;
@@ -103,14 +103,14 @@ inline bool isKi(piece_id_t pce){
 
 
 
-inline bool isKn(piece_id_t pce){
+inline bool isKn(PIECE pce){
 	if ( (pce == B_KNIGHT) || (pce == W_KNIGHT))
 		return true;
 	return false;
 }
 
 
-inline bool isR(piece_id_t pce){
+inline bool isR(PIECE pce){
 	switch(pce){
 		case W_ROOK:
 		case B_ROOK:
@@ -121,7 +121,7 @@ inline bool isR(piece_id_t pce){
 }
 
 
-inline bool isB(piece_id_t pce){
+inline bool isB(PIECE pce){
 	switch(pce){
 		case W_BISHOP:
 		case B_BISHOP:
@@ -131,7 +131,7 @@ inline bool isB(piece_id_t pce){
 	}
 }
 
-inline bool isBQ(piece_id_t pce){
+inline bool isBQ(PIECE pce){
 	switch(pce){
 		case W_BISHOP:
 		case W_QUEEN:

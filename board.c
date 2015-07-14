@@ -29,10 +29,10 @@
 #include "pieces.h"
 
 
-void overlay_boards(board_container_t * board_container);
-int count_minor_pieces(board_container_t * brd);
-int count_big_pieces(board_container_t * brd);
-int count_major_pieces(board_container_t * brd);
+void overlay_boards(BOARD * board_container);
+int count_minor_pieces(BOARD * brd);
+int count_big_pieces(BOARD * brd);
+int count_major_pieces(BOARD * brd);
 
 
 static const U8 BitTable[64] = {
@@ -53,8 +53,9 @@ static const U8 BitTable[64] = {
  * @return	a new board
  * 
  */
-board_container_t * init_board(void){
-	board_container_t * brd = get_clean_board();
+BOARD * init_board(void)
+{
+	BOARD * brd = get_clean_board();
 		
 	consume_fen_notation(STARTING_FEN, brd);
 	
@@ -62,12 +63,13 @@ board_container_t * init_board(void){
 }
 
 
-void update_piece_material(board_container_t * brd) {	
-	
-	for(square_t sq; sq < NUM_SQUARES; sq++) {
-		piece_id_t pce = get_piece_at_square(brd, sq);
+void update_piece_material(BOARD * brd) 
+{	
+
+	for(SQUARE sq; sq < NUM_SQUARES; sq++) {
+		PIECE pce = get_piece_at_square(brd, sq);
 		if (pce != NO_PIECE){
-			colour_t colour = get_colour(pce);
+			COLOUR colour = get_colour(pce);
 			
 			if (is_big_piece(pce))
 				brd->big_pieces[colour]++;
@@ -98,16 +100,16 @@ void update_piece_material(board_container_t * brd) {
  * @return	ptr to a created board struct
  * 
  */
-board_container_t *get_clean_board(void)
+BOARD *get_clean_board(void)
 {
-    board_container_t *brd = malloc(sizeof(board_container_t));
+	BOARD *brd = malloc(sizeof(BOARD));
 
-    memset(brd, 0, sizeof(board_container_t));
+	memset(brd, 0, sizeof(BOARD));
     
-    brd->king_squares[WHITE] = NO_SQUARE;
-    brd->king_squares[BLACK] = NO_SQUARE;
+	brd->king_squares[WHITE] = NO_SQUARE;
+	brd->king_squares[BLACK] = NO_SQUARE;
 
-	for(square_t sq = 0; sq < NUM_SQUARES; sq++){
+	for(SQUARE sq = 0; sq < NUM_SQUARES; sq++){
 		brd->pieces[sq] = NO_PIECE;
 	}
 
@@ -121,18 +123,18 @@ board_container_t *get_clean_board(void)
  * @return : true if OK, false if piece already on that square
  *
  */
-bool add_piece_to_board(board_container_t * board, piece_id_t piece,
-			square_t square)
+bool add_piece_to_board(BOARD * board, PIECE piece,
+			SQUARE square)
 {
 	assert((square >= a1) && (square <= h8));
 	assert((piece >= W_PAWN) && (piece <= B_KING));
 	
 	
-    if (check_bit(&board->board, square) != 0) {
+	if (check_bit(&board->board, square) != 0) {
 		// square already occupied
 		assert(check_bit(&board->board, square) != 0);
 		return false;
-    } else {
+	} else {
 		// set bit in relevant piece board
 		set_bit(&(board->bitboards[piece]), square);
 
@@ -142,18 +144,18 @@ bool add_piece_to_board(board_container_t * board, piece_id_t piece,
 		//printf("adding %d to square %d\n", piece, square);
 		board->pieces[square] = piece;
 		return true;
-    }
+	}
 }
 
 
-inline void overlay_boards(board_container_t * the_board)
+inline void overlay_boards(BOARD * the_board)
 {
-    int i = 0;
-    board_t flat_board = BOARD_EMPTY;
-    for (i = 0; i < NUM_PIECES; i++) {
+	int i = 0;
+	BITBOARD flat_board = BOARD_EMPTY;
+	for (i = 0; i < NUM_PIECES; i++) {
 		flat_board |= the_board->bitboards[i];
-    }
-    the_board->board = flat_board;
+	}
+	the_board->board = flat_board;
 }
 
 /*
@@ -166,13 +168,12 @@ inline void overlay_boards(board_container_t * the_board)
  * TODO - possibly replace this with a cache lookup on a new board array
  */
 
-inline piece_id_t get_piece_at_square(board_container_t * the_board,
-			       square_t square)
+inline PIECE get_piece_at_square(BOARD * the_board,
+			       SQUARE square)
 {
 	assert((square >= a1) && (square <= h8));
 	
 	return the_board->pieces[square];	
-	
 }
 
 
@@ -184,11 +185,11 @@ inline piece_id_t get_piece_at_square(board_container_t * the_board,
  * @return : void
  *
  */
-inline void set_bit(board_t * brd, square_t sq)
+inline void set_bit(BITBOARD * brd, SQUARE sq)
 {
 	assert((sq >= a1) && (sq <= h8));
 
-    *brd = *brd | (board_t) (0x01ull << sq);
+	*brd = *brd | (BITBOARD) (0x01ull << sq);
 }
 
 
@@ -199,11 +200,11 @@ inline void set_bit(board_t * brd, square_t sq)
  * @return : void
  *
  */
-inline void clear_bit(board_t * brd, square_t sq)
+inline void clear_bit(BITBOARD * brd, SQUARE sq)
 {
 	assert((sq >= a1) && (sq <= h8));
 
-    *brd = *brd & (board_t) (~(0x01ull << sq));
+	*brd = *brd & (BITBOARD) (~(0x01ull << sq));
 }
 
 /*
@@ -213,24 +214,25 @@ inline void clear_bit(board_t * brd, square_t sq)
  * @return : bool false if unset, bool true otherwise
  *
  */
-inline bool check_bit(board_t * brd, square_t sq)
+inline bool check_bit(BITBOARD * brd, SQUARE sq)
 {
 	assert((sq >= a1) && (sq <= h8));
 	
-    if (((*brd >> sq) & 0x01ull) != 0) {
+	if (((*brd >> sq) & 0x01ull) != 0) {
 		return true;
 	}
-    return false;
+	return false;
 }
 
 /*
- * Counts set bits in a board_t 
+ * Counts set bits in a BITBOARD 
  * name: count_bits
  * @param 	the board
  * @return	the number of set bits
  * 
  */
-inline U8 count_bits(board_t bb){
+inline U8 count_bits(BITBOARD bb)
+{
 	U8 cntr;
 	for (cntr = 0; bb; cntr++)	{
 		bb &= bb - 1; // clear the least significant bit set
@@ -243,12 +245,13 @@ inline U8 count_bits(board_t bb){
 /*
  * Clears the LSB of the board, and returns the bit # that was cleared. 
  * name: pop_1st_bit
- * @param	ptr to board_t
+ * @param	ptr to BITBOARD
  * @return	index of bit cleared.
  * 
  */
-inline U8 pop_1st_bit(board_t *bb) {
-	board_t b = *bb ^ (*bb - 1);
+inline U8 pop_1st_bit(BITBOARD *bb) 
+{
+	BITBOARD b = *bb ^ (*bb - 1);
 	unsigned int fold = (unsigned) ((b & 0xffffffff) ^ (b >> 32));
 	*bb &= (*bb - 1);
 	return BitTable[(fold * 0x783a9b23) >> 26];
@@ -257,14 +260,14 @@ inline U8 pop_1st_bit(board_t *bb) {
 
 
 
-inline bool is_square_occupied(board_t board, square_t square)
+inline bool is_square_occupied(BITBOARD board, SQUARE square)
 {
 	assert((square >= a1) && (square <= h8));
 
-    if (check_bit(&board, square) != 0) {
+	if (check_bit(&board, square) != 0) {
 		return true;
 	}
-    return false;
+	return false;
 }
 
 

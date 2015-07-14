@@ -37,12 +37,17 @@
 typedef struct{
 	U32 move;
 	U32 score;
-} move_t;
+} MOVE;
 
 
-//--- macros for setting the 'move' field in the move_t struct
-#define FROMSQ(m) 			((m) & 0x7F)
-#define TOSQ(m) 			(((m)>>7) & 0x7F)
+typedef struct{
+	MOVE 	moves[MAX_POSITION_MOVES];
+	U16	move_count;
+} MOVELIST;
+
+//--- macros for setting the 'move' field in the MOVE struct
+#define FROMSQ(m) 		((m) & 0x7F)
+#define TOSQ(m) 		(((m)>>7) & 0x7F)
 #define CAPTURED(m) 		(((m)>>14) & 0xF)
 #define PROMOTED(m) 		(((m)>>20) & 0xF)
 
@@ -58,7 +63,7 @@ typedef struct{
 
 
 
-char * print_move(const move_t * m);
+char * print_move(const MOVE * m);
 
 
 #endif

@@ -21,7 +21,7 @@
 
 
 void init_hash_keys(void);
-U64 get_position_hashkey(board_container_t *brd);
+U64 get_position_hashkey(BOARD *brd);
 
 
 #endif

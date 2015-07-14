@@ -22,7 +22,7 @@
 #include "types.h"
 
 
-board_container_t * init_game(void);
+BOARD * init_game(void);
 
 
 #endif

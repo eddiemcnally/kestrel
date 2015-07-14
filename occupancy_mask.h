@@ -26,16 +26,16 @@
 
 #include "types.h"
  
-board_t get_occ_mask(piece_id_t pce, square_t sq);
-void print_occupancy_masks(piece_id_t pce);
-void print_occupancy_mask_as_board(board_t * mask, piece_id_t pce, square_t square);
-void print_out_masks(board_t * masks);
+BITBOARD get_occ_mask(PIECE pce, SQUARE sq);
+void print_occupancy_masks(PIECE pce);
+void print_occupancy_mask_as_board(BITBOARD * mask, PIECE pce, SQUARE square);
+void print_out_masks(BITBOARD * masks);
 
 
 
 
 // elem [0] is a1, [63] is h8
-static const board_t black_pawn_occupancy_masks[NUM_SQUARES] = {
+static const BITBOARD black_pawn_occupancy_masks[NUM_SQUARES] = {
 	0x0000000000000000,
 	0x0000000000000000,
 	0x0000000000000000,
@@ -103,7 +103,7 @@ static const board_t black_pawn_occupancy_masks[NUM_SQUARES] = {
 };
 
 // elem [0] is a1, [63] is h8
-static const board_t white_pawn_occupancy_masks[NUM_SQUARES] = {
+static const BITBOARD white_pawn_occupancy_masks[NUM_SQUARES] = {
 	0x0000000000000000,
 	0x0000000000000000,
 	0x0000000000000000,
@@ -171,7 +171,7 @@ static const board_t white_pawn_occupancy_masks[NUM_SQUARES] = {
 };
 
 // elem [0] is a1, [63] is h8
-static const board_t knight_occupancy_masks[NUM_SQUARES] = {
+static const BITBOARD knight_occupancy_masks[NUM_SQUARES] = {
 	0x0000000000020400,
 	0x0000000000050800,
 	0x00000000000a1100,
@@ -238,7 +238,7 @@ static const board_t knight_occupancy_masks[NUM_SQUARES] = {
 	0x0020400000000000
 };
 
-static const board_t bishop_occupancy_masks[NUM_SQUARES] = {
+static const BITBOARD bishop_occupancy_masks[NUM_SQUARES] = {
 	0x8040201008040200,
 	0x0080402010080500,
 	0x0000804020110a00,
@@ -305,7 +305,7 @@ static const board_t bishop_occupancy_masks[NUM_SQUARES] = {
 	0x0040201008040201
 };
 
-static const board_t queen_occupancy_masks[NUM_SQUARES] = {
+static const BITBOARD queen_occupancy_masks[NUM_SQUARES] = {
 	0x81412111090503fe,
 	0x02824222120a07fd,
 	0x0404844424150efb,
@@ -373,7 +373,7 @@ static const board_t queen_occupancy_masks[NUM_SQUARES] = {
 };
 
 // elem [0] is a1, [63] is h8
-static const board_t king_occupancy_masks[NUM_SQUARES] = {
+static const BITBOARD king_occupancy_masks[NUM_SQUARES] = {
 
 	0x0000000000000302,
 	0x0000000000000705,
@@ -442,7 +442,7 @@ static const board_t king_occupancy_masks[NUM_SQUARES] = {
 };
 
 
-static const board_t rook_occupancy_masks[NUM_SQUARES] = {
+static const BITBOARD rook_occupancy_masks[NUM_SQUARES] = {
 	0x01010101010101fe,
 	0x02020202020202fd,
 	0x04040404040404fb,
@@ -511,13 +511,13 @@ static const board_t rook_occupancy_masks[NUM_SQUARES] = {
 
 
 
-#define 	GET_KNIGHT_OCC_MASK(square)		(knight_occupancy_masks[(square)])
-#define 	GET_BISHOP_OCC_MASK(square)		(bishop_occupancy_masks[(square)])
-#define 	GET_KING_OCC_MASK(square)		(king_occupancy_masks[(square)])
-#define 	GET_QUEEN_OCC_MASK(square)		(queen_occupancy_masks[(square)])
-#define 	GET_ROOK_OCC_MASK(square)		(rook_occupancy_masks[(square)])
-#define 	GET_WHITE_PAWN_OCC_MASK(square)	(white_pawn_occupancy_masks[(square)])
-#define 	GET_BLACK_PAWN_OCC_MASK(square)	(black_pawn_occupancy_masks[(square)])
+#define GET_KNIGHT_OCC_MASK(square)		(knight_occupancy_masks[(square)])
+#define GET_BISHOP_OCC_MASK(square)		(bishop_occupancy_masks[(square)])
+#define GET_KING_OCC_MASK(square)		(king_occupancy_masks[(square)])
+#define GET_QUEEN_OCC_MASK(square)		(queen_occupancy_masks[(square)])
+#define GET_ROOK_OCC_MASK(square)		(rook_occupancy_masks[(square)])
+#define GET_WHITE_PAWN_OCC_MASK(square)		(white_pawn_occupancy_masks[(square)])
+#define GET_BLACK_PAWN_OCC_MASK(square)		(black_pawn_occupancy_masks[(square)])
 
 
 
