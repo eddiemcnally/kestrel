@@ -29,9 +29,9 @@
 #include "pieces.h"
 
 void overlay_boards(struct board *board_container);
-int count_minor_pieces(struct board *brd);
-int count_big_pieces(struct board *brd);
-int count_major_pieces(struct board *brd);
+int count_minor_pieces(const struct board *brd);
+int count_big_pieces(const struct board *brd);
+int count_major_pieces(const struct board *brd);
 
 static const U8 BitTable[64] = {
 	63, 30, 3, 32, 25, 41, 22, 33, 15, 50, 42, 13, 11, 53, 19, 34, 61, 29,
@@ -162,7 +162,7 @@ inline void overlay_boards(struct board *the_board)
  */
 
 inline enum piece
-get_piece_at_square(struct board *the_board, enum square square)
+get_piece_at_square(const struct board *the_board, enum square square)
 {
 	assert((square >= a1) && (square <= h8));
 
@@ -204,7 +204,7 @@ inline void clear_bit(U64 * brd, enum square sq)
  * @return : bool false if unset, bool true otherwise
  *
  */
-inline bool check_bit(U64 * brd, enum square sq)
+inline bool check_bit(const U64 * brd, enum square sq)
 {
 	assert((sq >= a1) && (sq <= h8));
 

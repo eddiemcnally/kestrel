@@ -37,7 +37,7 @@
  * Thanks for BlueFever Software for his youtube videos and this code
  */
 
-int consume_fen_notation(char *fen_string, struct board *board_to_setup)
+int consume_fen_notation(const char *fen_string, struct board *board_to_setup)
 {
 
 	int rank = RANK_8;
@@ -114,16 +114,11 @@ int consume_fen_notation(char *fen_string, struct board *board_to_setup)
 				int sq = GET_SQUARE(rank, file);
 				add_piece_to_board(board_to_setup, piece_to_add,
 						   sq);
-
-				//print_board(board_to_setup);
 			}
 			file++;
 		}
-
 		fen_string++;
 	}
-
-	//assert((*fen_string == 'w') || (*fen_string == 'b'));
 
 	if (*fen_string == 'w') {
 		board_to_setup->side_to_move = WHITE;
@@ -164,7 +159,6 @@ int consume_fen_notation(char *fen_string, struct board *board_to_setup)
 		// en passant square present
 		file = fen_string[0] - 'a';
 		rank = fen_string[1] - '1';
-
 		board_to_setup->en_passant = GET_SQUARE(rank, file);
 	} else {
 		board_to_setup->en_passant = NO_SQUARE;
@@ -185,7 +179,7 @@ int consume_fen_notation(char *fen_string, struct board *board_to_setup)
  * 
  */
 
-char *generate_fen_notation(struct board *board_to_setup)
+char *generate_fen_notation(const struct board *board_to_setup)
 {
 	printf("PosKey:\t0x%016llx\n", board_to_setup->board_hash);
 	// TODO

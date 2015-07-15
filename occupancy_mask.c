@@ -32,7 +32,7 @@ void generate_bishop_occupancy_masks(U64 * occ_mask_array);
 void generate_queen_occupancy_masks(U64 * occ_mask_array);
 void generate_white_pawn_occupancy_masks(U64 * occ_mask_array);
 void generate_black_pawn_occupancy_masks(U64 * occ_mask_array);
-void print_out_masks(U64 * masks);
+void print_out_masks(const U64 * masks);
 void set_dest_sq_if_valid(int rank, int file, U64 * brd);
 
 /*
@@ -494,7 +494,8 @@ void print_occupancy_masks(enum piece pce)
  * Thanks again to Bluefever Software for this code
  */
 void
-print_occupancy_mask_as_board(U64 * mask, enum piece pce, enum square square)
+print_occupancy_mask_as_board(const U64 * mask, enum piece pce,
+			      enum square square)
 {
 
 	//int sq,piece;
@@ -528,7 +529,7 @@ print_occupancy_mask_as_board(U64 * mask, enum piece pce, enum square square)
 
 }
 
-void print_out_masks(U64 * masks)
+void print_out_masks(const U64 * masks)
 {
 	for (int i = 0; i < NUM_SQUARES; i++) {
 		printf("0x%016llx\n", masks[i]);

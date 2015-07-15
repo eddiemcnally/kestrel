@@ -22,6 +22,30 @@
 #include "pieces.h"
 #include "move.h"
 
+void add_quiet_move(struct board *brd, int move_bitmap,
+		    struct move_list *mvlist)
+{
+	mvlist->moves[mvlist->move_count].move_bitmap = move_bitmap;
+	mvlist->moves[mvlist->move_count].score = 0;
+	mvlist->move_count++;
+}
+
+void add_capture_move(struct board *brd, int move_bitmap,
+		      struct move_list *mvlist)
+{
+	mvlist->moves[mvlist->move_count].move_bitmap = move_bitmap;
+	mvlist->moves[mvlist->move_count].score = 0;
+	mvlist->move_count++;
+}
+
+void add_en_passent_move(struct board *brd, int move_bitmap,
+			 struct move_list *mvlist)
+{
+	mvlist->moves[mvlist->move_count].move_bitmap = move_bitmap;
+	mvlist->moves[mvlist->move_count].score = 0;
+	mvlist->move_count++;
+}
+
 /*
  * Prints out the algebraic notatio of a move (eg, a2a4)
  * name: print_move
@@ -29,18 +53,18 @@
  * @return
  * 
  */
-char *print_move(const struct move *m)
+char *print_move(const U32 move_bitmap)
 {
 
 	static char move_string[6];
 
-	int from_file = GET_FILE(FROMSQ(m->move_bitmap));
-	int from_rank = GET_RANK(FROMSQ(m->move_bitmap));
+	int from_file = GET_FILE(FROMSQ(move_bitmap));
+	int from_rank = GET_RANK(FROMSQ(move_bitmap));
 
-	int to_file = GET_FILE(TOSQ(m->move_bitmap));
-	int to_rank = GET_RANK(TOSQ(m->move_bitmap));
+	int to_file = GET_FILE(TOSQ(move_bitmap));
+	int to_rank = GET_RANK(TOSQ(move_bitmap));
 
-	enum piece promoted_pce = PROMOTED(m->move_bitmap);
+	enum piece promoted_pce = PROMOTED(move_bitmap);
 
 	if (promoted_pce > 0) {
 		char pchar = 'q';
@@ -62,49 +86,24 @@ char *print_move(const struct move *m)
 	return move_string;
 }
 
-
-
-void add_quiet_move(struct board * brd, int move_bitmap, struct move_list *mvlist){
-	mvlist->moves[mvlist->move_count].move_bitmap = move_bitmap;
-	mvlist->moves[mvlist->move_count].score = 0;
-	mvlist->move_count++;
-}
-
-
-
-void add_capture_move(struct board * brd, int move_bitmap, struct move_list *mvlist){
-	mvlist->moves[mvlist->move_count].move_bitmap = move_bitmap;
-	mvlist->moves[mvlist->move_count].score = 0;
-	mvlist->move_count++;
-}
-
-
-void add_en_passent_move(struct board * brd, int move_bitmap, struct move_list *mvlist){
-	mvlist->moves[mvlist->move_count].move_bitmap = move_bitmap;
-	mvlist->moves[mvlist->move_count].score = 0;
-	mvlist->move_count++;
-}
-
-
 /*
- * 
-void AddQuietMove( const S_BOARD *pos, int move, S_MOVELIST *list ) {
-	list->moves[list->count].move = move;
-	list->moves[list->count].score = 0;
-	list->count++;
-}
-
-void AddCaptureMove( const S_BOARD *pos, int move, S_MOVELIST *list ) {
-	list->moves[list->count].move = move;
-	list->moves[list->count].score = 0;
-	list->count++;
-}
-
-void AddEnPassantMove( const S_BOARD *pos, int move, S_MOVELIST *list ) {
-	list->moves[list->count].move = move;
-	list->moves[list->count].score = 0;
-	list->count++;
-}
- * 
+ * Prints out the move list
+ * name: print_move_list
+ * @param
+ * @return
  * 
  */
+
+void print_move_list(const struct move_list *list)
+{
+	printf("MoveList:\n");
+
+	for (int i = 0; i < list->move_count; i++) {
+		U32 move = list->moves[i].move_bitmap;
+		U32 score = list->moves[i].score;
+
+		printf("Move:%d > %s (score:%d)\n", (i + 1), print_move(move),
+		       score);
+	}
+	printf("MoveList Total %d Moves:\n\n", list->move_count);
+}

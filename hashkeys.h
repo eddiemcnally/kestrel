@@ -19,6 +19,6 @@
 #define _HASHKEYS_H_
 
 void init_hash_keys(void);
-U64 get_position_hashkey(struct board *brd);
+U64 get_position_hashkey(const struct board *brd);
 
 #endif

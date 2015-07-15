@@ -62,13 +62,14 @@ enum {
 
 struct board *init_board(void);
 struct board *get_clean_board(void);
-enum piece get_piece_at_square(struct board *the_board, enum square square);
+enum piece get_piece_at_square(const struct board *the_board,
+			       enum square square);
 bool add_piece_to_board(struct board *board, enum piece piece,
 			enum square square);
 bool is_square_occupied(U64 board, enum square square);
 void set_bit(U64 * brd, enum square sq);
 void clear_bit(U64 * brd, enum square sq);
-bool check_bit(U64 * brd, enum square sq);
+bool check_bit(const U64 * brd, enum square sq);
 U8 count_bits(U64 bb);
 U8 pop_1st_bit(U64 * bb);
 void update_piece_material(struct board *brd);

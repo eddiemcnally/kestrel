@@ -38,7 +38,6 @@ static bool search_vertically(enum square sq1, enum square sq2,
 			      const struct board *brd);
 static bool search_up_left_and_right(enum square sq_one, enum square sq_two,
 				     const struct board *brd);
-
 static bool search_down_left_and_right(enum square sq_one, enum square sq_two,
 				       const struct board *brd);
 
@@ -52,9 +51,10 @@ static bool search_down_left_and_right(enum square sq_one, enum square sq_two,
  */
 
 bool
-is_sq_attacked(const enum square sq, const enum colour attacking_side,
+is_sq_attacked(enum square sq, enum colour attacking_side,
 	       const struct board *brd)
 {
+	ASSERT_BOARD_OK(brd);
 
 	if (is_knight_attacking_square(sq, attacking_side, brd))
 		return true;

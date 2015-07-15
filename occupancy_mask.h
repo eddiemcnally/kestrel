@@ -23,9 +23,9 @@
 
 U64 get_occ_mask(enum piece pce, enum square sq);
 void print_occupancy_masks(enum piece pce);
-void print_occupancy_mask_as_board(U64 * mask, enum piece pce,
+void print_occupancy_mask_as_board(const U64 * mask, enum piece pce,
 				   enum square square);
-void print_out_masks(U64 * masks);
+void print_out_masks(const U64 * masks);
 
 // elem [0] is a1, [63] is h8
 static const U64 black_pawn_occupancy_masks[NUM_SQUARES] = {

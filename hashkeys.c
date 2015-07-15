@@ -114,9 +114,8 @@ inline U64 get_piece_key(enum piece piece, enum square square)
  * 
  */
 
-U64 get_position_hashkey(struct board * brd)
+U64 get_position_hashkey(const struct board * brd)
 {
-
 	U64 retval = 0;
 
 	for (int sq = 0; sq < NUM_SQUARES; sq++) {

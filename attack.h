@@ -24,7 +24,7 @@
 
 bool is_bishop_attacking_square(enum square sq, enum colour attacking_side,
 				const struct board *brd);
-bool is_sq_attacked(const enum square sq, const enum colour attacking_side,
+bool is_sq_attacked(enum square sq, enum colour attacking_side,
 		    const struct board *brd);
 bool is_knight_attacking_square(enum square sq, enum colour attacking_side,
 				const struct board *brd);

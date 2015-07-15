@@ -59,18 +59,18 @@ enum piece {
 
 // piece values, indexed into using the enum piece enum
 static const int piece_values[NUM_PIECES] = {
-	100,		// PAWN
-	550,		// ROOK
-	325,		// BISHOP
-	325,		// KNIGHT
-	1000,		// QUEEN
-	50000,		// KING
-	100,		// PAWN
-	325,		// BISHOP
-	325,		// KNIGHT
-	550,		// ROOK
-	1000,		// QUEEN
-	50000		// KING  
+	100,			// PAWN
+	550,			// ROOK
+	325,			// BISHOP
+	325,			// KNIGHT
+	1000,			// QUEEN
+	50000,			// KING
+	100,			// PAWN
+	325,			// BISHOP
+	325,			// KNIGHT
+	550,			// ROOK
+	1000,			// QUEEN
+	50000			// KING  
 };
 
 // contains information before the current
