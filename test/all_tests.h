@@ -21,5 +21,4 @@
 
 int main_do_it_myself_really_simply(int argc, char **argv);
 
-
 #endif

@@ -26,7 +26,6 @@
 #include "board_utils.h"
 #include "fen.h"
 
-
 /*
  *
  * name: Takes a char array as FEN notation, and returns a populated
@@ -37,125 +36,144 @@
  *
  * Thanks for BlueFever Software for his youtube videos and this code
  */
- 
- 
- /**
-  * TODO
-  * fix this:
-  * 
-	// black queen attacking e2
-	char * test_fen = "88/1R1PpR2/5P2/1K3p2/3r1p2/k5Pp/4Pq1p/1Q6 w - - 0 1";
- * there should be 2 white queens, but only shows 1 when printing board
- */
-int consume_fen_notation(char *fen_string, struct board * board_to_setup){
-	
-	//example of starting position:
-	//              rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
-	// 
-	// definition of FEN notation: 
-	//              https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
+
+int consume_fen_notation(char *fen_string, struct board *board_to_setup)
+{
 
 	int rank = RANK_8;
 	int file = FILE_A;
 	int count = 0;
-	
-	while((rank >= RANK_1) && *fen_string){
+
+	while ((rank >= RANK_1) && *fen_string) {
 		enum piece piece_to_add = NO_PIECE;
 		count = 1;
-		
+
 		switch (*fen_string) {
-			case 'p': piece_to_add = B_PAWN; 	break;
-			case 'r': piece_to_add = B_ROOK; 	break;
-			case 'n': piece_to_add = B_KNIGHT;	break;
-			case 'b': piece_to_add = B_BISHOP;	break;
-			case 'q': piece_to_add = B_QUEEN; 	break;
-			case 'k': piece_to_add = B_KING; 	break;
-			case 'P': piece_to_add = W_PAWN; 	break;
-			case 'R': piece_to_add = W_ROOK; 	break;
-			case 'N': piece_to_add = W_KNIGHT;	break;
-			case 'B': piece_to_add = W_BISHOP;	break;
-			case 'Q': piece_to_add = W_QUEEN; 	break;
-			case 'K': piece_to_add = W_KING; 	break;
-	
-			case '1':
-			case '2':
-			case '3':
-			case '4':
-			case '5':
-			case '6':
-			case '7':
-			case '8':
-				count = (*fen_string) - '0';
-				break;
+		case 'p':
+			piece_to_add = B_PAWN;
+			break;
+		case 'r':
+			piece_to_add = B_ROOK;
+			break;
+		case 'n':
+			piece_to_add = B_KNIGHT;
+			break;
+		case 'b':
+			piece_to_add = B_BISHOP;
+			break;
+		case 'q':
+			piece_to_add = B_QUEEN;
+			break;
+		case 'k':
+			piece_to_add = B_KING;
+			break;
+		case 'P':
+			piece_to_add = W_PAWN;
+			break;
+		case 'R':
+			piece_to_add = W_ROOK;
+			break;
+		case 'N':
+			piece_to_add = W_KNIGHT;
+			break;
+		case 'B':
+			piece_to_add = W_BISHOP;
+			break;
+		case 'Q':
+			piece_to_add = W_QUEEN;
+			break;
+		case 'K':
+			piece_to_add = W_KING;
+			break;
 
-			case '/':
-			case ' ':
-				rank--;
-				file = FILE_A;
-				fen_string++;
-				continue;              
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+			count = (*fen_string) - '0';
+			break;
 
-			default:
-				printf("FEN error \n");
-				return -1;
-			}
-				
-		
-		for (int i = 0; i < count; i++) {			
+		case '/':
+		case ' ':
+			rank--;
+			file = FILE_A;
+			fen_string++;
+			continue;
+
+		default:
+			printf("FEN error \n");
+			return -1;
+		}
+
+		for (int i = 0; i < count; i++) {
 			if (piece_to_add != NO_PIECE) {
 				int sq = GET_SQUARE(rank, file);
-				add_piece_to_board(board_to_setup, piece_to_add, sq);
-				
+				add_piece_to_board(board_to_setup, piece_to_add,
+						   sq);
+
 				//print_board(board_to_setup);
 			}
 			file++;
-		}	
-		
+		}
+
 		fen_string++;
 	}
-	
+
 	//assert((*fen_string == 'w') || (*fen_string == 'b'));
-    
-	if (*fen_string == 'w'){
+
+	if (*fen_string == 'w') {
 		board_to_setup->side_to_move = WHITE;
-	} else{
+	} else {
 		board_to_setup->side_to_move = BLACK;
 	}
-    
+
 	// skip 'w' or 'b', and the next space
 	fen_string += 2;
-    
-	for(int i = 0; i < 4; i++){
-		if (*fen_string == ' '){
+
+	for (int i = 0; i < 4; i++) {
+		if (*fen_string == ' ') {
 			break;
 		}
-		
-		switch(*fen_string){
-			case'K': board_to_setup->castle_perm |= WKCA; break; 
-			case'Q': board_to_setup->castle_perm |= WQCA; break; 
-			case'k': board_to_setup->castle_perm |= BKCA; break; 
-			case'q': board_to_setup->castle_perm |= BQCA; break; 
-			default: break;
+
+		switch (*fen_string) {
+		case 'K':
+			board_to_setup->castle_perm |= WKCA;
+			break;
+		case 'Q':
+			board_to_setup->castle_perm |= WQCA;
+			break;
+		case 'k':
+			board_to_setup->castle_perm |= BKCA;
+			break;
+		case 'q':
+			board_to_setup->castle_perm |= BQCA;
+			break;
+		default:
+			break;
 		}
-		fen_string++;		
+		fen_string++;
 	}
-	
+
 	fen_string++;
-	
-	if (*fen_string != '-'){
+
+	if (*fen_string != '-') {
 		// en passant square present
 		file = fen_string[0] - 'a';
 		rank = fen_string[1] - '1';
-		
+
 		board_to_setup->en_passant = GET_SQUARE(rank, file);
-	} else{
+	} else {
 		board_to_setup->en_passant = NO_SQUARE;
 	}
-    
+
 	update_piece_material(board_to_setup);
-    
+
 	board_to_setup->board_hash = get_position_hashkey(board_to_setup);
-        
+
 	return 0;
 }
 
@@ -167,7 +185,7 @@ int consume_fen_notation(char *fen_string, struct board * board_to_setup){
  * 
  */
 
-char *generate_fen_notation(struct board * board_to_setup)
+char *generate_fen_notation(struct board *board_to_setup)
 {
 	printf("PosKey:\t0x%016llx\n", board_to_setup->board_hash);
 	// TODO

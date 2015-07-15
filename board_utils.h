@@ -22,8 +22,8 @@
 #include <stdbool.h>
 #include "types.h"
 
-void print_board(struct board * the_board);
-bool ASSERT_BOARD_OK(struct board * brd);
-char * print_square(const enum square sq);
+void print_board(struct board *the_board);
+bool ASSERT_BOARD_OK(struct board *brd);
+char *print_square(const enum square sq);
 
 #endif

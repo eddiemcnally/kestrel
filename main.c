@@ -16,7 +16,6 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -37,43 +36,36 @@
 #define FEN5 	"8/8/8/R1P3p1/8/8/8/8 w - - 0 1"
 int main(int argc, char **argv)
 {
-	if (argc > 0){
+	if (argc > 0) {
 		printf("%d", **argv);
 	}
-	
-	
+
 	init_hash_keys();
 
-	struct board * the_board = get_clean_board();
+	struct board *the_board = get_clean_board();
 	consume_fen_notation(FEN5, the_board);
-    
+
 	U64 rook = GET_ROOK_OCC_MASK(a5);
 	print_occupancy_mask_as_board(&rook, W_ROOK, a5);
-    
-    
+
 	printf("ROOK : 0x%016llx\n", rook);
-    
+
 	U64 pawn = 0;
 	set_bit(&pawn, g5);
 	printf("PAWN : 0x%016llx\n", pawn);
-    
-    
+
 	printf("AND'ed : 0x%016llx\n", pawn & rook);
-    
-   
-    
+
 	//print_board(the_board);
 	//ASSERT_BOARD_OK(the_board);
 
-
 	//print_occupancy_masks(B_KNIGHT);
 
-    
 	the_board = get_clean_board();
 	consume_fen_notation(FEN2, the_board);
 	print_board(the_board);
 	ASSERT_BOARD_OK(the_board);
-        
+
 	the_board = get_clean_board();
 	consume_fen_notation(FEN3, the_board);
 	print_board(the_board);
@@ -84,6 +76,5 @@ int main(int argc, char **argv)
 	print_board(the_board);
 	ASSERT_BOARD_OK(the_board);
 
-    
 	return 0;
 }

@@ -34,9 +34,11 @@ U64 get_side_key(void);
 U64 get_piece_key(enum piece piece, enum square square);
 
 //----- hashkeys for positions
-static U64 piece_keys[NUM_PIECES][NUM_SQUARES] = {{0}};
+static U64 piece_keys[NUM_PIECES][NUM_SQUARES] = { {0} };
+
 static U64 side_to_move_key = 0;
-static U64 castle_keys[16] = {0};	// 16 combinations because of 4 bits being used for castle enum
+static U64 castle_keys[16] = { 0 };	// 16 combinations because of 4 bits being used for castle enum
+
 //-----
 
 /*
@@ -46,19 +48,20 @@ static U64 castle_keys[16] = {0};	// 16 combinations because of 4 bits being use
  * @return
  * 
  */
-void init_hash_keys(){
-	
-	for (int pce = 0; pce < NUM_PIECES; pce++){
-		for(int sq = 0; sq < NUM_SQUARES; sq++){
+void init_hash_keys()
+{
+
+	for (int pce = 0; pce < NUM_PIECES; pce++) {
+		for (int sq = 0; sq < NUM_SQUARES; sq++) {
 			piece_keys[pce][sq] = generate_rand64();
 		}
-	}	
-	
+	}
+
 	side_to_move_key = generate_rand64();
-	
-	for(int i = 0; i < 16; i++){
+
+	for (int i = 0; i < 16; i++) {
 		castle_keys[i] = generate_rand64();
-	}	
+	}
 }
 
 /* Returns the castle hashkey for a given castle permission map
@@ -68,9 +71,10 @@ void init_hash_keys(){
  * @return:	the U64 hashkey
  * 
  */
-inline U64 get_castle_key(unsigned int castle_map){
+inline U64 get_castle_key(unsigned int castle_map)
+{
 	assert(castle_map < 16);	// 4 bits, 0..F valid values
-	
+
 	return castle_keys[castle_map];
 }
 
@@ -81,11 +85,10 @@ inline U64 get_castle_key(unsigned int castle_map){
  * @return:	the U64 hashkey
  * 
  */
-inline U64 get_side_key(void){
+inline U64 get_side_key(void)
+{
 	return side_to_move_key;
 }
-
-
 
 /* Returns the hashkey for a particular piece on a given square
  * 
@@ -94,14 +97,14 @@ inline U64 get_side_key(void){
  * @return:	the U64 hashkey
  * 
  */
-inline U64 get_piece_key(enum piece piece, enum square square){
+inline U64 get_piece_key(enum piece piece, enum square square)
+{
 
 	assert((square >= a1) && (square <= h8));
 	assert((piece >= W_PAWN) && (piece <= B_KING));
 
 	return piece_keys[piece][square];
 }
-
 
 /*Given a board, return a positon hashkey 
  * 
@@ -111,32 +114,28 @@ inline U64 get_piece_key(enum piece piece, enum square square){
  * 
  */
 
-U64 get_position_hashkey(struct board *brd){
-	
+U64 get_position_hashkey(struct board * brd)
+{
+
 	U64 retval = 0;
-	
-	for(int sq = 0; sq < NUM_SQUARES; sq++){
+
+	for (int sq = 0; sq < NUM_SQUARES; sq++) {
 		enum piece pce = get_piece_at_square(brd, sq);
-		
-		if (pce != NO_PIECE){
+
+		if (pce != NO_PIECE) {
 			retval ^= get_piece_key(pce, sq);
-		}		
+		}
 	}
-	
-	if (brd->side_to_move == WHITE){
+
+	if (brd->side_to_move == WHITE) {
 		retval ^= get_side_key();
 	}
-	
 	// TODO - figure out how to use this
-	if (brd->en_passant != NO_SQUARE){
+	if (brd->en_passant != NO_SQUARE) {
 		retval ^= brd->en_passant;
 	}
-	
+
 	retval ^= get_castle_key(brd->castle_perm);
-	
+
 	return retval;
 }
-
-
-
-

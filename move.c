@@ -22,8 +22,6 @@
 #include "pieces.h"
 #include "move.h"
 
-
-
 /*
  * Prints out the algebraic notatio of a move (eg, a2a4)
  * name: print_move
@@ -31,31 +29,82 @@
  * @return
  * 
  */
-char * print_move(const struct move * m) {
+char *print_move(const struct move *m)
+{
 
 	static char move_string[6];
-	
+
 	int from_file = GET_FILE(FROMSQ(m->move_bitmap));
 	int from_rank = GET_RANK(FROMSQ(m->move_bitmap));
-	
+
 	int to_file = GET_FILE(TOSQ(m->move_bitmap));
 	int to_rank = GET_RANK(TOSQ(m->move_bitmap));
-	
+
 	enum piece promoted_pce = PROMOTED(m->move_bitmap);
-	
-	if(promoted_pce > 0) {
-		char pchar = 'q';	
-		if(isKn(promoted_pce)) {
+
+	if (promoted_pce > 0) {
+		char pchar = 'q';
+		if (isKn(promoted_pce)) {
 			pchar = 'n';
-		} else if(isR(promoted_pce))  {
+		} else if (isR(promoted_pce)) {
 			pchar = 'r';
-		} else if(isB(promoted_pce))  {
+		} else if (isB(promoted_pce)) {
 			pchar = 'b';
 		}
-		sprintf(move_string, "%c%c%c%c%c", ('a'+from_file), ('1'+from_rank), ('a'+to_file), ('1'+to_rank), pchar);
+		sprintf(move_string, "%c%c%c%c%c", ('a' + from_file),
+			('1' + from_rank), ('a' + to_file), ('1' + to_rank),
+			pchar);
 	} else {
-		sprintf(move_string, "%c%c%c%c", ('a'+from_file), ('1'+from_rank), ('a'+to_file), ('1'+to_rank));
+		sprintf(move_string, "%c%c%c%c", ('a' + from_file),
+			('1' + from_rank), ('a' + to_file), ('1' + to_rank));
 	}
-	
+
 	return move_string;
 }
+
+
+
+void add_quiet_move(struct board * brd, int move_bitmap, struct move_list *mvlist){
+	mvlist->moves[mvlist->move_count].move_bitmap = move_bitmap;
+	mvlist->moves[mvlist->move_count].score = 0;
+	mvlist->move_count++;
+}
+
+
+
+void add_capture_move(struct board * brd, int move_bitmap, struct move_list *mvlist){
+	mvlist->moves[mvlist->move_count].move_bitmap = move_bitmap;
+	mvlist->moves[mvlist->move_count].score = 0;
+	mvlist->move_count++;
+}
+
+
+void add_en_passent_move(struct board * brd, int move_bitmap, struct move_list *mvlist){
+	mvlist->moves[mvlist->move_count].move_bitmap = move_bitmap;
+	mvlist->moves[mvlist->move_count].score = 0;
+	mvlist->move_count++;
+}
+
+
+/*
+ * 
+void AddQuietMove( const S_BOARD *pos, int move, S_MOVELIST *list ) {
+	list->moves[list->count].move = move;
+	list->moves[list->count].score = 0;
+	list->count++;
+}
+
+void AddCaptureMove( const S_BOARD *pos, int move, S_MOVELIST *list ) {
+	list->moves[list->count].move = move;
+	list->moves[list->count].score = 0;
+	list->count++;
+}
+
+void AddEnPassantMove( const S_BOARD *pos, int move, S_MOVELIST *list ) {
+	list->moves[list->count].move = move;
+	list->moves[list->count].score = 0;
+	list->count++;
+}
+ * 
+ * 
+ */

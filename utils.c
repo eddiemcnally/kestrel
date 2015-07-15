@@ -20,15 +20,15 @@
 #include "types.h"
 #include "utils.h"
 
-
-U64 generate_rand64(void){
+U64 generate_rand64(void)
+{
 	U64 retval = 0;
-	
-	retval = (U64)rand();
-	retval |= (U64)rand() << 15;
-	retval |= (U64)rand() << 30;
-	retval |= (U64)rand() << 45;
-	retval |= ((U64)rand() & 0xf) << 60;
-	
-	return retval;  
+
+	retval = (U64) rand();
+	retval |= (U64) rand() << 15;
+	retval |= (U64) rand() << 30;
+	retval |= (U64) rand() << 45;
+	retval |= ((U64) rand() & 0xf) << 60;
+
+	return retval;
 }

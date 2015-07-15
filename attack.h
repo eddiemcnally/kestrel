@@ -22,17 +22,25 @@
 #include <stdbool.h>
 #include "types.h"
 
-bool is_bishop_attacking_square(enum square sq, enum colour attacking_side, const struct board * brd);
-bool is_sq_attacked(const enum square sq, const enum colour attacking_side, const struct board * brd);
-bool is_knight_attacking_square(enum square sq, enum colour attacking_side, const struct board * brd);
-bool is_pawn_attacking_square(enum square sq, enum colour attacking_side, const struct board * brd);
-bool is_king_attacking_square(enum square sq, enum colour attacking_side, const struct board * brd);
-bool is_rook_attacking_square(enum square sq, enum colour attacking_side, const struct board * brd);
-bool is_queen_attacking_square(enum square sq, enum colour attacking_side, const struct board * brd);
+bool is_bishop_attacking_square(enum square sq, enum colour attacking_side,
+				const struct board *brd);
+bool is_sq_attacked(const enum square sq, const enum colour attacking_side,
+		    const struct board *brd);
+bool is_knight_attacking_square(enum square sq, enum colour attacking_side,
+				const struct board *brd);
+bool is_pawn_attacking_square(enum square sq, enum colour attacking_side,
+			      const struct board *brd);
+bool is_king_attacking_square(enum square sq, enum colour attacking_side,
+			      const struct board *brd);
+bool is_rook_attacking_square(enum square sq, enum colour attacking_side,
+			      const struct board *brd);
+bool is_queen_attacking_square(enum square sq, enum colour attacking_side,
+			       const struct board *brd);
 
-bool is_horizontal_or_vertical_blocked(enum square sq_one, enum square sq_two, const struct board * brd);
-bool is_diagonally_blocked(enum square sq_one, enum square sq_two, const struct board * brd);
-
+bool is_horizontal_or_vertical_blocked(enum square sq_one,
+				       enum square sq_two,
+				       const struct board *brd);
+bool is_diagonally_blocked(enum square sq_one, enum square sq_two,
+			   const struct board *brd);
 
 #endif
-

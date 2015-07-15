@@ -16,23 +16,16 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 #ifndef _OCCUPANCY_MASK_H_
 #define _OCCUPANCY_MASK_H_
 
-
-
-
 #include "types.h"
- 
+
 U64 get_occ_mask(enum piece pce, enum square sq);
 void print_occupancy_masks(enum piece pce);
-void print_occupancy_mask_as_board(U64 * mask, enum piece pce, enum square square);
+void print_occupancy_mask_as_board(U64 * mask, enum piece pce,
+				   enum square square);
 void print_out_masks(U64 * masks);
-
-
-
 
 // elem [0] is a1, [63] is h8
 static const U64 black_pawn_occupancy_masks[NUM_SQUARES] = {
@@ -441,7 +434,6 @@ static const U64 king_occupancy_masks[NUM_SQUARES] = {
 	0x40c0000000000000
 };
 
-
 static const U64 rook_occupancy_masks[NUM_SQUARES] = {
 	0x01010101010101fe,
 	0x02020202020202fd,
@@ -509,8 +501,6 @@ static const U64 rook_occupancy_masks[NUM_SQUARES] = {
 	0x7f80808080808080
 };
 
-
-
 #define GET_KNIGHT_OCC_MASK(square)		(knight_occupancy_masks[(square)])
 #define GET_BISHOP_OCC_MASK(square)		(bishop_occupancy_masks[(square)])
 #define GET_KING_OCC_MASK(square)		(king_occupancy_masks[(square)])
@@ -518,10 +508,5 @@ static const U64 rook_occupancy_masks[NUM_SQUARES] = {
 #define GET_ROOK_OCC_MASK(square)		(rook_occupancy_masks[(square)])
 #define GET_WHITE_PAWN_OCC_MASK(square)		(white_pawn_occupancy_masks[(square)])
 #define GET_BLACK_PAWN_OCC_MASK(square)		(black_pawn_occupancy_masks[(square)])
-
-
-
-
-
 
 #endif

@@ -18,10 +18,7 @@
 #ifndef _HASHKEYS_H_
 #define _HASHKEYS_H_
 
-
-
 void init_hash_keys(void);
 U64 get_position_hashkey(struct board *brd);
-
 
 #endif

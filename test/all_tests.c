@@ -16,34 +16,35 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */  
 #include "seatest.h"
-
-void all_tests(void);void board_test_fixture(void);
+void all_tests(void);
+void board_test_fixture(void);
 void piece_test_fixture(void);
-void attack_test_fixture(void);
-void my_suite_setup(void) ;
+void attack_test_fixture(void);
+void my_suite_setup(void);
 void occupancy_mask_test_fixture(void);
-void my_suite_teardown(void);
-int main_no_setup_or_teardown(int argc, char **argv);
-int main_do_it_myself(int argc, char **argv);
-int main_do_it_myself_really_simply(int argc, char **argv);
-
-void all_tests(void) 
+void my_suite_teardown(void);
+int main_no_setup_or_teardown(int argc, char **argv);
+int main_do_it_myself(int argc, char **argv);
+int main_do_it_myself_really_simply(int argc, char **argv);
+void all_tests(void) 
 {
-   	// add new test fixtures here.
+	// add new test fixtures here.
 	board_test_fixture();
-			piece_test_fixture();
-	 	occupancy_mask_test_fixture();
-	
-	attack_test_fixture();
+	piece_test_fixture();
+	occupancy_mask_test_fixture();
+	attack_test_fixture();
+} void
 
-} void my_suite_setup(void) 
+ my_suite_setup(void) 
 {
-    
-	//printf("I'm done before every single test in the suite\r\n");
-} void my_suite_teardown(void) 
+	
+	    //printf("I'm done before every single test in the suite\r\n");
+} void
+
+ my_suite_teardown(void) 
 {
-    
-	//printf("I'm done after every single test in the suite\r\n");
+	
+	    //printf("I'm done after every single test in the suite\r\n");
 } 
 
 //int main( int argc, char** argv )
@@ -60,12 +61,12 @@ Use this if you don't have any global setup/teardown...
 */ 
 int main_no_setup_or_teardown(int argc, char **argv) 
 {
-    	return seatest_testrunner(argc, argv, all_tests, NULL, NULL);
+	return seatest_testrunner(argc, argv, all_tests, NULL, NULL);
 }
 
 int main(int argc, char **argv) 
 {
-    	return seatest_testrunner(argc, argv, all_tests, NULL, NULL);
+	return seatest_testrunner(argc, argv, all_tests, NULL, NULL);
 }
 
 
@@ -74,12 +75,12 @@ Use this if you don't want to use the test runner...
 */ 
 int main_do_it_myself(int argc, char **argv) 
 {
-    
-    if (argc > 1){
+	if (argc > 1) {
 		printf("args:%d", *argv[0]);
-	}	suite_setup(my_suite_setup);
-			suite_teardown(my_suite_teardown);
-			return run_tests(all_tests);
+	}
+	suite_setup(my_suite_setup);
+	suite_teardown(my_suite_teardown);
+	return run_tests(all_tests);
 }
 
 
@@ -88,9 +89,10 @@ Use this if you don't want to use the test runner and don't have any global setu
 */ 
 int main_do_it_myself_really_simply(int argc, char **argv) 
 {
-    if (argc > 1){
-		printf("args:%d", *argv[0]);
-	}	return run_tests(all_tests);
+	if (argc > 1) {
+		printf("args:%d", *argv[0]);
+	}
+	return run_tests(all_tests);
 }
 
 

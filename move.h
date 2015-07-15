@@ -20,7 +20,6 @@
 
 #include "types.h"
 
-
 /*
  * This struct represents a piece move.
  * 
@@ -34,15 +33,14 @@
  * 0000 1111 0000 0000 0000 0000 0000 -> Promoted Piece
  * 0001 0000 0000 0000 0000 0000 0000 -> Castle
  */
-struct move{
+struct move {
 	U32 move_bitmap;
 	U32 score;
 };
 
-
-struct move_list{
+struct move_list {
 	struct move moves[MAX_POSITION_MOVES];
-	U16	move_count;
+	U16 move_count;
 };
 
 //--- macros for setting the 'move' field in the MOVE struct
@@ -55,15 +53,17 @@ struct move_list{
 #define MFLAG_PAWN_START 	0x80000
 #define MFLAG_CASTLE 		0x1000000
 
-#define MFLAG_CAPTURED 		0x7C000			// En Passant | Captures
+#define MFLAG_CAPTURED 		0x7C000	// En Passant | Captures
 #define MFLAG_PROMOTED		0xF00000
 //---
 
+char *print_move(const struct move *m);
+void add_quiet_move(struct board * brd, int move_bitmap, struct move_list *mvlist);
+void add_capture_move(struct board * brd, int move_bitmap, struct move_list *mvlist);
+void add_en_passent_move(struct board * brd, int move_bitmap, struct move_list *mvlist);
 
 
 
-
-char * print_move(const struct move * m);
 
 
 #endif

@@ -18,25 +18,20 @@ Typedefs
 
 /*
 Declarations
- */ 
+ */
 unsigned int GetTickCount(void);
 void _getch(void);
 int seatest_is_display_only(void);
 int seatest_is_string_equal_i(const char *s1, const char *s2);
 
- 
-void (*seatest_simple_test_result) (int passed, char *reason,
-				    const char *function,
-				    unsigned int line);
+void (*seatest_simple_test_result) (int passed, char *reason,
+				     const char *function, unsigned int line);
 void seatest_test_fixture_start(char *filepath);
 void seatest_test_fixture_end(void);
 void seatest_simple_test_result_log(int passed, char *reason,
-				     const char *function,
-				     unsigned int line);
-void seatest_assert_true(int test, const char *function,
-			  unsigned int line);
-void seatest_assert_false(int test, const char *function,
-			   unsigned int line);
+				     const char *function, unsigned int line);
+void seatest_assert_true(int test, const char *function, unsigned int line);
+void seatest_assert_false(int test, const char *function, unsigned int line);
 void seatest_assert_int_equal(int expected, int actual,
 			       const char *function, unsigned int line);
 void seatest_assert_ulong_equal(unsigned long expected,
@@ -50,14 +45,12 @@ void (*seatest_simple_test_result) (int passed, char *reason,
 void seatest_assert_string_equal(char *expected, char *actual,
 				  const char *function, unsigned int line);
 void seatest_assert_string_ends_with(char *expected, char *actual,
-				      const char *function,
-				      unsigned int line);
+				      const char *function, unsigned int line);
 void seatest_assert_string_starts_with(char *expected, char *actual,
 					const char *function,
 					unsigned int line);
 void seatest_assert_string_contains(char *expected, char *actual,
-				     const char *function,
-				     unsigned int line);
+				     const char *function, unsigned int line);
 void seatest_assert_string_doesnt_contain(char *expected, char *actual,
 					   const char *function,
 					   unsigned int line);
@@ -105,18 +98,16 @@ void fixture_filter(char *filter);
 void suite_setup(seatest_void_void setup);
 int run_tests(seatest_void_void tests);
 int seatest_testrunner(int argc, char **argv, seatest_void_void tests,
-			seatest_void_void setup,
-			seatest_void_void teardown);
+			seatest_void_void setup, seatest_void_void teardown);
 
-#endif	/*  */
+#endif				/*  */
     
 #ifdef SEATEST_INTERNAL_TESTS 
 void seatest_simple_test_result_nolog(int passed, char *reason,
-				      const char *function,
-				      unsigned int line);
+				      const char *function, unsigned int line);
 void seatest_assert_last_passed();
 void seatest_assert_last_failed();
 void seatest_enable_logging();
 void seatest_disable_logging();
 
-#endif	/*  */
+#endif				/*  */

@@ -24,13 +24,10 @@
 #include "hashkeys.h"
 #include "init.h"
 
-
-struct board * init_game(void){
+struct board *init_game(void)
+{
 	init_hash_keys();
-	struct board * brd = init_board();
-	
-	return brd;	
+	struct board *brd = init_board();
+
+	return brd;
 }
-
-
-

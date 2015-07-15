@@ -21,8 +21,6 @@
 
 #include "types.h"
 
-
-struct board * init_game(void);
-
+struct board *init_game(void);
 
 #endif
