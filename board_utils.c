@@ -26,31 +26,31 @@
 #include "pieces.h"
 #include "board_utils.h"
 
-//typedef unsigned int piece_t;
 
-/* Pretty-prints the board
- * 
- * name: print_board
- * @param: a board
- * @return : void
- * 
- */
 
 // char arrays to suport printing
 static const char ranks[] = "12345678";
 static const char files[] = "abcdefgh";
 
-/**
+/*
+ * Pretty-prints the board
+ *
+ * name: print_board
+ * @param: a board
+ * @return : void
+ *
+ *
+ *
  * Thanks again to Bluefever Software for this code
  */
 void print_board(const struct board *the_board)
 {
 
-	//int sq,piece;
+    //int sq,piece;
 
-	printf("\nGame Board:\n\n");
+    printf("\nGame Board:\n\n");
 
-	for (int rank = RANK_8; rank >= RANK_1; rank--) {
+    for (int rank = RANK_8; rank >= RANK_1; rank--) {
 		printf("%d  ", rank + 1);	// enum is zero-based
 		for (int file = FILE_A; file <= FILE_H; file++) {
 			enum square sq = GET_SQUARE(rank, file);
@@ -59,41 +59,42 @@ void print_board(const struct board *the_board)
 				char c = get_piece_label(pce);
 				printf("%3c", c);
 			} else {
-				printf("  -");
+			printf("  -");
 			}
 		}
 		printf("\n");
-	}
+    }
 
-	printf("\n   ");
-	for (int file = FILE_A; file <= FILE_H; file++) {
+    printf("\n   ");
+    for (int file = FILE_A; file <= FILE_H; file++) {
 		printf("%3c", 'a' + file);
-	}
-	printf("\n\n");
-	char side;
-	if (the_board->side_to_move == WHITE) {
+    }
+    printf("\n\n");
+    char side;
+    if (the_board->side_to_move == WHITE) {
 		side = 'w';
-	} else {
+    } else {
 		side = 'b';
-	}
-	printf("side:\t%c\n", side);
+    }
+    printf("side:\t%c\n", side);
 
-	if (the_board->en_passant == NO_SQUARE) {
+    if (the_board->en_passant == NO_SQUARE) {
 		printf("enPas:\t-\n");
-	} else {
+    } else {
 		int rank = GET_RANK(the_board->en_passant);
 		int file = GET_FILE(the_board->en_passant);
 		printf("enPas:\t%c%c\n", files[file], ranks[rank]);
-	}
+    }
 
-	printf("castle:\t%c%c%c%c\n",
-	       (the_board->castle_perm & WKCA) ? 'K' : '-',
-	       (the_board->castle_perm & WQCA) ? 'Q' : '-',
-	       (the_board->castle_perm & BKCA) ? 'k' : '-',
-	       (the_board->castle_perm & BQCA) ? 'q' : '-');
-	printf("PosKey:\t0x%016llx\n", the_board->board_hash);
+    printf("castle:\t%c%c%c%c\n",
+	   (the_board->castle_perm & WKCA) ? 'K' : '-',
+	   (the_board->castle_perm & WQCA) ? 'Q' : '-',
+	   (the_board->castle_perm & BKCA) ? 'k' : '-',
+	   (the_board->castle_perm & BQCA) ? 'q' : '-');
 
-	printf("\n\n");
+    printf("PosKey:\t0x%016llx\n", the_board->board_hash);
+
+    printf("\n\n");
 
 }
 
@@ -102,44 +103,44 @@ void print_board(const struct board *the_board)
  * name: print_square
  * @param
  * @return
- * 
+ *
  */
 char *print_square(const enum square sq)
 {
 
-	static char square_text[3];
+    static char square_text[3];
 
-	int file = GET_FILE(sq);
-	int rank = GET_RANK(sq);
+    int file = GET_FILE(sq);
+    int rank = GET_RANK(sq);
 
-	sprintf(square_text, "%c%c", ('a' + file), ('1' + rank));
+    sprintf(square_text, "%c%c", ('a' + file), ('1' + rank));
 
-	return square_text;
+    return square_text;
 
 }
 
 /*
  * Validates the contents of a board struct.
- * 
+ *
  * name: ASSERT_BOARD_OK
  * @param
  * @return
- * 
+ *
  */
 
 bool ASSERT_BOARD_OK(const struct board * brd)
 {
 
-	// check bit boards
-	U64 conflated = 0;
+    // check bit boards
+    U64 conflated = 0;
 
-	for (int i = 0; i < NUM_PIECES; i++) {
+    for (int i = 0; i < NUM_PIECES; i++) {
 		conflated |= brd->bitboards[i];
-	}
-	assert(conflated == brd->board);
+    }
+    assert(conflated == brd->board);
 
-	// check where Kings are
-	for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
+    // check where Kings are
+    for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
 		enum piece pce = get_piece_at_square(brd, sq);
 		if (pce != NO_PIECE) {
 			if (pce == W_KING) {
@@ -148,43 +149,43 @@ bool ASSERT_BOARD_OK(const struct board * brd)
 				assert(sq == brd->king_squares[BLACK]);
 			}
 		}
-	}
+    }
 
-	// check verbose representation of board
-	for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
+    // check verbose representation of board
+    for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
 		enum piece pce = get_piece_at_square(brd, sq);
 		if (pce != NO_PIECE) {
 			assert(pce == brd->pieces[sq]);
 		}
-	}
+    }
 
-	// check number of pieces on board
-	// -------------------------------
-	U8 pce_num[NUM_PIECES] = { 0 };
-	for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
+    // check number of pieces on board
+    // -------------------------------
+    U8 pce_num[NUM_PIECES] = { 0 };
+    for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
 		enum piece pce = get_piece_at_square(brd, sq);
 		if (pce != NO_PIECE) {
 			pce_num[pce]++;
 		}
-	}
-	for (int i = 0; i < NUM_PIECES; i++) {
+    }
+    for (int i = 0; i < NUM_PIECES; i++) {
 		assert(pce_num[i] == brd->pce_num[i]);
-	}
-	for (int i = 0; i < NUM_PIECES; i++) {
+    }
+    for (int i = 0; i < NUM_PIECES; i++) {
 		assert(pce_num[i] == CNT(brd->bitboards[i]));
-	}
+    }
 
-	assert(brd->en_passant == NO_SQUARE
-	       || (GET_RANK(brd->en_passant) == RANK_6
-		   && brd->side_to_move == WHITE)
-	       || (GET_RANK(brd->en_passant) == RANK_3
-		   && brd->side_to_move == BLACK));
+    assert(brd->en_passant == NO_SQUARE
+	   || (GET_RANK(brd->en_passant) == RANK_6
+	       && brd->side_to_move == WHITE)
+	   || (GET_RANK(brd->en_passant) == RANK_3
+	       && brd->side_to_move == BLACK));
 
-	// check on big, major and minor piece count
-	U8 big_pieces[NUM_COLOURS] = { 0 };
-	U8 major_pieces[NUM_COLOURS] = { 0 };
-	U8 minor_pieces[NUM_COLOURS] = { 0 };
-	for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
+    // check on big, major and minor piece count
+    U8 big_pieces[NUM_COLOURS] = { 0 };
+    U8 major_pieces[NUM_COLOURS] = { 0 };
+    U8 minor_pieces[NUM_COLOURS] = { 0 };
+    for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
 		enum piece pce = get_piece_at_square(brd, sq);
 		if (pce != NO_PIECE) {
 			enum colour col = get_colour(pce);
@@ -198,29 +199,29 @@ bool ASSERT_BOARD_OK(const struct board * brd)
 				minor_pieces[col] += 1;
 			}
 		}
-	}
-	assert(big_pieces[WHITE] == brd->big_pieces[WHITE]);
-	assert(big_pieces[BLACK] == brd->big_pieces[BLACK]);
-	assert(major_pieces[WHITE] == brd->major_pieces[WHITE]);
-	assert(major_pieces[BLACK] == brd->major_pieces[BLACK]);
-	assert(minor_pieces[WHITE] == brd->minor_pieces[WHITE]);
-	assert(minor_pieces[BLACK] == brd->minor_pieces[BLACK]);
+    }
+    assert(big_pieces[WHITE] == brd->big_pieces[WHITE]);
+    assert(big_pieces[BLACK] == brd->big_pieces[BLACK]);
+    assert(major_pieces[WHITE] == brd->major_pieces[WHITE]);
+    assert(major_pieces[BLACK] == brd->major_pieces[BLACK]);
+    assert(minor_pieces[WHITE] == brd->minor_pieces[WHITE]);
+    assert(minor_pieces[BLACK] == brd->minor_pieces[BLACK]);
 
-	// calc and verify the material count
-	U16 material[NUM_COLOURS] = { 0 };
-	for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
+    // calc and verify the material count
+    U16 material[NUM_COLOURS] = { 0 };
+    for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
 		enum piece pce = get_piece_at_square(brd, sq);
 		if (pce != NO_PIECE) {
 			enum colour col = get_colour(pce);
 			material[col] += piece_values[pce];
 		}
-	}
-	assert(material[WHITE] == brd->material[WHITE]);
-	assert(material[BLACK] == brd->material[BLACK]);
+    }
+    assert(material[WHITE] == brd->material[WHITE]);
+    assert(material[BLACK] == brd->material[BLACK]);
 
-	// check on position key
-	assert(brd->board_hash == get_position_hashkey(brd));
+    // check on position key
+    assert(brd->board_hash == get_position_hashkey(brd));
 
-	return true;
+    return true;
 
 }

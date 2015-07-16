@@ -29,11 +29,11 @@
 #define NUM_FILES	8
 
 enum {
-	RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8
+    RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8
 };
 
 enum {
-	FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H
+    FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H
 };
 
 #define	NO_SQUARE	((enum square)(-1))
@@ -41,19 +41,19 @@ enum {
 #define GET_PIECE_MASK(square)	((U64)(0x01ull << (int)(square)))
 
 // zero-based
-#define GET_RANK(square)	((square) / 8)
-#define GET_FILE(square)	((square) % 8)
+#define GET_RANK(square)		((square) / 8)
+#define GET_FILE(square)		((square) % 8)
 #define GET_SQUARE(RANK, FILE)	((RANK * 8) + FILE)
 
-#define IS_VALID_RANK(rank)	((rank >= RANK_1) && (rank <= RANK_8))
-#define IS_VALID_FILE(file)	((file >= FILE_A) && (file <= FILE_H))
+#define IS_VALID_RANK(rank)		((rank >= RANK_1) && (rank <= RANK_8))
+#define IS_VALID_FILE(file)		((file >= FILE_A) && (file <= FILE_H))
 
 // castling permissions
 enum {
-	WKCA = 0x01,		// white, king-side
-	WQCA = 0x02,		// white, queen-side
-	BKCA = 0x04,		// black, king-side
-	BQCA = 0x08		// black, queen-side
+    WKCA = 0x01,		// white, king-side
+    WQCA = 0x02,		// white, queen-side
+    BKCA = 0x04,		// black, king-side
+    BQCA = 0x08			// black, queen-side
 };
 
 // some shortcut macros
@@ -62,10 +62,8 @@ enum {
 
 struct board *init_board(void);
 struct board *get_clean_board(void);
-enum piece get_piece_at_square(const struct board *the_board,
-			       enum square square);
-bool add_piece_to_board(struct board *board, enum piece piece,
-			enum square square);
+enum piece get_piece_at_square(const struct board *the_board, enum square square);
+bool add_piece_to_board(struct board *board, enum piece piece, enum square square);
 bool is_square_occupied(U64 board, enum square square);
 void set_bit(U64 * brd, enum square sq);
 void clear_bit(U64 * brd, enum square sq);

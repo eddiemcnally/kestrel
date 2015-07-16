@@ -22,8 +22,6 @@
 #include <stdbool.h>
 #include "types.h"
 
-#define NO_PIECE	((unsigned int)(-1))
-
 #define IS_WHITE(piece)		(piece <= W_KING)
 #define IS_BLACK(piece)		(IS_WHITE(piece) == false)
 

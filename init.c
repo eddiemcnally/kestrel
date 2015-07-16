@@ -26,8 +26,8 @@
 
 struct board *init_game(void)
 {
-	init_hash_keys();
-	struct board *brd = init_board();
+    init_hash_keys();
+    struct board *brd = init_board();
 
-	return brd;
+    return brd;
 }

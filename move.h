@@ -22,9 +22,9 @@
 
 /*
  * This struct represents a piece move.
- * 
+ *
  * The 'move' field is bitmapped as follows:
- * 
+ *
  * 0000 0000 0000 0000 0000 0111 1111 -> From
  * 0000 0000 0000 0011 1111 1000 0000 -> To
  * 0000 0000 0011 1100 0000 0000 0000 -> Captured piece
@@ -34,20 +34,28 @@
  * 0001 0000 0000 0000 0000 0000 0000 -> Castle
  */
 struct move {
-	U32 move_bitmap;
-	U32 score;
+    U32 move_bitmap;
+    U32 score;
 };
 
 struct move_list {
-	struct move moves[MAX_POSITION_MOVES];
-	U16 move_count;
+    struct move moves[MAX_POSITION_MOVES];
+    U16 move_count;
 };
 
 //--- macros for setting the 'move' field in the MOVE struct
 #define FROMSQ(m) 		((m) & 0x7F)
 #define TOSQ(m) 		(((m)>>7) & 0x7F)
-#define CAPTURED(m) 		(((m)>>14) & 0xF)
-#define PROMOTED(m) 		(((m)>>20) & 0xF)
+#define CAPTURED(m) 	(((m)>>14) & 0xF)
+#define PROMOTED(m) 	(((m)>>20) & 0xF)
+
+// creates a bitmapped int for the move attributes
+// f -> from
+// t -> to
+// ca -> captured
+// pro -> promoted
+//
+#define MOVE(f,t,ca,pro,fl) ( (f) | ((t) << 7) | ( (ca) << 14 ) | ( (pro) << 20 ) | (fl))
 
 #define MFLAG_EN_PASSANT 	0x40000
 #define MFLAG_PAWN_START 	0x80000
@@ -58,12 +66,14 @@ struct move_list {
 //---
 
 char *print_move(const U32 move_bitmap);
-void add_quiet_move(struct board *brd, int move_bitmap,
+void add_quiet_move(const struct board *brd, int move_bitmap,
 		    struct move_list *mvlist);
-void add_capture_move(struct board *brd, int move_bitmap,
+void add_capture_move(const struct board *brd, int move_bitmap,
 		      struct move_list *mvlist);
-void add_en_passent_move(struct board *brd, int move_bitmap,
+void add_en_passent_move(const struct board *brd, int move_bitmap,
 			 struct move_list *mvlist);
 void print_move_list(const struct move_list *list);
+void generate_all_moves(const struct board *brd, struct move_list *mvl);
+void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl);
 
 #endif

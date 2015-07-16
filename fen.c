@@ -40,15 +40,15 @@
 int consume_fen_notation(const char *fen_string, struct board *board_to_setup)
 {
 
-	int rank = RANK_8;
-	int file = FILE_A;
-	int count = 0;
+    int rank = RANK_8;
+    int file = FILE_A;
+    int count = 0;
 
-	while ((rank >= RANK_1) && *fen_string) {
+    while ((rank >= RANK_1) && *fen_string) {
 		enum piece piece_to_add = NO_PIECE;
 		count = 1;
 
-		switch (*fen_string) {
+	switch (*fen_string) {
 		case 'p':
 			piece_to_add = B_PAWN;
 			break;
@@ -112,29 +112,28 @@ int consume_fen_notation(const char *fen_string, struct board *board_to_setup)
 		for (int i = 0; i < count; i++) {
 			if (piece_to_add != NO_PIECE) {
 				int sq = GET_SQUARE(rank, file);
-				add_piece_to_board(board_to_setup, piece_to_add,
-						   sq);
+				add_piece_to_board(board_to_setup, piece_to_add, sq);
 			}
 			file++;
 		}
-		fen_string++;
-	}
+	fen_string++;
+    }
 
-	if (*fen_string == 'w') {
+    if (*fen_string == 'w') {
 		board_to_setup->side_to_move = WHITE;
-	} else {
+    } else {
 		board_to_setup->side_to_move = BLACK;
-	}
+    }
 
-	// skip 'w' or 'b', and the next space
-	fen_string += 2;
+    // skip 'w' or 'b', and the next space
+    fen_string += 2;
 
-	for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++) {
 		if (*fen_string == ' ') {
 			break;
-		}
+	}
 
-		switch (*fen_string) {
+	switch (*fen_string) {
 		case 'K':
 			board_to_setup->castle_perm |= WKCA;
 			break;
@@ -150,38 +149,38 @@ int consume_fen_notation(const char *fen_string, struct board *board_to_setup)
 		default:
 			break;
 		}
-		fen_string++;
-	}
-
 	fen_string++;
+    }
 
-	if (*fen_string != '-') {
+    fen_string++;
+
+    if (*fen_string != '-') {
 		// en passant square present
 		file = fen_string[0] - 'a';
 		rank = fen_string[1] - '1';
 		board_to_setup->en_passant = GET_SQUARE(rank, file);
-	} else {
+    } else {
 		board_to_setup->en_passant = NO_SQUARE;
-	}
+    }
 
-	update_piece_material(board_to_setup);
+    update_piece_material(board_to_setup);
 
-	board_to_setup->board_hash = get_position_hashkey(board_to_setup);
+    board_to_setup->board_hash = get_position_hashkey(board_to_setup);
 
-	return 0;
+    return 0;
 }
 
 /*
- * 
+ *
  * name: generate_fen_notation
- * @param 	struct board *	the board to generate	
+ * @param 	struct board *	the board to generate
  * @return 	cnar *	string representing fen notation
- * 
+ *
  */
 
 char *generate_fen_notation(const struct board *board_to_setup)
 {
-	printf("PosKey:\t0x%016llx\n", board_to_setup->board_hash);
-	// TODO
-	return malloc(80);
+    printf("PosKey:\t0x%016llx\n", board_to_setup->board_hash);
+    // TODO
+    return malloc(80);
 }

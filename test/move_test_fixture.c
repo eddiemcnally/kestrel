@@ -1,5 +1,5 @@
 /*
- * utils.c
+ * move_test_fixture.c
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
  * kestrel is free software: you can redistribute it and/or modify it
@@ -15,20 +15,38 @@
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+#include <stdio.h>
+#include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
+#include "seatest.h"
 #include "types.h"
-#include "utils.h"
+#include "attack.h"
+#include "fen.h"
+#include "board.h"
+#include "pieces.h"
+#include "board_utils.h"
+#include "move.h"
 
-U64 generate_rand64(void)
+void test_generation_white_pawn_moves(void);
+
+void test_generation_white_pawn_moves(void)
 {
-    U64 retval = 0;
 
-    retval = (U64) rand();
-    retval |= (U64) rand() << 15;
-    retval |= (U64) rand() << 30;
-    retval |= (U64) rand() << 45;
-    retval |= ((U64) rand() & 0xf) << 60;
+    char *test_fen =
+	"rnbqkb1r/pp1p1pPp/8/2p1pP2/1P1P4/3P3P/P1P1P3/RNBQKBNR w KQkq e6 0 1";
 
-    return retval;
+    struct board *brd = get_clean_board();
+
+    consume_fen_notation(test_fen, brd);
+
+}
+
+void move_test_fixture(void)
+{
+    test_fixture_start();	// starts a fixture
+
+    run_test(test_generation_white_pawn_moves);
+
+    test_fixture_end();		// ends a fixture
 }

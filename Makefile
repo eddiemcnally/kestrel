@@ -10,8 +10,9 @@
 	CC	=	gcc
 
 # define any compile-time flags
-	CFLAGS	=	-Wall -g -std=c11 -Wstrict-prototypes -Werror -Wshadow -Wpointer-arith \
-				-Winline 
+#	CFLAGS	=	-Wall -g -std=c11 -Wstrict-prototypes -Werror -Wshadow -Wpointer-arith \
+#				-Winline
+	CFLAGS	=	-Wall -g -std=c11
 
 # define any directories containing header files other than /usr/include
 #
@@ -36,7 +37,8 @@
 					test/all_tests.c test/board_test_fixture.c \
 					test/piece_test_fixture.c test/seatest.c \
 					test/occupancy_mask_test_fixture.c \
-					test/attack_test_fixture.c
+					test/attack_test_fixture.c \
+					test/move_test_fixture.c
 
 
 # define the C object files
