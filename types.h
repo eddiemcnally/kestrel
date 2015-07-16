@@ -55,7 +55,7 @@ enum piece {
     B_QUEEN = 10,
     B_KING = 11,
     NUM_PIECES = 12,
-    NO_PIECE = 0x0F
+    NO_PIECE = 13
 };
 
 // piece values, indexed into using the enum piece enum
@@ -71,7 +71,7 @@ static const int piece_values[NUM_PIECES] = {
     325,			// KNIGHT
     550,			// ROOK
     1000,			// QUEEN
-    50000			// KING  
+    50000			// KING
 };
 
 // contains information before the current
@@ -115,7 +115,7 @@ struct board {
     U8 ply;
     U8 history_ply;
 
-    // indexed by enum piece, contains the number of pieces of that 
+    // indexed by enum piece, contains the number of pieces of that
     // type on the board
     U8 pce_num[NUM_PIECES];
 
@@ -140,7 +140,7 @@ struct board {
     // move history
     struct undo history[MAX_GAME_MOVES];
 
-    // a hash of the current board 
+    // a hash of the current board
     U64 board_hash;
 
 };

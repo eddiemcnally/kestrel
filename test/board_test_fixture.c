@@ -81,7 +81,7 @@ void test_initial_board_placement()
 
 	// no piece present
 	for (int i = a3; i < h6; i++) {
-		assert_true(NO_PIECE == get_piece_at_square(the_board, i));
+		assert_true(get_piece_at_square(the_board, i) == NO_PIECE);
     }
 
     // now verify remainder of struct is populated

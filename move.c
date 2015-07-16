@@ -79,13 +79,13 @@ static void add_white_pawn_move(const struct board *brd, enum square from,
 				enum square to, enum piece capture,
 				struct move_list *mvl)
 {
-    if (GET_RANK(from) == RANK_7) {
+	if (GET_RANK(from) == RANK_7) {
 		// pawn can promote to 4 pieces
 		add_capture_move(brd, MOVE(from, to, NO_PIECE, W_QUEEN, 0), mvl);
 		add_capture_move(brd, MOVE(from, to, NO_PIECE, W_ROOK, 0), mvl);
 		add_capture_move(brd, MOVE(from, to, NO_PIECE, W_BISHOP, 0), mvl);
 		add_capture_move(brd, MOVE(from, to, NO_PIECE, W_KNIGHT, 0), mvl);
-    } else {
+	} else {
 		add_capture_move(brd, MOVE(from, to, NO_PIECE, NO_PIECE, 0), mvl);
     }
 }
@@ -96,26 +96,20 @@ void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl)
     // on the board
     U64 bbPawn = brd->bitboards[W_PAWN];
 
-	printf("bbPawn : 0x%016llx\n", bbPawn);
-
-
     while (bbPawn != 0) {
 
+		printf("bbPawn:\t0x%016llx\n", bbPawn);
+
 		enum square pawn_sq = POP(&bbPawn);
-		printf("----- pawn sq %d", pawn_sq);
 
 		//int pawn_rank = GET_RANK(pawn_sq);
 		int pawn_file = GET_FILE(pawn_sq);
-
-		printf("----- pawn sq %d", pawn_sq);
-
+		int pawn_rank = GET_RANK(pawn_sq);
 		enum square next_sq_1 = pawn_sq + 8;
 
 		if (is_square_occupied(brd->board, next_sq_1) == false) {
-			printf("pawn sq + 8 empty");
-
 			add_white_pawn_move(brd, pawn_sq, next_sq_1, NO_PIECE, mvl);
-/*
+
 			if (pawn_rank == RANK_2) {
 				enum square next_sq_2 = pawn_sq + 16;
 				bool sq_2_occupied = is_square_occupied(brd->board, next_sq_2);
@@ -126,7 +120,6 @@ void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl)
 						MFLAG_PAWN_START), mvl);
 				}
 			}
-			*/
 		}
 
 		// check for capture left
@@ -179,7 +172,7 @@ char *print_move(const U32 move_bitmap)
 
     enum piece promoted_pce = PROMOTED(move_bitmap);
 
-    if (promoted_pce > 0) {
+    if (promoted_pce != NO_PIECE) {
 		char pchar = 'q';
 		if (isKn(promoted_pce)) {
 			pchar = 'n';

@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <string.h>
 #include "types.h"
 #include "move.h"
 #include "board.h"
@@ -39,51 +40,54 @@
 int main(int argc, char **argv)
 {
     if (argc > 0) {
-	printf("%d", **argv);
+		printf("%d", **argv);
     }
 
     init_hash_keys();
 
     struct board *the_board = get_clean_board();
-    consume_fen_notation(FEN5, the_board);
+    //consume_fen_notation(FEN5, the_board);
 
-    U64 rook = GET_ROOK_OCC_MASK(a5);
-    print_occupancy_mask_as_board(&rook, W_ROOK, a5);
+    //U64 rook = GET_ROOK_OCC_MASK(a5);
+    //print_occupancy_mask_as_board(&rook, W_ROOK, a5);
 
-    printf("ROOK : 0x%016llx\n", rook);
+   // printf("ROOK : 0x%016llx\n", rook);
 
-    U64 pawn = 0;
-    set_bit(&pawn, g5);
-    printf("PAWN : 0x%016llx\n", pawn);
+    //U64 pawn = 0;
+    //set_bit(&pawn, g5);
+    // printf("PAWN : 0x%016llx\n", pawn);
 
-    printf("AND'ed : 0x%016llx\n", pawn & rook);
+    //printf("AND'ed : 0x%016llx\n", pawn & rook);
 
     //print_board(the_board);
     //ASSERT_BOARD_OK(the_board);
 
     //print_occupancy_masks(B_KNIGHT);
 
-    the_board = get_clean_board();
-    consume_fen_notation(FEN2, the_board);
-    print_board(the_board);
-    ASSERT_BOARD_OK(the_board);
+    //the_board = get_clean_board();
+    //consume_fen_notation(FEN2, the_board);
+    //print_board(the_board);
+    //ASSERT_BOARD_OK(the_board);
+
+    //the_board = get_clean_board();
+    //consume_fen_notation(FEN3, the_board);
+    //print_board(the_board);
+    //ASSERT_BOARD_OK(the_board);
+
+    //the_board = get_clean_board();
+    //consume_fen_notation(FEN4, the_board);
+    //print_board(the_board);
+    //ASSERT_BOARD_OK(the_board);
 
     the_board = get_clean_board();
-    consume_fen_notation(FEN3, the_board);
-    print_board(the_board);
-    ASSERT_BOARD_OK(the_board);
-
-    the_board = get_clean_board();
-    consume_fen_notation(FEN4, the_board);
-    print_board(the_board);
-    ASSERT_BOARD_OK(the_board);
-
-    the_board = get_clean_board();
-    consume_fen_notation(FEN5, the_board);
-
+    consume_fen_notation(FEN6, the_board);
+	print_board(the_board);
 	printf("creating movelist\n");
-    struct move_list list[1];
 
+
+
+    struct move_list *list = malloc(sizeof(struct move_list));
+	memset(list, 0, sizeof(struct move_list));
 	printf("calling gen move list\n");
 
     generate_all_moves(the_board, list);
