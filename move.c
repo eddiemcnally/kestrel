@@ -26,6 +26,10 @@ static void add_white_pawn_capture_move(const struct board *brd,enum square from
 					enum piece capture,	struct move_list *mvl);
 static void add_white_pawn_move(const struct board *brd, enum square from,
 				enum square to, enum piece capture, struct move_list *mvl);
+static void add_black_pawn_capture_move(const struct board *brd,enum square from, enum square to,
+					enum piece capture,	struct move_list *mvl);
+static void add_black_pawn_move(const struct board *brd, enum square from,
+				enum square to, enum piece capture, struct move_list *mvl);
 static void add_quiet_move(const struct board *brd, int move_bitmap, struct move_list *mvlist);
 static void add_capture_move(const struct board *brd, int move_bitmap, struct move_list *mvlist);
 static void add_en_passent_move(const struct board *brd, int move_bitmap, struct move_list *mvlist);
@@ -43,7 +47,9 @@ void generate_all_moves(const struct board *brd, struct move_list *mvl)
 {
     if (brd->side_to_move == WHITE) {
 		generate_white_pawn_moves(brd, mvl);
-    }
+    } else {
+		generate_black_pawn_moves(brd, mvl);
+	}
 }
 
 static void add_quiet_move(const struct board *brd, int move_bitmap,
@@ -100,6 +106,54 @@ static void add_white_pawn_move(const struct board *brd, enum square from,
 		add_capture_move(brd, MOVE(from, to, NO_PIECE, NO_PIECE, 0), mvl);
     }
 }
+
+
+
+
+static void add_black_pawn_capture_move(const struct board *brd,
+					enum square from, enum square to,
+					enum piece capture,
+					struct move_list *mvl)
+{
+    if (GET_RANK(from) == RANK_2) {
+		// pawn can promote to 4 pieces
+		add_capture_move(brd, MOVE(from, to, capture, B_QUEEN, 0), mvl);
+		add_capture_move(brd, MOVE(from, to, capture, B_ROOK, 0), mvl);
+		add_capture_move(brd, MOVE(from, to, capture, B_BISHOP, 0), mvl);
+		add_capture_move(brd, MOVE(from, to, capture, B_KNIGHT, 0), mvl);
+    } else {
+		add_capture_move(brd, MOVE(from, to, capture, NO_PIECE, 0), mvl);
+    }
+}
+
+static void add_black_pawn_move(const struct board *brd, enum square from,
+				enum square to, enum piece capture,
+				struct move_list *mvl)
+{
+	if (GET_RANK(from) == RANK_2) {
+		// pawn can promote to 4 pieces
+		add_capture_move(brd, MOVE(from, to, NO_PIECE, B_QUEEN, 0), mvl);
+		add_capture_move(brd, MOVE(from, to, NO_PIECE, B_ROOK, 0), mvl);
+		add_capture_move(brd, MOVE(from, to, NO_PIECE, B_BISHOP, 0), mvl);
+		add_capture_move(brd, MOVE(from, to, NO_PIECE, B_KNIGHT, 0), mvl);
+	} else {
+		add_capture_move(brd, MOVE(from, to, NO_PIECE, NO_PIECE, 0), mvl);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl)
 {
@@ -158,6 +212,73 @@ void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl)
 
 			if (cap_sq == brd->en_passant) {
 				add_white_pawn_capture_move(brd, pawn_sq, cap_sq, pce, mvl);
+			}
+		}
+    }
+}
+
+
+
+
+
+
+void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl)
+{
+    // get the bitboard representing all BLACK pawns
+    // on the board
+    U64 bbPawn = brd->bitboards[B_PAWN];
+
+    while (bbPawn != 0) {
+
+		printf("bbPawn:\t0x%016llx\n", bbPawn);
+
+		enum square pawn_sq = POP(&bbPawn);
+
+		//int pawn_rank = GET_RANK(pawn_sq);
+		int pawn_file = GET_FILE(pawn_sq);
+		int pawn_rank = GET_RANK(pawn_sq);
+		enum square next_sq_1 = pawn_sq - 8;
+
+		if (is_square_occupied(brd->board, next_sq_1) == false) {
+			add_black_pawn_move(brd, pawn_sq, next_sq_1, NO_PIECE, mvl);
+
+			if (pawn_rank == RANK_7) {
+				enum square next_sq_2 = pawn_sq - 16;
+				bool sq_2_occupied = is_square_occupied(brd->board, next_sq_2);
+				if (sq_2_occupied == false) {
+					add_quiet_move(brd,
+					   MOVE(pawn_sq, next_sq_2,
+						NO_PIECE, NO_PIECE,
+						MFLAG_PAWN_START), mvl);
+				}
+			}
+		}
+
+		// check for capture left
+		if (pawn_file >= FILE_B) {
+			enum square cap_sq = pawn_sq - 7;
+			enum piece pce = get_piece_at_square(brd, cap_sq);
+
+			if ((pce != NO_PIECE) && (get_colour(pce) == WHITE)) {
+				add_black_pawn_capture_move(brd, pawn_sq, cap_sq, pce, mvl);
+			}
+
+			if (cap_sq == brd->en_passant) {
+				add_black_pawn_capture_move(brd, pawn_sq, cap_sq, pce, mvl);
+			}
+		}
+
+		// check for capture right
+		if (pawn_file <= FILE_G) {
+			enum square cap_sq = pawn_sq - 9;
+			enum piece pce = get_piece_at_square(brd, cap_sq);
+
+			if ((pce != NO_PIECE) && (get_colour(pce) == WHITE)) {
+				add_black_pawn_capture_move(brd, pawn_sq, cap_sq, pce, mvl);
+			}
+
+			if (cap_sq == brd->en_passant) {
+				add_black_pawn_capture_move(brd, pawn_sq, cap_sq, pce, mvl);
 			}
 		}
     }

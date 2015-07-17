@@ -36,6 +36,7 @@
 #define FEN4	"rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2"
 #define FEN5 	"8/8/8/R1P3p1/8/8/8/8 w - - 0 1"
 #define FEN6	"rnbqkb1r/pp1p1pPp/8/2p1pP2/1P1P4/3P3P/P1P1P3/RNBQKBNR w KQkq e6 0 1"
+#define FEN7	"rnbqkbnr/p1p1p3/3p3p/1p1p4/2P1Pp2/8/PP1P1PpP/RNBQKB1R b KQkq e3 0 1"
 
 int main(int argc, char **argv)
 {
@@ -94,6 +95,28 @@ int main(int argc, char **argv)
 
     printf("calling print moves\n");
     print_move_list(list);
+
+
+
+
+    the_board = get_clean_board();
+    consume_fen_notation(FEN7, the_board);
+	print_board(the_board);
+	printf("creating movelist\n");
+
+
+
+    list = malloc(sizeof(struct move_list));
+	memset(list, 0, sizeof(struct move_list));
+	printf("calling gen move list\n");
+
+    generate_all_moves(the_board, list);
+
+    printf("calling print moves\n");
+    print_move_list(list);
+
+
+
 
     return 0;
 }
