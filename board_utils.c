@@ -105,7 +105,7 @@ void print_board(const struct board *the_board)
  * @return
  *
  */
-char *print_square(const enum square sq)
+char *print_square(enum square sq)
 {
 
     static char square_text[3];

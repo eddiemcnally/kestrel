@@ -26,8 +26,19 @@ static void add_white_pawn_capture_move(const struct board *brd,enum square from
 					enum piece capture,	struct move_list *mvl);
 static void add_white_pawn_move(const struct board *brd, enum square from,
 				enum square to, enum piece capture, struct move_list *mvl);
+static void add_quiet_move(const struct board *brd, int move_bitmap, struct move_list *mvlist);
+static void add_capture_move(const struct board *brd, int move_bitmap, struct move_list *mvlist);
+static void add_en_passent_move(const struct board *brd, int move_bitmap, struct move_list *mvlist);
 
 
+/* man function for taking a board and returning a populated
+ * move list for all pieces
+ *
+ * name: generate_all_moves
+ * @param
+ * @return
+ *
+ */
 void generate_all_moves(const struct board *brd, struct move_list *mvl)
 {
     if (brd->side_to_move == WHITE) {
@@ -35,7 +46,7 @@ void generate_all_moves(const struct board *brd, struct move_list *mvl)
     }
 }
 
-void add_quiet_move(const struct board *brd, int move_bitmap,
+static void add_quiet_move(const struct board *brd, int move_bitmap,
 		    struct move_list *mvlist)
 {
     mvlist->moves[mvlist->move_count].move_bitmap = move_bitmap;
@@ -43,7 +54,7 @@ void add_quiet_move(const struct board *brd, int move_bitmap,
     mvlist->move_count++;
 }
 
-void add_capture_move(const struct board *brd, int move_bitmap,
+static void add_capture_move(const struct board *brd, int move_bitmap,
 		      struct move_list *mvlist)
 {
 	mvlist->moves[mvlist->move_count].move_bitmap = move_bitmap;
@@ -51,7 +62,7 @@ void add_capture_move(const struct board *brd, int move_bitmap,
     mvlist->move_count++;
 }
 
-void add_en_passent_move(const struct board *brd, int move_bitmap,
+static void add_en_passent_move(const struct board *brd, int move_bitmap,
 			 struct move_list *mvlist)
 {
     mvlist->moves[mvlist->move_count].move_bitmap = move_bitmap;
@@ -159,7 +170,7 @@ void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl)
  * @return
  *
  */
-char *print_move(const U32 move_bitmap)
+char *print_move(U32 move_bitmap)
 {
 
     static char move_string[6];

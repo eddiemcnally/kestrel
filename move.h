@@ -65,13 +65,7 @@ struct move_list {
 #define MFLAG_PROMOTED		0xF00000
 //---
 
-char *print_move(const U32 move_bitmap);
-void add_quiet_move(const struct board *brd, int move_bitmap,
-		    struct move_list *mvlist);
-void add_capture_move(const struct board *brd, int move_bitmap,
-		      struct move_list *mvlist);
-void add_en_passent_move(const struct board *brd, int move_bitmap,
-			 struct move_list *mvlist);
+char *print_move(U32 move_bitmap);
 void print_move_list(const struct move_list *list);
 void generate_all_moves(const struct board *brd, struct move_list *mvl);
 void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl);
