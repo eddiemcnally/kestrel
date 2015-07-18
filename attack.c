@@ -175,7 +175,6 @@ bool is_rook_attacking_square(enum square sq, enum colour attacking_side, const 
 
 inline bool is_pawn_attacking_square(enum square sq, enum colour attacking_side, const struct board * brd)
 {
-
     enum piece attacking_piece;
 
     // create bitboard for square under attack

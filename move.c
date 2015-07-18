@@ -17,22 +17,22 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "types.h"
 #include "board.h"
 #include "pieces.h"
 #include "move.h"
 
-static void add_white_pawn_capture_move(const struct board *brd,enum square from, enum square to,
+static void add_pawn_capture_move(const struct board *brd, enum colour col,
+					enum square from, enum square to,
 					enum piece capture,	struct move_list *mvl);
-static void add_white_pawn_move(const struct board *brd, enum square from,
-				enum square to, enum piece capture, struct move_list *mvl);
-static void add_black_pawn_capture_move(const struct board *brd,enum square from, enum square to,
-					enum piece capture,	struct move_list *mvl);
-static void add_black_pawn_move(const struct board *brd, enum square from,
-				enum square to, enum piece capture, struct move_list *mvl);
-static void add_quiet_move(const struct board *brd, int move_bitmap, struct move_list *mvlist);
-static void add_capture_move(const struct board *brd, int move_bitmap, struct move_list *mvlist);
-static void add_en_passent_move(const struct board *brd, int move_bitmap, struct move_list *mvlist);
+static void add_pawn_move(const struct board *brd, enum colour col,
+					enum square from, enum square to, struct move_list *mvl);
+static void add_quiet_move(const struct board *brd, mv_bitmap move_bitmap, struct move_list *mvlist);
+static void add_capture_move(const struct board *brd, mv_bitmap move_bitmap, struct move_list *mvlist);
+static void add_en_passent_move(const struct board *brd, mv_bitmap move_bitmap, struct move_list *mvlist);
+static void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl);
+static void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl);
 
 
 /* man function for taking a board and returning a populated
@@ -52,7 +52,32 @@ void generate_all_moves(const struct board *brd, struct move_list *mvl)
 	}
 }
 
-static void add_quiet_move(const struct board *brd, int move_bitmap,
+
+struct move_list * get_empty_move_list(){
+    struct move_list *list = malloc(sizeof(struct move_list));
+	memset(list, 0, sizeof(struct move_list));
+	return list;
+}
+
+
+
+
+
+bool is_move_in_list(struct move_list *mvl, mv_bitmap mv){
+
+	for(int i = 0; i < mvl->move_count; i++){
+		if (mvl->moves[i].move_bitmap == mv){
+			return true;
+		}
+	}
+	return false;
+}
+
+
+
+
+
+static inline void add_quiet_move(const struct board *brd, mv_bitmap move_bitmap,
 		    struct move_list *mvlist)
 {
     mvlist->moves[mvlist->move_count].move_bitmap = move_bitmap;
@@ -60,7 +85,7 @@ static void add_quiet_move(const struct board *brd, int move_bitmap,
     mvlist->move_count++;
 }
 
-static void add_capture_move(const struct board *brd, int move_bitmap,
+static inline void add_capture_move(const struct board *brd, mv_bitmap move_bitmap,
 		      struct move_list *mvlist)
 {
 	mvlist->moves[mvlist->move_count].move_bitmap = move_bitmap;
@@ -68,7 +93,7 @@ static void add_capture_move(const struct board *brd, int move_bitmap,
     mvlist->move_count++;
 }
 
-static void add_en_passent_move(const struct board *brd, int move_bitmap,
+static inline void add_en_passent_move(const struct board *brd, mv_bitmap move_bitmap,
 			 struct move_list *mvlist)
 {
     mvlist->moves[mvlist->move_count].move_bitmap = move_bitmap;
@@ -76,69 +101,59 @@ static void add_en_passent_move(const struct board *brd, int move_bitmap,
     mvlist->move_count++;
 }
 
-static void add_white_pawn_capture_move(const struct board *brd,
-					enum square from, enum square to,
+
+static inline void add_pawn_capture_move(const struct board *brd,
+					enum colour col, enum square from, enum square to,
 					enum piece capture,
 					struct move_list *mvl)
 {
-    if (GET_RANK(from) == RANK_7) {
-		// pawn can promote to 4 pieces
-		add_capture_move(brd, MOVE(from, to, capture, W_QUEEN, 0), mvl);
-		add_capture_move(brd, MOVE(from, to, capture, W_ROOK, 0), mvl);
-		add_capture_move(brd, MOVE(from, to, capture, W_BISHOP, 0), mvl);
-		add_capture_move(brd, MOVE(from, to, capture, W_KNIGHT, 0), mvl);
+	if (col == WHITE){
+		if (GET_RANK(from) == RANK_7) {
+			// pawn can promote to 4 pieces
+			add_capture_move(brd, MOVE(from, to, capture, W_QUEEN, 0), mvl);
+			add_capture_move(brd, MOVE(from, to, capture, W_ROOK, 0), mvl);
+			add_capture_move(brd, MOVE(from, to, capture, W_BISHOP, 0), mvl);
+			add_capture_move(brd, MOVE(from, to, capture, W_KNIGHT, 0), mvl);
+		} else {
+			add_capture_move(brd, MOVE(from, to, capture, NO_PIECE, 0), mvl);
+		}
     } else {
-		add_capture_move(brd, MOVE(from, to, capture, NO_PIECE, 0), mvl);
-    }
+	    if (GET_RANK(from) == RANK_2) {
+			// pawn can promote to 4 pieces
+			add_capture_move(brd, MOVE(from, to, capture, B_QUEEN, 0), mvl);
+			add_capture_move(brd, MOVE(from, to, capture, B_ROOK, 0), mvl);
+			add_capture_move(brd, MOVE(from, to, capture, B_BISHOP, 0), mvl);
+			add_capture_move(brd, MOVE(from, to, capture, B_KNIGHT, 0), mvl);
+		} else {
+			add_capture_move(brd, MOVE(from, to, capture, NO_PIECE, 0), mvl);
+		}
+	}
 }
 
-static void add_white_pawn_move(const struct board *brd, enum square from,
-				enum square to, enum piece capture,
-				struct move_list *mvl)
+static inline void add_pawn_move(const struct board *brd, enum colour col,
+				enum square from, enum square to, struct move_list *mvl)
 {
-	if (GET_RANK(from) == RANK_7) {
-		// pawn can promote to 4 pieces
-		add_capture_move(brd, MOVE(from, to, NO_PIECE, W_QUEEN, 0), mvl);
-		add_capture_move(brd, MOVE(from, to, NO_PIECE, W_ROOK, 0), mvl);
-		add_capture_move(brd, MOVE(from, to, NO_PIECE, W_BISHOP, 0), mvl);
-		add_capture_move(brd, MOVE(from, to, NO_PIECE, W_KNIGHT, 0), mvl);
-	} else {
-		add_capture_move(brd, MOVE(from, to, NO_PIECE, NO_PIECE, 0), mvl);
-    }
-}
-
-
-
-
-static void add_black_pawn_capture_move(const struct board *brd,
-					enum square from, enum square to,
-					enum piece capture,
-					struct move_list *mvl)
-{
-    if (GET_RANK(from) == RANK_2) {
-		// pawn can promote to 4 pieces
-		add_capture_move(brd, MOVE(from, to, capture, B_QUEEN, 0), mvl);
-		add_capture_move(brd, MOVE(from, to, capture, B_ROOK, 0), mvl);
-		add_capture_move(brd, MOVE(from, to, capture, B_BISHOP, 0), mvl);
-		add_capture_move(brd, MOVE(from, to, capture, B_KNIGHT, 0), mvl);
-    } else {
-		add_capture_move(brd, MOVE(from, to, capture, NO_PIECE, 0), mvl);
-    }
-}
-
-static void add_black_pawn_move(const struct board *brd, enum square from,
-				enum square to, enum piece capture,
-				struct move_list *mvl)
-{
-	if (GET_RANK(from) == RANK_2) {
-		// pawn can promote to 4 pieces
-		add_capture_move(brd, MOVE(from, to, NO_PIECE, B_QUEEN, 0), mvl);
-		add_capture_move(brd, MOVE(from, to, NO_PIECE, B_ROOK, 0), mvl);
-		add_capture_move(brd, MOVE(from, to, NO_PIECE, B_BISHOP, 0), mvl);
-		add_capture_move(brd, MOVE(from, to, NO_PIECE, B_KNIGHT, 0), mvl);
-	} else {
-		add_capture_move(brd, MOVE(from, to, NO_PIECE, NO_PIECE, 0), mvl);
-    }
+	if (col == WHITE){
+		if (GET_RANK(from) == RANK_7) {
+			// pawn can promote to 4 pieces
+			add_capture_move(brd, MOVE(from, to, NO_PIECE, W_QUEEN, 0), mvl);
+			add_capture_move(brd, MOVE(from, to, NO_PIECE, W_ROOK, 0), mvl);
+			add_capture_move(brd, MOVE(from, to, NO_PIECE, W_BISHOP, 0), mvl);
+			add_capture_move(brd, MOVE(from, to, NO_PIECE, W_KNIGHT, 0), mvl);
+		} else {
+			add_capture_move(brd, MOVE(from, to, NO_PIECE, NO_PIECE, 0), mvl);
+		}
+    } else{
+		if (GET_RANK(from) == RANK_2) {
+			// pawn can promote to 4 pieces
+			add_capture_move(brd, MOVE(from, to, NO_PIECE, B_QUEEN, 0), mvl);
+			add_capture_move(brd, MOVE(from, to, NO_PIECE, B_ROOK, 0), mvl);
+			add_capture_move(brd, MOVE(from, to, NO_PIECE, B_BISHOP, 0), mvl);
+			add_capture_move(brd, MOVE(from, to, NO_PIECE, B_KNIGHT, 0), mvl);
+		} else {
+			add_capture_move(brd, MOVE(from, to, NO_PIECE, NO_PIECE, 0), mvl);
+		}
+	}
 }
 
 
@@ -153,9 +168,7 @@ static void add_black_pawn_move(const struct board *brd, enum square from,
 
 
 
-
-
-void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl)
+static void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl)
 {
     // get the bitboard representing all WHITE pawns
     // on the board
@@ -163,7 +176,7 @@ void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl)
 
     while (bbPawn != 0) {
 
-		printf("bbPawn:\t0x%016llx\n", bbPawn);
+		//printf("bbPawn:\t0x%016llx\n", bbPawn);
 
 		enum square pawn_sq = POP(&bbPawn);
 
@@ -173,7 +186,7 @@ void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl)
 		enum square next_sq_1 = pawn_sq + 8;
 
 		if (is_square_occupied(brd->board, next_sq_1) == false) {
-			add_white_pawn_move(brd, pawn_sq, next_sq_1, NO_PIECE, mvl);
+			add_pawn_move(brd, WHITE, pawn_sq, next_sq_1, mvl);
 
 			if (pawn_rank == RANK_2) {
 				enum square next_sq_2 = pawn_sq + 16;
@@ -193,11 +206,11 @@ void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl)
 			enum piece pce = get_piece_at_square(brd, cap_sq);
 
 			if ((pce != NO_PIECE) && (get_colour(pce) == BLACK)) {
-				add_white_pawn_capture_move(brd, pawn_sq, cap_sq, pce, mvl);
+				add_pawn_capture_move(brd, WHITE, pawn_sq, cap_sq, pce, mvl);
 			}
 
 			if (cap_sq == brd->en_passant) {
-				add_white_pawn_capture_move(brd, pawn_sq, cap_sq, pce, mvl);
+				add_pawn_capture_move(brd, WHITE, pawn_sq, cap_sq, pce, mvl);
 			}
 		}
 
@@ -207,11 +220,11 @@ void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl)
 			enum piece pce = get_piece_at_square(brd, cap_sq);
 
 			if ((pce != NO_PIECE) && (get_colour(pce) == BLACK)) {
-				add_white_pawn_capture_move(brd, pawn_sq, cap_sq, pce, mvl);
+				add_pawn_capture_move(brd, WHITE, pawn_sq, cap_sq, pce, mvl);
 			}
 
 			if (cap_sq == brd->en_passant) {
-				add_white_pawn_capture_move(brd, pawn_sq, cap_sq, pce, mvl);
+				add_pawn_capture_move(brd, WHITE, pawn_sq, cap_sq, pce, mvl);
 			}
 		}
     }
@@ -219,10 +232,7 @@ void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl)
 
 
 
-
-
-
-void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl)
+static void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl)
 {
     // get the bitboard representing all BLACK pawns
     // on the board
@@ -230,7 +240,7 @@ void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl)
 
     while (bbPawn != 0) {
 
-		printf("bbPawn:\t0x%016llx\n", bbPawn);
+		//printf("bbPawn:\t0x%016llx\n", bbPawn);
 
 		enum square pawn_sq = POP(&bbPawn);
 
@@ -240,7 +250,7 @@ void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl)
 		enum square next_sq_1 = pawn_sq - 8;
 
 		if (is_square_occupied(brd->board, next_sq_1) == false) {
-			add_black_pawn_move(brd, pawn_sq, next_sq_1, NO_PIECE, mvl);
+			add_pawn_move(brd, BLACK, pawn_sq, next_sq_1, mvl);
 
 			if (pawn_rank == RANK_7) {
 				enum square next_sq_2 = pawn_sq - 16;
@@ -260,11 +270,11 @@ void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl)
 			enum piece pce = get_piece_at_square(brd, cap_sq);
 
 			if ((pce != NO_PIECE) && (get_colour(pce) == WHITE)) {
-				add_black_pawn_capture_move(brd, pawn_sq, cap_sq, pce, mvl);
+				add_pawn_capture_move(brd, BLACK, pawn_sq, cap_sq, pce, mvl);
 			}
 
 			if (cap_sq == brd->en_passant) {
-				add_black_pawn_capture_move(brd, pawn_sq, cap_sq, pce, mvl);
+				add_pawn_capture_move(brd, BLACK, pawn_sq, cap_sq, pce, mvl);
 			}
 		}
 
@@ -274,15 +284,22 @@ void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl)
 			enum piece pce = get_piece_at_square(brd, cap_sq);
 
 			if ((pce != NO_PIECE) && (get_colour(pce) == WHITE)) {
-				add_black_pawn_capture_move(brd, pawn_sq, cap_sq, pce, mvl);
+				add_pawn_capture_move(brd, BLACK, pawn_sq, cap_sq, pce, mvl);
 			}
 
 			if (cap_sq == brd->en_passant) {
-				add_black_pawn_capture_move(brd, pawn_sq, cap_sq, pce, mvl);
+				add_pawn_capture_move(brd, BLACK, pawn_sq, cap_sq, pce, mvl);
 			}
 		}
     }
 }
+
+
+
+
+
+
+
 
 /*
  * Prints out the algebraic notatio of a move (eg, a2a4)
@@ -322,6 +339,30 @@ char *print_move(U32 move_bitmap)
 
     return move_string;
 }
+
+
+void print_move_details(U32 move_bitmap){
+	int from_file = GET_FILE(FROMSQ(move_bitmap));
+    int from_rank = GET_RANK(FROMSQ(move_bitmap));
+
+    int to_file = GET_FILE(TOSQ(move_bitmap));
+    int to_rank = GET_RANK(TOSQ(move_bitmap));
+
+	enum piece captured = CAPTURED(move_bitmap);
+	enum piece promoted = PROMOTED(move_bitmap);
+
+	char c_capt = get_piece_label(captured);
+	printf("capt %c\n", c_capt);
+	char c_promoted = get_piece_label(promoted);
+	printf("prom %c\n", c_promoted);
+
+	printf("move : %c%c%c%c, captured '%c' promote '%c'\n", ('a' + from_file),
+				('1' + from_rank), ('a' + to_file), ('1' + to_rank), c_capt, c_promoted);
+
+
+}
+
+
 
 /*
  * Prints out the move list

@@ -24,8 +24,9 @@
 #include "pieces.h"
 
 // offsets into this array are by type enum piece
-static const char pieceToChar[NUM_PIECES] = {
-    'P', 'R', 'N', 'B', 'Q', 'K', 'p', 'r', 'n', 'b', 'q', 'k'
+// additional at end needed to support NO_PIECE and NUM_PIECES
+static const char pieceToChar[PIECE_ENUM_SIZE] = {
+    'P', 'R', 'N', 'B', 'Q', 'K', 'p', 'r', 'n', 'b', 'q', 'k', '#', '-'
 };
 
 /**

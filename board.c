@@ -200,8 +200,6 @@ inline void clear_bit(U64 * brd, enum square sq)
  */
 inline bool check_bit(const U64 * brd, enum square sq)
 {
-    assert((sq >= a1) && (sq <= h8));
-
     if (((*brd >> sq) & 0x01ull) != 0) {
 		return true;
     }
@@ -241,8 +239,6 @@ inline U8 pop_1st_bit(U64 * bb)
 
 inline bool is_square_occupied(U64 board, enum square square)
 {
-    assert((square >= a1) && (square <= h8));
-
     if (check_bit(&board, square) != 0) {
 		return true;
     }

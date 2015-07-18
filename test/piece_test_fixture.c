@@ -73,7 +73,7 @@ void piece_test_fixture(void);
 	assert_true(true == IS_BLACK(B_QUEEN));
 }void test_piece_classification_IS_BIG_PIECE(void)
 {
-	printf("is_big_piece(W_PAWN) %d\n", (int)is_big_piece(W_PAWN));
+	//printf("is_big_piece(W_PAWN) %d\n", (int)is_big_piece(W_PAWN));
 	assert_false(is_big_piece(W_PAWN));
     assert_false(is_big_piece(B_PAWN));
 	assert_true(is_big_piece(W_ROOK) == true);

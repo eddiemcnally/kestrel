@@ -57,6 +57,7 @@ enum piece {
     NUM_PIECES = 12,
     NO_PIECE = 13
 };
+#define PIECE_ENUM_SIZE	14
 
 // piece values, indexed into using the enum piece enum
 static const int piece_values[NUM_PIECES] = {
