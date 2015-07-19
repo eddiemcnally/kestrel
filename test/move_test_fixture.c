@@ -29,6 +29,7 @@
 #include "move.h"
 
 void test_generation_white_pawn_moves(void);
+void test_generation_black_pawn_moves(void);
 
 void test_generation_white_pawn_moves(void)
 {
@@ -164,11 +165,82 @@ Move:26 > g7h8n (score:0)
 
 }
 
+
+void test_generation_black_pawn_moves(void)
+{
+	// setup
+    char *test_fen =
+	"rnbqkbnr/p1p1p3/3p3p/1p1p4/2P1Pp2/8/PP1P1PpP/RNBQKB1R b KQkq e3 0 1";
+
+    struct board *brd = get_clean_board();
+
+    consume_fen_notation(test_fen, brd);
+
+	struct move_list * mvl = get_empty_move_list();
+	generate_all_moves(brd, mvl);
+
+
+	// test
+	assert_true(mvl->move_count == 26);
+
+
+	mv_bitmap mv = MOVE(g2, g1, NO_PIECE, B_ROOK, 0);
+	assert_true(is_move_in_list(mvl, mv));
+
+	mv = MOVE(g2, g1, NO_PIECE, B_QUEEN, 0);
+	assert_true(is_move_in_list(mvl, mv));
+
+	mv = MOVE(g2, g1, NO_PIECE, B_BISHOP, 0);
+	assert_true(is_move_in_list(mvl, mv));
+
+	mv = MOVE(g2, g1, NO_PIECE, B_KNIGHT, 0);
+	assert_true(is_move_in_list(mvl, mv));
+
+
+	mv = MOVE(g2, h1, W_ROOK, B_KNIGHT, 0);
+	assert_true(is_move_in_list(mvl, mv));
+
+	mv = MOVE(g2, h1, W_ROOK, B_BISHOP, 0);
+	assert_true(is_move_in_list(mvl, mv));
+
+	mv = MOVE(g2, h1, W_ROOK, B_ROOK, 0);
+	assert_true(is_move_in_list(mvl, mv));
+
+	mv = MOVE(g2, h1, W_ROOK, B_QUEEN, 0);
+	assert_true(is_move_in_list(mvl, mv));
+
+
+	mv = MOVE(g2, g1, NO_PIECE, B_KNIGHT, 0);
+	assert_true(is_move_in_list(mvl, mv));
+
+	mv = MOVE(g2, g1, NO_PIECE, B_BISHOP, 0);
+	assert_true(is_move_in_list(mvl, mv));
+
+	mv = MOVE(g2, g1, NO_PIECE, B_ROOK, 0);
+	assert_true(is_move_in_list(mvl, mv));
+
+	mv = MOVE(g2, g1, NO_PIECE, B_QUEEN, 0);
+	assert_true(is_move_in_list(mvl, mv));
+
+	mv = MOVE(f4, f3, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+
+	mv = MOVE(b5, b4, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+
+	mv = MOVE(d5, d4, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+
+}
+
+
+
 void move_test_fixture(void)
 {
     test_fixture_start();	// starts a fixture
 
     run_test(test_generation_white_pawn_moves);
+    run_test(test_generation_black_pawn_moves);
 
     test_fixture_end();		// ends a fixture
 }

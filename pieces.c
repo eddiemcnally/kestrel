@@ -37,6 +37,14 @@ inline char get_piece_label(enum piece piece)
     return pieceToChar[piece];
 }
 
+
+inline enum colour swap_colour(enum colour col){
+	if (col == WHITE)
+		return BLACK;
+	return WHITE;
+}
+
+
 inline enum colour get_colour(enum piece piece)
 {
     if (IS_WHITE(piece))
@@ -129,6 +137,21 @@ inline bool isB(enum piece pce)
 			return false;
     }
 }
+
+inline bool is_sliding_piece(enum piece pce){
+	switch(pce){
+		case W_BISHOP:
+		case W_QUEEN:
+		case W_ROOK:
+		case B_BISHOP:
+		case B_QUEEN:
+		case B_ROOK:
+			return true;
+		default:
+			return false;
+	}
+}
+
 
 inline bool isBQ(enum piece pce)
 {

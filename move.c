@@ -33,6 +33,11 @@ static void add_capture_move(const struct board *brd, mv_bitmap move_bitmap, str
 static void add_en_passent_move(const struct board *brd, mv_bitmap move_bitmap, struct move_list *mvlist);
 static void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl);
 static void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl);
+static void generate_sliding_piece_moves(const struct board *brd, struct move_list *mvl, enum colour col);
+
+
+
+
 
 
 /* man function for taking a board and returning a populated
@@ -58,6 +63,10 @@ struct move_list * get_empty_move_list(){
 	memset(list, 0, sizeof(struct move_list));
 	return list;
 }
+
+
+
+
 
 
 
@@ -136,30 +145,111 @@ static inline void add_pawn_move(const struct board *brd, enum colour col,
 	if (col == WHITE){
 		if (GET_RANK(from) == RANK_7) {
 			// pawn can promote to 4 pieces
-			add_capture_move(brd, MOVE(from, to, NO_PIECE, W_QUEEN, 0), mvl);
-			add_capture_move(brd, MOVE(from, to, NO_PIECE, W_ROOK, 0), mvl);
-			add_capture_move(brd, MOVE(from, to, NO_PIECE, W_BISHOP, 0), mvl);
-			add_capture_move(brd, MOVE(from, to, NO_PIECE, W_KNIGHT, 0), mvl);
+			add_quiet_move(brd, MOVE(from, to, NO_PIECE, W_QUEEN, 0), mvl);
+			add_quiet_move(brd, MOVE(from, to, NO_PIECE, W_ROOK, 0), mvl);
+			add_quiet_move(brd, MOVE(from, to, NO_PIECE, W_BISHOP, 0), mvl);
+			add_quiet_move(brd, MOVE(from, to, NO_PIECE, W_KNIGHT, 0), mvl);
 		} else {
-			add_capture_move(brd, MOVE(from, to, NO_PIECE, NO_PIECE, 0), mvl);
+			add_quiet_move(brd, MOVE(from, to, NO_PIECE, NO_PIECE, 0), mvl);
 		}
     } else{
 		if (GET_RANK(from) == RANK_2) {
 			// pawn can promote to 4 pieces
-			add_capture_move(brd, MOVE(from, to, NO_PIECE, B_QUEEN, 0), mvl);
-			add_capture_move(brd, MOVE(from, to, NO_PIECE, B_ROOK, 0), mvl);
-			add_capture_move(brd, MOVE(from, to, NO_PIECE, B_BISHOP, 0), mvl);
-			add_capture_move(brd, MOVE(from, to, NO_PIECE, B_KNIGHT, 0), mvl);
+			add_quiet_move(brd, MOVE(from, to, NO_PIECE, B_QUEEN, 0), mvl);
+			add_quiet_move(brd, MOVE(from, to, NO_PIECE, B_ROOK, 0), mvl);
+			add_quiet_move(brd, MOVE(from, to, NO_PIECE, B_BISHOP, 0), mvl);
+			add_quiet_move(brd, MOVE(from, to, NO_PIECE, B_KNIGHT, 0), mvl);
 		} else {
-			add_capture_move(brd, MOVE(from, to, NO_PIECE, NO_PIECE, 0), mvl);
+			add_quiet_move(brd, MOVE(from, to, NO_PIECE, NO_PIECE, 0), mvl);
 		}
 	}
 }
 
 
 
+/*
+ * Generates moves for sliding pieces of a given colour
+ *
+ * name: generate_sliding_piece_moves
+ * @param
+ * @return
+ *
+ */
+
+static void generate_sliding_piece_moves(const struct board *brd, struct move_list *mvl, enum colour col){
+	const int NUM_SLIDERS = 3;
+	static enum piece white_pieces[] = {W_ROOK, W_BISHOP, W_QUEEN};
+	static enum piece black_pieces[] = {W_ROOK, W_BISHOP, W_QUEEN};
+
+	// select the colour piece array
+	enum piece *pieces = (col == WHITE) ? white_pieces : black_pieces;
+
+	for (int i = 0; i < NUM_SLIDERS; i++){
+		enum piece pce = pieces[i];
 
 
+
+
+
+
+
+	}
+
+
+
+/*
+ * Generates moves for sliding pieces of a given colour
+ *
+ * name: generate_sliding_piece_moves
+ * @param
+ * @return
+ *
+ */
+
+static void generate_knight_piece_moves(const struct board *brd, struct move_list *mvl, enum colour col){
+
+	enum piece pce = (col == WHITE) ? W_KNIGHT : B_KNIGHT;
+
+	// get the bitboard representing all of the piece types
+    // on the board
+    U64 bbKnight = brd->bitboards[pce];
+
+	// iterate over all knights of this colour on the board
+    while (bbKnight != 0) {
+
+		//printf("bbPawn:\t0x%016llx\n", bbPawn);
+
+		enum square knight_sq = POP(&bbKnight);
+
+	    // create bitboard for square where the knight is
+		U64 sq_bitboard = 0;
+		set_bit(&sq_bitboard, knight_sq);
+
+		//int knight_file = GET_FILE(knight_sq);
+		//int knight_rank = GET_RANK(knight_sq);
+
+		// get occupancy mask for this piece and square
+		U64 mask = GET_KNIGHT_OCC_MASK(knight_sq);
+
+
+
+
+		if ((mask & sqBB) != 0) {
+			// a Knight is attacking this square
+			return true;
+		}
+
+
+
+
+
+
+	}
+
+
+
+
+}
 
 
 

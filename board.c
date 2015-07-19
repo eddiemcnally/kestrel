@@ -135,6 +135,19 @@ add_piece_to_board(struct board * board, enum piece piece, enum square square)
     }
 }
 
+U64 overlay_colours(struct board *brd, enum colour col){
+	if (col == WHITE){
+		return brd->bitboards[W_PAWN] | brd->bitboards[W_BISHOP]
+				| brd->bitboards[W_KNIGHT] | brd->bitboards[W_ROOK]
+				| brd->bitboards[W_QUEEN] | brd->bitboards[W_KING];
+	} else{
+		return brd->bitboards[B_PAWN] | brd->bitboards[B_BISHOP]
+				| brd->bitboards[B_KNIGHT] | brd->bitboards[B_ROOK]
+				| brd->bitboards[B_QUEEN] | brd->bitboards[B_KING];
+	}
+}
+
+
 inline void overlay_boards(struct board *the_board)
 {
     int i = 0;

@@ -31,6 +31,7 @@ enum colour get_colour(enum piece piece);
 bool is_big_piece(enum piece pce);
 bool is_major_piece(enum piece pce);
 bool is_minor_piece(enum piece pce);
+bool is_sliding_piece(enum piece pce);
 
 bool isRQ(enum piece pce);
 bool isKi(enum piece pce);
@@ -38,5 +39,7 @@ bool isKn(enum piece pce);
 bool isBQ(enum piece pce);
 bool isR(enum piece pce);
 bool isB(enum piece pce);
+
+enum colour swap_colour(enum colour col);
 
 #endif

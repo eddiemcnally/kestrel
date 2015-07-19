@@ -71,5 +71,7 @@ bool check_bit(const U64 * brd, enum square sq);
 U8 count_bits(U64 bb);
 U8 pop_1st_bit(U64 * bb);
 void update_piece_material(struct board *brd);
+U64 overlay_colours(struct board *the_board, enum colour col);
+
 
 #endif
