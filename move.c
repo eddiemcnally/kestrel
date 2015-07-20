@@ -21,6 +21,7 @@
 #include "types.h"
 #include "board.h"
 #include "pieces.h"
+#include "occupancy_mask.h"
 #include "move.h"
 
 static void add_pawn_capture_move(const struct board *brd, enum colour col,
@@ -176,7 +177,7 @@ static inline void add_pawn_move(const struct board *brd, enum colour col,
  *
  */
 
-static void generate_sliding_piece_moves(const struct board *brd, struct move_list *mvl, enum colour col){
+void generate_sliding_piece_moves(const struct board *brd, struct move_list *mvl, enum colour col){
 	const int NUM_SLIDERS = 3;
 	static enum piece white_pieces[] = {W_ROOK, W_BISHOP, W_QUEEN};
 	static enum piece black_pieces[] = {W_ROOK, W_BISHOP, W_QUEEN};
@@ -184,17 +185,19 @@ static void generate_sliding_piece_moves(const struct board *brd, struct move_li
 	// select the colour piece array
 	enum piece *pieces = (col == WHITE) ? white_pieces : black_pieces;
 
+	// a bitboard representing a pieces of this colour
+	U64 all_pieces_bb = overlay_colours(brd, col);
+
+
 	for (int i = 0; i < NUM_SLIDERS; i++){
 		enum piece pce = pieces[i];
 
-
-
-
-
-
+		// a bb representing all pieces of this type on the board
+		U64 bb = brd->bitboards[pce];
+		printf("bb %d %d", (int)bb, (int)all_pieces_bb);
 
 	}
-
+}
 
 
 /*
@@ -206,7 +209,7 @@ static void generate_sliding_piece_moves(const struct board *brd, struct move_li
  *
  */
 
-static void generate_knight_piece_moves(const struct board *brd, struct move_list *mvl, enum colour col){
+void generate_knight_piece_moves(const struct board *brd, struct move_list *mvl, enum colour col){
 
 	enum piece pce = (col == WHITE) ? W_KNIGHT : B_KNIGHT;
 
@@ -234,9 +237,9 @@ static void generate_knight_piece_moves(const struct board *brd, struct move_lis
 
 
 
-		if ((mask & sqBB) != 0) {
+		if ((mask & sq_bitboard) != 0) {
 			// a Knight is attacking this square
-			return true;
+			return;
 		}
 
 
@@ -246,7 +249,7 @@ static void generate_knight_piece_moves(const struct board *brd, struct move_lis
 
 	}
 
-
+	return false;
 
 
 }

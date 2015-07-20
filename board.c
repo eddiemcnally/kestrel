@@ -135,7 +135,7 @@ add_piece_to_board(struct board * board, enum piece piece, enum square square)
     }
 }
 
-U64 overlay_colours(struct board *brd, enum colour col){
+U64 overlay_colours(const struct board *brd, enum colour col){
 	if (col == WHITE){
 		return brd->bitboards[W_PAWN] | brd->bitboards[W_BISHOP]
 				| brd->bitboards[W_KNIGHT] | brd->bitboards[W_ROOK]
