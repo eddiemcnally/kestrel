@@ -35,6 +35,32 @@ void generate_black_pawn_occupancy_masks(U64 * occ_mask_array);
 void print_out_masks(const U64 * masks);
 void set_dest_sq_if_valid(int rank, int file, U64 * brd);
 
+
+
+U64 get_occupancy_mask(enum piece pce, enum square sq){
+	switch(pce){
+		case W_BISHOP:
+		case B_BISHOP:
+			return GET_BISHOP_OCC_MASK(sq);
+		case W_ROOK:
+		case B_ROOK:
+			return GET_ROOK_OCC_MASK(sq);
+		case W_QUEEN:
+		case B_QUEEN:
+			return GET_QUEEN_OCC_MASK(sq);
+		case W_KNIGHT:
+		case B_KNIGHT:
+			return GET_KNIGHT_OCC_MASK(sq);
+		case W_KING:
+		case B_KING:
+			return GET_KING_OCC_MASK(sq);
+		default:
+			assert(pce == NO_PIECE);
+			return 0;
+	}
+}
+
+
 /*
  * Generates the occupancy bit masks for a king on each square on the board
  * name: 	generate_king_occupancy_masks

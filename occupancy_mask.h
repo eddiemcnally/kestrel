@@ -21,7 +21,7 @@
 
 #include "types.h"
 
-U64 get_occ_mask(enum piece pce, enum square sq);
+//U64 get_occ_mask(enum piece pce, enum square sq);
 void print_occupancy_masks(enum piece pce);
 void print_occupancy_mask_as_board(const U64 * mask, enum piece pce,
 				   enum square square);
@@ -508,5 +508,8 @@ static const U64 rook_occupancy_masks[NUM_SQUARES] = {
 #define GET_ROOK_OCC_MASK(square)		(rook_occupancy_masks[(square)])
 #define GET_WHITE_PAWN_OCC_MASK(square)		(white_pawn_occupancy_masks[(square)])
 #define GET_BLACK_PAWN_OCC_MASK(square)		(black_pawn_occupancy_masks[(square)])
+
+
+U64 get_occupancy_mask(enum piece pce, enum square sq);
 
 #endif

@@ -196,6 +196,16 @@ void generate_sliding_piece_moves(const struct board *brd, struct move_list *mvl
 		U64 bb = brd->bitboards[pce];
 		printf("bb %d %d", (int)bb, (int)all_pieces_bb);
 
+		// iterate over pieces of this typeall knights of this colour on the board
+		while (bb != 0) {
+			enum square sq = POP(&bb);
+
+			// get the occupancy mask for this piece
+			U64 occ_mask = get_occupancy_mask(pce, sq);
+			printf("occ mask %d", (int)occ_mask);
+
+
+		}
 	}
 }
 
