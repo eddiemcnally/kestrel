@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 #include "types.h"
 #include "board.h"
 #include "pieces.h"
@@ -36,6 +37,20 @@ static void generate_white_pawn_moves(const struct board *brd, struct move_list 
 static void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl);
 static void generate_sliding_piece_moves(const struct board *brd, struct move_list *mvl, enum colour col);
 
+
+
+// used for bitscan
+static const int lsb_64_table[64] =
+{
+   63, 30,  3, 32, 59, 14, 11, 33,
+   60, 24, 50,  9, 55, 19, 21, 34,
+   61, 29,  2, 53, 51, 23, 41, 18,
+   56, 28,  1, 43, 46, 27,  0, 35,
+   62, 31, 58,  4,  5, 49, 54,  6,
+   15, 52, 12, 40,  7, 42, 45, 16,
+   25, 57, 48, 13, 10, 39,  8, 44,
+   20, 47, 38, 22, 17, 37, 36, 26
+};
 
 
 
@@ -196,6 +211,16 @@ void generate_sliding_piece_moves(const struct board *brd, struct move_list *mvl
 		U64 bb = brd->bitboards[pce];
 		printf("bb %d %d", (int)bb, (int)all_pieces_bb);
 
+		// iterate over pieces of this typeall knights of this colour on the board
+		while (bb != 0) {
+			enum square sq = POP(&bb);
+
+			// get the occupancy mask for this piece
+			U64 occ_mask = get_occupancy_mask(pce, sq);
+			printf("occ mask %d", (int)occ_mask);
+
+
+		}
 	}
 }
 
@@ -391,6 +416,22 @@ static void generate_black_pawn_moves(const struct board *brd, struct move_list 
 
 
 
+/**
+ * ### Taken from http://chessprogramming.wikispaces.com/BitScan#Bitscanforward
+ *
+ * bitScanForward
+ * @author Matt Taylor (2003)
+ * @param bb bitboard to scan
+ * @precondition bb != 0
+ * @return index (0..63) of least significant one bit
+ */
+U32 bitScanForward(U64 bb) {
+	unsigned int folded;
+	assert (bb != 0);
+	bb ^= bb - 1;
+	folded = (int) bb ^ (bb >> 32);
+	return lsb_64_table[folded * 0x78291ACF >> 26];
+}
 
 
 

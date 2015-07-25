@@ -75,7 +75,6 @@ void print_move_list(const struct move_list *list);
 void generate_all_moves(const struct board *brd, struct move_list *mvl);
 struct move_list * get_empty_move_list(void);
 bool is_move_in_list(struct move_list *mvl, mv_bitmap mv);
-
-
+U32 bitScanForward(U64 bb);
 
 #endif
