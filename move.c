@@ -199,7 +199,7 @@ static inline void add_pawn_move(const struct board *brd, enum colour col,
 void generate_sliding_piece_moves(const struct board *brd, struct move_list *mvl, enum colour col){
 	const int NUM_SLIDERS = 3;
 	static enum piece white_pieces[] = {W_ROOK, W_BISHOP, W_QUEEN};
-	static enum piece black_pieces[] = {W_ROOK, W_BISHOP, W_QUEEN};
+	static enum piece black_pieces[] = {B_ROOK, B_BISHOP, B_QUEEN};
 
 	// select the colour piece array
 	enum piece *pieces = (col == WHITE) ? white_pieces : black_pieces;
@@ -215,7 +215,7 @@ void generate_sliding_piece_moves(const struct board *brd, struct move_list *mvl
 		U64 bb = brd->bitboards[pce];
 		printf("bb %d %d", (int)bb, (int)all_pieces_bb);
 
-		// iterate over pieces of this typeall knights of this colour on the board
+		// iterate over pieces of this type
 		while (bb != 0) {
 			enum square sq = POP(&bb);
 
@@ -282,6 +282,55 @@ void generate_knight_piece_moves(const struct board *brd, struct move_list *mvl,
 
 
 
+
+
+
+
+/*
+ * Generates moves for king of a given colour
+ *
+ * name: generate_king_moves
+ * @param
+ * @return
+ *
+ */
+void generate_king_moves(const struct board *brd, struct move_list *mvl, enum colour col){
+
+	enum piece pce = (col == WHITE) ? W_KING : B_KING;
+	enum colour pce_col = get_colour(pce);
+
+	// get the bitboard representing the king
+    U64 bbKing = brd->bitboards[pce];
+
+	assert(CNT(bbKing) == 1);
+
+	enum square king_sq = POP(&bbKing);
+
+	// get occupancy mask for this piece and square
+	U64 mask = GET_KING_OCC_MASK(king_sq);
+
+	while (mask != 0){
+		// iterate over all the possible destination squares
+		// for this king
+		enum square king_dest_sq = POP(&mask);
+
+		enum piece p = get_piece_at_square(brd, king_dest_sq);
+		if (p != NO_PIECE){
+			// square has a piece
+			enum colour pcol = get_colour(p);
+			if (pcol == pce_col){
+				// dest square has piece with same colour...keep looking for a move
+				continue;
+			} else {
+				// dest square has opposing piece
+				add_capture_move(brd, MOVE(king_sq, king_dest_sq, p, NO_PIECE, 0), mvl);
+			}
+		} else {
+			// empty square
+			add_quiet_move(brd, MOVE(king_sq, king_dest_sq, NO_PIECE, NO_PIECE, 0), mvl);
+		}
+	}
+}
 
 
 

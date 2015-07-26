@@ -80,6 +80,7 @@ U32 bitScanForward(U64 bb);
 void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl);
 void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl);
 void generate_knight_piece_moves(const struct board *brd, struct move_list *mvl, enum colour col);
+void generate_king_moves(const struct board *brd, struct move_list *mvl, enum colour col);
 
 
 #endif

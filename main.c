@@ -80,40 +80,59 @@ int main(int argc, char **argv)
     //print_board(the_board);
     //ASSERT_BOARD_OK(the_board);
 
-    the_board = get_clean_board();
-    consume_fen_notation(FEN6, the_board);
-	print_board(the_board);
-	printf("creating movelist\n");
+    //the_board = get_clean_board();
+    //consume_fen_notation(FEN6, the_board);
+	//print_board(the_board);
+	//printf("creating movelist\n");
 
 
 
-    struct move_list *list = malloc(sizeof(struct move_list));
-	memset(list, 0, sizeof(struct move_list));
-	printf("calling gen move list\n");
+    //struct move_list *list = malloc(sizeof(struct move_list));
+	//memset(list, 0, sizeof(struct move_list));
+	//printf("calling gen move list\n");
 
-    generate_all_moves(the_board, list);
+    //generate_all_moves(the_board, list);
 
-    printf("calling print moves\n");
-    print_move_list(list);
-
-
-
-
-    the_board = get_clean_board();
-    consume_fen_notation(FEN7, the_board);
-	print_board(the_board);
-	printf("creating movelist\n");
+    //printf("calling print moves\n");
+    //print_move_list(list);
 
 
 
-    list = malloc(sizeof(struct move_list));
-	memset(list, 0, sizeof(struct move_list));
-	printf("calling gen move list\n");
 
-    generate_all_moves(the_board, list);
+    //the_board = get_clean_board();
+    //consume_fen_notation(FEN7, the_board);
+	//print_board(the_board);
+	//printf("creating movelist\n");
 
-    printf("calling print moves\n");
-    print_move_list(list);
+
+
+    //list = malloc(sizeof(struct move_list));
+	//memset(list, 0, sizeof(struct move_list));
+	//printf("calling gen move list\n");
+
+    //generate_all_moves(the_board, list);
+
+    //printf("calling print moves\n");
+    //print_move_list(list);
+
+
+
+	//char * sliding_test = "8/P1pB2kP/1p1P4/P2p4/3bP2B/2PppP2/p1bPpp2/7K w - - 0 1";
+    //struct board *brd= get_clean_board();
+    //print_board(brd);
+    //consume_fen_notation(sliding_test, brd);
+
+
+    //U64 bb = brd->bitboards[B_BISHOP];
+
+	//// get occupancy mask for this piece and square
+	//U64 mask = GET_BISHOP_OCC_MASK(d4);
+
+	//U64 bbSlider = GET_PIECE_MASK(d4);
+
+	//// all same-side pieces
+	//U64 blockers = overlay_colours(brd, BLACK);
+
 
 
 

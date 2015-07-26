@@ -343,7 +343,100 @@ void test_generation_black_knight_pawn_moves(void)
 	assert_true(is_move_in_list(mvl, mv));
 
 
+
 }
+
+void test_generation_king_moves(){
+	// setup
+    char *test_fen = "8/p1P4p/R3p2P/P1pP1q2/PRP1p1P1/3Qprr1/kp1p3P/7K w - - 0 1";
+
+    struct board *brd = get_clean_board();
+
+    consume_fen_notation(test_fen, brd);
+
+	struct move_list * mvl = get_empty_move_list();
+	generate_king_moves(brd, mvl, BLACK);
+
+	assert_true(mvl->move_count == 4);
+
+	// black king on a2
+	mv_bitmap mv = MOVE(a2, a3, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+
+	mv = MOVE(a2, b3, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(a2, b1, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(a2, a1, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+
+	// reset things and check for white king
+	brd = get_clean_board();
+
+    consume_fen_notation(test_fen, brd);
+
+	mvl = get_empty_move_list();
+	generate_king_moves(brd, mvl, WHITE);
+
+	assert_true(mvl->move_count == 2);
+
+	// black king on h1
+	mv = MOVE(h1, g2, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(h1, g1, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+
+	//=======================
+	// reset things and do another test
+	brd = get_clean_board();
+	test_fen = "r5r1/2KP2R1/R1PP2p1/1pPp2P1/pp1Pp3/3kp1P1/3P2pQ/6q1 w - - 0 1";
+    consume_fen_notation(test_fen, brd);
+
+	mvl = get_empty_move_list();
+	generate_king_moves(brd, mvl, BLACK);
+
+	assert_true(mvl->move_count == 6);
+
+	// black king on d3
+	mv = MOVE(d3, c4, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(d3, c3, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(d3, c2, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(d3, d2, W_PAWN, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(d3, d4, W_PAWN, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(d3, e2, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+
+
+	// reset things and check for white king
+	brd = get_clean_board();
+
+    consume_fen_notation(test_fen, brd);
+
+	mvl = get_empty_move_list();
+	generate_king_moves(brd, mvl, WHITE);
+
+	assert_true(mvl->move_count == 5);
+
+	// black king on c7
+	mv = MOVE(c7, b6, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(c7, b7, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(c7, b8, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(c7, c8, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(c7, d8, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+
+
+}
+
 
 
 void move_test_fixture(void)
@@ -354,6 +447,7 @@ void move_test_fixture(void)
     run_test(test_generation_black_pawn_moves);
 	run_test(test_generation_white_knight_pawn_moves);
 	run_test(test_generation_black_knight_pawn_moves);
+	run_test(test_generation_king_moves);
 
 
     test_fixture_end();		// ends a fixture
