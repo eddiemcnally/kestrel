@@ -70,11 +70,16 @@ struct move_list {
 //---
 
 char *print_move(mv_bitmap move_bitmap);
-void print_move_details(U32 move_bitmap);
+void print_move_details(U32 move_bitmap, U32 score);
 void print_move_list(const struct move_list *list);
+void print_move_list_details(const struct move_list *list);
 void generate_all_moves(const struct board *brd, struct move_list *mvl);
 struct move_list * get_empty_move_list(void);
 bool is_move_in_list(struct move_list *mvl, mv_bitmap mv);
 U32 bitScanForward(U64 bb);
+void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl);
+void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl);
+void generate_knight_piece_moves(const struct board *brd, struct move_list *mvl, enum colour col);
+
 
 #endif

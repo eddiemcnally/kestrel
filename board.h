@@ -48,6 +48,9 @@ enum {
 #define IS_VALID_RANK(rank)		((rank >= RANK_1) && (rank <= RANK_8))
 #define IS_VALID_FILE(file)		((file >= FILE_A) && (file <= FILE_H))
 
+#define	TO_CHAR_RANK(square)	()
+
+
 // castling permissions
 enum {
     WKCA = 0x01,		// white, king-side

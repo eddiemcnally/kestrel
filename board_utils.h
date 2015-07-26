@@ -26,4 +26,5 @@ void print_board(const struct board *brd);
 bool ASSERT_BOARD_OK(const struct board *brd);
 char *print_square(enum square sq);
 
+
 #endif

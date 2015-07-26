@@ -21,6 +21,7 @@
 #include <assert.h>
 #include "types.h"
 #include "board.h"
+#include "board_utils.h"
 #include "pieces.h"
 #include "occupancy_mask.h"
 #include "move.h"
@@ -33,8 +34,8 @@ static void add_pawn_move(const struct board *brd, enum colour col,
 static void add_quiet_move(const struct board *brd, mv_bitmap move_bitmap, struct move_list *mvlist);
 static void add_capture_move(const struct board *brd, mv_bitmap move_bitmap, struct move_list *mvlist);
 static void add_en_passent_move(const struct board *brd, mv_bitmap move_bitmap, struct move_list *mvlist);
-static void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl);
-static void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl);
+void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl);
+void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl);
 static void generate_sliding_piece_moves(const struct board *brd, struct move_list *mvl, enum colour col);
 
 
@@ -68,9 +69,12 @@ void generate_all_moves(const struct board *brd, struct move_list *mvl)
 {
     if (brd->side_to_move == WHITE) {
 		generate_white_pawn_moves(brd, mvl);
+		generate_knight_piece_moves(brd, mvl, WHITE);
     } else {
 		generate_black_pawn_moves(brd, mvl);
+		generate_knight_piece_moves(brd, mvl, BLACK);
 	}
+
 }
 
 
@@ -226,17 +230,17 @@ void generate_sliding_piece_moves(const struct board *brd, struct move_list *mvl
 
 
 /*
- * Generates moves for sliding pieces of a given colour
+ * Generates moves for knight pieces of a given colour
  *
- * name: generate_sliding_piece_moves
+ * name: generate_knight_piece_moves
  * @param
  * @return
  *
  */
-
 void generate_knight_piece_moves(const struct board *brd, struct move_list *mvl, enum colour col){
 
 	enum piece pce = (col == WHITE) ? W_KNIGHT : B_KNIGHT;
+	enum colour pce_col = get_colour(pce);
 
 	// get the bitboard representing all of the piece types
     // on the board
@@ -245,38 +249,35 @@ void generate_knight_piece_moves(const struct board *brd, struct move_list *mvl,
 	// iterate over all knights of this colour on the board
     while (bbKnight != 0) {
 
-		//printf("bbPawn:\t0x%016llx\n", bbPawn);
-
 		enum square knight_sq = POP(&bbKnight);
-
-	    // create bitboard for square where the knight is
-		U64 sq_bitboard = 0;
-		set_bit(&sq_bitboard, knight_sq);
-
-		//int knight_file = GET_FILE(knight_sq);
-		//int knight_rank = GET_RANK(knight_sq);
 
 		// get occupancy mask for this piece and square
 		U64 mask = GET_KNIGHT_OCC_MASK(knight_sq);
 
+		while (mask != 0){
+			// iterate over all the possible destination squares
+			// for this knight
+			enum square knight_dest_sq = POP(&mask);
 
+			assert(knight_dest_sq != knight_sq);
 
-
-		if ((mask & sq_bitboard) != 0) {
-			// a Knight is attacking this square
-			return;
+			enum piece p = get_piece_at_square(brd, knight_dest_sq);
+			if (p != NO_PIECE){
+				// square has a piece
+				enum colour pcol = get_colour(p);
+				if (pcol == pce_col){
+					// dest square has piece with same colour...keep looking for a move
+					continue;
+				} else {
+					// dest square has opposing piece
+					add_capture_move(brd, MOVE(knight_sq, knight_dest_sq, p, NO_PIECE, 0), mvl);
+				}
+			} else {
+				// empty square
+				add_quiet_move(brd, MOVE(knight_sq, knight_dest_sq, NO_PIECE, NO_PIECE, 0), mvl);
+			}
 		}
-
-
-
-
-
-
 	}
-
-	return false;
-
-
 }
 
 
@@ -286,7 +287,7 @@ void generate_knight_piece_moves(const struct board *brd, struct move_list *mvl,
 
 
 
-static void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl)
+void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl)
 {
     // get the bitboard representing all WHITE pawns
     // on the board
@@ -350,7 +351,7 @@ static void generate_white_pawn_moves(const struct board *brd, struct move_list 
 
 
 
-static void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl)
+void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl)
 {
     // get the bitboard representing all BLACK pawns
     // on the board
@@ -475,7 +476,7 @@ char *print_move(U32 move_bitmap)
 }
 
 
-void print_move_details(U32 move_bitmap){
+void print_move_details(U32 move_bitmap, U32 score){
 	int from_file = GET_FILE(FROMSQ(move_bitmap));
     int from_rank = GET_RANK(FROMSQ(move_bitmap));
 
@@ -490,10 +491,33 @@ void print_move_details(U32 move_bitmap){
 	char c_promoted = get_piece_label(promoted);
 	printf("prom %c\n", c_promoted);
 
-	printf("move : %c%c%c%c, captured '%c' promote '%c'\n", ('a' + from_file),
-				('1' + from_rank), ('a' + to_file), ('1' + to_rank), c_capt, c_promoted);
+	printf("move : %c%c%c%c, captured '%c' promote '%c' score %d\n", ('a' + from_file),
+				('1' + from_rank), ('a' + to_file), ('1' + to_rank), c_capt, c_promoted, score);
 
 
+}
+
+
+
+/*
+ * Prints out the move list details
+ * name: print_move_list_details
+ * @param
+ * @return
+ *
+ */
+
+void print_move_list_details(const struct move_list *list)
+{
+    printf("MoveList Details:\n");
+
+    for (int i = 0; i < list->move_count; i++) {
+		U32 move = list->moves[i].move_bitmap;
+		U32 score = list->moves[i].score;
+
+		print_move_details(move, score);
+    }
+    printf("MoveList Total %d Moves:\n\n", list->move_count);
 }
 
 

@@ -102,13 +102,12 @@ void print_board(const struct board *the_board)
  * Prints out a square as file/rank, eg a2
  * name: print_square
  * @param
- * @return
+ * @return a malloc'ed buffer that needs to be free'd
  *
  */
 char *print_square(enum square sq)
 {
-
-    static char square_text[3];
+	char * square_text = (char *)malloc(3 * sizeof(char));
 
     int file = GET_FILE(sq);
     int rank = GET_RANK(sq);
@@ -116,8 +115,11 @@ char *print_square(enum square sq)
     sprintf(square_text, "%c%c", ('a' + file), ('1' + rank));
 
     return square_text;
-
 }
+
+
+
+
 
 /*
  * Validates the contents of a board struct.

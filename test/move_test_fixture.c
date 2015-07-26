@@ -30,6 +30,9 @@
 
 void test_generation_white_pawn_moves(void);
 void test_generation_black_pawn_moves(void);
+void test_generation_white_knight_pawn_moves(void);
+void test_generation_black_knight_pawn_moves(void);
+
 
 void test_generation_white_pawn_moves(void)
 {
@@ -72,7 +75,7 @@ MoveList Total 26 Moves:
     consume_fen_notation(test_fen, brd);
 
 	struct move_list * mvl = get_empty_move_list();
-	generate_all_moves(brd, mvl);
+	generate_white_pawn_moves(brd, mvl);
 
 
 	// test
@@ -177,8 +180,7 @@ void test_generation_black_pawn_moves(void)
     consume_fen_notation(test_fen, brd);
 
 	struct move_list * mvl = get_empty_move_list();
-	generate_all_moves(brd, mvl);
-
+	generate_black_pawn_moves(brd, mvl);
 
 	// test
 	assert_true(mvl->move_count == 26);
@@ -234,6 +236,115 @@ void test_generation_black_pawn_moves(void)
 }
 
 
+void test_generation_white_knight_pawn_moves(void)
+{
+	// setup
+    char *test_fen = "5k2/1n6/4n3/6N1/8/3N4/8/5K2 w - - 0 1";
+
+    struct board *brd = get_clean_board();
+
+    consume_fen_notation(test_fen, brd);
+
+	struct move_list * mvl = get_empty_move_list();
+	generate_knight_piece_moves(brd, mvl, WHITE);
+
+
+	//printf("move count %d\n", mvl->move_count);
+	//print_move_list_details(mvl);
+
+	// test
+	assert_true(mvl->move_count == 14);
+
+
+	// check moves from d3
+	mv_bitmap mv = MOVE(d3, f2, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(d3, e1, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(d3, c1, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(d3, b2, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(d3, b4, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(d3, c5, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(d3, e5, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(d3, f4, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+
+
+	// check moves from g5
+	mv = MOVE(g5, h3, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(g5, f3, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(g5, e4, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(g5, f7, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(g5, h7, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+
+	mv = MOVE(g5, e6, B_KNIGHT, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+
+}
+
+void test_generation_black_knight_pawn_moves(void)
+{
+	// setup
+    char *test_fen = "r1bqkb1r/pppppppp/2N5/3n1N2/8/1n6/PPPPPPPP/R1BQKB1R b KQkq - 0 1";
+
+    struct board *brd = get_clean_board();
+
+    consume_fen_notation(test_fen, brd);
+
+	struct move_list * mvl = get_empty_move_list();
+	generate_knight_piece_moves(brd, mvl, BLACK);
+
+
+	//printf("move count %d\n", mvl->move_count);
+	//print_move_list_details(mvl);
+
+	// test
+	assert_true(mvl->move_count == 12);
+
+	// start on b3
+	mv_bitmap mv = MOVE(b3, d2, W_PAWN, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(b3, c1, W_BISHOP, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(b3, a1, W_ROOK, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+
+	mv = MOVE(b3, d2, W_PAWN, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(b3, c1, W_BISHOP, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(b3, a1, W_ROOK, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+
+
+	// start on d5
+
+	mv = MOVE(d5, f4, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(d5, e3, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(d5, c3, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(d5, b4, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(d5, b6, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(d5, f6, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+
+
+}
+
 
 void move_test_fixture(void)
 {
@@ -241,6 +352,9 @@ void move_test_fixture(void)
 
     run_test(test_generation_white_pawn_moves);
     run_test(test_generation_black_pawn_moves);
+	run_test(test_generation_white_knight_pawn_moves);
+	run_test(test_generation_black_knight_pawn_moves);
+
 
     test_fixture_end();		// ends a fixture
 }
