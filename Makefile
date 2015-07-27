@@ -37,7 +37,7 @@
 					test/all_tests.c test/board_test_fixture.c \
 					test/piece_test_fixture.c test/seatest.c \
 					test/occupancy_mask_test_fixture.c \
-					test/attack_test_fixture.c \
+					test/attack_test_fixture.c test/utils_test_feature.c \
 					test/move_test_fixture.c
 
 

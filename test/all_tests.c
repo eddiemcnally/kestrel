@@ -33,9 +33,9 @@ int main_do_it_myself_really_simply(int argc, char **argv);
     board_test_fixture();
     piece_test_fixture();
     occupancy_mask_test_fixture();
-	move_test_fixture();
-	attack_test_fixture();
-}void my_suite_setup(void)
+	move_test_fixture();
+	attack_test_fixture();
+	utils_test_fixture();}void my_suite_setup(void)
 {
 
 	//printf("I'm done before every single test in the suite\r\n");
