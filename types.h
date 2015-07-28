@@ -24,10 +24,11 @@ typedef unsigned int U32;
 typedef unsigned long long U64;
 
 enum colour {
-    BLACK,
-    WHITE,
-    NUM_COLOURS
+    BLACK = 0,
+    WHITE = 1,
+    NUM_COLOURS = 2
 };
+
 
 enum square {
     a1 = 0, b1, c1, d1, e1, f1, g1, h1,

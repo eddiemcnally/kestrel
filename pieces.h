@@ -22,8 +22,9 @@
 #include <stdbool.h>
 #include "types.h"
 
-#define IS_WHITE(piece)		(piece <= W_KING)
-#define IS_BLACK(piece)		(IS_WHITE(piece) == false)
+#define IS_WHITE(piece)			(piece <= W_KING)
+#define IS_BLACK(piece)			(IS_WHITE(piece) == false)
+
 
 char get_piece_label(enum piece piece);
 enum colour get_colour(enum piece piece);

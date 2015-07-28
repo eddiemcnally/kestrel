@@ -122,7 +122,7 @@ int main(int argc, char **argv)
     //print_board(brd);
     //consume_fen_notation(sliding_test, brd);
 
-
+	// http://chessprogramming.wikispaces.com/Efficient+Generation+of+Sliding+Piece+Attacks
     //U64 bb = brd->bitboards[B_BISHOP];
 
 	//// get occupancy mask for this piece and square
@@ -133,6 +133,12 @@ int main(int argc, char **argv)
 	//// all same-side pieces
 	//U64 blockers = overlay_colours(brd, BLACK);
 
+
+
+	for (int i = 0; i <= 0xff; i++){
+		U8 x = (i * 0x0202020202ULL & 0x010884422010ULL) % 1023;
+		printf("i : %x, reversed %x\n", i, x);
+	}
 
 
 
