@@ -117,30 +117,15 @@ int main(int argc, char **argv)
 
 
 
-	//char * sliding_test = "8/P1pB2kP/1p1P4/P2p4/3bP2B/2PppP2/p1bPpp2/7K w - - 0 1";
-    //struct board *brd= get_clean_board();
+	char * sliding_test = "K7/1rp5/5R1P/6p1/7P/1k3p1P/1P1p2r1/4R3 w - - 0 1";
+    struct board *brd= get_clean_board();
     //print_board(brd);
-    //consume_fen_notation(sliding_test, brd);
+    consume_fen_notation(sliding_test, brd);
 
-	// http://chessprogramming.wikispaces.com/Efficient+Generation+of+Sliding+Piece+Attacks
-    //U64 bb = brd->bitboards[B_BISHOP];
+    struct move_list *list = malloc(sizeof(struct move_list));
+	memset(list, 0, sizeof(struct move_list));
 
-	//// get occupancy mask for this piece and square
-	//U64 mask = GET_BISHOP_OCC_MASK(d4);
-
-	//U64 bbSlider = GET_PIECE_MASK(d4);
-
-	//// all same-side pieces
-	//U64 blockers = overlay_colours(brd, BLACK);
-
-
-
-	for (int i = 0; i <= 0xff; i++){
-		U8 x = (i * 0x0202020202ULL & 0x010884422010ULL) % 1023;
-		printf("i : %x, reversed %x\n", i, x);
-	}
-
-
+	generate_horizontal_vertical_moves(brd, list, B_ROOK);
 
 
     return 0;

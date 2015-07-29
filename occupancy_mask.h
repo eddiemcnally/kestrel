@@ -23,7 +23,7 @@
 
 //U64 get_occ_mask(enum piece pce, enum square sq);
 void print_occupancy_masks(enum piece pce);
-void print_occupancy_mask_as_board(const U64 * mask, enum piece pce,
+void print_mask_as_board(const U64 * mask, enum piece pce,
 				   enum square square);
 void print_out_masks(const U64 * masks);
 

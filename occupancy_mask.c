@@ -516,17 +516,22 @@ void print_occupancy_masks(enum piece pce)
 
 }
 
+
+
+
+
+
+
+
 /**
  * Thanks again to Bluefever Software for this code
  */
 void
-print_occupancy_mask_as_board(const U64 * mask, enum piece pce,
+print_mask_as_board(const U64 * mask, enum piece pce,
 			      enum square square)
 {
 
     //int sq,piece;
-
-    printf("\nOccupancy Mask:\n\n");
 
     for (int rank = RANK_8; rank >= RANK_1; rank--) {
 		printf("%d  ", rank + 1);	// enum is zero-based

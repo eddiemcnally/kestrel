@@ -81,6 +81,6 @@ void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl);
 void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl);
 void generate_knight_piece_moves(const struct board *brd, struct move_list *mvl, enum colour col);
 void generate_king_moves(const struct board *brd, struct move_list *mvl, enum colour col);
-
+void generate_horizontal_vertical_moves(const struct board *brd, struct move_list *mvl, enum piece pce);
 
 #endif

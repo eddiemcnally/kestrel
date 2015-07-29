@@ -25,6 +25,8 @@
 #include "pieces.h"
 #include "occupancy_mask.h"
 #include "move.h"
+#include "utils.h"
+
 
 static void add_pawn_capture_move(const struct board *brd, enum colour col,
 					enum square from, enum square to,
@@ -463,6 +465,73 @@ void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl)
 }
 
 
+/* Generates horizontal and vertical moves (a la Rook)
+ *
+ * Based on the code on page:
+ * 		http://chessprogramming.wikispaces.com/Efficient+Generation+of+Sliding+Piece+Attacks
+ *
+ * plus the video
+ * 		https://www.youtube.com/watch?v=bCH4YK6oq8M
+ *
+ * name: generate_horizontal_vertical_moves
+ * @param
+ * @return
+ *
+ */
+void generate_horizontal_vertical_moves(const struct board *brd, struct move_list *mvl, enum piece pce){
+
+	assert((pce == W_ROOK) || (pce == B_ROOK) || (pce == W_QUEEN) || (pce == B_QUEEN));
+
+	print_board(brd);
+
+
+	U64 bb = brd->bitboards[pce];
+
+    while (bb != 0) {
+
+		enum square pce_sq = POP(&bb);
+
+		U64 occ_mask = GET_ROOK_OCC_MASK(pce_sq);
+
+		set_bit(&occ_mask, pce_sq);
+
+		printf("occ_mask\n");
+		print_mask_as_board(&occ_mask, pce, pce_sq);
+
+
+		// create slider bb for this square
+		U64 bb_slider = GET_PIECE_MASK(pce_sq);
+		printf("slider\n");
+		print_mask_as_board(&bb_slider, pce, pce_sq);
+
+
+		// all occupied squares
+		U64 occupied = brd->board;
+		printf("occupied\n");
+		print_mask_as_board(&occupied, pce, pce_sq);
+
+
+
+		U64 term_A = (occupied & occ_mask) - (2 * bb_slider);
+		U64 term_B = reverse_bits(occupied & occ_mask);
+		term_B = term_B - 2 * (reverse_bits(bb_slider));
+		term_B = reverse_bits(term_B);
+
+		// all viable attack squares
+		U64 att_sq = (term_A ^ term_B) & occ_mask;
+		printf("att sq\n");
+		print_mask_as_board(&att_sq, pce, pce_sq);
+
+
+
+
+	}
+
+
+}
+
+
+
 
 
 
@@ -482,6 +551,8 @@ U32 bitScanForward(U64 bb) {
 	folded = (int) bb ^ (bb >> 32);
 	return lsb_64_table[folded * 0x78291ACF >> 26];
 }
+
+
 
 
 
