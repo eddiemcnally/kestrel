@@ -125,7 +125,10 @@ int main(int argc, char **argv)
     struct move_list *list = malloc(sizeof(struct move_list));
 	memset(list, 0, sizeof(struct move_list));
 
-	generate_horizontal_vertical_moves(brd, list, B_ROOK);
+	generate_sliding_horizontal_vertical_moves(brd, list, B_ROOK);
+
+
+	generate_sliding_horizontal_vertical_moves(brd, list, W_ROOK);
 
 
     return 0;

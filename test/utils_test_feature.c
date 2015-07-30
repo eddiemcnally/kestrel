@@ -53,7 +53,6 @@ void test_bit_reversal(void){
 	reversed = reverse_bits(test_word);
 	assert_true(reversed == 0x5500000000000000);
 
-
 }
 
 

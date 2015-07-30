@@ -32,7 +32,7 @@ void test_generation_white_pawn_moves(void);
 void test_generation_black_pawn_moves(void);
 void test_generation_white_knight_pawn_moves(void);
 void test_generation_black_knight_pawn_moves(void);
-
+void test_generation_sliding_horizontal_and_vertical_moves(void);
 
 void test_generation_white_pawn_moves(void)
 {
@@ -438,6 +438,67 @@ void test_generation_king_moves(){
 }
 
 
+void test_generation_sliding_horizontal_and_vertical_moves(void){
+
+	char * sliding_test = "K7/1rp5/5R1P/6p1/7P/1k3p1P/1P1p2r1/4R3 w - - 0 1";
+    struct board *brd= get_clean_board();
+    //print_board(brd);
+    consume_fen_notation(sliding_test, brd);
+
+    struct move_list *mvl = malloc(sizeof(struct move_list));
+	memset(mvl, 0, sizeof(struct move_list));
+
+	generate_sliding_horizontal_vertical_moves(brd, mvl, B_ROOK);
+
+	assert_true(mvl->move_count == 11);
+
+	mv_bitmap mv = MOVE(g2, e2, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(g2, f2, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(g2, h2, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(g2, g1, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(g2, g3, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(g2, g4, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+
+	mv = MOVE(b7, b8, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(b7, a7, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(b7, b6, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(b7, b5, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(b7, b4, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+
+
+	// check the white rooks
+    brd= get_clean_board();
+    //print_board(brd);
+    consume_fen_notation(sliding_test, brd);
+
+    mvl = malloc(sizeof(struct move_list));
+	memset(mvl, 0, sizeof(struct move_list));
+
+	generate_sliding_horizontal_vertical_moves(brd, mvl, W_ROOK);
+
+	assert_true(mvl->move_count == 25);
+
+
+
+
+
+
+
+
+}
+
+
 
 void move_test_fixture(void)
 {
@@ -448,7 +509,7 @@ void move_test_fixture(void)
 	run_test(test_generation_white_knight_pawn_moves);
 	run_test(test_generation_black_knight_pawn_moves);
 	run_test(test_generation_king_moves);
-
+	run_test(test_generation_sliding_horizontal_and_vertical_moves);
 
     test_fixture_end();		// ends a fixture
 }

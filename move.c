@@ -39,10 +39,47 @@ static void add_en_passent_move(const struct board *brd, mv_bitmap move_bitmap, 
 void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl);
 void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl);
 static void generate_sliding_piece_moves(const struct board *brd, struct move_list *mvl, enum colour col);
-U64 generate_vertical_mask(enum square sq);
-U64 generate_horizontal_mask(enum square sq);
+static U64 get_horizontal_mask(enum square sq);
+static U64 get_vertical_mask(enum square sq);
 
+// indexed using enum square
+static U64 horizontal_move_mask [] = {
+			0x00000000000000ff, 0x00000000000000ff, 0x00000000000000ff, 0x00000000000000ff,
+			0x00000000000000ff, 0x00000000000000ff, 0x00000000000000ff, 0x00000000000000ff,
+			0x000000000000ff00, 0x000000000000ff00, 0x000000000000ff00, 0x000000000000ff00,
+			0x000000000000ff00, 0x000000000000ff00, 0x000000000000ff00, 0x000000000000ff00,
+			0x0000000000ff0000, 0x0000000000ff0000, 0x0000000000ff0000, 0x0000000000ff0000,
+			0x0000000000ff0000, 0x0000000000ff0000, 0x0000000000ff0000, 0x0000000000ff0000,
+			0x00000000ff000000, 0x00000000ff000000, 0x00000000ff000000, 0x00000000ff000000,
+			0x00000000ff000000, 0x00000000ff000000, 0x00000000ff000000, 0x00000000ff000000,
+			0x000000ff00000000, 0x000000ff00000000, 0x000000ff00000000, 0x000000ff00000000,
+			0x000000ff00000000, 0x000000ff00000000, 0x000000ff00000000, 0x000000ff00000000,
+			0x0000ff0000000000, 0x0000ff0000000000, 0x0000ff0000000000, 0x0000ff0000000000,
+			0x0000ff0000000000, 0x0000ff0000000000, 0x0000ff0000000000, 0x0000ff0000000000,
+			0x00ff000000000000, 0x00ff000000000000, 0x00ff000000000000, 0x00ff000000000000,
+			0x00ff000000000000, 0x00ff000000000000, 0x00ff000000000000, 0x00ff000000000000,
+			0xff00000000000000, 0xff00000000000000, 0xff00000000000000, 0xff00000000000000,
+			0xff00000000000000, 0xff00000000000000, 0xff00000000000000, 0xff00000000000000
+};
 
+static U64 vertical_move_mask [] = {
+			0x0101010101010101, 0x0202020202020202, 0x0404040404040404, 0x0808080808080808,
+			0x1010101010101010, 0x2020202020202020, 0x4040404040404040, 0x8080808080808080,
+			0x0101010101010101, 0x0202020202020202, 0x0404040404040404, 0x0808080808080808,
+			0x1010101010101010, 0x2020202020202020, 0x4040404040404040, 0x8080808080808080,
+			0x0101010101010101, 0x0202020202020202, 0x0404040404040404, 0x0808080808080808,
+			0x1010101010101010, 0x2020202020202020, 0x4040404040404040, 0x8080808080808080,
+			0x0101010101010101, 0x0202020202020202, 0x0404040404040404, 0x0808080808080808,
+			0x1010101010101010, 0x2020202020202020, 0x4040404040404040, 0x8080808080808080,
+			0x0101010101010101, 0x0202020202020202, 0x0404040404040404, 0x0808080808080808,
+			0x1010101010101010, 0x2020202020202020, 0x4040404040404040, 0x8080808080808080,
+			0x0101010101010101, 0x0202020202020202, 0x0404040404040404, 0x0808080808080808,
+			0x1010101010101010, 0x2020202020202020, 0x4040404040404040, 0x8080808080808080,
+			0x0101010101010101, 0x0202020202020202, 0x0404040404040404, 0x0808080808080808,
+			0x1010101010101010, 0x2020202020202020, 0x4040404040404040, 0x8080808080808080,
+			0x0101010101010101, 0x0202020202020202, 0x0404040404040404, 0x0808080808080808,
+			0x1010101010101010, 0x2020202020202020, 0x4040404040404040, 0x8080808080808080
+};
 
 // used for bitscan
 static const int lsb_64_table[64] =
@@ -480,7 +517,7 @@ void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl)
  * @return
  *
  */
-void generate_horizontal_vertical_moves(const struct board *brd, struct move_list *mvl, enum piece pce){
+void generate_sliding_horizontal_vertical_moves(const struct board *brd, struct move_list *mvl, enum piece pce){
 
 	assert((pce == W_ROOK) || (pce == B_ROOK) || (pce == W_QUEEN) || (pce == B_QUEEN));
 
@@ -493,67 +530,65 @@ void generate_horizontal_vertical_moves(const struct board *brd, struct move_lis
 
 		enum square pce_sq = POP(&bb);
 
-		U64 mask = GET_ROOK_OCC_MASK(pce_sq);
-		set_bit(&mask, pce_sq);
-
-		printf("occ_mask\n");
-		print_mask_as_board(&mask, pce, pce_sq);
-
+		U64 hmask = get_horizontal_mask(pce_sq);
+		U64 vmask = get_vertical_mask(pce_sq);
 
 		// create slider bb for this square
 		U64 bb_slider = GET_PIECE_MASK(pce_sq);
-		printf("slider\n");
-		print_mask_as_board(&bb_slider, pce, pce_sq);
 
-
-		// all occupied squares
+		// all occupied squares (both colours)
 		U64 occupied = brd->board;
-		printf("occupied\n");
-		print_mask_as_board(&occupied, pce, pce_sq);
 
-
-		U64 term_A = (occupied & mask) - (2 * bb_slider);
-		U64 term_B = reverse_bits(occupied & mask);
+		U64 term_A = (occupied & vmask) - (2 * bb_slider);
+		U64 term_B = reverse_bits(occupied & vmask);
 		term_B = term_B - 2 * (reverse_bits(bb_slider));
 		term_B = reverse_bits(term_B);
 
-		// all viable attack squares
-		U64 att_sq = (term_A ^ term_B) & mask;
-		printf("att sq\n");
-		print_mask_as_board(&att_sq, pce, pce_sq);
+		// all vertical attack squares
+		U64 vertical_attacks = (term_A ^ term_B) & vmask;
 
+		term_A = (occupied & hmask) - (2 * bb_slider);
+		term_B = reverse_bits(occupied & hmask);
+		term_B = term_B - 2 * (reverse_bits(bb_slider));
+		term_B = reverse_bits(term_B);
 
+		// all horizontal attack squares
+		U64 horizontal_attacks = (term_A ^ term_B) & hmask;
 
+		U64 all_moves = horizontal_attacks ^ vertical_attacks;
 
+		enum colour col = (IS_BLACK(pce)) ? BLACK : WHITE;
+
+		// get all same colour as piece being considered
+		U64 col_occupied = overlay_colours(brd, col);
+
+		U64 excl_same_col = all_moves & ~col_occupied;
+		printf("Mask Same Colour\n");
+		print_mask_as_board(&excl_same_col, pce, pce_sq);
+
+		while (excl_same_col != 0) {
+
+			enum square sq = POP(&excl_same_col);
+
+			enum piece mv_pce = get_piece_at_square(brd, sq);
+
+			if (mv_pce != NO_PIECE) {
+				add_capture_move(brd, MOVE(pce_sq, sq, mv_pce, NO_PIECE, 0), mvl);
+			} else{
+				add_quiet_move(brd, MOVE(pce_sq, sq, NO_PIECE, NO_PIECE, 0), mvl);
+			}
+		}
 	}
-
-
 }
 
 
-U64 generate_vertical_mask(enum square sq){
-	U8 file = GET_FILE(sq);
-
-	U64 mask = 0;
-	for(int rank = RANK_1; rank <= RANK_8; rank++){
-		enum square s = GET_SQUARE(rank, file);
-		set_bit(&mask, s);
-	}
-
-	return mask;
+static inline U64 get_vertical_mask(enum square sq){
+	return vertical_move_mask[sq];
 }
 
 
-U64 generate_horizontal_mask(enum square sq){
-	U8 rank = GET_RANK(sq);
-
-	U64 mask = 0;
-	for(int file = FILE_A; file <= FILE_H; file++){
-		enum square s = GET_SQUARE(rank, file);
-		set_bit(&mask, s);
-	}
-
-	return mask;
+static inline U64 get_horizontal_mask(enum square sq){
+	return horizontal_move_mask[sq];
 }
 
 

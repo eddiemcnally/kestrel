@@ -81,6 +81,10 @@ void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl);
 void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl);
 void generate_knight_piece_moves(const struct board *brd, struct move_list *mvl, enum colour col);
 void generate_king_moves(const struct board *brd, struct move_list *mvl, enum colour col);
-void generate_horizontal_vertical_moves(const struct board *brd, struct move_list *mvl, enum piece pce);
+void generate_sliding_horizontal_vertical_moves(const struct board *brd, struct move_list *mvl, enum piece pce);
+
+U64 generate_vertical_mask(enum square sq);
+U64 generate_horizontal_mask(enum square sq);
+
 
 #endif

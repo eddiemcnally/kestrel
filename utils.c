@@ -46,23 +46,20 @@ U64 generate_rand64(void)
  *
  */
 U64 reverse_bits(U64 word){
+
 	U64 retval = 0;
 
 	U8 *p_in = (U8 *)&word;
 	U8 *p_out = (U8 *)&retval;
-	p_out += 7;
 
 	for(int i = 0; i < 8; i++){
-		U8 in = *p_in;
-		U8 out = reverse_bits_in_byte(in);
-
-		*p_out = out;
-		p_out--;
+		*p_out = reverse_bits_in_byte(*p_in);
+		p_out++;
 		p_in++;
 	}
-	return retval;
-}
 
+	return __builtin_bswap64(retval);
+}
 
 /* Reverses the bits in a byte
  * Taken from https://graphics.stanford.edu/~seander/bithacks.html
