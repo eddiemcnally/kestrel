@@ -39,6 +39,8 @@ static void add_en_passent_move(const struct board *brd, mv_bitmap move_bitmap, 
 void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl);
 void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl);
 static void generate_sliding_piece_moves(const struct board *brd, struct move_list *mvl, enum colour col);
+U64 generate_vertical_mask(enum square sq);
+U64 generate_horizontal_mask(enum square sq);
 
 
 
@@ -491,12 +493,11 @@ void generate_horizontal_vertical_moves(const struct board *brd, struct move_lis
 
 		enum square pce_sq = POP(&bb);
 
-		U64 occ_mask = GET_ROOK_OCC_MASK(pce_sq);
-
-		set_bit(&occ_mask, pce_sq);
+		U64 mask = GET_ROOK_OCC_MASK(pce_sq);
+		set_bit(&mask, pce_sq);
 
 		printf("occ_mask\n");
-		print_mask_as_board(&occ_mask, pce, pce_sq);
+		print_mask_as_board(&mask, pce, pce_sq);
 
 
 		// create slider bb for this square
@@ -511,14 +512,13 @@ void generate_horizontal_vertical_moves(const struct board *brd, struct move_lis
 		print_mask_as_board(&occupied, pce, pce_sq);
 
 
-
-		U64 term_A = (occupied & occ_mask) - (2 * bb_slider);
-		U64 term_B = reverse_bits(occupied & occ_mask);
+		U64 term_A = (occupied & mask) - (2 * bb_slider);
+		U64 term_B = reverse_bits(occupied & mask);
 		term_B = term_B - 2 * (reverse_bits(bb_slider));
 		term_B = reverse_bits(term_B);
 
 		// all viable attack squares
-		U64 att_sq = (term_A ^ term_B) & occ_mask;
+		U64 att_sq = (term_A ^ term_B) & mask;
 		printf("att sq\n");
 		print_mask_as_board(&att_sq, pce, pce_sq);
 
@@ -530,6 +530,31 @@ void generate_horizontal_vertical_moves(const struct board *brd, struct move_lis
 
 }
 
+
+U64 generate_vertical_mask(enum square sq){
+	U8 file = GET_FILE(sq);
+
+	U64 mask = 0;
+	for(int rank = RANK_1; rank <= RANK_8; rank++){
+		enum square s = GET_SQUARE(rank, file);
+		set_bit(&mask, s);
+	}
+
+	return mask;
+}
+
+
+U64 generate_horizontal_mask(enum square sq){
+	U8 rank = GET_RANK(sq);
+
+	U64 mask = 0;
+	for(int file = FILE_A; file <= FILE_H; file++){
+		enum square s = GET_SQUARE(rank, file);
+		set_bit(&mask, s);
+	}
+
+	return mask;
+}
 
 
 
