@@ -38,12 +38,19 @@ static void add_capture_move(const struct board *brd, mv_bitmap move_bitmap, str
 static void add_en_passent_move(const struct board *brd, mv_bitmap move_bitmap, struct move_list *mvlist);
 void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl);
 void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl);
-static void generate_sliding_piece_moves(const struct board *brd, struct move_list *mvl, enum colour col);
 static U64 get_horizontal_mask(enum square sq);
 static U64 get_vertical_mask(enum square sq);
+static U64 get_positive_diagonal_mask(enum square sq);
+static U64 get_negative_diagonal_mask(enum square sq);
+static void generate_queen_moves(const struct board *brd, struct move_list *mvl, enum piece pce);
 
-// indexed using enum square
-static U64 horizontal_move_mask [] = {
+
+
+/* indexed using enum square
+ * Represents the horizontal squares that a rook can move to, when
+ * on a specific square
+ */
+static const U64 horizontal_move_mask [] = {
 			0x00000000000000ff, 0x00000000000000ff, 0x00000000000000ff, 0x00000000000000ff,
 			0x00000000000000ff, 0x00000000000000ff, 0x00000000000000ff, 0x00000000000000ff,
 			0x000000000000ff00, 0x000000000000ff00, 0x000000000000ff00, 0x000000000000ff00,
@@ -62,7 +69,12 @@ static U64 horizontal_move_mask [] = {
 			0xff00000000000000, 0xff00000000000000, 0xff00000000000000, 0xff00000000000000
 };
 
-static U64 vertical_move_mask [] = {
+
+/* indexed using enum square
+ * Represents the vertical squares that a rook can move to, when
+ * on a specific square
+ */
+static const U64 vertical_move_mask [] = {
 			0x0101010101010101, 0x0202020202020202, 0x0404040404040404, 0x0808080808080808,
 			0x1010101010101010, 0x2020202020202020, 0x4040404040404040, 0x8080808080808080,
 			0x0101010101010101, 0x0202020202020202, 0x0404040404040404, 0x0808080808080808,
@@ -81,20 +93,52 @@ static U64 vertical_move_mask [] = {
 			0x1010101010101010, 0x2020202020202020, 0x4040404040404040, 0x8080808080808080
 };
 
-// used for bitscan
-static const int lsb_64_table[64] =
-{
-   63, 30,  3, 32, 59, 14, 11, 33,
-   60, 24, 50,  9, 55, 19, 21, 34,
-   61, 29,  2, 53, 51, 23, 41, 18,
-   56, 28,  1, 43, 46, 27,  0, 35,
-   62, 31, 58,  4,  5, 49, 54,  6,
-   15, 52, 12, 40,  7, 42, 45, 16,
-   25, 57, 48, 13, 10, 39,  8, 44,
-   20, 47, 38, 22, 17, 37, 36, 26
+
+/* indexed using enum square
+ * Represents the bottom-left to top-right diagonals that a bishop can move to, when
+ * on a specific square
+ */
+static const U64 positive_diagonal_masks [] = {
+			0x8040201008040200,0x0080402010080400,0x0000804020100800,0x0000008040201000,
+			0x0000000080402000,0x0000000000804000,0x0000000000008000,0x0000000000000000,
+			0x4020100804020000,0x8040201008040001,0x0080402010080002,0x0000804020100004,
+			0x0000008040200008,0x0000000080400010,0x0000000000800020,0x0000000000000040,
+			0x2010080402000000,0x4020100804000100,0x8040201008000201,0x0080402010000402,
+			0x0000804020000804,0x0000008040001008,0x0000000080002010,0x0000000000004020,
+			0x1008040200000000,0x2010080400010000,0x4020100800020100,0x8040201000040201,
+			0x0080402000080402,0x0000804000100804,0x0000008000201008,0x0000000000402010,
+			0x0804020000000000,0x1008040001000000,0x2010080002010000,0x4020100004020100,
+			0x8040200008040201,0x0080400010080402,0x0000800020100804,0x0000000040201008,
+			0x0402000000000000,0x0804000100000000,0x1008000201000000,0x2010000402010000,
+			0x4020000804020100,0x8040001008040201,0x0080002010080402,0x0000004020100804,
+			0x0200000000000000,0x0400010000000000,0x0800020100000000,0x1000040201000000,
+			0x2000080402010000,0x4000100804020100,0x8000201008040201,0x0000402010080402,
+			0x0000000000000000,0x0001000000000000,0x0002010000000000,0x0004020100000000,
+			0x0008040201000000,0x0010080402010000,0x0020100804020100,0x0040201008040201
 };
 
-
+/* indexed using enum square
+ * Represents the top-left to bottom-right diagonals that a bishop can move to, when
+ * on a specific square
+ */
+static const U64 negative_diagonal_masks [] = {
+			0x0000000000000000, 0x0000000000000100, 0x0000000000010200, 0x0000000001020400,
+			0x0000000102040800, 0x0000010204081000, 0x0001020408102000, 0x0102040810204000,
+			0x0000000000000002, 0x0000000000010004, 0x0000000001020008, 0x0000000102040010,
+			0x0000010204080020, 0x0001020408100040, 0x0102040810200080, 0x0204081020400000,
+			0x0000000000000204, 0x0000000001000408, 0x0000000102000810, 0x0000010204001020,
+			0x0001020408002040, 0x0102040810004080, 0x0204081020008000, 0x0408102040000000,
+			0x0000000000020408, 0x0000000100040810, 0x0000010200081020, 0x0001020400102040,
+			0x0102040800204080, 0x0204081000408000, 0x0408102000800000, 0x0810204000000000,
+			0x0000000002040810, 0x0000010004081020, 0x0001020008102040, 0x0102040010204080,
+			0x0204080020408000, 0x0408100040800000, 0x0810200080000000, 0x1020400000000000,
+			0x0000000204081020, 0x0001000408102040, 0x0102000810204080, 0x0204001020408000,
+			0x0408002040800000, 0x0810004080000000, 0x1020008000000000, 0x2040000000000000,
+			0x0000020408102040, 0x0100040810204080, 0x0200081020408000, 0x0400102040800000,
+			0x0800204080000000, 0x1000408000000000, 0x2000800000000000, 0x4000000000000000,
+			0x0002040810204080, 0x0004081020408000, 0x0008102040800000, 0x0010204080000000,
+			0x0020408000000000, 0x0040800000000000, 0x0080000000000000, 0x0000000000000000
+};
 
 
 
@@ -111,9 +155,17 @@ void generate_all_moves(const struct board *brd, struct move_list *mvl)
     if (brd->side_to_move == WHITE) {
 		generate_white_pawn_moves(brd, mvl);
 		generate_knight_piece_moves(brd, mvl, WHITE);
+		generate_king_moves(brd, mvl, WHITE);
+		generate_sliding_horizontal_vertical_moves(brd, mvl, W_ROOK);
+		generate_sliding_diagonal_moves(brd, mvl, W_BISHOP);
+		generate_queen_moves(brd, mvl, W_QUEEN);
     } else {
 		generate_black_pawn_moves(brd, mvl);
 		generate_knight_piece_moves(brd, mvl, BLACK);
+		generate_king_moves(brd, mvl, BLACK);
+		generate_sliding_horizontal_vertical_moves(brd, mvl, B_ROOK);
+		generate_sliding_diagonal_moves(brd, mvl, B_BISHOP);
+		generate_queen_moves(brd, mvl, B_QUEEN);
 	}
 
 }
@@ -126,10 +178,11 @@ struct move_list * get_empty_move_list(){
 }
 
 
+static void generate_queen_moves(const struct board *brd, struct move_list *mvl, enum piece pce){
+	generate_sliding_horizontal_vertical_moves(brd, mvl, pce);
+	generate_sliding_diagonal_moves(brd, mvl, pce);
 
-
-
-
+}
 
 
 
@@ -236,7 +289,7 @@ static inline void add_pawn_move(const struct board *brd, enum colour col,
  * @return
  *
  */
-
+/*
 void generate_sliding_piece_moves(const struct board *brd, struct move_list *mvl, enum colour col){
 	const int NUM_SLIDERS = 3;
 	static enum piece white_pieces[] = {W_ROOK, W_BISHOP, W_QUEEN};
@@ -269,6 +322,7 @@ void generate_sliding_piece_moves(const struct board *brd, struct move_list *mvl
 	}
 }
 
+*/
 
 /*
  * Generates moves for knight pieces of a given colour
@@ -512,7 +566,7 @@ void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl)
  * plus the video
  * 		https://www.youtube.com/watch?v=bCH4YK6oq8M
  *
- * name: generate_horizontal_vertical_moves
+ * name: generate_sliding_horizontal_vertical_moves
  * @param
  * @return
  *
@@ -520,9 +574,6 @@ void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl)
 void generate_sliding_horizontal_vertical_moves(const struct board *brd, struct move_list *mvl, enum piece pce){
 
 	assert((pce == W_ROOK) || (pce == B_ROOK) || (pce == W_QUEEN) || (pce == B_QUEEN));
-
-	print_board(brd);
-
 
 	U64 bb = brd->bitboards[pce];
 
@@ -563,8 +614,8 @@ void generate_sliding_horizontal_vertical_moves(const struct board *brd, struct 
 		U64 col_occupied = overlay_colours(brd, col);
 
 		U64 excl_same_col = all_moves & ~col_occupied;
-		printf("Mask Same Colour\n");
-		print_mask_as_board(&excl_same_col, pce, pce_sq);
+		//printf("Mask Same Colour\n");
+		//print_mask_as_board(&excl_same_col, pce, pce_sq);
 
 		while (excl_same_col != 0) {
 
@@ -582,6 +633,86 @@ void generate_sliding_horizontal_vertical_moves(const struct board *brd, struct 
 }
 
 
+/* Generates diagonal moves (a la Bishop)
+ *
+ * Based on the code on page:
+ * 		http://chessprogramming.wikispaces.com/Efficient+Generation+of+Sliding+Piece+Attacks
+ *
+ * plus the video
+ * 		https://www.youtube.com/watch?v=bCH4YK6oq8M
+ *
+ * name: generate_sliding_diagonal_moves
+ * @param
+ * @return
+ *
+ */
+void generate_sliding_diagonal_moves(const struct board *brd, struct move_list *mvl, enum piece pce){
+
+	assert((pce == W_BISHOP) || (pce == B_BISHOP) || (pce == W_QUEEN) || (pce == B_QUEEN));
+
+	U64 bb = brd->bitboards[pce];
+
+    while (bb != 0) {
+
+		enum square pce_sq = POP(&bb);
+
+		U64 posmask = get_positive_diagonal_mask(pce_sq);
+		U64 negmask = get_negative_diagonal_mask(pce_sq);
+
+		// create slider bb for this square
+		U64 bb_slider = GET_PIECE_MASK(pce_sq);
+
+		// all occupied squares (both colours)
+		U64 occupied = brd->board;
+
+		U64 term_A = (occupied & posmask) - (2 * bb_slider);
+		U64 term_B = reverse_bits(occupied & posmask);
+		term_B = term_B - 2 * (reverse_bits(bb_slider));
+		term_B = reverse_bits(term_B);
+
+		// all positive diagonal attack squares
+		U64 positive_diagonal_attacks = (term_A ^ term_B) & posmask;
+
+		term_A = (occupied & negmask) - (2 * bb_slider);
+		term_B = reverse_bits(occupied & negmask);
+		term_B = term_B - 2 * (reverse_bits(bb_slider));
+		term_B = reverse_bits(term_B);
+
+		// all negative diagonal attack squares
+		U64 negative_diagonal_attacks = (term_A ^ term_B) & negmask;
+
+		U64 all_moves = positive_diagonal_attacks ^ negative_diagonal_attacks;
+
+		enum colour col = (IS_BLACK(pce)) ? BLACK : WHITE;
+
+		// get all same colour as piece being considered
+		U64 col_occupied = overlay_colours(brd, col);
+
+		U64 excl_same_col = all_moves & ~col_occupied;
+		//printf("Mask Same Colour\n");
+		//print_mask_as_board(&excl_same_col, pce, pce_sq);
+
+		while (excl_same_col != 0) {
+
+			enum square sq = POP(&excl_same_col);
+
+			enum piece mv_pce = get_piece_at_square(brd, sq);
+
+			if (mv_pce != NO_PIECE) {
+				add_capture_move(brd, MOVE(pce_sq, sq, mv_pce, NO_PIECE, 0), mvl);
+			} else{
+				add_quiet_move(brd, MOVE(pce_sq, sq, NO_PIECE, NO_PIECE, 0), mvl);
+			}
+		}
+	}
+}
+
+
+
+
+
+
+
 static inline U64 get_vertical_mask(enum square sq){
 	return vertical_move_mask[sq];
 }
@@ -592,27 +723,13 @@ static inline U64 get_horizontal_mask(enum square sq){
 }
 
 
-
-
-
-/**
- * ### Taken from http://chessprogramming.wikispaces.com/BitScan#Bitscanforward
- *
- * bitScanForward
- * @author Matt Taylor (2003)
- * @param bb bitboard to scan
- * @precondition bb != 0
- * @return index (0..63) of least significant one bit
- */
-U32 bitScanForward(U64 bb) {
-	unsigned int folded;
-	assert (bb != 0);
-	bb ^= bb - 1;
-	folded = (int) bb ^ (bb >> 32);
-	return lsb_64_table[folded * 0x78291ACF >> 26];
+static inline U64 get_positive_diagonal_mask(enum square sq){
+	return positive_diagonal_masks[sq];
 }
 
-
+static inline U64 get_negative_diagonal_mask(enum square sq){
+	return negative_diagonal_masks[sq];
+}
 
 
 

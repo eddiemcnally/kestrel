@@ -46,7 +46,7 @@ int main(int argc, char **argv)
 
     init_hash_keys();
 
-    struct board *the_board = get_clean_board();
+    //struct board *the_board = get_clean_board();
     //consume_fen_notation(FEN5, the_board);
 
     //U64 rook = GET_ROOK_OCC_MASK(a5);
@@ -116,7 +116,7 @@ int main(int argc, char **argv)
     //print_move_list(list);
 
 
-
+/*
 	char * sliding_test = "K7/1rp5/5R1P/6p1/7P/1k3p1P/1P1p2r1/4R3 w - - 0 1";
     struct board *brd= get_clean_board();
     //print_board(brd);
@@ -129,6 +129,8 @@ int main(int argc, char **argv)
 
 
 	generate_sliding_horizontal_vertical_moves(brd, list, W_ROOK);
+*/
+
 
 
     return 0;

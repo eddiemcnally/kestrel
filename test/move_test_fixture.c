@@ -33,6 +33,8 @@ void test_generation_black_pawn_moves(void);
 void test_generation_white_knight_pawn_moves(void);
 void test_generation_black_knight_pawn_moves(void);
 void test_generation_sliding_horizontal_and_vertical_moves(void);
+void test_generation_sliding_diagonal_moves(void);
+
 
 void test_generation_white_pawn_moves(void)
 {
@@ -438,6 +440,80 @@ void test_generation_king_moves(){
 }
 
 
+void test_generation_sliding_diagonal_moves(void){
+
+	char * sliding_test = "8/2B1p2P/4PppK/p2pP1P1/1P4pp/Pb2p3/3P1Pk1/2bB4 w - - 0 1";
+    struct board *brd= get_clean_board();
+    //print_board(brd);
+    consume_fen_notation(sliding_test, brd);
+
+    struct move_list *mvl = malloc(sizeof(struct move_list));
+	memset(mvl, 0, sizeof(struct move_list));
+
+
+
+	// black bishops
+	generate_sliding_diagonal_moves(brd, mvl, B_BISHOP);
+
+	assert_true(mvl->move_count == 8);
+
+	mv_bitmap mv = MOVE(b3, a4, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(b3, c2, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(b3, d1, W_BISHOP, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(b3, a2, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(b3, c4, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+
+	mv = MOVE(c1, b2, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(c1, a3, W_PAWN, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(c1, d2, W_PAWN, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+
+
+	// now look at white bishops
+    brd= get_clean_board();
+    //print_board(brd);
+    consume_fen_notation(sliding_test, brd);
+
+    mvl = malloc(sizeof(struct move_list));
+	memset(mvl, 0, sizeof(struct move_list));
+
+	generate_sliding_diagonal_moves(brd, mvl, W_BISHOP);
+	assert_true(mvl->move_count == 10);
+
+	mv = MOVE(d1, c2, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(d1, b3, B_BISHOP, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(d1, e2, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(d1, f3, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(d1, g4, B_PAWN, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+
+	mv = MOVE(c7, b6, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(c7, a5, B_PAWN, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(c7, d6, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(c7, b8, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(c7, d8, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+
+
+
+}
+
+
 void test_generation_sliding_horizontal_and_vertical_moves(void){
 
 	char * sliding_test = "K7/1rp5/5R1P/6p1/7P/1k3p1P/1P1p2r1/4R3 w - - 0 1";
@@ -541,11 +617,6 @@ void test_generation_sliding_horizontal_and_vertical_moves(void){
 	mv = MOVE(f6, f3, B_PAWN, NO_PIECE, 0);
 	assert_true(is_move_in_list(mvl, mv));
 
-
-
-
-
-
 }
 
 
@@ -560,6 +631,7 @@ void move_test_fixture(void)
 	run_test(test_generation_black_knight_pawn_moves);
 	run_test(test_generation_king_moves);
 	run_test(test_generation_sliding_horizontal_and_vertical_moves);
+	run_test(test_generation_sliding_diagonal_moves);
 
     test_fixture_end();		// ends a fixture
 }

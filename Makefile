@@ -10,9 +10,11 @@
 	CC	=	gcc
 
 # define any compile-time flags
-#	CFLAGS	=	-Wall -g -std=c11 -Wstrict-prototypes -Werror -Wshadow -Wpointer-arith \
-#				-Winline
-	CFLAGS	=	-Wall -g -std=c11
+	CFLAGS	=	-Wall -g -std=c11 -Wstrict-prototypes -Werror \
+				-Wshadow -Wpointer-arith -Winline
+
+# more lax compiler options
+#	CFLAGS	=	-Wall -g -std=c11
 
 # define any directories containing header files other than /usr/include
 #

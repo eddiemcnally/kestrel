@@ -454,6 +454,11 @@ void generate_bishop_occupancy_masks(U64 * occ_mask_array)
     }
 }
 
+
+
+
+
+
 void set_dest_sq_if_valid(int rank, int file, U64 * brd)
 {
     if (IS_VALID_FILE(file) && IS_VALID_RANK(rank)) {
