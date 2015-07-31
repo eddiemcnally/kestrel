@@ -42,7 +42,7 @@ static U64 get_horizontal_mask(enum square sq);
 static U64 get_vertical_mask(enum square sq);
 static U64 get_positive_diagonal_mask(enum square sq);
 static U64 get_negative_diagonal_mask(enum square sq);
-static void generate_queen_moves(const struct board *brd, struct move_list *mvl, enum piece pce);
+
 
 
 
@@ -178,7 +178,7 @@ struct move_list * get_empty_move_list(){
 }
 
 
-static void generate_queen_moves(const struct board *brd, struct move_list *mvl, enum piece pce){
+void generate_queen_moves(const struct board *brd, struct move_list *mvl, enum piece pce){
 	generate_sliding_horizontal_vertical_moves(brd, mvl, pce);
 	generate_sliding_diagonal_moves(brd, mvl, pce);
 
@@ -425,6 +425,7 @@ void generate_king_moves(const struct board *brd, struct move_list *mvl, enum co
 			add_quiet_move(brd, MOVE(king_sq, king_dest_sq, NO_PIECE, NO_PIECE, 0), mvl);
 		}
 	}
+
 }
 
 

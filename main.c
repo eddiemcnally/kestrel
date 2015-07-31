@@ -116,8 +116,7 @@ int main(int argc, char **argv)
     //print_move_list(list);
 
 
-/*
-	char * sliding_test = "K7/1rp5/5R1P/6p1/7P/1k3p1P/1P1p2r1/4R3 w - - 0 1";
+	char * sliding_test = "6k1/8/5r2/8/1nR5/5N2/8/6K1 b - - 0 1";
     struct board *brd= get_clean_board();
     //print_board(brd);
     consume_fen_notation(sliding_test, brd);
@@ -126,10 +125,11 @@ int main(int argc, char **argv)
 	memset(list, 0, sizeof(struct move_list));
 
 	generate_sliding_horizontal_vertical_moves(brd, list, B_ROOK);
+	print_move_list_details(list);
 
 
 	generate_sliding_horizontal_vertical_moves(brd, list, W_ROOK);
-*/
+	print_move_list_details(list);
 
 
 
