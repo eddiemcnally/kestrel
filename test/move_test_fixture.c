@@ -489,7 +489,57 @@ void test_generation_sliding_horizontal_and_vertical_moves(void){
 
 	assert_true(mvl->move_count == 25);
 
+	mv = MOVE(e1, d1, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(e1, c1, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(e1, b1, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(e1, a1, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(e1, f1, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(e1, g1, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(e1, h1, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(e1, e2, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(e1, e3, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(e1, e4, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(e1, e5, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(e1, e6, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(e1, e7, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(e1, e8, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
 
+	mv = MOVE(f6, f7, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(f6, f8, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(f6, g6, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(f6, a6, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(f6, b6, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(f6, c6, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(f6, d6, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(f6, e6, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(f6, f5, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(f6, f4, NO_PIECE, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(f6, f3, B_PAWN, NO_PIECE, 0);
+	assert_true(is_move_in_list(mvl, mv));
 
 
 
