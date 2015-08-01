@@ -455,8 +455,8 @@ void generate_king_moves(const struct board *brd, struct move_list *mvl, enum co
 		}
 
 		if(brd->castle_perm & BQCA) {
-			if (!is_square_occupied(brd->board, d8) && is_square_occupied(brd->board, c8)
-														&& is_square_occupied(brd->board, b8)){
+			if (!is_square_occupied(brd->board, d8) && !is_square_occupied(brd->board, c8)
+														&& !is_square_occupied(brd->board, b8)){
 				if (!is_sq_attacked(e8, WHITE, brd) && !is_sq_attacked(d8, WHITE, brd)) {
 					printf("BQCA MoveGen\n");
 				}
