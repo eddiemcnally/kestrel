@@ -21,6 +21,7 @@
 #include <assert.h>
 #include "types.h"
 #include "board.h"
+#include "attack.h"
 #include "board_utils.h"
 #include "pieces.h"
 #include "occupancy_mask.h"
@@ -426,6 +427,42 @@ void generate_king_moves(const struct board *brd, struct move_list *mvl, enum co
 		}
 	}
 
+	// check for castling
+	if (pce_col == WHITE){
+		if(brd->castle_perm & WKCA) {
+			if(!is_square_occupied(brd->board, f1) && !is_square_occupied(brd->board, g1)) {
+				if (!is_sq_attacked(e1, BLACK, brd) && !is_sq_attacked(f1, BLACK, brd)){
+					printf("WKCA MoveGen\n");
+				}
+			}
+		}
+
+		if(brd->castle_perm & WQCA) {
+			if (!is_square_occupied(brd->board, d1) && !is_square_occupied(brd->board, c1)
+														&& !is_square_occupied(brd->board, b1)){
+				if (!is_sq_attacked(e1, BLACK, brd) && !is_sq_attacked(d1, BLACK, brd)) {
+					printf("WQCA MoveGen\n");
+				}
+			}
+		}
+	} else {
+		if(brd->castle_perm & BKCA) {
+			if(!is_square_occupied(brd->board, f8) && !is_square_occupied(brd->board, g8)) {
+				if (!is_sq_attacked(e8, BLACK, brd) && !is_sq_attacked(f8, BLACK, brd)){
+					printf("BKCA MoveGen\n");
+				}
+			}
+		}
+
+		if(brd->castle_perm & BQCA) {
+			if (!is_square_occupied(brd->board, d8) && is_square_occupied(brd->board, c8)
+														&& is_square_occupied(brd->board, b8)){
+				if (!is_sq_attacked(e8, WHITE, brd) && !is_sq_attacked(d8, WHITE, brd)) {
+					printf("BQCA MoveGen\n");
+				}
+			}
+		}
+	}
 }
 
 

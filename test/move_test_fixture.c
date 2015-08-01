@@ -36,6 +36,7 @@ void test_generation_sliding_horizontal_and_vertical_moves(void);
 void test_generation_sliding_diagonal_moves(void);
 void test_generation_queen_moves(void);
 void test_generation_king_moves(void);
+void test_king_castling_moves(void);
 
 void test_generation_white_pawn_moves(void)
 {
@@ -621,6 +622,22 @@ void test_generation_sliding_horizontal_and_vertical_moves(void){
 }
 
 
+void test_king_castling_moves(void){
+	char * sliding_test = "r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1";
+    struct board *brd= get_clean_board();
+    //print_board(brd);
+    consume_fen_notation(sliding_test, brd);
+
+    struct move_list *mvl = malloc(sizeof(struct move_list));
+	memset(mvl, 0, sizeof(struct move_list));
+
+	generate_king_moves(brd, mvl, WHITE);
+
+
+
+
+}
+
 void test_generation_queen_moves(void){
 
 	char * sliding_test = "4q3/4p2p/q4p1Q/1k2p2P/1p4P1/p1Pp1KPP/PpQ2PP1/8 w - - 0 1";
@@ -750,6 +767,7 @@ void move_test_fixture(void)
 	run_test(test_generation_white_knight_pawn_moves);
 	run_test(test_generation_black_knight_pawn_moves);
 	run_test(test_generation_king_moves);
+	run_test(test_king_castling_moves);
 	run_test(test_generation_sliding_horizontal_and_vertical_moves);
 	run_test(test_generation_sliding_diagonal_moves);
 	run_test(test_generation_queen_moves);
