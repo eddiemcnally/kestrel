@@ -63,7 +63,7 @@ struct move_list {
 
 //#define MFLAG_EN_PASSANT 	0x0040000
 #define MFLAG_PAWN_START 	0x0080000
-//#define MFLAG_CASTLE 		0x1000000
+#define MFLAG_CASTLE 		0x1000000
 
 //#define MFLAG_CAPTURED 		0x007C000	// En Passant | Captures
 //#define MFLAG_PROMOTED		0x0F00000
@@ -81,6 +81,7 @@ void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl);
 void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl);
 void generate_knight_piece_moves(const struct board *brd, struct move_list *mvl, enum colour col);
 void generate_king_moves(const struct board *brd, struct move_list *mvl, enum colour col);
+void generate_castle_moves(const struct board *brd, struct move_list *mvl, enum colour col);
 void generate_sliding_horizontal_vertical_moves(const struct board *brd, struct move_list *mvl, enum piece pce);
 void generate_sliding_diagonal_moves(const struct board *brd, struct move_list *mvl, enum piece pce);
 void generate_queen_moves(const struct board *brd, struct move_list *mvl, enum piece pce);

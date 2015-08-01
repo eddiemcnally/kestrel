@@ -631,9 +631,55 @@ void test_king_castling_moves(void){
     struct move_list *mvl = malloc(sizeof(struct move_list));
 	memset(mvl, 0, sizeof(struct move_list));
 
-	generate_king_moves(brd, mvl, WHITE);
+	generate_castle_moves(brd, mvl, WHITE);
 
 
+	assert_true(mvl->move_count == 2);
+	mv_bitmap mv = MOVE(e1, g1, NO_PIECE, NO_PIECE, MFLAG_CASTLE);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(e1, c1, NO_PIECE, NO_PIECE, MFLAG_CASTLE);
+	assert_true(is_move_in_list(mvl, mv));
+
+	brd= get_clean_board();
+    //print_board(brd);
+    consume_fen_notation(sliding_test, brd);
+
+    mvl = malloc(sizeof(struct move_list));
+	memset(mvl, 0, sizeof(struct move_list));
+
+	generate_castle_moves(brd, mvl, BLACK);
+
+	assert_true(mvl->move_count == 2);
+	mv = MOVE(e8, g8, NO_PIECE, NO_PIECE, MFLAG_CASTLE);
+	assert_true(is_move_in_list(mvl, mv));
+	mv = MOVE(e8, c8, NO_PIECE, NO_PIECE, MFLAG_CASTLE);
+	assert_true(is_move_in_list(mvl, mv));
+
+
+
+	sliding_test = "3rk2r/8/8/8/8/8/6p1/R3K2R b KQk - 0 1";
+    brd= get_clean_board();
+    //print_board(brd);
+    consume_fen_notation(sliding_test, brd);
+
+    mvl = malloc(sizeof(struct move_list));
+	memset(mvl, 0, sizeof(struct move_list));
+
+	generate_castle_moves(brd, mvl, WHITE);
+
+	assert_true(mvl->move_count == 0);
+
+    brd= get_clean_board();
+    //print_board(brd);
+    consume_fen_notation(sliding_test, brd);
+    mvl = malloc(sizeof(struct move_list));
+	memset(mvl, 0, sizeof(struct move_list));
+
+	generate_castle_moves(brd, mvl, BLACK);
+	assert_true(mvl->move_count == 1);
+
+	mv = MOVE(e8, g8, NO_PIECE, NO_PIECE, MFLAG_CASTLE);
+	assert_true(is_move_in_list(mvl, mv));
 
 
 }
