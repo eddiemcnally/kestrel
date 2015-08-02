@@ -34,6 +34,7 @@ void generate_white_pawn_occupancy_masks(U64 * occ_mask_array);
 void generate_black_pawn_occupancy_masks(U64 * occ_mask_array);
 void print_out_masks(const U64 * masks);
 void set_dest_sq_if_valid(int rank, int file, U64 * brd);
+U64 get_occupancy_mask(enum piece pce, enum square sq);
 
 
 

@@ -54,6 +54,9 @@ bool is_sq_attacked(enum square sq, enum colour attacking_side, const struct boa
 {
     ASSERT_BOARD_OK(brd);
 
+	// TODO:
+	// combine rook/queen and bishop/queen to reduce number of lookups
+
     if (is_knight_attacking_square(sq, attacking_side, brd))
 		return true;
     if (is_pawn_attacking_square(sq, attacking_side, brd))
@@ -189,7 +192,7 @@ static inline bool is_pawn_attacking_square(enum square sq, enum colour attackin
     set_bit(&sqBB, sq);
 
     // ------------------------
-    // check pwhich pawn
+    // check which pawn
     // ------------------------
     if (attacking_side == WHITE)
 		attacking_piece = W_PAWN;

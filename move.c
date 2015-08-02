@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include <assert.h>
 #include "types.h"
 #include "board.h"
@@ -36,13 +37,22 @@ static void add_pawn_move(enum colour col,enum square from, enum square to, stru
 static void add_quiet_move(mv_bitmap move_bitmap, struct move_list *mvlist);
 static void add_capture_move(mv_bitmap move_bitmap, struct move_list *mvlist);
 static void add_en_passent_move(mv_bitmap move_bitmap, struct move_list *mvlist);
-void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl);
-void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl);
+static void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl);
+static void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl);
 static U64 get_horizontal_mask(enum square sq);
 static U64 get_vertical_mask(enum square sq);
 static U64 get_positive_diagonal_mask(enum square sq);
 static U64 get_negative_diagonal_mask(enum square sq);
-
+static struct move_list * get_empty_move_list(void);
+static void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl);
+static void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl);
+static void generate_knight_piece_moves(const struct board *brd, struct move_list *mvl, enum colour col);
+static void generate_king_moves(const struct board *brd, struct move_list *mvl, enum colour col);
+static void generate_castle_moves(const struct board *brd, struct move_list *mvl, enum colour col);
+static void generate_sliding_horizontal_vertical_moves(const struct board *brd, struct move_list *mvl, enum piece pce);
+static void generate_sliding_diagonal_moves(const struct board *brd, struct move_list *mvl, enum piece pce);
+static void generate_queen_moves(const struct board *brd, struct move_list *mvl, enum piece pce);
+static bool is_move_in_list(struct move_list *mvl, mv_bitmap mv);
 
 
 
@@ -171,14 +181,13 @@ void generate_all_moves(const struct board *brd, struct move_list *mvl)
 }
 
 
-struct move_list * get_empty_move_list(){
+static inline struct move_list * get_empty_move_list(){
     struct move_list *list = malloc(sizeof(struct move_list));
 	memset(list, 0, sizeof(struct move_list));
 	return list;
 }
 
-
-void generate_queen_moves(const struct board *brd, struct move_list *mvl, enum piece pce){
+static inline void generate_queen_moves(const struct board *brd, struct move_list *mvl, enum piece pce){
 	generate_sliding_horizontal_vertical_moves(brd, mvl, pce);
 	generate_sliding_diagonal_moves(brd, mvl, pce);
 
@@ -186,7 +195,7 @@ void generate_queen_moves(const struct board *brd, struct move_list *mvl, enum p
 
 
 
-bool is_move_in_list(struct move_list *mvl, mv_bitmap mv){
+static inline bool is_move_in_list(struct move_list *mvl, mv_bitmap mv){
 
 	for(int i = 0; i < mvl->move_count; i++){
 		if (mvl->moves[i].move_bitmap == mv){
@@ -283,7 +292,7 @@ static inline void add_pawn_move(enum colour col, enum square from,
  * @return
  *
  */
-void generate_knight_piece_moves(const struct board *brd, struct move_list *mvl, enum colour col){
+static inline void generate_knight_piece_moves(const struct board *brd, struct move_list *mvl, enum colour col){
 
 	enum piece pce = (col == WHITE) ? W_KNIGHT : B_KNIGHT;
 	enum colour pce_col = get_colour(pce);
@@ -340,7 +349,7 @@ void generate_knight_piece_moves(const struct board *brd, struct move_list *mvl,
  * @return
  *
  */
-void generate_king_moves(const struct board *brd, struct move_list *mvl, enum colour col){
+static inline void generate_king_moves(const struct board *brd, struct move_list *mvl, enum colour col){
 
 	enum piece pce = (col == WHITE) ? W_KING : B_KING;
 	enum colour pce_col = get_colour(pce);
@@ -384,7 +393,7 @@ void generate_king_moves(const struct board *brd, struct move_list *mvl, enum co
 
 
 
-void generate_castle_moves(const struct board *brd, struct move_list *mvl, enum colour col){
+static inline void generate_castle_moves(const struct board *brd, struct move_list *mvl, enum colour col){
 
 	// check for castling
 	if (col == WHITE){
@@ -428,7 +437,7 @@ void generate_castle_moves(const struct board *brd, struct move_list *mvl, enum 
 
 
 
-void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl)
+static inline void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl)
 {
     // get the bitboard representing all WHITE pawns
     // on the board
@@ -491,7 +500,7 @@ void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl)
 
 
 
-void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl)
+static inline void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl)
 {
     // get the bitboard representing all BLACK pawns
     // on the board
@@ -566,7 +575,7 @@ void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl)
  * @return
  *
  */
-void generate_sliding_horizontal_vertical_moves(const struct board *brd, struct move_list *mvl, enum piece pce){
+static inline void generate_sliding_horizontal_vertical_moves(const struct board *brd, struct move_list *mvl, enum piece pce){
 
 	assert((pce == W_ROOK) || (pce == B_ROOK) || (pce == W_QUEEN) || (pce == B_QUEEN));
 
@@ -641,7 +650,7 @@ void generate_sliding_horizontal_vertical_moves(const struct board *brd, struct 
  * @return
  *
  */
-void generate_sliding_diagonal_moves(const struct board *brd, struct move_list *mvl, enum piece pce){
+static inline void generate_sliding_diagonal_moves(const struct board *brd, struct move_list *mvl, enum piece pce){
 
 	assert((pce == W_BISHOP) || (pce == B_BISHOP) || (pce == W_QUEEN) || (pce == B_QUEEN));
 
@@ -834,3 +843,45 @@ void print_move_list(const struct move_list *list)
     }
     printf("MoveList Total %d Moves:\n\n", list->move_count);
 }
+
+
+
+
+
+
+/**
+ * Test wrapper functions.
+ * These wrapper functions facilitate access to unit test framework while
+ * allowing the functions themselves to be static to this file
+ */
+void TEST_generate_white_pawn_moves(const struct board *brd, struct move_list *mvl){
+	generate_white_pawn_moves(brd, mvl);
+}
+void TEST_generate_black_pawn_moves(const struct board *brd, struct move_list *mvl){
+	generate_black_pawn_moves(brd, mvl);
+}
+void TEST_generate_knight_piece_moves(const struct board *brd, struct move_list *mvl, enum colour col){
+	generate_knight_piece_moves(brd, mvl, col);
+}
+void TEST_generate_king_moves(const struct board *brd, struct move_list *mvl, enum colour col){
+	generate_king_moves(brd, mvl, col);
+}
+void TEST_generate_castle_moves(const struct board *brd, struct move_list *mvl, enum colour col){
+	generate_castle_moves(brd, mvl, col);
+}
+void TEST_generate_sliding_horizontal_vertical_moves(const struct board *brd, struct move_list *mvl, enum piece pce){
+	generate_sliding_horizontal_vertical_moves(brd, mvl, pce);
+}
+void TEST_generate_sliding_diagonal_moves(const struct board *brd, struct move_list *mvl, enum piece pce){
+	generate_sliding_diagonal_moves(brd, mvl, pce);
+}
+void TEST_generate_queen_moves(const struct board *brd, struct move_list *mvl, enum piece pce){
+	generate_queen_moves(brd, mvl, pce);
+}
+bool TEST_is_move_in_list(struct move_list *mvl, mv_bitmap mv){
+	return is_move_in_list(mvl, mv);
+}
+struct move_list * TEST_get_empty_move_list(void){
+	return get_empty_move_list();
+}
+

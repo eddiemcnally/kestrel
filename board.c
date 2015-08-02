@@ -168,8 +168,7 @@ inline void overlay_boards(struct board *the_board)
  * TODO - possibly replace this with a cache lookup on a new board array
  */
 
-inline enum piece
-get_piece_at_square(const struct board *the_board, enum square square)
+inline enum piece get_piece_at_square(const struct board *the_board, enum square square)
 {
     assert((square >= a1) && (square <= h8));
 

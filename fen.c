@@ -169,18 +169,3 @@ int consume_fen_notation(const char *fen_string, struct board *board_to_setup)
 
     return 0;
 }
-
-/*
- *
- * name: generate_fen_notation
- * @param 	struct board *	the board to generate
- * @return 	cnar *	string representing fen notation
- *
- */
-
-char *generate_fen_notation(const struct board *board_to_setup)
-{
-    printf("PosKey:\t0x%016llx\n", board_to_setup->board_hash);
-    // TODO
-    return malloc(80);
-}

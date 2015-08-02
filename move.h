@@ -74,19 +74,17 @@ void print_move_details(U32 move_bitmap, U32 score);
 void print_move_list(const struct move_list *list);
 void print_move_list_details(const struct move_list *list);
 void generate_all_moves(const struct board *brd, struct move_list *mvl);
-struct move_list * get_empty_move_list(void);
-bool is_move_in_list(struct move_list *mvl, mv_bitmap mv);
-U32 bitScanForward(U64 bb);
-void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl);
-void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl);
-void generate_knight_piece_moves(const struct board *brd, struct move_list *mvl, enum colour col);
-void generate_king_moves(const struct board *brd, struct move_list *mvl, enum colour col);
-void generate_castle_moves(const struct board *brd, struct move_list *mvl, enum colour col);
-void generate_sliding_horizontal_vertical_moves(const struct board *brd, struct move_list *mvl, enum piece pce);
-void generate_sliding_diagonal_moves(const struct board *brd, struct move_list *mvl, enum piece pce);
-void generate_queen_moves(const struct board *brd, struct move_list *mvl, enum piece pce);
-U64 generate_vertical_mask(enum square sq);
-U64 generate_horizontal_mask(enum square sq);
 
+
+void TEST_generate_white_pawn_moves(const struct board *brd, struct move_list *mvl);
+void TEST_generate_black_pawn_moves(const struct board *brd, struct move_list *mvl);
+void TEST_generate_knight_piece_moves(const struct board *brd, struct move_list *mvl, enum colour col);
+void TEST_generate_king_moves(const struct board *brd, struct move_list *mvl, enum colour col);
+void TEST_generate_castle_moves(const struct board *brd, struct move_list *mvl, enum colour col);
+void TEST_generate_sliding_horizontal_vertical_moves(const struct board *brd, struct move_list *mvl, enum piece pce);
+void TEST_generate_sliding_diagonal_moves(const struct board *brd, struct move_list *mvl, enum piece pce);
+void TEST_generate_queen_moves(const struct board *brd, struct move_list *mvl, enum piece pce);
+bool TEST_is_move_in_list(struct move_list *mvl, mv_bitmap mv);
+struct move_list * TEST_get_empty_move_list(void);
 
 #endif

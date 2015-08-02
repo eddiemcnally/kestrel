@@ -48,8 +48,6 @@ enum {
 #define IS_VALID_RANK(rank)		((rank >= RANK_1) && (rank <= RANK_8))
 #define IS_VALID_FILE(file)		((file >= FILE_A) && (file <= FILE_H))
 
-#define	TO_CHAR_RANK(square)	()
-
 
 // castling permissions
 enum {
@@ -71,10 +69,12 @@ bool is_square_occupied(U64 board, enum square square);
 void set_bit(U64 * brd, enum square sq);
 void clear_bit(U64 * brd, enum square sq);
 bool check_bit(const U64 * brd, enum square sq);
-U8 count_bits(U64 bb);
-U8 pop_1st_bit(U64 * bb);
 void update_piece_material(struct board *brd);
 U64 overlay_colours(const struct board *the_board, enum colour col);
 
+
+// test
+U8 pop_1st_bit(U64 * bb);
+U8 count_bits(U64 bb);
 
 #endif

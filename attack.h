@@ -21,6 +21,9 @@
 
 #include <stdbool.h>
 #include "types.h"
+
+
+
 bool is_sq_attacked(enum square sq, enum colour attacking_side, const struct board *brd);
 
 bool TEST_is_bishop_attacking_square(enum square sq, enum colour attacking_side, const struct board *brd);
@@ -29,7 +32,6 @@ bool TEST_is_pawn_attacking_square(enum square sq, enum colour attacking_side, c
 bool TEST_is_king_attacking_square(enum square sq, enum colour attacking_side, const struct board *brd);
 bool TEST_is_rook_attacking_square(enum square sq, enum colour attacking_side, const struct board *brd);
 bool TEST_is_queen_attacking_square(enum square sq, enum colour attacking_side, const struct board *brd);
-
 bool TEST_is_horizontal_or_vertical_blocked(enum square sq_one, enum square sq_two, const struct board *brd);
 bool TEST_is_diagonally_blocked(enum square sq_one, enum square sq_two, const struct board *brd);
 
