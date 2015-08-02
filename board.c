@@ -63,7 +63,7 @@ struct board *init_board(void)
 void update_piece_material(struct board *brd)
 {
 
-    for (enum square sq; sq < NUM_SQUARES; sq++) {
+    for (enum square sq = a1; sq < NUM_SQUARES; sq++) {
 		enum piece pce = get_piece_at_square(brd, sq);
 		if (pce != NO_PIECE) {
 			enum colour colour = get_colour(pce);

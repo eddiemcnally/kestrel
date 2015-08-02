@@ -69,7 +69,7 @@ U64 reverse_bits(U64 word){
  *
  */
 static inline U8 reverse_bits_in_byte(U8 bits){
-	return (bits * 0x0202020202ULL & 0x010884422010ULL) % 1023;
+	return (U8)((bits * 0x0202020202ULL & 0x010884422010ULL) % 1023);
 }
 
 

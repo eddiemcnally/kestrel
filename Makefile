@@ -10,8 +10,11 @@
 	CC	=	gcc
 
 # define any compile-time flags
-	CFLAGS	=	-Wall -g -std=c11 -Wstrict-prototypes -Werror \
-				-Wshadow -Wpointer-arith -Winline
+	CFLAGS	=	-O3 -g -std=c11 -mtune=native -lmcheck -fsanitize=undefined \
+				-fomit-frame-pointer -Wpedantic -Wformat=2 -Wall \
+				-Wstrict-prototypes -Werror -Wlogical-op -Wextra -Wconversion \
+				-Wsign-conversion -Wshadow -Wmissing-include-dirs \
+				-Wpointer-arith -Winline
 
 # more lax compiler options
 #	CFLAGS	=	-Wall -g -std=c11

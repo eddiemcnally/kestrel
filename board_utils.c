@@ -81,7 +81,7 @@ void print_board(const struct board *the_board)
     if (the_board->en_passant == NO_SQUARE) {
 		printf("enPas:\t-\n");
     } else {
-		int rank = GET_RANK(the_board->en_passant);
+		U32 rank = GET_RANK(the_board->en_passant);
 		int file = GET_FILE(the_board->en_passant);
 		printf("enPas:\t%c%c\n", files[file], ranks[rank]);
     }
@@ -192,13 +192,13 @@ bool ASSERT_BOARD_OK(const struct board * brd)
 		if (pce != NO_PIECE) {
 			enum colour col = get_colour(pce);
 			if (is_big_piece(pce)) {
-				big_pieces[col] += 1;
+				big_pieces[col]++;
 			}
 			if (is_major_piece(pce)) {
-				major_pieces[col] += 1;
+				major_pieces[col]++;
 			}
 			if (is_minor_piece(pce)) {
-				minor_pieces[col] += 1;
+				minor_pieces[col]++;
 			}
 		}
     }
@@ -210,16 +210,16 @@ bool ASSERT_BOARD_OK(const struct board * brd)
     assert(minor_pieces[BLACK] == brd->minor_pieces[BLACK]);
 
     // calc and verify the material count
-    U16 material[NUM_COLOURS] = { 0 };
+    U32 local_material[NUM_COLOURS] = { 0 };
     for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
 		enum piece pce = get_piece_at_square(brd, sq);
 		if (pce != NO_PIECE) {
 			enum colour col = get_colour(pce);
-			material[col] += piece_values[pce];
+			local_material[col] += piece_values[pce];
 		}
     }
-    assert(material[WHITE] == brd->material[WHITE]);
-    assert(material[BLACK] == brd->material[BLACK]);
+    assert(local_material[WHITE] == brd->material[WHITE]);
+    assert(local_material[BLACK] == brd->material[BLACK]);
 
     // check on position key
     assert(brd->board_hash == get_position_hashkey(brd));

@@ -61,7 +61,7 @@ enum piece {
 #define PIECE_ENUM_SIZE	14
 
 // piece values, indexed into using the enum piece enum
-static const int piece_values[NUM_PIECES] = {
+static const U32 piece_values[NUM_PIECES] = {
     100,			// PAWN
     550,			// ROOK
     325,			// BISHOP

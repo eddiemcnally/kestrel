@@ -41,9 +41,9 @@ enum {
 #define GET_PIECE_MASK(square)	((U64)(0x01ull << (int)(square)))
 
 // zero-based
-#define GET_RANK(square)		((square) / 8)
-#define GET_FILE(square)		((square) % 8)
-#define GET_SQUARE(RANK, FILE)	((RANK * 8) + FILE)
+#define GET_RANK(square)		((U8)((square) / 8))
+#define GET_FILE(square)		((U8)((square) % 8))
+#define GET_SQUARE(RANK, FILE)	((U8)((RANK * 8) + FILE))
 
 #define IS_VALID_RANK(rank)		((rank >= RANK_1) && (rank <= RANK_8))
 #define IS_VALID_FILE(file)		((file >= FILE_A) && (file <= FILE_H))
