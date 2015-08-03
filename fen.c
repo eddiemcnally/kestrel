@@ -48,76 +48,76 @@ int consume_fen_notation(const char *fen_string, struct board *board_to_setup)
 		enum piece piece_to_add = NO_PIECE;
 		count = 1;
 
-	switch (*fen_string) {
-		case 'p':
-			piece_to_add = B_PAWN;
-			break;
-		case 'r':
-			piece_to_add = B_ROOK;
-			break;
-		case 'n':
-			piece_to_add = B_KNIGHT;
-			break;
-		case 'b':
-			piece_to_add = B_BISHOP;
-			break;
-		case 'q':
-			piece_to_add = B_QUEEN;
-			break;
-		case 'k':
-			piece_to_add = B_KING;
-			break;
-		case 'P':
-			piece_to_add = W_PAWN;
-			break;
-		case 'R':
-			piece_to_add = W_ROOK;
-			break;
-		case 'N':
-			piece_to_add = W_KNIGHT;
-			break;
-		case 'B':
-			piece_to_add = W_BISHOP;
-			break;
-		case 'Q':
-			piece_to_add = W_QUEEN;
-			break;
-		case 'K':
-			piece_to_add = W_KING;
-			break;
+		switch (*fen_string) {
+			case 'p':
+				piece_to_add = B_PAWN;
+				break;
+			case 'r':
+				piece_to_add = B_ROOK;
+				break;
+			case 'n':
+				piece_to_add = B_KNIGHT;
+				break;
+			case 'b':
+				piece_to_add = B_BISHOP;
+				break;
+			case 'q':
+				piece_to_add = B_QUEEN;
+				break;
+			case 'k':
+				piece_to_add = B_KING;
+				break;
+			case 'P':
+				piece_to_add = W_PAWN;
+				break;
+			case 'R':
+				piece_to_add = W_ROOK;
+				break;
+			case 'N':
+				piece_to_add = W_KNIGHT;
+				break;
+			case 'B':
+				piece_to_add = W_BISHOP;
+				break;
+			case 'Q':
+				piece_to_add = W_QUEEN;
+				break;
+			case 'K':
+				piece_to_add = W_KING;
+				break;
 
-		case '1':
-		case '2':
-		case '3':
-		case '4':
-		case '5':
-		case '6':
-		case '7':
-		case '8':
-			count = (*fen_string) - '0';
-			break;
+			case '1':
+			case '2':
+			case '3':
+			case '4':
+			case '5':
+			case '6':
+			case '7':
+			case '8':
+				count = (*fen_string) - '0';
+				break;
 
-		case '/':
-		case ' ':
-			rank--;
-			file = FILE_A;
-			fen_string++;
-			continue;
+			case '/':
+			case ' ':
+				rank--;
+				file = FILE_A;
+				fen_string++;
+				continue;
 
-		default:
-			printf("FEN error \n");
-			return -1;
-		}
-
-		for (int i = 0; i < count; i++) {
-			if (piece_to_add != NO_PIECE) {
-				int sq = GET_SQUARE(rank, file);
-				add_piece_to_board(board_to_setup, piece_to_add, sq);
+			default:
+				printf("FEN error \n");
+				return -1;
 			}
-			file++;
+
+			for (int i = 0; i < count; i++) {
+				if (piece_to_add != NO_PIECE) {
+					int sq = GET_SQUARE(rank, file);
+					add_piece_to_board(board_to_setup, piece_to_add, sq);
+				}
+				file++;
+			}
+		fen_string++;
 		}
-	fen_string++;
-    }
 
     if (*fen_string == 'w') {
 		board_to_setup->side_to_move = WHITE;
@@ -131,25 +131,25 @@ int consume_fen_notation(const char *fen_string, struct board *board_to_setup)
     for (int i = 0; i < 4; i++) {
 		if (*fen_string == ' ') {
 			break;
-	}
-
-	switch (*fen_string) {
-		case 'K':
-			board_to_setup->castle_perm |= WKCA;
-			break;
-		case 'Q':
-			board_to_setup->castle_perm |= WQCA;
-			break;
-		case 'k':
-			board_to_setup->castle_perm |= BKCA;
-			break;
-		case 'q':
-			board_to_setup->castle_perm |= BQCA;
-			break;
-		default:
-			break;
 		}
-	fen_string++;
+
+		switch (*fen_string) {
+			case 'K':
+				board_to_setup->castle_perm |= WKCA;
+				break;
+			case 'Q':
+				board_to_setup->castle_perm |= WQCA;
+				break;
+			case 'k':
+				board_to_setup->castle_perm |= BKCA;
+				break;
+			case 'q':
+				board_to_setup->castle_perm |= BQCA;
+				break;
+			default:
+				break;
+			}
+		fen_string++;
     }
 
     fen_string++;

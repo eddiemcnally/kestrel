@@ -36,9 +36,10 @@
 # define the C source files
 	SRCS		=	main.c board.c pieces.c board_utils.c move.c \
 					init.c hashkeys.c fen.c utils.c attack.c \
-					occupancy_mask.c
+					occupancy_mask.c makemove.c
 	TEST_SRCS	=	board.c pieces.c board_utils.c move.c init.c \
-					hashkeys.c fen.c utils.c attack.c occupancy_mask.c\
+					hashkeys.c fen.c utils.c attack.c occupancy_mask.c \
+					makemove.c \
 					test/all_tests.c test/board_test_fixture.c \
 					test/piece_test_fixture.c test/seatest.c \
 					test/occupancy_mask_test_fixture.c \
