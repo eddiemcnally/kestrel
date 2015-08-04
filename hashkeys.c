@@ -29,12 +29,10 @@
 
 #include "hashkeys.h"
 
-U64 get_castle_key(unsigned int castle_map);
-U64 get_side_key(void);
-U64 get_piece_key(enum piece piece, enum square square);
 
 //----- hashkeys for positions
-static U64 piece_keys[NUM_PIECES][NUM_SQUARES] = { {0} };
+// extra size is needed to handle the NO_PIECE value
+static U64 piece_keys[PIECE_ENUM_SIZE][NUM_SQUARES] = { {0} };
 
 static U64 side_to_move_key = 0;
 static U64 castle_keys[16] = { 0 };	// 16 combinations because of 4 bits being used for castle enum
@@ -51,7 +49,7 @@ static U64 castle_keys[16] = { 0 };	// 16 combinations because of 4 bits being u
 void init_hash_keys()
 {
 
-    for (int pce = 0; pce < NUM_PIECES; pce++) {
+    for (int pce = 0; pce < PIECE_ENUM_SIZE; pce++) {
 		for (int sq = 0; sq < NUM_SQUARES; sq++) {
 			piece_keys[pce][sq] = generate_rand64();
 		}
@@ -71,7 +69,7 @@ void init_hash_keys()
  * @return:	the U64 hashkey
  *
  */
-inline U64 get_castle_key(unsigned int castle_map)
+inline U64 get_castle_key(U8 castle_map)
 {
     assert(castle_map < 16);	// 4 bits, 0..F valid values
 
@@ -105,6 +103,12 @@ inline U64 get_piece_key(enum piece piece, enum square square)
 
     return piece_keys[piece][square];
 }
+
+
+U64 get_hash(enum piece pce, enum square sq){
+	return piece_keys[pce][sq];
+}
+
 
 /*Given a board, return a positon hashkey
  *
