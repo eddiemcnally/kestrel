@@ -21,6 +21,8 @@
 #include <stdbool.h>
 #include <assert.h>
 #include "types.h"
+#include "pieces.h"
+#include "board.h"
 #include "hashkeys.h"
 
 
@@ -40,9 +42,7 @@ static const int castle_permission_mask[NUM_SQUARES] = {
     15, 15, 15, 15, 15, 15, 15, 15,
     15, 15, 15, 15, 15, 15, 15, 15,
     15, 15, 15, 15, 15, 15, 15, 15,
-     7, 15, 15, 15,  3, 15, 15, 11,
-    15, 15, 15, 15, 15, 15, 15, 15,
-    15, 15, 15, 15, 15, 15, 15, 15
+     7, 15, 15, 15,  3, 15, 15, 11
 };
 
 
@@ -50,20 +50,20 @@ static const int castle_permission_mask[NUM_SQUARES] = {
 void clear_piece(struct board *brd, enum square sq){
 
 	enum piece pce = brd->pieces[sq];
-	enum colour col = IS_WHITE(pce) ? WHITE : BLACK);
+	enum colour col = IS_WHITE(pce) ? WHITE : BLACK;
 
 	update_piece_hash(brd, pce, sq);
 
 	brd->pieces[sq] = NO_PIECE;
 
-	bld->material[col] -= piece_values[pce];
+	brd->material[col] -= piece_values[pce];
 
 	if (is_big_piece(pce)){
-		bld->big_pieces[col]--;
+		brd->big_pieces[col]--;
 		if (is_major_piece(pce)){
-			bld->major_pieces[col]--;
+			brd->major_pieces[col]--;
 		} else {
-			bld->minor_pieces[col]--;
+			brd->minor_pieces[col]--;
 		}
 	}
 
@@ -102,7 +102,7 @@ static inline void update_castle_hash(struct board *brd){
 
 
 static inline void update_side_hash(struct board *brd){
-	brd->b oard_hash ^= get_side_key();
+	brd->board_hash ^= get_side_key();
 }
 
 static inline void update_EP_hash(struct board *brd){

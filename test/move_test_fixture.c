@@ -26,6 +26,7 @@
 #include "board.h"
 #include "pieces.h"
 #include "board_utils.h"
+#include "makemove.h"
 #include "move.h"
 
 void test_generation_white_pawn_moves(void);
@@ -38,6 +39,9 @@ void test_generation_queen_moves(void);
 void test_generation_king_moves(void);
 void test_king_castling_moves(void);
 void test_sample_board_position(void);
+void test_clear_piece(void);
+
+
 
 void test_generation_white_pawn_moves(void)
 {
@@ -821,6 +825,59 @@ void test_sample_board_position(){
 }
 
 
+void test_clear_piece(){
+
+
+	//
+	// remove the knight from c3
+	//
+	char * sample_position = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1";
+    struct board *brd= get_clean_board();
+
+    consume_fen_notation(sample_position, brd);
+
+	assert_true(check_bit(&brd->board, c3) == true);
+	assert_true(check_bit(&brd->bitboards[W_KNIGHT], c3) == true);
+
+
+	// save some info before the move for comparison
+	U64 old_hash = brd->board_hash;
+	U8 old_num_pces_on_brd = brd->pce_num[W_KNIGHT];
+	U8 old_num_big_pces = brd->big_pieces[WHITE];
+	U8 old_num_minor_pces = brd->minor_pieces[WHITE];
+	U32 old_material = brd->material[WHITE];
+	enum piece old_pce = brd->pieces[c3];
+
+
+	// remove the knight from c3
+	clear_piece(brd, c3);
+
+	assert_true(old_hash != brd->board_hash);
+
+	assert_true(old_num_pces_on_brd == 2);
+	assert_true(brd->pce_num[W_KNIGHT] == 1);
+
+	assert_true(old_num_big_pces = 16);
+	assert_true(brd->big_pieces[WHITE] == 15);
+
+	assert_true(old_num_minor_pces = 4);
+	assert_true(brd->minor_pieces[WHITE] == 3);
+
+	U32 new_material = brd->material[WHITE] + piece_values[W_KNIGHT];
+	assert_true(new_material == old_material);
+
+	assert_true(old_pce == W_KNIGHT);
+	assert_true(brd->pieces[c3] == NO_PIECE);
+
+	assert_true(check_bit(&brd->board, c3) == false);
+	assert_true(check_bit(&brd->bitboards[W_KNIGHT], c3) == false);
+
+}
+
+
+
+
+
 void move_test_fixture(void)
 {
     test_fixture_start();	// starts a fixture
@@ -835,6 +892,7 @@ void move_test_fixture(void)
 	run_test(test_generation_sliding_diagonal_moves);
 	run_test(test_generation_queen_moves);
 	run_test(test_sample_board_position);
+	run_test(test_clear_piece);
 
 
     test_fixture_end();		// ends a fixture
