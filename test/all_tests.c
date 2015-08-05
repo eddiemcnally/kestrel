@@ -20,7 +20,7 @@
 void board_test_fixture(void);
 void piece_test_fixture(void);
 void move_test_fixture(void);
-void attack_test_fixture(void);
+void utils_test_fixture(void);void attack_test_fixture(void);
 void my_suite_setup(void);
 void occupancy_mask_test_fixture(void);
 void my_suite_teardown(void);
@@ -92,5 +92,3 @@ int main_do_it_myself_really_simply(int argc, char **argv)
     }
 	return run_tests(all_tests);
 }
-
-

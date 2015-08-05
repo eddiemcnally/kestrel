@@ -277,13 +277,17 @@ seatest_assert_string_doesnt_contain(char *expected, char *actual,
 
 void seatest_run_test(char *fixture, char *test)
 {
+	// just use the args to avoid compiler warnings
+	fixture++;
+	test++;
+
 
     sea_tests_run++;
 }
 
 void seatest_header_printer(char *s, int length, char f)
 {
-    int l = strlen(s);
+    int l = (int)strlen(s);
     int d = (length - (l + 2)) / 2;
     int i;
     if (seatest_is_display_only() || seatest_machine_readable)

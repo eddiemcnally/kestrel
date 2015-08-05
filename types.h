@@ -60,26 +60,6 @@ enum piece {
 };
 #define PIECE_ENUM_SIZE	14
 
-// piece values, indexed into using the enum piece enum
-static const U32 piece_values[NUM_PIECES] = {
-    100,			// PAWN
-    550,			// ROOK
-    325,			// BISHOP
-    325,			// KNIGHT
-    1000,			// QUEEN
-    50000,			// KING
-    100,			// PAWN
-    325,			// BISHOP
-    325,			// KNIGHT
-    550,			// ROOK
-    1000,			// QUEEN
-    50000			// KING
-};
-
-
-#define GET_PIECE_VALUE(pce)	(piece_values[pce])
-
-
 // contains information before the current
 // move was made
 struct undo {

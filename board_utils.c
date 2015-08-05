@@ -215,7 +215,7 @@ bool ASSERT_BOARD_OK(const struct board * brd)
 		enum piece pce = get_piece_at_square(brd, sq);
 		if (pce != NO_PIECE) {
 			enum colour col = get_colour(pce);
-			local_material[col] += piece_values[pce];
+			local_material[col] += get_piece_value(pce);
 		}
     }
     assert(local_material[WHITE] == brd->material[WHITE]);

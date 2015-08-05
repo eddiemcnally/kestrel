@@ -72,7 +72,7 @@ void update_piece_material(struct board *brd)
 			if (is_minor_piece(pce)) brd->minor_pieces[colour]++;
 			if (is_major_piece(pce)) brd->major_pieces[colour]++;
 
-			brd->material[colour] += piece_values[pce];
+			brd->material[colour] += get_piece_value(pce);
 			brd->pce_num[pce]++;
 
 			if (pce == W_KING) brd->king_squares[WHITE] = sq;
@@ -168,11 +168,11 @@ inline void overlay_boards(struct board *the_board)
  * TODO - possibly replace this with a cache lookup on a new board array
  */
 
-inline enum piece get_piece_at_square(const struct board *the_board, enum square square)
+inline enum piece get_piece_at_square(const struct board *the_board, enum square sq)
 {
-    assert((square >= a1) && (square <= h8));
+    assert((sq >= a1) && (sq <= h8));
 
-    return the_board->pieces[square];
+    return the_board->pieces[sq];
 }
 
 /*

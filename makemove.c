@@ -28,10 +28,10 @@
 
 
 
-static void update_piece_hash(struct board *brd, enum piece pce, enum square sq);
-static void update_castle_hash(struct board *brd);
-static void update_side_hash(struct board *brd);
-static void update_EP_hash(struct board *brd);
+void update_piece_hash(struct board *brd, enum piece pce, enum square sq);
+void update_castle_hash(struct board *brd);
+void update_side_hash(struct board *brd);
+void update_EP_hash(struct board *brd);
 
 //bit mask for castle permissions
 static const int castle_permission_mask[NUM_SQUARES] = {
@@ -47,21 +47,20 @@ static const int castle_permission_mask[NUM_SQUARES] = {
 
 
 
-void clear_piece(struct board *brd, const enum square sq){
+void clear_piece(struct board *brd, enum square sq){
 
 	enum piece pce = brd->pieces[sq];
 	enum colour col = IS_WHITE(pce) ? WHITE : BLACK;
-
-	printf("clearing pce %c\n", get_piece_label(pce));
 
 	update_piece_hash(brd, pce, sq);
 
 	brd->pieces[sq] = NO_PIECE;
 
-	brd->material[col] -= piece_values[pce];
+	brd->material[col] -= get_piece_value(pce);
 
 	if (is_big_piece(pce)){
 		brd->big_pieces[col]--;
+
 		if (is_major_piece(pce)){
 			brd->major_pieces[col]--;
 		}
@@ -83,7 +82,7 @@ void clear_piece(struct board *brd, const enum square sq){
 
 
 
-void add_piece(struct board *brd, const enum piece pce, const enum square sq){
+inline void add_piece(struct board *brd, enum piece pce, enum square sq){
 
 	enum colour col = IS_WHITE(pce) ? WHITE : BLACK;
 
@@ -91,7 +90,7 @@ void add_piece(struct board *brd, const enum piece pce, const enum square sq){
 
 	brd->pieces[sq] = sq;
 
-	brd->material[col] += piece_values[pce];
+	brd->material[col] += get_piece_value(pce);
 
 	if (is_big_piece(pce)){
 		brd->big_pieces[col]++;
@@ -116,25 +115,37 @@ void add_piece(struct board *brd, const enum piece pce, const enum square sq){
 
 
 
+inline void move_piece(struct board *brd, enum square from, enum square to){
+
+	// TODO
+	// optimise this
+	enum piece pce = get_piece_at_square(brd, from);
+
+	clear_piece(brd, from);
+	add_piece(brd, pce, to);
+
+}
 
 
 
 
 
 
-static inline void update_piece_hash(struct board *brd, enum piece pce, enum square sq){
+
+
+inline void update_piece_hash(struct board *brd, enum piece pce, enum square sq){
 	brd->board_hash ^= get_hash(pce, sq);
 }
 
-static inline void update_castle_hash(struct board *brd){
+inline void update_castle_hash(struct board *brd){
 	brd->board_hash ^= get_castle_key(brd->castle_perm);
 }
 
 
-static inline void update_side_hash(struct board *brd){
+inline void update_side_hash(struct board *brd){
 	brd->board_hash ^= get_side_key();
 }
 
-static inline void update_EP_hash(struct board *brd){
+inline void update_EP_hash(struct board *brd){
 	brd->board_hash ^= get_side_key();
 }

@@ -19,8 +19,8 @@
 #define _MAKE_MOVE_H_
 
 
-void clear_piece(struct board *brd, const enum square sq);
-void add_piece(struct board *brd, const enum piece pce, const enum square sq);
+void clear_piece(struct board *brd, enum square sq);
+void add_piece(struct board *brd, enum piece pce, enum square sq);
 
 
 
