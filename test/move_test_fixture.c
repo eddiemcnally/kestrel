@@ -857,8 +857,8 @@ void test_clear_piece(){
 	assert_true(old_num_pces_on_brd == 2);
 	assert_true(brd->pce_num[W_KNIGHT] == 1);
 
-	assert_true(old_num_big_pces = 16);
-	assert_true(brd->big_pieces[WHITE] == 15);
+	assert_true(old_num_big_pces == 8);
+	assert_true(brd->big_pieces[WHITE] == 7);
 
 	assert_true(old_num_minor_pces = 4);
 	assert_true(brd->minor_pieces[WHITE] == 3);

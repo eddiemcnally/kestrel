@@ -47,10 +47,12 @@ static const int castle_permission_mask[NUM_SQUARES] = {
 
 
 
-void clear_piece(struct board *brd, enum square sq){
+void clear_piece(struct board *brd, const enum square sq){
 
 	enum piece pce = brd->pieces[sq];
 	enum colour col = IS_WHITE(pce) ? WHITE : BLACK;
+
+	printf("clearing pce %c\n", get_piece_label(pce));
 
 	update_piece_hash(brd, pce, sq);
 
@@ -62,11 +64,13 @@ void clear_piece(struct board *brd, enum square sq){
 		brd->big_pieces[col]--;
 		if (is_major_piece(pce)){
 			brd->major_pieces[col]--;
-		} else {
+		}
+		if (is_minor_piece(pce)){
 			brd->minor_pieces[col]--;
 		}
 	}
 
+	// remove piece from bitboards
 	clear_bit(&brd->bitboards[pce], sq);
 	clear_bit(&brd->board, sq);
 
@@ -79,10 +83,36 @@ void clear_piece(struct board *brd, enum square sq){
 
 
 
+void add_piece(struct board *brd, const enum piece pce, const enum square sq){
 
+	enum colour col = IS_WHITE(pce) ? WHITE : BLACK;
 
+	update_piece_hash(brd, pce, sq);
 
+	brd->pieces[sq] = sq;
 
+	brd->material[col] += piece_values[pce];
+
+	if (is_big_piece(pce)){
+		brd->big_pieces[col]++;
+		if (is_major_piece(pce)){
+			brd->major_pieces[col]++;
+		}
+		if (is_minor_piece(pce)){
+			brd->minor_pieces[col]++;
+		}
+	}
+
+	// set piece on bitboards
+	set_bit(&brd->bitboards[pce], sq);
+	set_bit(&brd->board, sq);
+
+	brd->pce_num[pce]++;
+
+	U64 new_hash = get_position_hashkey(brd);
+	brd->board_hash = new_hash;
+
+}
 
 
 
