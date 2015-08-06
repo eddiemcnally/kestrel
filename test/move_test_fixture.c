@@ -41,6 +41,7 @@ void test_king_castling_moves(void);
 void test_sample_board_position(void);
 void test_clear_piece(void);
 void test_add_piece(void);
+void test_move_piece(void);
 
 
 
@@ -927,6 +928,59 @@ void test_add_piece(){
 
 
 
+void test_move_piece(){
+
+
+	//
+	// move White Knight from e5 to d3
+	//
+	char * sample_position = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1";
+    struct board *brd= get_clean_board();
+
+    consume_fen_notation(sample_position, brd);
+
+	assert_true(check_bit(&brd->board, e5) == true);
+	assert_true(check_bit(&brd->bitboards[W_KNIGHT], e5) == true);
+	assert_true(CNT(brd->bitboards[W_KNIGHT]) == 2);
+
+
+	// save some info before the move for comparison
+	U64 old_hash = brd->board_hash;
+	U8 old_num_pces_on_brd = brd->pce_num[W_KNIGHT];
+	U8 old_num_big_pces = brd->big_pieces[WHITE];
+	U8 old_num_minor_pces = brd->minor_pieces[WHITE];
+	U32 old_material = brd->material[WHITE];
+
+	// add a white knight from e4 to d3
+	move_piece(brd, e5, d3);
+
+
+	assert_true(old_hash != brd->board_hash);
+
+	assert_true(old_num_pces_on_brd == 2);
+	assert_true(brd->pce_num[W_KNIGHT] == 2);
+
+	assert_true(old_num_big_pces == 8);
+	assert_true(brd->big_pieces[WHITE] == 8);
+
+	assert_true(old_num_minor_pces = 4);
+	assert_true(brd->minor_pieces[WHITE] == 4);
+
+	U32 new_material = brd->material[WHITE];
+	assert_true(new_material == old_material);
+
+	assert_true(brd->pieces[d3] == W_KNIGHT);
+	assert_true(brd->pieces[e5] == NO_PIECE);
+
+
+	assert_true(check_bit(&brd->board, d3) == true);
+	assert_true(check_bit(&brd->board, e5) == false);
+
+	assert_true(check_bit(&brd->bitboards[W_KNIGHT], d3) == true);
+
+}
+
+
 
 void move_test_fixture(void)
 {
@@ -944,6 +998,7 @@ void move_test_fixture(void)
 	run_test(test_sample_board_position);
 	run_test(test_clear_piece);
 	run_test(test_add_piece);
+	run_test(test_move_piece);
 
     test_fixture_end();		// ends a fixture
 }
