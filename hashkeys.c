@@ -97,9 +97,8 @@ inline U64 get_side_key(void)
  */
 inline U64 get_piece_key(enum piece pce, enum square sq)
 {
-	printf("****** piece = %d", pce);
-    assert((sq >= a1) && (sq <= h8));
-    assert((pce >= W_PAWN) && (pce <= PIECE_ENUM_SIZE));
+	assert((sq >= a1) && (sq <= h8));
+	assert((pce >= W_PAWN) && (pce <= PIECE_ENUM_SIZE));
 
     return piece_keys[pce][sq];
 }

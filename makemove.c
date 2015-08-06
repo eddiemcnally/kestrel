@@ -88,7 +88,7 @@ void add_piece(struct board *brd, enum piece pce, enum square sq){
 
 	update_piece_hash(brd, pce, sq);
 
-	brd->pieces[sq] = sq;
+	brd->pieces[sq] = pce;
 
 	brd->material[col] += get_piece_value(pce);
 
