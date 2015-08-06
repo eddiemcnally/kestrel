@@ -95,13 +95,13 @@ inline U64 get_side_key(void)
  * @return:	the U64 hashkey
  *
  */
-inline U64 get_piece_key(enum piece piece, enum square square)
+inline U64 get_piece_key(enum piece pce, enum square sq)
 {
+	printf("****** piece = %d", pce);
+    assert((sq >= a1) && (sq <= h8));
+    assert((pce >= W_PAWN) && (pce <= PIECE_ENUM_SIZE));
 
-    assert((square >= a1) && (square <= h8));
-    assert((piece >= W_PAWN) && (piece <= B_KING));
-
-    return piece_keys[piece][square];
+    return piece_keys[pce][sq];
 }
 
 

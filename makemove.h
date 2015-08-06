@@ -21,7 +21,7 @@
 
 void clear_piece(struct board *brd, enum square sq);
 void add_piece(struct board *brd, enum piece pce, enum square sq);
-
+void move_piece(struct board *brd, enum square from, enum square to);
 
 
 #endif

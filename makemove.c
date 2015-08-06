@@ -82,7 +82,7 @@ void clear_piece(struct board *brd, enum square sq){
 
 
 
-inline void add_piece(struct board *brd, enum piece pce, enum square sq){
+void add_piece(struct board *brd, enum piece pce, enum square sq){
 
 	enum colour col = IS_WHITE(pce) ? WHITE : BLACK;
 
@@ -115,10 +115,10 @@ inline void add_piece(struct board *brd, enum piece pce, enum square sq){
 
 
 
-inline void move_piece(struct board *brd, enum square from, enum square to){
+ void move_piece(struct board *brd, enum square from, enum square to){
 
 	// TODO
-	// optimise this
+	// optimise this function, rather than call clear+add
 	enum piece pce = get_piece_at_square(brd, from);
 
 	clear_piece(brd, from);

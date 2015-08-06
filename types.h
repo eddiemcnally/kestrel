@@ -43,22 +43,22 @@ enum square {
 };
 
 enum piece {
-    W_PAWN 		= 0,
-    W_ROOK 		= 1,
-    W_KNIGHT 	= 2,
-    W_BISHOP 	= 3,
-    W_QUEEN 	= 4,
-    W_KING 		= 5,
-    B_PAWN 		= 6,
-    B_ROOK 		= 7,
-    B_KNIGHT 	= 8,
-    B_BISHOP 	= 9,
-    B_QUEEN 	= 10,
-    B_KING 		= 11,
-    NUM_PIECES 	= 12,
-    NO_PIECE 	= 13
+    W_PAWN 			= 0,
+    W_ROOK 			= 1,
+    W_KNIGHT 		= 2,
+    W_BISHOP 		= 3,
+    W_QUEEN 		= 4,
+    W_KING 			= 5,
+    B_PAWN 			= 6,
+    B_ROOK 			= 7,
+    B_KNIGHT 		= 8,
+    B_BISHOP 		= 9,
+    B_QUEEN 		= 10,
+    B_KING 			= 11,
+    NUM_PIECES 		= 12,
+    NO_PIECE 		= 13,
+	PIECE_ENUM_SIZE = 14
 };
-#define PIECE_ENUM_SIZE	14
 
 // contains information before the current
 // move was made

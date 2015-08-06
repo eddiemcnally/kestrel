@@ -14,10 +14,10 @@
 				-fomit-frame-pointer -Wpedantic -Wformat=2 -Wall \
 				-Wstrict-prototypes -Werror -Wlogical-op -Wextra -Wconversion \
 				-Wsign-conversion -Wshadow -Wmissing-include-dirs \
-				-Wpointer-arith -Winline
+				-Wpointer-arith -Winline -lubsan
 
 # more lax compiler options
-#	CFLAGS	=	-Wall -g -std=c11
+#	CFLAGS	=	-Wall -g -std=c11 -lubsan
 
 # define any directories containing header files other than /usr/include
 #
@@ -40,11 +40,11 @@
 	TEST_SRCS	=	board.c pieces.c board_utils.c move.c init.c \
 					hashkeys.c fen.c utils.c attack.c occupancy_mask.c \
 					makemove.c \
-					test/all_tests.c test/board_test_fixture.c \
-					test/piece_test_fixture.c test/seatest.c \
-					test/occupancy_mask_test_fixture.c \
-					test/attack_test_fixture.c test/utils_test_feature.c \
-					test/move_test_fixture.c
+					./test/all_tests.c ./test/board_test_fixture.c \
+					./test/piece_test_fixture.c ./test/seatest.c \
+					./test/occupancy_mask_test_fixture.c \
+					./test/attack_test_fixture.c ./test/utils_test_feature.c \
+					./test/move_test_fixture.c
 
 
 # define the C object files
@@ -93,7 +93,7 @@ $(TEST_MAIN):	$(TEST_OBJS)
 
 clean:
 		$(RM) *.o *~ $(MAIN)
-		$(RM) *.o *~ $(TEST_MAIN)
+		$(RM) ./test/*.o *~ $(TEST_MAIN)
 
 
 depend:	$(SRCS)
