@@ -14,3 +14,13 @@ To compile test framework
 This is a work-in-progress. Current state:
 - can read in FEN notation and populate a board position
 - can generate moves for all pieces on a board (albeit, the moves aren't scored yet)
+
+History:
+I started this by defining the bitboards to use, and writing some wrapper functions to manipulate these.
+
+I then stumbled on a series of YouTube videos outlining the steps to develop a chess engine (https://www.youtube.com/watch?v=bGAfaepBco4&index=1&list=PLZ1QII7yudbc-Ky058TEaOstZHVbT-2hg). I've been following this and working the ideas and concepts into my codebase.
+
+
+
+
+
