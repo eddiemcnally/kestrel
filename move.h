@@ -21,21 +21,6 @@
 #include <stdbool.h>
 #include "types.h"
 
-/*
- * This struct represents a piece move.
- *
- * The 'move' field is bitmapped as follows:
- *
- * 0000 0000 0000 0000 0000 0111 1111 -> From
- * 0000 0000 0000 0011 1111 1000 0000 -> To
- * 0000 0000 0011 1100 0000 0000 0000 -> Captured piece
- * 0000 0000 0100 0000 0000 0000 0000 -> En passant move
- * 0000 0000 1000 0000 0000 0000 0000 -> Pawn Start
- * 0000 1111 0000 0000 0000 0000 0000 -> Promoted Piece
- * 0001 0000 0000 0000 0000 0000 0000 -> Castle
- */
-typedef U32	mv_bitmap;
-
 
 struct move {
     mv_bitmap	move_bitmap;
@@ -61,7 +46,7 @@ struct move_list {
 //
 #define MOVE(from,to,capture,promote,fl) ( (from) | ((to) << 7) | ( (capture) << 14 ) | ( (promote) << 20 ) | (fl))
 
-//#define MFLAG_EN_PASSANT 	0x0040000
+#define MFLAG_EN_PASSANT 	0x0040000
 #define MFLAG_PAWN_START 	0x0080000
 #define MFLAG_CASTLE 		0x1000000
 

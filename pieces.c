@@ -128,7 +128,15 @@ inline bool isRQ(enum piece pce)
     }
 }
 
-inline bool isKi(enum piece pce)
+
+inline bool is_pawn(enum piece pce)
+{
+    if ((pce == B_PAWN) || (pce == W_PAWN))
+		return true;
+    return false;
+}
+
+inline bool is_king(enum piece pce)
 {
     if ((pce == B_KING) || (pce == W_KING))
 		return true;

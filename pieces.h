@@ -25,6 +25,8 @@
 #define IS_WHITE(piece)			(piece <= W_KING)
 #define IS_BLACK(piece)			(IS_WHITE(piece) == false)
 
+#define FLIP_SIDE(side)			(side ^ 1)
+
 #define	GET_COLOUR(piece)		(IS_WHITE(piece) ? WHITE : BLACK )
 
 
@@ -37,11 +39,12 @@ bool is_minor_piece(enum piece pce);
 bool is_sliding_piece(enum piece pce);
 
 bool isRQ(enum piece pce);
-bool isKi(enum piece pce);
+bool is_king(enum piece pce);
 bool isKn(enum piece pce);
 bool isBQ(enum piece pce);
 bool isR(enum piece pce);
 bool isB(enum piece pce);
+bool is_pawn(enum piece pce);
 
 enum colour swap_colour(enum colour col);
 U32 get_piece_value(const enum piece pce);

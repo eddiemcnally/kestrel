@@ -30,6 +30,21 @@ enum colour {
 };
 
 
+/*
+ * This struct represents a piece move.
+ *
+ * The 'move' field is bitmapped as follows:
+ *
+ * 0000 0000 0000 0000 0000 0111 1111 -> From
+ * 0000 0000 0000 0011 1111 1000 0000 -> To
+ * 0000 0000 0011 1100 0000 0000 0000 -> Captured piece
+ * 0000 0000 0100 0000 0000 0000 0000 -> En passant move
+ * 0000 0000 1000 0000 0000 0000 0000 -> Pawn Start
+ * 0000 1111 0000 0000 0000 0000 0000 -> Promoted Piece
+ * 0001 0000 0000 0000 0000 0000 0000 -> Castle
+ */
+typedef U32	mv_bitmap;
+
 enum square {
     a1 = 0, b1, c1, d1, e1, f1, g1, h1,
     a2, 	b2, c2, d2, e2, f2, g2, h2,
@@ -63,7 +78,7 @@ enum piece {
 // contains information before the current
 // move was made
 struct undo {
-    U16 move;
+    mv_bitmap move;
     U8 fifty_move_counter;
     U8 castle_perm;
     U64 board_hash;
