@@ -120,12 +120,18 @@ void add_piece(struct board *brd, enum piece pce, enum square sq){
 
  void move_piece(struct board *brd, enum square from, enum square to){
 
-	// TODO
-	// optimise this function, rather than call clear+add
 	enum piece pce = get_piece_at_square(brd, from);
 
-	clear_piece(brd, from);
-	add_piece(brd, pce, to);
+	update_piece_hash(brd, pce, from);
+	brd->pieces[from] = NO_PIECE;
+	clear_bit(&brd->bitboards[pce], from);
+	clear_bit(&brd->board, from);
+
+
+	update_piece_hash(brd, pce, to);
+	brd->pieces[to] = pce;
+	set_bit(&brd->bitboards[pce], to);
+	set_bit(&brd->board, to);
 
 }
 
