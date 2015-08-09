@@ -52,11 +52,6 @@ static const U8 castle_permission_mask[NUM_SQUARES] = {
 
 void clear_piece(struct board *brd, enum square sq){
 
-	if ((sq < a1) || (sq > h8)){
-		printf("IUBIUBIUB");
-	}
-
-
 	assert((sq >= a1) && (sq <= h8));
 
 	enum piece pce = brd->pieces[sq];
@@ -85,9 +80,6 @@ void clear_piece(struct board *brd, enum square sq){
 
 	brd->pce_num[pce]--;
 
-	U64 new_hash = get_position_hashkey(brd);
-
-	brd->board_hash = new_hash;
 }
 
 
@@ -117,10 +109,6 @@ void add_piece(struct board *brd, enum piece pce, enum square sq){
 	set_bit(&brd->board, sq);
 
 	brd->pce_num[pce]++;
-
-	U64 new_hash = get_position_hashkey(brd);
-	brd->board_hash = new_hash;
-
 }
 
 
@@ -151,13 +139,10 @@ bool make_move(struct board *brd, mv_bitmap mv){
 
 	ASSERT_BOARD_OK(brd);
 
+
+
 	enum square from = FROMSQ(mv);
 	enum square to = TOSQ(mv);
-
-	if (from < a1 || from > h8){
-		printf("iubiub");
-	}
-
 
 	assert(from >= a1 && from <= h8);
 	assert(to >= a1 && to <= h8);

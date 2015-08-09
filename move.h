@@ -22,6 +22,8 @@
 #include "types.h"
 
 
+
+
 struct move {
     mv_bitmap	move_bitmap;
     U32 score;
@@ -31,6 +33,7 @@ struct move_list {
     struct move moves[MAX_POSITION_MOVES];
     U16 move_count;
 };
+
 
 //--- macros for setting the 'move' field in the MOVE struct
 #define FROMSQ(m) 		((m) & 0x7F)
@@ -44,7 +47,10 @@ struct move_list {
 // ca -> captured
 // pro -> promoted
 //
-#define MOVE(from,to,capture,promote,fl) ( (from) | ((to) << 7) | ( (capture) << 14 ) | ( (promote) << 20 ) | (fl))
+//#define MOVE(from,to,capture,promote,fl) ( (from) | ((to) << 7) | ( (capture) << 14 ) | ( (promote) << 20 ) | (fl))
+
+mv_bitmap MOVE(enum square from, enum square to, enum piece capture, enum piece promote, U32 fl);
+
 
 #define MFLAG_EN_PASSANT 	0x0040000
 #define MFLAG_PAWN_START 	0x0080000
@@ -59,7 +65,7 @@ void print_move_details(U32 move_bitmap, U32 score);
 void print_move_list(const struct move_list *list);
 void print_move_list_details(const struct move_list *list);
 void generate_all_moves(const struct board *brd, struct move_list *mvl);
-
+void validate_move_list(struct move_list *mvl);
 
 void TEST_generate_white_pawn_moves(const struct board *brd, struct move_list *mvl);
 void TEST_generate_black_pawn_moves(const struct board *brd, struct move_list *mvl);

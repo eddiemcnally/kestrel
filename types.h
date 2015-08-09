@@ -31,7 +31,6 @@ enum colour {
 
 
 /*
- * This struct represents a piece move.
  *
  * The 'move' field is bitmapped as follows:
  *
@@ -44,6 +43,8 @@ enum colour {
  * 0001 0000 0000 0000 0000 0000 0000 -> Castle
  */
 typedef U32	mv_bitmap;
+
+
 
 enum square {
     a1 = 0, b1, c1, d1, e1, f1, g1, h1,

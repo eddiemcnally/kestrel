@@ -63,6 +63,10 @@ inline U32 get_piece_value(const enum piece pce){
 }
 
 
+bool is_valid_piece(enum piece pce){
+	return (pce >= 0 && pce <= NUM_PIECES) || (pce == NO_PIECE);
+}
+
 
 inline enum colour swap_colour(enum colour col){
 	if (col == WHITE)

@@ -60,10 +60,12 @@ void perf_test(int depth, struct board *brd) {
 	printf("\nStarting Test To Depth:%d\n",depth);
 
 
-	struct move_list mv_list[1];
-
+    struct move_list *mv_list = malloc(sizeof(struct move_list));
+	memset(mv_list, 0, sizeof(struct move_list));
 
 	generate_all_moves(brd, mv_list);
+
+	print_move_list_details(mv_list);
 
     mv_bitmap mv;
     for(U32 mv_num = 0; mv_num < mv_list->move_count; ++mv_num) {
@@ -94,12 +96,15 @@ void perft(int depth, struct board *brd) {
         return;
     }
 
- 	struct move_list mv_list[1];
+    struct move_list *mv_list = malloc(sizeof(struct move_list));
+	memset(mv_list, 0, sizeof(struct move_list));
 
 	generate_all_moves(brd, mv_list);
 
+	printf("# moves generated = %d\n", mv_list->move_count);
+
     mv_bitmap mv;
-    for(U32 mv_num = 0; mv_num < mv_list->move_count; ++mv_num) {
+    for(U32 mv_num = 0; mv_num < mv_list->move_count; mv_num++) {
         mv = mv_list->moves[mv_num].move_bitmap;
         if ( !make_move(brd, mv))  {
             continue;

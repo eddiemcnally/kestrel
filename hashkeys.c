@@ -98,7 +98,7 @@ inline U64 get_side_key(void)
 inline U64 get_piece_key(enum piece pce, enum square sq)
 {
 	assert((sq >= a1) && (sq <= h8));
-	assert((pce >= W_PAWN) && (pce <= PIECE_ENUM_SIZE));
+	assert(is_valid_piece(pce));
 
     return piece_keys[pce][sq];
 }
@@ -121,7 +121,7 @@ U64 get_position_hashkey(const struct board * brd)
 {
     U64 retval = 0;
 
-    for (int sq = 0; sq < NUM_SQUARES; sq++) {
+    for (enum square sq = a1; sq <= h8; sq++) {
 		enum piece pce = get_piece_at_square(brd, sq);
 
 		if (pce != NO_PIECE) {
@@ -134,7 +134,7 @@ U64 get_position_hashkey(const struct board * brd)
     }
 
     if (brd->en_passant != NO_SQUARE) {
-		retval ^= brd->en_passant;
+		retval ^= get_piece_key(NO_PIECE, brd->en_passant);
     }
 
     retval ^= get_castle_key(brd->castle_perm);

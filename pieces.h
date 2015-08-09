@@ -46,6 +46,8 @@ bool isR(enum piece pce);
 bool isB(enum piece pce);
 bool is_pawn(enum piece pce);
 
+bool is_valid_piece(enum piece pce);
+
 enum colour swap_colour(enum colour col);
 U32 get_piece_value(const enum piece pce);
 #endif

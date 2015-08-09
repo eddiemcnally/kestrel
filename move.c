@@ -181,6 +181,42 @@ void generate_all_moves(const struct board *brd, struct move_list *mvl)
 }
 
 
+
+void validate_move_list(struct move_list *mvl){
+	assert(mvl->move_count < MAX_POSITION_MOVES);
+
+	for (int i = 0; i < mvl->move_count; i++){
+		struct move m = mvl->moves[i];
+
+		enum square from = FROMSQ(m.move_bitmap);
+		enum square to = TOSQ(m.move_bitmap);
+		enum piece capt = CAPTURED(m.move_bitmap);
+		enum piece promote = PROMOTED(m.move_bitmap);
+
+		assert(is_valid_piece(capt));
+		assert(is_valid_piece(promote));
+
+		assert(from >= a1 && from <= h8);
+		assert(to >= a1 && to <= h8);
+
+		assert(m.score == 0);
+	}
+}
+
+
+mv_bitmap MOVE(enum square from, enum square to, enum piece capture, enum piece promote, U32 fl){
+
+	assert (from >= a1 && from <= h8);
+	assert (to >= a1 && to <= h8);
+
+	assert(is_valid_piece(capture));
+	assert(is_valid_piece(promote));
+
+
+	return ( (from) | ((to) << 7) | ( (capture) << 14 ) | ( (promote) << 20 ) | (fl));
+}
+
+
 static inline struct move_list * get_empty_move_list(){
     struct move_list *list = malloc(sizeof(struct move_list));
 	memset(list, 0, sizeof(struct move_list));
@@ -460,16 +496,18 @@ static inline void generate_white_pawn_moves(const struct board *brd, struct mov
 		int pawn_rank = GET_RANK(pawn_sq);
 		enum square next_sq_1 = pawn_sq + 8;
 
+		assert(next_sq_1 <= h8);
+
 		if (is_square_occupied(brd->board, next_sq_1) == false) {
 			add_pawn_move(WHITE, pawn_sq, next_sq_1, mvl);
 
 			if (pawn_rank == RANK_2) {
 				enum square next_sq_2 = pawn_sq + 16;
+
+				assert(next_sq_2 <= h8);
 				bool sq_2_occupied = is_square_occupied(brd->board, next_sq_2);
 				if (sq_2_occupied == false) {
-					add_quiet_move(MOVE(pawn_sq, next_sq_2,
-						NO_PIECE, NO_PIECE,
-						MFLAG_PAWN_START), mvl);
+					add_quiet_move(MOVE(pawn_sq, next_sq_2,	NO_PIECE, NO_PIECE, MFLAG_PAWN_START), mvl);
 				}
 			}
 		}
@@ -477,6 +515,9 @@ static inline void generate_white_pawn_moves(const struct board *brd, struct mov
 		// check for capture left
 		if (pawn_file >= FILE_B) {
 			enum square cap_sq = pawn_sq + 7;
+
+
+			assert(cap_sq <= h8);
 			enum piece pce = get_piece_at_square(brd, cap_sq);
 
 			if ((pce != NO_PIECE) && (get_colour(pce) == BLACK)) {
@@ -491,6 +532,7 @@ static inline void generate_white_pawn_moves(const struct board *brd, struct mov
 		// check for capture right
 		if (pawn_file <= FILE_G) {
 			enum square cap_sq = pawn_sq + 9;
+			assert(cap_sq <= h8);
 			enum piece pce = get_piece_at_square(brd, cap_sq);
 
 			if ((pce != NO_PIECE) && (get_colour(pce) == BLACK)) {
@@ -502,6 +544,8 @@ static inline void generate_white_pawn_moves(const struct board *brd, struct mov
 			}
 		}
     }
+
+	validate_move_list(mvl);
 }
 
 
@@ -523,11 +567,18 @@ static inline void generate_black_pawn_moves(const struct board *brd, struct mov
 		int pawn_rank = GET_RANK(pawn_sq);
 		enum square next_sq_1 = pawn_sq - 8;
 
+
+		assert(next_sq_1 <= h8 && next_sq_1 >= a1);
+
+
 		if (is_square_occupied(brd->board, next_sq_1) == false) {
 			add_pawn_move(BLACK, pawn_sq, next_sq_1, mvl);
 
 			if (pawn_rank == RANK_7) {
 				enum square next_sq_2 = pawn_sq - 16;
+
+				assert(next_sq_2 <= h8 && next_sq_2 >= a1);
+
 				bool sq_2_occupied = is_square_occupied(brd->board, next_sq_2);
 				if (sq_2_occupied == false) {
 					add_quiet_move(MOVE(pawn_sq, next_sq_2,
@@ -540,6 +591,9 @@ static inline void generate_black_pawn_moves(const struct board *brd, struct mov
 		// check for capture left
 		if (pawn_file >= FILE_B) {
 			enum square cap_sq = pawn_sq - 7;
+
+			assert(cap_sq <= h8 && cap_sq >= a1);
+
 			enum piece pce = get_piece_at_square(brd, cap_sq);
 
 			if ((pce != NO_PIECE) && (get_colour(pce) == WHITE)) {
@@ -554,10 +608,6 @@ static inline void generate_black_pawn_moves(const struct board *brd, struct mov
 		// check for capture right
 		if (pawn_file <= FILE_G && pawn_sq >= b2) {
 			enum square cap_sq = pawn_sq - 9;
-
-			if ((cap_sq < a1) || (cap_sq > h8)){
-				printf("IIUB");
-			}
 
 			assert((cap_sq >= a1) && (cap_sq <= h8));
 
