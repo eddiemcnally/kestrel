@@ -10,14 +10,14 @@
 	CC	=	gcc
 
 # define any compile-time flags
-	CFLAGS	=	-O3 -g -std=c11 -mtune=native -lmcheck -fsanitize=undefined \
+	CFLAGS	=	-g -std=c11 -mtune=native -lmcheck -fsanitize=undefined \
 				-fomit-frame-pointer -Wpedantic -Wformat=2 -Wall \
 				-Wstrict-prototypes -Werror -Wlogical-op -Wextra -Wconversion \
 				-Wsign-conversion -Wshadow -Wmissing-include-dirs \
 				-Wpointer-arith -Winline -lubsan
 
 # more lax compiler options
-#	CFLAGS	=	-Wall -g -std=c11 -lubsan
+#	CFLAGS	=	-Wall -g -std=c11
 
 # define any directories containing header files other than /usr/include
 #
@@ -44,7 +44,7 @@
 					./test/piece_test_fixture.c ./test/seatest.c \
 					./test/occupancy_mask_test_fixture.c \
 					./test/attack_test_fixture.c ./test/utils_test_feature.c \
-					./test/move_test_fixture.c
+					./test/move_test_fixture.c ./test/performance_tests.c
 
 
 # define the C object files

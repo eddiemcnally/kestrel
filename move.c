@@ -211,6 +211,8 @@ static inline bool is_move_in_list(struct move_list *mvl, mv_bitmap mv){
 
 static inline void add_quiet_move(mv_bitmap move_bitmap, struct move_list *mvlist)
 {
+	assert( mvlist->move_count < MAX_POSITION_MOVES);
+
     mvlist->moves[mvlist->move_count].move_bitmap = move_bitmap;
     mvlist->moves[mvlist->move_count].score = 0;
     mvlist->move_count++;
@@ -218,6 +220,8 @@ static inline void add_quiet_move(mv_bitmap move_bitmap, struct move_list *mvlis
 
 static inline void add_capture_move(mv_bitmap move_bitmap, struct move_list *mvlist)
 {
+	assert( mvlist->move_count < MAX_POSITION_MOVES);
+
 	mvlist->moves[mvlist->move_count].move_bitmap = move_bitmap;
     mvlist->moves[mvlist->move_count].score = 0;
     mvlist->move_count++;
@@ -225,6 +229,8 @@ static inline void add_capture_move(mv_bitmap move_bitmap, struct move_list *mvl
 
 static inline void add_en_passent_move(mv_bitmap move_bitmap, struct move_list *mvlist)
 {
+	assert( mvlist->move_count < MAX_POSITION_MOVES);
+
     mvlist->moves[mvlist->move_count].move_bitmap = move_bitmap;
     mvlist->moves[mvlist->move_count].score = 0;
     mvlist->move_count++;
@@ -546,8 +552,16 @@ static inline void generate_black_pawn_moves(const struct board *brd, struct mov
 		}
 
 		// check for capture right
-		if (pawn_file <= FILE_G) {
+		if (pawn_file <= FILE_G && pawn_sq >= b2) {
 			enum square cap_sq = pawn_sq - 9;
+
+			if ((cap_sq < a1) || (cap_sq > h8)){
+				printf("IIUB");
+			}
+
+			assert((cap_sq >= a1) && (cap_sq <= h8));
+
+
 			enum piece pce = get_piece_at_square(brd, cap_sq);
 
 			if ((pce != NO_PIECE) && (get_colour(pce) == WHITE)) {
@@ -884,4 +898,3 @@ bool TEST_is_move_in_list(struct move_list *mvl, mv_bitmap mv){
 struct move_list * TEST_get_empty_move_list(void){
 	return get_empty_move_list();
 }
-

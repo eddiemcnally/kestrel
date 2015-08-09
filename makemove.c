@@ -52,6 +52,13 @@ static const U8 castle_permission_mask[NUM_SQUARES] = {
 
 void clear_piece(struct board *brd, enum square sq){
 
+	if ((sq < a1) || (sq > h8)){
+		printf("IUBIUBIUB");
+	}
+
+
+	assert((sq >= a1) && (sq <= h8));
+
 	enum piece pce = brd->pieces[sq];
 	enum colour col = IS_WHITE(pce) ? WHITE : BLACK;
 
@@ -133,16 +140,29 @@ void add_piece(struct board *brd, enum piece pce, enum square sq){
 	set_bit(&brd->bitboards[pce], to);
 	set_bit(&brd->board, to);
 
+	overlay_colours(brd, GET_COLOUR(pce));
+	overlay_boards(brd);
 }
 
 
 
 // return false if move is invalid, true otherwise
 bool make_move(struct board *brd, mv_bitmap mv){
+
 	ASSERT_BOARD_OK(brd);
 
 	enum square from = FROMSQ(mv);
 	enum square to = TOSQ(mv);
+
+	if (from < a1 || from > h8){
+		printf("iubiub");
+	}
+
+
+	assert(from >= a1 && from <= h8);
+	assert(to >= a1 && to <= h8);
+
+
 
 	enum colour side = brd->side_to_move;
 
@@ -237,16 +257,106 @@ bool make_move(struct board *brd, mv_bitmap mv){
 
 	enum square king_sq = POP(&bb_king);
 
+	assert(king_sq >= a1 && king_sq <= h8);
 
 	// side is already flipped above, so use that as the attacking side
 	if (is_sq_attacked(king_sq, brd->side_to_move, brd)){
 		return false;
 	}
 
+	ASSERT_BOARD_OK(brd);
+
 	return true;
 
 }
 
+
+
+
+void take_move(struct board *brd){
+
+	ASSERT_BOARD_OK(brd);
+
+	brd->history_ply--;
+	brd->ply--;
+
+
+
+
+	mv_bitmap mv = brd->history[brd->history_ply].move;
+	enum square from = FROMSQ(mv);
+	enum square to = TOSQ(mv);
+
+	assert(from >= a1 && from <= h8);
+	assert(to >= a1 && to <= h8);
+
+
+
+	// hash out en passant and castle if set
+	if (brd->en_passant != NO_SQUARE)
+		update_EP_hash(brd);
+	update_castle_hash(brd);
+
+    brd->castle_perm = brd->history[brd->history_ply].castle_perm;
+    brd->fifty_move_counter = brd->history[brd->history_ply].fifty_move_counter;
+    brd->en_passant = brd->history[brd->history_ply].en_passant;
+
+	// now, hash back in
+	if (brd->en_passant != NO_SQUARE)
+		update_EP_hash(brd);
+	update_castle_hash(brd);
+
+	// flip side
+	brd->side_to_move = FLIP_SIDE(brd->side_to_move);
+	update_side_hash(brd);
+
+	if (MFLAG_EN_PASSANT & mv){
+		if (brd->side_to_move == WHITE){
+			add_piece(brd, B_PAWN, to - 8);
+		} else{
+			add_piece(brd, W_PAWN, to + 8);
+		}
+	} else if (MFLAG_CASTLE & mv){
+		switch(to){
+			case c1:
+				move_piece(brd, d1, a1);
+				break;
+			case c8:
+				move_piece(brd, d8, a8);
+				break;
+			case g1:
+				move_piece(brd, f1, h1);
+				break;
+			case g8:
+				move_piece(brd, f1, h1);
+				break;
+			default:
+				assert(false);
+				break;
+		}
+	}
+
+	move_piece(brd, to, from);
+
+	if (is_king(brd->pieces[from])){
+		brd->king_squares[brd->side_to_move] = from;
+	}
+
+	enum piece captured = CAPTURED(mv);
+	if (captured != NO_PIECE){
+		add_piece(brd, captured, to);
+	}
+
+	enum piece promoted = PROMOTED(mv);
+	if (promoted != NO_PIECE){
+		enum colour prom_col = GET_COLOUR(promoted);
+		clear_piece(brd, from);
+		enum piece pce_to_add = (prom_col == WHITE) ? W_PAWN : B_PAWN;
+		add_piece(brd, pce_to_add, from);
+	}
+
+	ASSERT_BOARD_OK(brd);
+}
 
 
 

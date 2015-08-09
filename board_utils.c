@@ -148,6 +148,15 @@ bool ASSERT_BOARD_OK(const struct board * brd)
 			if (pce == W_KING) {
 				assert(sq == brd->king_squares[WHITE]);
 			} else if (pce == B_KING) {
+				if (sq != brd->king_squares[BLACK]){
+					char pce_label = get_piece_label(pce);
+					printf("pce %c\n", pce_label);
+					char * sq_label = print_square(sq);
+					printf("sq '%s' \n", sq_label);
+					char * ks = print_square(brd->king_squares[BLACK]);
+					printf("king_squares[BLACK] '%s' \n", ks);
+
+				}
 				assert(sq == brd->king_squares[BLACK]);
 			}
 		}

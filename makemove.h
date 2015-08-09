@@ -19,6 +19,7 @@
 #define _MAKE_MOVE_H_
 
 bool make_move(struct board *brd, mv_bitmap mv);
+void take_move(struct board *brd);
 void clear_piece(struct board *brd, enum square sq);
 void add_piece(struct board *brd, enum piece pce, enum square sq);
 void move_piece(struct board *brd, enum square from, enum square to);

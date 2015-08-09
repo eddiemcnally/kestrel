@@ -28,7 +28,7 @@
 #include "hashkeys.h"
 #include "pieces.h"
 
-void overlay_boards(struct board *board_container);
+
 int count_minor_pieces(const struct board *brd);
 int count_big_pieces(const struct board *brd);
 int count_major_pieces(const struct board *brd);
@@ -135,6 +135,8 @@ add_piece_to_board(struct board * board, enum piece piece, enum square square)
     }
 }
 
+
+
 U64 overlay_colours(const struct board *brd, enum colour col){
 	if (col == WHITE){
 		return brd->bitboards[W_PAWN] | brd->bitboards[W_BISHOP]
@@ -148,7 +150,7 @@ U64 overlay_colours(const struct board *brd, enum colour col){
 }
 
 
-inline void overlay_boards(struct board *the_board)
+void overlay_boards(struct board *the_board)
 {
     int i = 0;
     U64 flat_board = BOARD_EMPTY;
@@ -170,6 +172,11 @@ inline void overlay_boards(struct board *the_board)
 
 inline enum piece get_piece_at_square(const struct board *the_board, enum square sq)
 {
+
+	if ((sq < a1) || (sq > h8)){
+		printf("uibiupiuv");
+	}
+
     assert((sq >= a1) && (sq <= h8));
 
     return the_board->pieces[sq];
@@ -184,6 +191,10 @@ inline enum piece get_piece_at_square(const struct board *the_board, enum square
  */
 inline void set_bit(U64 * brd, enum square sq)
 {
+	if ((sq < a1) || (sq > h8)){
+		printf("uibiupiuv");
+	}
+
     assert((sq >= a1) && (sq <= h8));
 
     *brd = *brd | (U64) (0x01ull << sq);
@@ -198,6 +209,10 @@ inline void set_bit(U64 * brd, enum square sq)
  */
 inline void clear_bit(U64 * brd, enum square sq)
 {
+	if ((sq < a1) || (sq > h8)){
+		printf("uibiupiuv");
+	}
+
     assert((sq >= a1) && (sq <= h8));
 
     *brd = *brd & (U64) (~(0x01ull << sq));
