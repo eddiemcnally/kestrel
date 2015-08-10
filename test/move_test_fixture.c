@@ -844,26 +844,14 @@ void test_clear_piece(){
 
 	// save some info before the move for comparison
 	U64 old_hash = brd->board_hash;
-	U8 old_num_pces_on_brd = brd->pce_num[W_KNIGHT];
-	U8 old_num_big_pces = brd->big_pieces[WHITE];
-	U8 old_num_minor_pces = brd->minor_pieces[WHITE];
 	U32 old_material = brd->material[WHITE];
 	enum piece old_pce = brd->pieces[c3];
 
 
 	// remove the knight from c3
-	clear_piece(brd, c3);
+	remove_piece_from_board(brd, old_pce, c3);
 
 	assert_true(old_hash != brd->board_hash);
-
-	assert_true(old_num_pces_on_brd == 2);
-	assert_true(brd->pce_num[W_KNIGHT] == 1);
-
-	assert_true(old_num_big_pces == 8);
-	assert_true(brd->big_pieces[WHITE] == 7);
-
-	assert_true(old_num_minor_pces = 4);
-	assert_true(brd->minor_pieces[WHITE] == 3);
 
 	U32 new_material = brd->material[WHITE] + get_piece_value(W_KNIGHT);
 	assert_true(new_material == old_material);
@@ -896,26 +884,13 @@ void test_add_piece(){
 
 	// save some info before the move for comparison
 	U64 old_hash = brd->board_hash;
-	U8 old_num_pces_on_brd = brd->pce_num[W_KNIGHT];
-	U8 old_num_big_pces = brd->big_pieces[WHITE];
-	U8 old_num_minor_pces = brd->minor_pieces[WHITE];
 	U32 old_material = brd->material[WHITE];
 
 	// add a white knight to c4
-	add_piece(brd, W_KNIGHT, c4);
+	add_piece_to_board(brd, W_KNIGHT, c4);
 
 
 	assert_true(old_hash != brd->board_hash);
-
-	assert_true(old_num_pces_on_brd == 2);
-	assert_true(brd->pce_num[W_KNIGHT] == 3);
-
-	assert_true(old_num_big_pces == 8);
-	assert_true(brd->big_pieces[WHITE] == 9);
-
-	assert_true(old_num_minor_pces = 4);
-	assert_true(brd->minor_pieces[WHITE] == 5);
-
 	U32 new_material = brd->material[WHITE];
 	assert_true(new_material == (old_material + get_piece_value(W_KNIGHT)));
 
@@ -946,9 +921,6 @@ void test_move_piece(){
 
 	// save some info before the move for comparison
 	U64 old_hash = brd->board_hash;
-	U8 old_num_pces_on_brd = brd->pce_num[W_KNIGHT];
-	U8 old_num_big_pces = brd->big_pieces[WHITE];
-	U8 old_num_minor_pces = brd->minor_pieces[WHITE];
 	U32 old_material = brd->material[WHITE];
 
 	// add a white knight from e4 to d3
@@ -956,15 +928,6 @@ void test_move_piece(){
 
 
 	assert_true(old_hash != brd->board_hash);
-
-	assert_true(old_num_pces_on_brd == 2);
-	assert_true(brd->pce_num[W_KNIGHT] == 2);
-
-	assert_true(old_num_big_pces == 8);
-	assert_true(brd->big_pieces[WHITE] == 8);
-
-	assert_true(old_num_minor_pces = 4);
-	assert_true(brd->minor_pieces[WHITE] == 4);
 
 	U32 new_material = brd->material[WHITE];
 	assert_true(new_material == old_material);

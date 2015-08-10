@@ -29,25 +29,18 @@
 
 #define	GET_COLOUR(piece)		(IS_WHITE(piece) ? WHITE : BLACK )
 
+#define IS_BISHOP(pce)			((pce == W_BISHOP) || (pce == B_BISHOP))
+#define IS_KNIGHT(pce)			((pce == W_KNIGHT) || (pce == B_KNIGHT))
+#define IS_ROOK(pce)			((pce == W_ROOK) || (pce == B_ROOK))
+#define IS_PAWN(pce)			((pce == W_PAWN) || (pce == B_PAWN))
+#define IS_KING(pce)			((pce == W_KING) || (pce == B_KING))
+
 
 char get_piece_label(enum piece piece);
-enum colour get_colour(enum piece piece);
 
-bool is_big_piece(enum piece pce);
-bool is_major_piece(enum piece pce);
-bool is_minor_piece(enum piece pce);
 bool is_sliding_piece(enum piece pce);
-
-bool isRQ(enum piece pce);
-bool is_king(enum piece pce);
-bool isKn(enum piece pce);
-bool isBQ(enum piece pce);
-bool isR(enum piece pce);
-bool isB(enum piece pce);
-bool is_pawn(enum piece pce);
 
 bool is_valid_piece(enum piece pce);
 
-enum colour swap_colour(enum colour col);
 U32 get_piece_value(const enum piece pce);
 #endif

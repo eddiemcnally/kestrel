@@ -101,9 +101,6 @@ struct board {
     // In effect, an OR of all elements in piece_boards[]
     U64 board;
 
-    // squares where the kings are
-    enum square king_squares[NUM_COLOURS];
-
     // the next side to move
     enum colour side_to_move;
 
@@ -116,19 +113,6 @@ struct board {
     // keeping track of ply
     U8 ply;
     U8 history_ply;
-
-    // indexed by enum piece, contains the number of pieces of that
-    // type on the board
-    U8 pce_num[NUM_PIECES];
-
-    // indexed by enum colour, contains number of pieces != PAWN
-    U8 big_pieces[NUM_COLOURS];
-
-    // indexed by enum colour, contains number of ROOKs and QUEENs
-    U8 major_pieces[NUM_COLOURS];
-
-    // indexed by enum colour, contains number of BISHOPs and KNIGHTs
-    U8 minor_pieces[NUM_COLOURS];
 
     // indexed by enum colour, contains sum of all piece values
     U32 material[NUM_COLOURS];

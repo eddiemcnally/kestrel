@@ -337,7 +337,7 @@ static inline void add_pawn_move(enum colour col, enum square from,
 static inline void generate_knight_piece_moves(const struct board *brd, struct move_list *mvl, enum colour col){
 
 	enum piece pce = (col == WHITE) ? W_KNIGHT : B_KNIGHT;
-	enum colour pce_col = get_colour(pce);
+	enum colour pce_col = GET_COLOUR(pce);
 
 	// get the bitboard representing all of the piece types
     // on the board
@@ -361,7 +361,7 @@ static inline void generate_knight_piece_moves(const struct board *brd, struct m
 			enum piece p = get_piece_at_square(brd, knight_dest_sq);
 			if (p != NO_PIECE){
 				// square has a piece
-				enum colour pcol = get_colour(p);
+				enum colour pcol = GET_COLOUR(p);
 				if (pcol == pce_col){
 					// dest square has piece with same colour...keep looking for a move
 					continue;
@@ -394,7 +394,7 @@ static inline void generate_knight_piece_moves(const struct board *brd, struct m
 static inline void generate_king_moves(const struct board *brd, struct move_list *mvl, enum colour col){
 
 	enum piece pce = (col == WHITE) ? W_KING : B_KING;
-	enum colour pce_col = get_colour(pce);
+	enum colour pce_col = GET_COLOUR(pce);
 
 	// get the bitboard representing the king
     U64 bbKing = brd->bitboards[pce];
@@ -414,7 +414,7 @@ static inline void generate_king_moves(const struct board *brd, struct move_list
 		enum piece p = get_piece_at_square(brd, king_dest_sq);
 		if (p != NO_PIECE){
 			// square has a piece
-			enum colour pcol = get_colour(p);
+			enum colour pcol = GET_COLOUR(p);
 			if (pcol == pce_col){
 				// dest square has piece with same colour...keep looking for a move
 				continue;
@@ -520,7 +520,7 @@ static inline void generate_white_pawn_moves(const struct board *brd, struct mov
 			assert(cap_sq <= h8);
 			enum piece pce = get_piece_at_square(brd, cap_sq);
 
-			if ((pce != NO_PIECE) && (get_colour(pce) == BLACK)) {
+			if ((pce != NO_PIECE) && (GET_COLOUR(pce) == BLACK)) {
 				add_pawn_capture_move(WHITE, pawn_sq, cap_sq, pce, mvl);
 			}
 
@@ -535,7 +535,7 @@ static inline void generate_white_pawn_moves(const struct board *brd, struct mov
 			assert(cap_sq <= h8);
 			enum piece pce = get_piece_at_square(brd, cap_sq);
 
-			if ((pce != NO_PIECE) && (get_colour(pce) == BLACK)) {
+			if ((pce != NO_PIECE) && (GET_COLOUR(pce) == BLACK)) {
 				add_pawn_capture_move(WHITE, pawn_sq, cap_sq, pce, mvl);
 			}
 
@@ -596,7 +596,7 @@ static inline void generate_black_pawn_moves(const struct board *brd, struct mov
 
 			enum piece pce = get_piece_at_square(brd, cap_sq);
 
-			if ((pce != NO_PIECE) && (get_colour(pce) == WHITE)) {
+			if ((pce != NO_PIECE) && (GET_COLOUR(pce) == WHITE)) {
 				add_pawn_capture_move(BLACK, pawn_sq, cap_sq, pce, mvl);
 			}
 
@@ -614,7 +614,7 @@ static inline void generate_black_pawn_moves(const struct board *brd, struct mov
 
 			enum piece pce = get_piece_at_square(brd, cap_sq);
 
-			if ((pce != NO_PIECE) && (get_colour(pce) == WHITE)) {
+			if ((pce != NO_PIECE) && (GET_COLOUR(pce) == WHITE)) {
 				add_pawn_capture_move(BLACK, pawn_sq, cap_sq, pce, mvl);
 			}
 
@@ -823,11 +823,11 @@ char *print_move(U32 move_bitmap)
 
     if (promoted_pce != NO_PIECE) {
 		char pchar = 'q';
-		if (isKn(promoted_pce)) {
+		if (IS_KNIGHT(promoted_pce)) {
 			pchar = 'n';
-		} else if (isR(promoted_pce)) {
+		} else if (IS_ROOK(promoted_pce)) {
 			pchar = 'r';
-		} else if (isB(promoted_pce)) {
+		} else if (IS_BISHOP(promoted_pce)) {
 			pchar = 'b';
 		}
 		sprintf(move_string, "%c%c%c%c%c", ('a' + from_file),

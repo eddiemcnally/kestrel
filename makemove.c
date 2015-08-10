@@ -24,17 +24,13 @@
 #include "pieces.h"
 #include "board.h"
 #include "attack.h"
+#include "makemove.h"
 #include "board_utils.h"
 #include "move.h"
 #include "hashkeys.h"
 
 
 
-
-void update_piece_hash(struct board *brd, enum piece pce, enum square sq);
-void update_castle_hash(struct board *brd);
-void update_side_hash(struct board *brd);
-void update_EP_hash(struct board *brd);
 
 //bit mask for castle permissions
 static const U8 castle_permission_mask[NUM_SQUARES] = {
@@ -50,66 +46,6 @@ static const U8 castle_permission_mask[NUM_SQUARES] = {
 
 
 
-void clear_piece(struct board *brd, enum square sq){
-
-	assert((sq >= a1) && (sq <= h8));
-
-	enum piece pce = brd->pieces[sq];
-	enum colour col = IS_WHITE(pce) ? WHITE : BLACK;
-
-	update_piece_hash(brd, pce, sq);
-
-	brd->pieces[sq] = NO_PIECE;
-
-	brd->material[col] -= get_piece_value(pce);
-
-	if (is_big_piece(pce)){
-		brd->big_pieces[col]--;
-
-		if (is_major_piece(pce)){
-			brd->major_pieces[col]--;
-		}
-		if (is_minor_piece(pce)){
-			brd->minor_pieces[col]--;
-		}
-	}
-
-	// remove piece from bitboards
-	clear_bit(&brd->bitboards[pce], sq);
-	clear_bit(&brd->board, sq);
-
-	brd->pce_num[pce]--;
-
-}
-
-
-
-void add_piece(struct board *brd, enum piece pce, enum square sq){
-
-	enum colour col = IS_WHITE(pce) ? WHITE : BLACK;
-
-	update_piece_hash(brd, pce, sq);
-
-	brd->pieces[sq] = pce;
-
-	brd->material[col] += get_piece_value(pce);
-
-	if (is_big_piece(pce)){
-		brd->big_pieces[col]++;
-		if (is_major_piece(pce)){
-			brd->major_pieces[col]++;
-		}
-		if (is_minor_piece(pce)){
-			brd->minor_pieces[col]++;
-		}
-	}
-
-	// set piece on bitboards
-	set_bit(&brd->bitboards[pce], sq);
-	set_bit(&brd->board, sq);
-
-	brd->pce_num[pce]++;
-}
 
 
 
@@ -148,16 +84,16 @@ bool make_move(struct board *brd, mv_bitmap mv){
 	assert(to >= a1 && to <= h8);
 
 
-
+	enum piece pce = get_piece_at_square(brd, from);
 	enum colour side = brd->side_to_move;
 
 	brd->history[brd->history_ply].board_hash  = brd->board_hash;
 
 	if(mv & MFLAG_EN_PASSANT) {
         if(side == WHITE) {
-            clear_piece(brd, to-8);
+            remove_piece_from_board(brd, pce, to-8);
         } else {
-            clear_piece(brd, to+8);
+            remove_piece_from_board(brd, pce, to+8);
         }
     } else if (mv & MFLAG_CASTLE) {
         switch(to) {
@@ -201,7 +137,7 @@ bool make_move(struct board *brd, mv_bitmap mv){
 	brd->fifty_move_counter++;
 
 	if (captured != NO_PIECE){
-		clear_piece(brd, to);
+		remove_piece_from_board(brd, captured, to);
 		brd->fifty_move_counter = 0;
 	}
 
@@ -210,7 +146,7 @@ bool make_move(struct board *brd, mv_bitmap mv){
 
 	enum piece pce_being_moved = brd->pieces[from];
 
-	if (is_pawn(pce_being_moved)){
+	if (IS_PAWN(pce_being_moved)){
 		brd->fifty_move_counter = 0;
 
 		if (mv & MFLAG_PAWN_START){
@@ -227,8 +163,8 @@ bool make_move(struct board *brd, mv_bitmap mv){
 
 	enum piece promoted = PROMOTED(mv);
 	if (promoted != NO_PIECE){
-		clear_piece(brd, to);
-		add_piece(brd, promoted, to);
+		remove_piece_from_board(brd, pce_being_moved, to);
+		add_piece_to_board(brd, promoted, to);
 	}
 
 	// flip side
@@ -297,9 +233,9 @@ void take_move(struct board *brd){
 
 	if (MFLAG_EN_PASSANT & mv){
 		if (brd->side_to_move == WHITE){
-			add_piece(brd, B_PAWN, to - 8);
+			add_piece_to_board(brd, B_PAWN, to - 8);
 		} else{
-			add_piece(brd, W_PAWN, to + 8);
+			add_piece_to_board(brd, W_PAWN, to + 8);
 		}
 	} else if (MFLAG_CASTLE & mv){
 		switch(to){
@@ -323,21 +259,18 @@ void take_move(struct board *brd){
 
 	move_piece(brd, to, from);
 
-	if (is_king(brd->pieces[from])){
-		brd->king_squares[brd->side_to_move] = from;
-	}
-
 	enum piece captured = CAPTURED(mv);
 	if (captured != NO_PIECE){
-		add_piece(brd, captured, to);
+		add_piece_to_board(brd, captured, to);
 	}
 
 	enum piece promoted = PROMOTED(mv);
 	if (promoted != NO_PIECE){
 		enum colour prom_col = GET_COLOUR(promoted);
-		clear_piece(brd, from);
+		remove_piece_from_board(brd, brd->pieces[from], from);
+
 		enum piece pce_to_add = (prom_col == WHITE) ? W_PAWN : B_PAWN;
-		add_piece(brd, pce_to_add, from);
+		add_piece_to_board(brd, pce_to_add, from);
 	}
 
 	ASSERT_BOARD_OK(brd);

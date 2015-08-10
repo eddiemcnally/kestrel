@@ -71,46 +71,7 @@ void piece_test_fixture(void);
 	assert_true(true == IS_BLACK(B_KNIGHT));
 	assert_true(true == IS_BLACK(B_KING));
 	assert_true(true == IS_BLACK(B_QUEEN));
-}void test_piece_classification_IS_BIG_PIECE(void)
-{
-	//printf("is_big_piece(W_PAWN) %d\n", (int)is_big_piece(W_PAWN));
-	assert_false(is_big_piece(W_PAWN));
-    assert_false(is_big_piece(B_PAWN));
-	assert_true(is_big_piece(W_ROOK) == true);
-	assert_true(is_big_piece(W_BISHOP) == true);
-	assert_true(is_big_piece(W_KNIGHT) == true);
-	assert_true(is_big_piece(W_QUEEN) == true);
-	assert_true(is_big_piece(W_KING) == true);
-	assert_true(is_big_piece(B_ROOK) == true);
-	assert_true(is_big_piece(B_BISHOP) == true);
-	assert_true(is_big_piece(B_KNIGHT) == true);
-	assert_true(is_big_piece(B_QUEEN) == true);
-	assert_true(is_big_piece(B_KING) == true);
-}void test_piece_classification_IS_MAJOR_PIECE(void)
-{
-	assert_true(is_major_piece(W_PAWN) == false);
-	assert_true(is_major_piece(B_PAWN) == false);
-	assert_true(is_major_piece(W_BISHOP) == false);
-	assert_true(is_major_piece(B_BISHOP) == false);
-	assert_true(is_major_piece(W_KNIGHT) == false);
-	assert_true(is_major_piece(B_KNIGHT) == false);
-	assert_true(is_big_piece(B_ROOK) == true);
-	assert_true(is_big_piece(B_QUEEN) == true);
-	assert_true(is_big_piece(W_QUEEN) == true);
-	assert_true(is_big_piece(W_ROOK) == true);
-}void test_piece_classification_IS_MINOR_PIECE(void)
-{
-	assert_true(is_minor_piece(W_PAWN) == false);
-	assert_true(is_minor_piece(B_PAWN) == false);
-	assert_true(is_minor_piece(W_ROOK) == false);
-	assert_true(is_minor_piece(B_ROOK) == false);
-	assert_true(is_minor_piece(W_QUEEN) == false);
-	assert_true(is_minor_piece(B_QUEEN) == false);
-	assert_true(is_minor_piece(B_BISHOP) == true);
-	assert_true(is_minor_piece(B_KNIGHT) == true);
-	assert_true(is_minor_piece(W_BISHOP) == true);
-	assert_true(is_minor_piece(W_KNIGHT) == true);
-}void test_piece_to_char_conversion(void)
+}void test_piece_to_char_conversion(void)
 {
 	assert_true('P' == get_piece_label(W_PAWN));
     assert_true('p' == get_piece_label(B_PAWN));
@@ -130,8 +91,5 @@ void piece_test_fixture(void);
 	run_test(test_piece_to_char_conversion);
     run_test(test_rank_file_macros);
 	run_test(test_piece_colour_macro);
-	run_test(test_piece_classification_IS_BIG_PIECE);
-	run_test(test_piece_classification_IS_MAJOR_PIECE);
-	run_test(test_piece_classification_IS_MINOR_PIECE);
 	test_fixture_end();
 }

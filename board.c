@@ -25,13 +25,10 @@
 #include "fen.h"
 #include "board.h"
 #include "board_utils.h"
+#include "makemove.h"
 #include "hashkeys.h"
 #include "pieces.h"
 
-
-int count_minor_pieces(const struct board *brd);
-int count_big_pieces(const struct board *brd);
-int count_major_pieces(const struct board *brd);
 
 static const U8 BitTable[64] = {
     63, 30, 3, 32, 25, 41, 22, 33, 15, 50, 42, 13, 11, 53, 19, 34, 61, 29,
@@ -60,27 +57,42 @@ struct board *init_board(void)
     return brd;
 }
 
-void update_piece_material(struct board *brd)
-{
 
-    for (enum square sq = a1; sq < NUM_SQUARES; sq++) {
-		enum piece pce = get_piece_at_square(brd, sq);
-		if (pce != NO_PIECE) {
-			enum colour colour = get_colour(pce);
 
-			if (is_big_piece(pce)) brd->big_pieces[colour]++;
-			if (is_minor_piece(pce)) brd->minor_pieces[colour]++;
-			if (is_major_piece(pce)) brd->major_pieces[colour]++;
+void remove_piece_from_board(struct board *brd, enum piece pce, enum square sq){
 
-			brd->material[colour] += get_piece_value(pce);
-			brd->pce_num[pce]++;
+	assert((sq >= a1) && (sq <= h8));
 
-			if (pce == W_KING) brd->king_squares[WHITE] = sq;
-			if (pce == B_KING) brd->king_squares[BLACK] = sq;
-		}
-    }
+	enum colour col = GET_COLOUR(pce);
 
+	update_piece_hash(brd, pce, sq);
+
+	brd->pieces[sq] = NO_PIECE;
+
+	brd->material[col] -= get_piece_value(pce);
+
+	// remove piece from bitboards
+	clear_bit(&brd->bitboards[pce], sq);
+	clear_bit(&brd->board, sq);
 }
+
+
+void add_piece_to_board(struct board *brd, enum piece pce, enum square sq){
+
+	enum colour col = GET_COLOUR(pce);
+
+	update_piece_hash(brd, pce, sq);
+
+	brd->pieces[sq] = pce;
+
+	brd->material[col] += get_piece_value(pce);
+
+	// set piece on bitboards
+	set_bit(&brd->bitboards[pce], sq);
+	set_bit(&brd->board, sq);
+}
+
+
 
 /*
  * Creates an empty board struct
@@ -95,44 +107,11 @@ struct board *get_clean_board(void)
 
     memset(brd, 0, sizeof(struct board));
 
-    brd->king_squares[WHITE] = NO_SQUARE;
-    brd->king_squares[BLACK] = NO_SQUARE;
-
     for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
 		brd->pieces[sq] = NO_PIECE;
     }
 
     return brd;
-}
-
-/*
- * Adds a piece to a board.
- * name: add_piece_to_board
- * @param : the board, the piece, and the square
- * @return : true if OK, false if piece already on that square
- *
- */
-bool
-add_piece_to_board(struct board * board, enum piece piece, enum square square)
-{
-    assert((square >= a1) && (square <= h8));
-    assert((piece >= W_PAWN) && (piece <= B_KING));
-
-    if (check_bit(&board->board, square) != 0) {
-		// square already occupied
-		assert(check_bit(&board->board, square) != 0);
-		return false;
-    } else {
-		// set bit in relevant piece board
-		set_bit(&(board->bitboards[piece]), square);
-
-		// regen flat board
-		overlay_boards(board);
-
-		//printf("adding %d to square %d\n", piece, square);
-		board->pieces[square] = piece;
-		return true;
-    }
 }
 
 
@@ -172,6 +151,11 @@ void overlay_boards(struct board *the_board)
 
 inline enum piece get_piece_at_square(const struct board *the_board, enum square sq)
 {
+
+	if ((sq < a1) || (sq > h8)){
+		printf("uibiupiuv");
+	}
+
     assert((sq >= a1) && (sq <= h8));
 
     return the_board->pieces[sq];
@@ -186,6 +170,10 @@ inline enum piece get_piece_at_square(const struct board *the_board, enum square
  */
 inline void set_bit(U64 * brd, enum square sq)
 {
+	if ((sq < a1) || (sq > h8)){
+		printf("uibiupiuv");
+	}
+
     assert((sq >= a1) && (sq <= h8));
 
     *brd = *brd | (U64) (0x01ull << sq);
@@ -200,6 +188,10 @@ inline void set_bit(U64 * brd, enum square sq)
  */
 inline void clear_bit(U64 * brd, enum square sq)
 {
+	if ((sq < a1) || (sq > h8)){
+		printf("uibiupiuv");
+	}
+
     assert((sq >= a1) && (sq <= h8));
 
     *brd = *brd & (U64) (~(0x01ull << sq));

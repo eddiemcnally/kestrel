@@ -163,8 +163,6 @@ int consume_fen_notation(const char *fen_string, struct board *board_to_setup)
 		board_to_setup->en_passant = NO_SQUARE;
     }
 
-    update_piece_material(board_to_setup);
-
     board_to_setup->board_hash = get_position_hashkey(board_to_setup);
 
     return 0;

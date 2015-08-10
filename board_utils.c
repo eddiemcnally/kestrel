@@ -142,22 +142,21 @@ bool ASSERT_BOARD_OK(const struct board * brd)
     assert(conflated == brd->board);
 
     // check where Kings are
-    for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
+    for (enum square sq = a1; sq <= h8; sq++) {
 		enum piece pce = get_piece_at_square(brd, sq);
 		if (pce != NO_PIECE) {
 			if (pce == W_KING) {
-				assert(sq == brd->king_squares[WHITE]);
-			} else if (pce == B_KING) {
-				if (sq != brd->king_squares[BLACK]){
-					char pce_label = get_piece_label(pce);
-					printf("pce %c\n", pce_label);
-					char * sq_label = print_square(sq);
-					printf("sq '%s' \n", sq_label);
-					char * ks = print_square(brd->king_squares[BLACK]);
-					printf("king_squares[BLACK] '%s' \n", ks);
 
-				}
-				assert(sq == brd->king_squares[BLACK]);
+				U64 bb_wk = brd->bitboards[W_KING];
+				enum square wk_sq = POP(&bb_wk);
+
+				assert(sq == wk_sq);
+			} else if (pce == B_KING) {
+
+				U64 bb_bk = brd->bitboards[B_KING];
+				enum square bk_sq = POP(&bb_bk);
+
+				assert(sq == bk_sq);
 			}
 		}
     }
@@ -170,21 +169,6 @@ bool ASSERT_BOARD_OK(const struct board * brd)
 		}
     }
 
-    // check number of pieces on board
-    // -------------------------------
-    U8 pce_num[NUM_PIECES] = { 0 };
-    for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
-		enum piece pce = get_piece_at_square(brd, sq);
-		if (pce != NO_PIECE) {
-			pce_num[pce]++;
-		}
-    }
-    for (int i = 0; i < NUM_PIECES; i++) {
-		assert(pce_num[i] == brd->pce_num[i]);
-    }
-    for (int i = 0; i < NUM_PIECES; i++) {
-		assert(pce_num[i] == CNT(brd->bitboards[i]));
-    }
 
     assert(brd->en_passant == NO_SQUARE
 	   || (GET_RANK(brd->en_passant) == RANK_6
@@ -192,38 +176,13 @@ bool ASSERT_BOARD_OK(const struct board * brd)
 	   || (GET_RANK(brd->en_passant) == RANK_3
 	       && brd->side_to_move == BLACK));
 
-    // check on big, major and minor piece count
-    U8 big_pieces[NUM_COLOURS] = { 0 };
-    U8 major_pieces[NUM_COLOURS] = { 0 };
-    U8 minor_pieces[NUM_COLOURS] = { 0 };
-    for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
-		enum piece pce = get_piece_at_square(brd, sq);
-		if (pce != NO_PIECE) {
-			enum colour col = get_colour(pce);
-			if (is_big_piece(pce)) {
-				big_pieces[col]++;
-			}
-			if (is_major_piece(pce)) {
-				major_pieces[col]++;
-			}
-			if (is_minor_piece(pce)) {
-				minor_pieces[col]++;
-			}
-		}
-    }
-    assert(big_pieces[WHITE] == brd->big_pieces[WHITE]);
-    assert(big_pieces[BLACK] == brd->big_pieces[BLACK]);
-    assert(major_pieces[WHITE] == brd->major_pieces[WHITE]);
-    assert(major_pieces[BLACK] == brd->major_pieces[BLACK]);
-    assert(minor_pieces[WHITE] == brd->minor_pieces[WHITE]);
-    assert(minor_pieces[BLACK] == brd->minor_pieces[BLACK]);
 
     // calc and verify the material count
     U32 local_material[NUM_COLOURS] = { 0 };
     for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
 		enum piece pce = get_piece_at_square(brd, sq);
 		if (pce != NO_PIECE) {
-			enum colour col = get_colour(pce);
+			enum colour col = GET_COLOUR(pce);
 			local_material[col] += get_piece_value(pce);
 		}
     }

@@ -85,9 +85,6 @@ void test_initial_board_placement()
     }
 
     // now verify remainder of struct is populated
-    assert_true(the_board->king_squares[WHITE] == e1);
-    assert_true(the_board->king_squares[BLACK] == e8);
-
     assert_true(the_board->side_to_move == WHITE);
 
     assert_true(the_board->en_passant == NO_SQUARE);
@@ -96,28 +93,6 @@ void test_initial_board_placement()
     assert_true(the_board->ply == 0);
     assert_true(the_board->history_ply == 0);
 
-    assert_true(the_board->pce_num[W_PAWN] == 8);
-    assert_true(the_board->pce_num[W_KNIGHT] == 2);
-    assert_true(the_board->pce_num[W_BISHOP] == 2);
-    assert_true(the_board->pce_num[W_ROOK] == 2);
-    assert_true(the_board->pce_num[W_QUEEN] == 1);
-    assert_true(the_board->pce_num[W_KING] == 1);
-
-    assert_true(the_board->pce_num[B_PAWN] == 8);
-    assert_true(the_board->pce_num[B_KNIGHT] == 2);
-    assert_true(the_board->pce_num[B_BISHOP] == 2);
-    assert_true(the_board->pce_num[B_ROOK] == 2);
-    assert_true(the_board->pce_num[B_QUEEN] == 1);
-    assert_true(the_board->pce_num[B_KING] == 1);
-
-    assert_true(the_board->big_pieces[WHITE] == 8);
-    assert_true(the_board->big_pieces[BLACK] == 8);
-
-    assert_true(the_board->major_pieces[WHITE] == 3);
-    assert_true(the_board->major_pieces[BLACK] == 3);
-
-    assert_true(the_board->minor_pieces[WHITE] == 4);
-    assert_true(the_board->minor_pieces[BLACK] == 4);
 
     assert_true(the_board->castle_perm == (WQCA | WKCA | BQCA | BKCA));
 
@@ -131,23 +106,7 @@ void test_initial_board_placement()
 	assert_true(the_board->board == (U64) 0);
 	for (int i = 0; i < NUM_PIECES; i++) {
 		assert_true(the_board->bitboards[i] == (U64) 0);
-	}}void test_add_to_board()
-{
-    struct board *the_board = get_clean_board();
-	add_piece_to_board(the_board, W_PAWN, a8);
-    add_piece_to_board(the_board, B_QUEEN, g3);
-    add_piece_to_board(the_board, W_PAWN, b6);
-    add_piece_to_board(the_board, W_KING, a4);
-    add_piece_to_board(the_board, W_ROOK, h8);
-
-	// add again, to check error handling
-	assert_true(add_piece_to_board(the_board, W_PAWN, a8) == false);
-    assert_true(get_piece_at_square(the_board, a8) == (enum piece)W_PAWN);
-    assert_true(get_piece_at_square(the_board, g3) == (enum piece)B_QUEEN);
-    assert_true(get_piece_at_square(the_board, b6) == (enum piece)W_PAWN);
-    assert_true(get_piece_at_square(the_board, a4) == (enum piece)W_KING);
-    assert_true(get_piece_at_square(the_board, h8) == (enum piece)W_ROOK);
-}void test_fen_parsing_initial_board_layout(void)
+	}}void test_fen_parsing_initial_board_layout(void)
 {
 	struct board *the_board = get_clean_board();
 
@@ -382,7 +341,6 @@ void test_LSB_clear(void)
 	test_fixture_start();	// starts a fixture
 	run_test(test_initial_board_placement);
     run_test(test_clean_board);
-    run_test(test_add_to_board);
 	run_test(test_setting_bits_in_a_board);
     run_test(test_checking_bits_in_a_board);
     run_test(test_clearing_bits_in_a_board);
