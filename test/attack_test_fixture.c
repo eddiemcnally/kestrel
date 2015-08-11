@@ -467,21 +467,48 @@ void test_is_square_under_attack(void)
     assert_true(is_sq_attacked(e3, WHITE, brd));
     assert_true(is_sq_attacked(h2, WHITE, brd));
 
+    test_fen = "8/1pppp2k/6p1/5p2/8/3B4/8/4K3 w - - 0 1";
+
+    brd = get_clean_board();
+    consume_fen_notation(test_fen, brd);
+	assert_false(is_sq_attacked(h7, WHITE, brd));
+
+
+
+    test_fen = "rnbq1bnr/ppppp1pp/6k1/5p2/4P3/3B4/PPPP2PP/RNBQK1NR w KQ - 0 1";
+
+    brd = get_clean_board();
+    consume_fen_notation(test_fen, brd);
+
+	assert_false(is_sq_attacked(g6, WHITE, brd));
+
+
+
+    test_fen = "r3k2r/p1ppqpb1/bn2pnp1/3PN2Q/1p2P3/2N4p/PPPBBPPP/R3K2R w KQkq - 0 1";
+
+    brd = get_clean_board();
+    consume_fen_notation(test_fen, brd);
+
+	assert_false(is_sq_attacked(e8, WHITE, brd));
+
+
+
+
 }
 
 void attack_test_fixture(void)
 {
     test_fixture_start();	// starts a fixture
 
-    run_test(test_is_square_being_attacked_by_knight);
-    run_test(test_is_square_being_attacked_by_pawn);
-    run_test(test_is_square_being_attacked_by_king);
-    run_test(test_is_square_being_attacked_by_rook);
-    run_test(test_is_square_being_attacked_by_bishop);
-    run_test(test_is_square_attacked_by_queen);
+    //run_test(test_is_square_being_attacked_by_knight);
+    //run_test(test_is_square_being_attacked_by_pawn);
+    //run_test(test_is_square_being_attacked_by_king);
+    //run_test(test_is_square_being_attacked_by_rook);
+    //run_test(test_is_square_being_attacked_by_bishop);
+    //run_test(test_is_square_attacked_by_queen);
 
-    run_test(test_is_blocked_up_or_down);
-    run_test(test_is_blocked_diagonally);
+    //run_test(test_is_blocked_up_or_down);
+    //run_test(test_is_blocked_diagonally);
 
     run_test(test_is_square_under_attack);
 

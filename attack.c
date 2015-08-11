@@ -107,7 +107,7 @@ bool is_sq_attacked(enum square sq, enum colour attacking_side, const struct boa
 			printf("B ROOK attacking %s\n", print_square(sq));
 		}
 		return true;
-		}
+	}
 
     return false;
 }
@@ -180,10 +180,14 @@ static bool is_bishop_attacking_square(enum square sq, enum colour attacking_sid
 			// a bishop is possibly attacking this square
 			// search for any blocking pieces
 			bool blocked = is_diagonally_blocked(sq, att_pce_sq, brd);
-			if (!blocked)
-			return true;
+			if (!blocked){
+				//printf("not blocked between %s and %s\n", print_square(sq), print_square(att_pce_sq));
+				return true;
+			}
 		}
     }
+
+	//printf("not attacking %s\n", print_square(sq));
     return false;
 }
 
@@ -270,9 +274,6 @@ static inline bool is_queen_attacking_square(enum square sq, enum colour attacki
 
     enum piece attacking_piece;
 
-    // ------------------------
-    // check king
-    // ------------------------
     if (attacking_side == WHITE)
 		attacking_piece = W_QUEEN;
     else
@@ -437,6 +438,8 @@ static inline bool is_diagonally_blocked(enum square sq_one, enum square sq_two,
 
     assert(sq_one != sq_two);
 
+	//printf("checking if %s and %s are attackable\n", print_square(sq_one), print_square(sq_two));
+
     if (sq_one < sq_two) {
 		bool blocked = search_up_left_and_right(sq_one, sq_two, brd);
 		return blocked;
@@ -455,11 +458,21 @@ static inline bool is_diagonally_blocked(enum square sq_one, enum square sq_two,
  * @return
  *
  */
+//              56 57 58 59 60 61 62 63
+//              48 49 50 51 52 53 54 55
+//              40 41 42 43 44 45 46 47
+//              32 33 34 35 36 37 38 39
+//              24 25 26 27 28 29 30 31
+//              16 17 18 19 20 21 22 23
+//              08 09 10 11 12 13 14 15
+//              00 01 02 03 40 05 06 07
 
 static inline bool search_up_left_and_right(enum square sq_one, enum square sq_two, const struct board *brd)
 {
 
+	// check north-east
     if (((sq_two - sq_one) % 9) == 0) {
+		//printf("searching NE\n");
 		// search up and right from sq_one
 		enum square sq = sq_one + 9;
 		int sq_rank = GET_RANK(sq);
@@ -467,30 +480,40 @@ static inline bool search_up_left_and_right(enum square sq_one, enum square sq_t
 
 		while ((sq < sq_two) && (sq_file <= FILE_H) && (sq_rank <= RANK_8)) {
 			//printf("111checking square %d\n", sq);
+			//printf("checking %s\n", print_square(sq));
+
 			if (is_square_occupied(brd->board, sq)) {
+				//printf("square blocking...%s\n", print_square(sq));
 				return true;
 			}
 			sq += 9;
 			sq_rank = GET_RANK(sq);
 			sq_file = GET_FILE(sq);
 		}
-    } else {
-
-		// search up and left
+    } else if (((sq_two - sq_one) % 7) == 0) {
+		// search north-west
+		//printf("searching NW\n");
 		enum square sq = sq_one + 7;
 		int sq_rank = GET_RANK(sq);
 		int sq_file = GET_FILE(sq);
 
 		while ((sq < sq_two) && (sq_file >= FILE_A) && (sq_rank <= RANK_8)) {
 			//printf("222checking square %d\n", sq);
+			//printf("checking %s\n", print_square(sq));
+
 			if (is_square_occupied(brd->board, sq)) {
+				//printf("square blocking...%s\n", print_square(sq));
+
 				return true;
 			}
 			sq += 7;
 			sq_rank = GET_RANK(sq);
 			sq_file = GET_FILE(sq);
 		}
-    }
+    } else {
+		// not on a line of sight....ignore
+		return false;
+	}
 
     return false;
 }
@@ -504,41 +527,63 @@ static inline bool search_up_left_and_right(enum square sq_one, enum square sq_t
  * @return
  *
  */
-
+//              56 57 58 59 60 61 62 63
+//              48 49 50 51 52 53 54 55
+//              40 41 42 43 44 45 46 47
+//              32 33 34 35 36 37 38 39
+//              24 25 26 27 28 29 30 31
+//              16 17 18 19 20 21 22 23
+//              08 09 10 11 12 13 14 15
+//              00 01 02 03 40 05 06 07
 static inline bool search_down_left_and_right(enum square sq_one, enum square sq_two, const struct board *brd)
 {
+	// search south-west
     if (((sq_one - sq_two) % 9) == 0) {
-
 		// search down and left from sq_one
+		//printf("searching SW\n");
 		enum square sq = sq_one - 9;
 		int sq_rank = GET_RANK(sq);
 		int sq_file = GET_FILE(sq);
 
 		while ((sq > sq_two) && (sq_rank >= RANK_1) && (sq_file >= FILE_A)) {
+			//printf("checking %s\n", print_square(sq));
+
 			if (is_square_occupied(brd->board, sq)) {
+				//printf("square blocking...%s\n", print_square(sq));
+
 				return true;
 			}
 			sq -= 9;
 			sq_rank = GET_RANK(sq);
 			sq_file = GET_FILE(sq);
 		}
-    } else {
-
-		// search down and right from sq_two
+    } else if (((sq_one - sq_two) % 7) == 0) {
+		// search south-east
+		//printf("searching SE\n");
 		enum square sq = sq_one - 7;
 		int sq_rank = GET_RANK(sq);
 		int sq_file = GET_FILE(sq);
 
-		while ((sq < sq_one) && (sq_file >= FILE_H) && (sq_rank >= RANK_1)) {
+		//printf("checking %s\n", print_square(sq));
 
+		while ((sq < sq_one) && (sq_file <= FILE_H) && (sq_rank >= RANK_1)) {
+
+			//printf("----------------\n");
+			//print_board(brd);
+			//printf("----------------\n");
 			if (is_square_occupied(brd->board, sq)) {
+				//printf("square blocking...%s\n", print_square(sq));
+
 				return true;
 			}
 			sq -= 7;
 			sq_rank = GET_RANK(sq);
 			sq_file = GET_FILE(sq);
 		}
-    }
+    } else {
+		// not on a line of sight....ignore
+		return false;
+	}
     return false;
 }
 

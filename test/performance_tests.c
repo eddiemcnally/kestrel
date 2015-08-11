@@ -32,22 +32,43 @@
 
 
 void perf_test(int depth, struct board *brd);
-void test_move_gen_depth_3(void);
+void test_move_gen_depth(void);
 void perft(int depth, struct board *brd);
 
 
 
 long leafNodes = 0;
 
-void test_move_gen_depth_3(){
+void test_move_gen_depth(){
 
-	// depth 3 for this should have 97 moves
-	char * sample_position = "8/Pk6/8/8/8/8/6Kp/8 b - - 0 1";
+
+	//1r2k2r/8/8/8/8/8/8/R3K2R w KQk - 0 1 ;D1 26 ;D2 583 ;D3 14252 ;D4 334705 ;D5 8198901 ;D6 198328929
+	char * sample_position = "1r2k2r/8/8/8/8/8/8/R3K2R w KQk - 0 1";
     struct board *brd= get_clean_board();
 
     consume_fen_notation(sample_position, brd);
 
 	perf_test(3, brd);
+
+	assert_true(leafNodes == 14252);
+
+
+/////////////////////////////////////////////////////
+
+	leafNodes = 0;
+	//r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 ;D1 48 ;D2 2039 ;D3 97862 ;D4 4085603 ;D5 193690690 ;D6 8031647685
+	sample_position = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1";
+    brd= get_clean_board();
+
+    consume_fen_notation(sample_position, brd);
+
+	perf_test(2, brd);
+
+	assert_true(leafNodes == 2039);
+
+
+
+
 
 }
 
@@ -124,7 +145,7 @@ void perf_test_fixture(void)
 {
     test_fixture_start();	// starts a fixture
 
-    run_test(test_move_gen_depth_3);
+    run_test(test_move_gen_depth);
 
 
 

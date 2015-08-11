@@ -79,11 +79,12 @@ bool make_move(struct board *brd, mv_bitmap mv){
 	enum square to = TOSQ(mv);
 
 	printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
-	print_move_details(mv, 0);
-	printf("from : %s\n", print_square(from));
-	printf("to   : %s\n", print_square(to));
+	//print_move_details(mv, 0);
+	printf("move : %s\n",print_move(mv));
+//	printf("from : %s\n", print_square(from));
+//	printf("to   : %s\n", print_square(to));
 
-	//print_board(brd);
+	print_board(brd);
 
 
 
@@ -197,7 +198,6 @@ bool make_move(struct board *brd, mv_bitmap mv){
 	if (is_sq_attacked(king_sq, brd->side_to_move, brd)){
 
 		printf("---------------- invalid move....reverting ------------------\n");
-		printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
 
 		take_move(brd);
 		return false;
