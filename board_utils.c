@@ -179,13 +179,19 @@ bool ASSERT_BOARD_OK(const struct board * brd)
 
     // calc and verify the material count
     U32 local_material[NUM_COLOURS] = { 0 };
-    for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
+    for (enum square sq = 0; sq <= h8; sq++) {
 		enum piece pce = get_piece_at_square(brd, sq);
 		if (pce != NO_PIECE) {
 			enum colour col = GET_COLOUR(pce);
 			local_material[col] += get_piece_value(pce);
 		}
     }
+
+	if (local_material[WHITE] != brd->material[WHITE]){
+		printf("--------------------------------------\n");
+		print_board(brd);
+	}
+
     assert(local_material[WHITE] == brd->material[WHITE]);
     assert(local_material[BLACK] == brd->material[BLACK]);
 

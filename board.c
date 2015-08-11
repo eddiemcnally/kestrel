@@ -151,11 +151,6 @@ void overlay_boards(struct board *the_board)
 
 inline enum piece get_piece_at_square(const struct board *the_board, enum square sq)
 {
-
-	if ((sq < a1) || (sq > h8)){
-		printf("uibiupiuv");
-	}
-
     assert((sq >= a1) && (sq <= h8));
 
     return the_board->pieces[sq];

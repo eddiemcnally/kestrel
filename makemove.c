@@ -75,10 +75,18 @@ bool make_move(struct board *brd, mv_bitmap mv){
 
 	ASSERT_BOARD_OK(brd);
 
-
-
 	enum square from = FROMSQ(mv);
 	enum square to = TOSQ(mv);
+
+	printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
+	print_move_details(mv, 0);
+	printf("from : %s\n", print_square(from));
+	printf("to   : %s\n", print_square(to));
+
+	//print_board(brd);
+
+
+
 
 	assert(from >= a1 && from <= h8);
 	assert(to >= a1 && to <= h8);
@@ -86,6 +94,8 @@ bool make_move(struct board *brd, mv_bitmap mv){
 
 	enum piece pce = get_piece_at_square(brd, from);
 	enum colour side = brd->side_to_move;
+
+	assert(GET_COLOUR(pce) == side);
 
 	brd->history[brd->history_ply].board_hash  = brd->board_hash;
 
@@ -152,8 +162,10 @@ bool make_move(struct board *brd, mv_bitmap mv){
 		if (mv & MFLAG_PAWN_START){
 			if (side == WHITE){
 				brd->en_passant = from + 8;
+				assert(GET_RANK(from + 8) == RANK_3);
 			} else {
 				brd->en_passant = from - 8;
+				assert(GET_RANK(from - 8) == RANK_6);
 			}
 			update_EP_hash(brd);
 		}
@@ -171,24 +183,27 @@ bool make_move(struct board *brd, mv_bitmap mv){
 	brd->side_to_move = FLIP_SIDE(brd->side_to_move);
 	update_side_hash(brd);
 
+
+	ASSERT_BOARD_OK(brd);
+
 	// check if move is valid (ie, king in check)
 	enum piece king = (side == BLACK) ? B_KING : W_KING;
-
 	U64 bb_king = brd->bitboards[king];
-
 	enum square king_sq = POP(&bb_king);
 
 	assert(king_sq >= a1 && king_sq <= h8);
 
 	// side is already flipped above, so use that as the attacking side
 	if (is_sq_attacked(king_sq, brd->side_to_move, brd)){
+
+		printf("---------------- invalid move....reverting ------------------\n");
+		printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
+
+		take_move(brd);
 		return false;
+	} else {
+		return true;
 	}
-
-	ASSERT_BOARD_OK(brd);
-
-	return true;
-
 }
 
 
@@ -200,9 +215,6 @@ void take_move(struct board *brd){
 
 	brd->history_ply--;
 	brd->ply--;
-
-
-
 
 	mv_bitmap mv = brd->history[brd->history_ply].move;
 	enum square from = FROMSQ(mv);
@@ -249,7 +261,7 @@ void take_move(struct board *brd){
 				move_piece(brd, f1, h1);
 				break;
 			case g8:
-				move_piece(brd, f1, h1);
+				move_piece(brd, f8, h8);
 				break;
 			default:
 				assert(false);

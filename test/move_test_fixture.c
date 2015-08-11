@@ -453,16 +453,18 @@ void test_generation_sliding_diagonal_moves(void){
 
 	char * sliding_test = "8/2B1p2P/4PppK/p2pP1P1/1P4pp/Pb2p3/3P1Pk1/2bB4 w - - 0 1";
     struct board *brd= get_clean_board();
-    //print_board(brd);
+
     consume_fen_notation(sliding_test, brd);
 
     struct move_list *mvl = malloc(sizeof(struct move_list));
 	memset(mvl, 0, sizeof(struct move_list));
-
+    print_board(brd);
 
 
 	// black bishops
 	TEST_generate_sliding_diagonal_moves(brd, mvl, B_BISHOP);
+
+	print_move_list_details(mvl);
 
 	assert_true(mvl->move_count == 8);
 
@@ -484,17 +486,26 @@ void test_generation_sliding_diagonal_moves(void){
 	mv = MOVE(c1, d2, W_PAWN, NO_PIECE, 0);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
+	assert_false(is_sq_attacked(h6, BLACK, brd));
 
+
+
+///////////////////////////////////////////////////
 	// now look at white bishops
     brd= get_clean_board();
-    //print_board(brd);
+
     consume_fen_notation(sliding_test, brd);
 
     mvl = malloc(sizeof(struct move_list));
 	memset(mvl, 0, sizeof(struct move_list));
 
+    print_board(brd);
+
 	TEST_generate_sliding_diagonal_moves(brd, mvl, W_BISHOP);
 	assert_true(mvl->move_count == 10);
+
+	print_move_list_details(mvl);
+
 
 	mv = MOVE(d1, c2, NO_PIECE, NO_PIECE, 0);
 	assert_true(TEST_is_move_in_list(mvl, mv));
@@ -944,24 +955,23 @@ void test_move_piece(){
 }
 
 
-
 void move_test_fixture(void)
 {
     test_fixture_start();	// starts a fixture
 
-    run_test(test_generation_white_pawn_moves);
-    run_test(test_generation_black_pawn_moves);
-	run_test(test_generation_white_knight_pawn_moves);
-	run_test(test_generation_black_knight_pawn_moves);
-	run_test(test_generation_king_moves);
-	run_test(test_king_castling_moves);
-	run_test(test_generation_sliding_horizontal_and_vertical_moves);
-	run_test(test_generation_sliding_diagonal_moves);
-	run_test(test_generation_queen_moves);
-	run_test(test_sample_board_position);
-	run_test(test_clear_piece);
-	run_test(test_add_piece);
-	run_test(test_move_piece);
+    //run_test(test_generation_white_pawn_moves);
+    //run_test(test_generation_black_pawn_moves);
+	//run_test(test_generation_white_knight_pawn_moves);
+	//run_test(test_generation_black_knight_pawn_moves);
+	//run_test(test_generation_king_moves);
+	//run_test(test_king_castling_moves);
+	//run_test(test_generation_sliding_horizontal_and_vertical_moves);
+	//run_test(test_generation_sliding_diagonal_moves);
+	//run_test(test_generation_queen_moves);
+	//run_test(test_sample_board_position);
+	//run_test(test_clear_piece);
+	//run_test(test_add_piece);
+	//run_test(test_move_piece);
 
     test_fixture_end();		// ends a fixture
 }

@@ -41,8 +41,8 @@ long leafNodes = 0;
 
 void test_move_gen_depth_3(){
 
-	// depth 3 for this should have 97862 moves
-	char * sample_position = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1";
+	// depth 3 for this should have 97 moves
+	char * sample_position = "8/Pk6/8/8/8/8/6Kp/8 b - - 0 1";
     struct board *brd= get_clean_board();
 
     consume_fen_notation(sample_position, brd);
@@ -101,7 +101,7 @@ void perft(int depth, struct board *brd) {
 
 	generate_all_moves(brd, mv_list);
 
-	printf("# moves generated = %d\n", mv_list->move_count);
+	//printf("# moves generated = %d\n", mv_list->move_count);
 
     mv_bitmap mv;
     for(U32 mv_num = 0; mv_num < mv_list->move_count; mv_num++) {

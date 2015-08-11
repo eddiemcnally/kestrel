@@ -57,21 +57,62 @@ bool is_sq_attacked(enum square sq, enum colour attacking_side, const struct boa
 	// TODO:
 	// combine rook/queen and bishop/queen to reduce number of lookups
 
-    if (is_knight_attacking_square(sq, attacking_side, brd))
+    if (is_knight_attacking_square(sq, attacking_side, brd)){
+		if(attacking_side == WHITE){
+			printf("W Knight attacking %s\n", print_square(sq));
+		} else{
+			printf("B Knight attacking %s\n", print_square(sq));
+		}
 		return true;
-    if (is_pawn_attacking_square(sq, attacking_side, brd))
+	}
+    if (is_pawn_attacking_square(sq, attacking_side, brd)){
+		if(attacking_side == WHITE){
+			printf("W PAWN attacking %s\n", print_square(sq));
+		} else{
+			printf("B PAWN attacking %s\n", print_square(sq));
+		}
+
 		return true;
-    if (is_king_attacking_square(sq, attacking_side, brd))
+	}
+
+    if (is_king_attacking_square(sq, attacking_side, brd)){
+		if(attacking_side == WHITE){
+			printf("W KING attacking %s\n", print_square(sq));
+		} else{
+			printf("B KING attacking %s\n", print_square(sq));
+		}
+
 		return true;
-    if (is_queen_attacking_square(sq, attacking_side, brd))
+	}
+    if (is_queen_attacking_square(sq, attacking_side, brd)){
+		if(attacking_side == WHITE){
+			printf("W QUEEN attacking %s\n", print_square(sq));
+		} else{
+			printf("B QUEEN attacking %s\n", print_square(sq));
+		}
 		return true;
-    if (is_bishop_attacking_square(sq, attacking_side, brd))
+	}
+    if (is_bishop_attacking_square(sq, attacking_side, brd)){
+		if(attacking_side == WHITE){
+			printf("W BISHOP attacking %s\n", print_square(sq));
+		} else{
+			printf("B BISHOP attacking %s\n", print_square(sq));
+		}
 		return true;
-    if (is_rook_attacking_square(sq, attacking_side, brd))
+	}
+    if (is_rook_attacking_square(sq, attacking_side, brd)){
+		if(attacking_side == WHITE){
+			printf("W ROOK attacking %s\n", print_square(sq));
+		} else{
+			printf("B ROOK attacking %s\n", print_square(sq));
+		}
 		return true;
+		}
 
     return false;
 }
+
+
 
 //              56 57 58 59 60 61 62 63
 //              48 49 50 51 52 53 54 55
@@ -531,7 +572,3 @@ bool TEST_is_horizontal_or_vertical_blocked(enum square sq_one, enum square sq_t
 bool TEST_is_diagonally_blocked(enum square sq_one, enum square sq_two, const struct board *brd){
 	return is_diagonally_blocked(sq_one, sq_two, brd);
 }
-
-
-
-

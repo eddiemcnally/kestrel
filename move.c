@@ -647,6 +647,17 @@ static inline void generate_sliding_horizontal_vertical_moves(const struct board
 
     while (bb != 0) {
 
+
+/*
+ * static long HAndVMoves(int s)
+    {
+        long binaryS=1L<<s;
+        long possibilitiesHorizontal = (OCCUPIED - 2 * binaryS) ^ Long.reverse(Long.reverse(OCCUPIED) - 2 * Long.reverse(binaryS));
+        long possibilitiesVertical = ((OCCUPIED&FileMasks8[s % 8]) - (2 * binaryS)) ^ Long.reverse(Long.reverse(OCCUPIED&FileMasks8[s % 8]) - (2 * Long.reverse(binaryS)));
+        return (possibilitiesHorizontal&RankMasks8[s / 8]) | (possibilitiesVertical&FileMasks8[s % 8]);
+    }
+*
+*/
 		enum square pce_sq = POP(&bb);
 
 		U64 hmask = get_horizontal_mask(pce_sq);
@@ -658,23 +669,26 @@ static inline void generate_sliding_horizontal_vertical_moves(const struct board
 		// all occupied squares (both colours)
 		U64 occupied = brd->board;
 
-		U64 term_A = (occupied & vmask) - (2 * bb_slider);
-		U64 term_B = reverse_bits(occupied & vmask);
-		term_B = term_B - 2 * (reverse_bits(bb_slider));
-		term_B = reverse_bits(term_B);
+        //long possibilitiesHorizontal =
+			//(OCCUPIED - 2 * binaryS)
+			// ^
+			// Long.reverse(Long.reverse(OCCUPIED) - 2 * Long.reverse(binaryS));
 
-		// all vertical attack squares
-		U64 vertical_attacks = (term_A ^ term_B) & vmask;
+		U64 horiz1 = occupied - (2 * bb_slider);
+		U64 horiz2 = reverse_bits(reverse_bits(occupied) - 2 * reverse_bits(bb_slider));
+		U64 horizontal = horiz1 ^ horiz2;
 
-		term_A = (occupied & hmask) - (2 * bb_slider);
-		term_B = reverse_bits(occupied & hmask);
-		term_B = term_B - 2 * (reverse_bits(bb_slider));
-		term_B = reverse_bits(term_B);
+        //long possibilitiesVertical =
+			// ((OCCUPIED&FileMasks8[s % 8]) - (2 * binaryS))
+			// ^
+			// Long.reverse(Long.reverse(OCCUPIED&FileMasks8[s % 8]) - (2 * Long.reverse(binaryS)));
+		U64 vert1 = (occupied & vmask) - (2 * bb_slider);
+		U64 vert2 = reverse_bits(reverse_bits(occupied & vmask) - 2 * reverse_bits(bb_slider));
+		U64 vertical = vert1 ^ vert2;
 
-		// all horizontal attack squares
-		U64 horizontal_attacks = (term_A ^ term_B) & hmask;
+		// (possibilitiesHorizontal&RankMasks8[s / 8]) | (possibilitiesVertical&FileMasks8[s % 8]);
+		U64 all_moves = (horizontal & hmask) | (vertical & vmask);
 
-		U64 all_moves = horizontal_attacks ^ vertical_attacks;
 
 		enum colour col = (IS_BLACK(pce)) ? BLACK : WHITE;
 
@@ -714,6 +728,28 @@ static inline void generate_sliding_horizontal_vertical_moves(const struct board
  * @return
  *
  */
+
+/*
+ *
+*   static long HAndVMoves(int s)
+    {
+        long binaryS=1L<<s;
+        long possibilitiesHorizontal = (OCCUPIED - 2 * binaryS) ^ Long.reverse(Long.reverse(OCCUPIED) - 2 * Long.reverse(binaryS));
+        long possibilitiesVertical = ((OCCUPIED&FileMasks8[s % 8]) - (2 * binaryS)) ^ Long.reverse(Long.reverse(OCCUPIED&FileMasks8[s % 8]) - (2 * Long.reverse(binaryS)));
+        return (possibilitiesHorizontal&RankMasks8[s / 8]) | (possibilitiesVertical&FileMasks8[s % 8]);
+    }
+    static long DAndAntiDMoves(int s)
+    {
+        long binaryS=1L<<s;
+        long possibilitiesDiagonal = ((OCCUPIED&DiagonalMasks8[(s / 8) + (s % 8)]) - (2 * binaryS)) ^ Long.reverse(Long.reverse(OCCUPIED&DiagonalMasks8[(s / 8) + (s % 8)]) - (2 * Long.reverse(binaryS)));
+        long possibilitiesAntiDiagonal = ((OCCUPIED&AntiDiagonalMasks8[(s / 8) + 7 - (s % 8)]) - (2 * binaryS)) ^ Long.reverse(Long.reverse(OCCUPIED&AntiDiagonalMasks8[(s / 8) + 7 - (s % 8)]) - (2 * Long.reverse(binaryS)));
+        return (possibilitiesDiagonal&DiagonalMasks8[(s / 8) + (s % 8)]) | (possibilitiesAntiDiagonal&AntiDiagonalMasks8[(s / 8) + 7 - (s % 8)]);
+    }
+*
+*
+*
+*/
+
 static inline void generate_sliding_diagonal_moves(const struct board *brd, struct move_list *mvl, enum piece pce){
 
 	assert((pce == W_BISHOP) || (pce == B_BISHOP) || (pce == W_QUEEN) || (pce == B_QUEEN));
@@ -733,23 +769,46 @@ static inline void generate_sliding_diagonal_moves(const struct board *brd, stru
 		// all occupied squares (both colours)
 		U64 occupied = brd->board;
 
-		U64 term_A = (occupied & posmask) - (2 * bb_slider);
-		U64 term_B = reverse_bits(occupied & posmask);
-		term_B = term_B - 2 * (reverse_bits(bb_slider));
-		term_B = reverse_bits(term_B);
+		/*
+ * long possibilitiesDiagonal = ((OCCUPIED&DiagonalMasks8[(s / 8) + (s % 8)]) - (2 * binaryS)) ^ Long.reverse(Long.reverse(OCCUPIED&DiagonalMasks8[(s / 8) + (s % 8)]) - (2 * Long.reverse(binaryS)));
+   long possibilitiesAntiDiagonal = ((OCCUPIED&AntiDiagonalMasks8[(s / 8) + 7 - (s % 8)]) - (2 * binaryS)) ^ Long.reverse(Long.reverse(OCCUPIED&AntiDiagonalMasks8[(s / 8) + 7 - (s % 8)]) - (2 * Long.reverse(binaryS)));
+   return (possibilitiesDiagonal&DiagonalMasks8[(s / 8) + (s % 8)]) | (possibilitiesAntiDiagonal&AntiDiagonalMasks8[(s / 8) + 7 - (s % 8)]);
 
-		// all positive diagonal attack squares
-		U64 positive_diagonal_attacks = (term_A ^ term_B) & posmask;
+*/
 
-		term_A = (occupied & negmask) - (2 * bb_slider);
-		term_B = reverse_bits(occupied & negmask);
-		term_B = term_B - 2 * (reverse_bits(bb_slider));
-		term_B = reverse_bits(term_B);
 
-		// all negative diagonal attack squares
-		U64 negative_diagonal_attacks = (term_A ^ term_B) & negmask;
+	//long possibilitiesDiagonal =
+	//  (   (OCCUPIED&DiagonalMasks8[(s / 8) + (s % 8)]) - (2 * binaryS))
 
-		U64 all_moves = positive_diagonal_attacks ^ negative_diagonal_attacks;
+
+//		^
+
+//		Long.reverse(Long.reverse(OCCUPIED&DiagonalMasks8[(s / 8) + (s % 8)]) - (2 * Long.reverse(binaryS)));
+
+
+		U64 diag1 = (occupied & posmask) - (2 * bb_slider);
+		U64 diag2 = reverse_bits(reverse_bits(occupied & posmask) - (2 * reverse_bits(bb_slider)));
+		U64 diagpos = diag1 ^ diag2;
+
+//long possibilitiesAntiDiagonal =
+//		(   (OCCUPIED&AntiDiagonalMasks8[(s / 8) + 7 - (s % 8)]) - (2 * binaryS))
+
+	//  ^
+
+	// Long.reverse(Long.reverse(OCCUPIED&AntiDiagonalMasks8[(s / 8) + 7 - (s % 8)]) - (2 * Long.reverse(binaryS)));
+
+		diag1 = (occupied & negmask) - (2 * bb_slider);
+		diag2 = reverse_bits(reverse_bits(occupied & negmask) - (2 * reverse_bits(bb_slider)));
+		U64 diagneg = diag1 ^ diag2;
+
+
+// possibilitiesDiagonal&DiagonalMasks8[(s / 8) + (s % 8)]) | (possibilitiesAntiDiagonal&AntiDiagonalMasks8[(s / 8) + 7 - (s % 8)]);
+
+		U64 all_moves = (diagpos & posmask) | (diagneg & negmask);
+
+
+
+
 
 		enum colour col = (IS_BLACK(pce)) ? BLACK : WHITE;
 
