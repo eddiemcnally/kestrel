@@ -49,7 +49,7 @@ void test_is_square_being_attacked_by_knight(void)
     struct board *brd = get_clean_board();
     consume_fen_notation(test_fen, brd);
     //print_board(brd);
-    assert_true(TEST_is_knight_attacking_square(e5, WHITE, brd));
+    assert_true(TEST_is_knight_attacking_square(brd, e5, WHITE));
 
     // - white Knight attacks d5
     // - black knight attacks d4
@@ -62,20 +62,20 @@ void test_is_square_being_attacked_by_knight(void)
     brd = get_clean_board();
     consume_fen_notation(test_fen, brd);
     //print_board(brd);
-    assert_true(TEST_is_knight_attacking_square(d5, WHITE, brd));
-    assert_true(TEST_is_knight_attacking_square(d4, BLACK, brd));
-    assert_true(TEST_is_knight_attacking_square(e5, WHITE, brd));
-    assert_true(TEST_is_knight_attacking_square(g5, WHITE, brd));
-    assert_true(TEST_is_knight_attacking_square(e4, BLACK, brd));
-    assert_true(TEST_is_knight_attacking_square(g4, BLACK, brd));
+    assert_true(TEST_is_knight_attacking_square(brd, d5, WHITE));
+    assert_true(TEST_is_knight_attacking_square(brd, d4, BLACK));
+    assert_true(TEST_is_knight_attacking_square(brd, e5, WHITE));
+    assert_true(TEST_is_knight_attacking_square(brd, g5, WHITE));
+    assert_true(TEST_is_knight_attacking_square(brd, e4, BLACK));
+    assert_true(TEST_is_knight_attacking_square(brd, g4, BLACK));
 
     // do some negative tests
-    assert_false(TEST_is_knight_attacking_square(a3, WHITE, brd));
-    assert_false(TEST_is_knight_attacking_square(h4, BLACK, brd));
-    assert_false(TEST_is_knight_attacking_square(g7, BLACK, brd));
-    assert_false(TEST_is_knight_attacking_square(b2, BLACK, brd));
-    assert_false(TEST_is_knight_attacking_square(a1, BLACK, brd));
-    assert_false(TEST_is_knight_attacking_square(c2, BLACK, brd));
+    assert_false(TEST_is_knight_attacking_square(brd, a3, WHITE));
+    assert_false(TEST_is_knight_attacking_square(brd, h4, BLACK));
+    assert_false(TEST_is_knight_attacking_square(brd, g7, BLACK));
+    assert_false(TEST_is_knight_attacking_square(brd, b2, BLACK));
+    assert_false(TEST_is_knight_attacking_square(brd, a1, BLACK));
+    assert_false(TEST_is_knight_attacking_square(brd, c2, BLACK));
 
     // - white Knight attacks c6
     // - white knight attacks d6
@@ -83,8 +83,8 @@ void test_is_square_being_attacked_by_knight(void)
     brd = get_clean_board();
     consume_fen_notation(test_fen, brd);
     //print_board(brd);
-    assert_true(TEST_is_knight_attacking_square(c6, WHITE, brd));
-    assert_true(TEST_is_knight_attacking_square(d6, WHITE, brd));
+    assert_true(TEST_is_knight_attacking_square(brd, c6, WHITE));
+    assert_true(TEST_is_knight_attacking_square(brd, d6, WHITE));
 
     // WN attacks f6, g7, f4
     // BN attacks f7, b5, e4
@@ -93,13 +93,13 @@ void test_is_square_being_attacked_by_knight(void)
     brd = get_clean_board();
     consume_fen_notation(test_fen, brd);
     //print_board(brd);
-    assert_true(TEST_is_knight_attacking_square(f6, WHITE, brd));
-    assert_true(TEST_is_knight_attacking_square(g7, WHITE, brd));
-    assert_true(TEST_is_knight_attacking_square(f4, WHITE, brd));
+    assert_true(TEST_is_knight_attacking_square(brd, f6, WHITE));
+    assert_true(TEST_is_knight_attacking_square(brd, g7, WHITE));
+    assert_true(TEST_is_knight_attacking_square(brd, f4, WHITE));
 
-    assert_true(TEST_is_knight_attacking_square(f7, BLACK, brd));
-    assert_true(TEST_is_knight_attacking_square(b5, BLACK, brd));
-    assert_true(TEST_is_knight_attacking_square(e4, BLACK, brd));
+    assert_true(TEST_is_knight_attacking_square(brd, f7, BLACK));
+    assert_true(TEST_is_knight_attacking_square(brd, b5, BLACK));
+    assert_true(TEST_is_knight_attacking_square(brd, e4, BLACK));
 
 }
 
@@ -119,14 +119,14 @@ void test_is_square_being_attacked_by_pawn(void)
     struct board *brd = get_clean_board();
     consume_fen_notation(test_fen_1, brd);
     //print_board(brd);
-    assert_true(TEST_is_pawn_attacking_square(c4, BLACK, brd));
-    assert_true(TEST_is_pawn_attacking_square(d4, BLACK, brd));
-    assert_true(TEST_is_pawn_attacking_square(e4, BLACK, brd));
-    assert_true(TEST_is_pawn_attacking_square(g4, BLACK, brd));
-    assert_true(TEST_is_pawn_attacking_square(h4, BLACK, brd));
-    assert_true(TEST_is_pawn_attacking_square(e5, WHITE, brd));
-    assert_true(TEST_is_pawn_attacking_square(d5, WHITE, brd));
-    assert_true(TEST_is_pawn_attacking_square(g5, WHITE, brd));
+    assert_true(TEST_is_pawn_attacking_square(brd, c4, BLACK));
+    assert_true(TEST_is_pawn_attacking_square(brd, d4, BLACK));
+    assert_true(TEST_is_pawn_attacking_square(brd, e4, BLACK));
+    assert_true(TEST_is_pawn_attacking_square(brd, g4, BLACK));
+    assert_true(TEST_is_pawn_attacking_square(brd, h4, BLACK));
+    assert_true(TEST_is_pawn_attacking_square(brd, e5, WHITE));
+    assert_true(TEST_is_pawn_attacking_square(brd, d5, WHITE));
+    assert_true(TEST_is_pawn_attacking_square(brd, g5, WHITE));
 
     test_fen_1 =
 	"1nr3n1/ppqNkp2/1R3p2/bQ4PK/1PpRp1PP/P2bBPqp/4P1r1/1B1Q1N2 w - - 0 1";
@@ -134,13 +134,13 @@ void test_is_square_being_attacked_by_pawn(void)
     brd = get_clean_board();
     consume_fen_notation(test_fen_1, brd);
     //print_board(brd);
-    assert_true(TEST_is_pawn_attacking_square(b6, BLACK, brd));
-    assert_true(TEST_is_pawn_attacking_square(f3, BLACK, brd));
-    assert_true(TEST_is_pawn_attacking_square(a5, WHITE, brd));
-    assert_true(TEST_is_pawn_attacking_square(d3, WHITE, brd));
-    assert_true(TEST_is_pawn_attacking_square(f6, WHITE, brd));
-    assert_true(TEST_is_pawn_attacking_square(d3, WHITE, brd));
-    assert_true(TEST_is_pawn_attacking_square(e4, WHITE, brd));
+    assert_true(TEST_is_pawn_attacking_square(brd, b6, BLACK));
+    assert_true(TEST_is_pawn_attacking_square(brd, f3, BLACK));
+    assert_true(TEST_is_pawn_attacking_square(brd, a5, WHITE));
+    assert_true(TEST_is_pawn_attacking_square(brd, d3, WHITE));
+    assert_true(TEST_is_pawn_attacking_square(brd, f6, WHITE));
+    assert_true(TEST_is_pawn_attacking_square(brd, d3, WHITE));
+    assert_true(TEST_is_pawn_attacking_square(brd, e4, WHITE));
 
 }
 
@@ -153,8 +153,8 @@ void test_is_square_being_attacked_by_king(void)
     struct board *brd = get_clean_board();
     consume_fen_notation(test_fen, brd);
     //print_board(brd);
-    assert_true(TEST_is_king_attacking_square(c5, BLACK, brd));
-    assert_true(TEST_is_king_attacking_square(f2, WHITE, brd));
+    assert_true(TEST_is_king_attacking_square(brd, c5, BLACK));
+    assert_true(TEST_is_king_attacking_square(brd, f2, WHITE));
 
     // black king attacks h6
     // white king attacks b7
@@ -163,8 +163,8 @@ void test_is_square_being_attacked_by_king(void)
     brd = get_clean_board();
     consume_fen_notation(test_fen, brd);
     //print_board(brd);
-    assert_true(TEST_is_king_attacking_square(h6, BLACK, brd));
-    assert_true(TEST_is_king_attacking_square(b7, WHITE, brd));
+    assert_true(TEST_is_king_attacking_square(brd, h6, BLACK));
+    assert_true(TEST_is_king_attacking_square(brd, b7, WHITE));
 
     // black king attacks g2
     // white king attacks h7
@@ -173,8 +173,8 @@ void test_is_square_being_attacked_by_king(void)
     brd = get_clean_board();
     consume_fen_notation(test_fen, brd);
     //print_board(brd);
-    assert_true(TEST_is_king_attacking_square(g2, BLACK, brd));
-    assert_true(TEST_is_king_attacking_square(h7, WHITE, brd));
+    assert_true(TEST_is_king_attacking_square(brd, g2, BLACK));
+    assert_true(TEST_is_king_attacking_square(brd, h7, WHITE));
 
     // black king attacks g7
     // white king attacks c7
@@ -183,8 +183,8 @@ void test_is_square_being_attacked_by_king(void)
     brd = get_clean_board();
     consume_fen_notation(test_fen, brd);
     //print_board(brd);
-    assert_true(TEST_is_king_attacking_square(g7, BLACK, brd));
-    assert_true(TEST_is_king_attacking_square(c7, WHITE, brd));
+    assert_true(TEST_is_king_attacking_square(brd, g7, BLACK));
+    assert_true(TEST_is_king_attacking_square(brd, c7, WHITE));
 
 }
 
@@ -213,13 +213,13 @@ void test_is_square_attacked_by_queen(void)
     struct board *brd = get_clean_board();
     consume_fen_notation(test_fen, brd);
     //print_board(brd);
-    assert_true(TEST_is_queen_attacking_square(c6, BLACK, brd));
-    assert_true(TEST_is_queen_attacking_square(d3, WHITE, brd));
-    assert_true(TEST_is_queen_attacking_square(e7, WHITE, brd));
-    assert_true(TEST_is_queen_attacking_square(d3, WHITE, brd));
-    assert_true(TEST_is_queen_attacking_square(f4, WHITE, brd));
-    assert_true(TEST_is_queen_attacking_square(h5, WHITE, brd));
-    assert_true(TEST_is_queen_attacking_square(f7, BLACK, brd));
+    assert_true(TEST_is_queen_attacking_square(brd, c6, BLACK));
+    assert_true(TEST_is_queen_attacking_square(brd, d3, WHITE));
+    assert_true(TEST_is_queen_attacking_square(brd, e7, WHITE));
+    assert_true(TEST_is_queen_attacking_square(brd, d3, WHITE));
+    assert_true(TEST_is_queen_attacking_square(brd, f4, WHITE));
+    assert_true(TEST_is_queen_attacking_square(brd, h5, WHITE));
+    assert_true(TEST_is_queen_attacking_square(brd, f7, BLACK));
 
     test_fen =
 	"R1q2B2/KpNp1P1P/3p2pP/NPk1pQ2/PpP3np/2b3R1/3n2BP/rb1qQ1r1 w - - 0 1";
@@ -227,20 +227,20 @@ void test_is_square_attacked_by_queen(void)
     brd = get_clean_board();
     consume_fen_notation(test_fen, brd);
     //print_board(brd);
-    assert_true(TEST_is_queen_attacking_square(a8, BLACK, brd));
-    assert_true(TEST_is_queen_attacking_square(f8, BLACK, brd));
-    assert_true(TEST_is_queen_attacking_square(c7, BLACK, brd));
-    assert_true(TEST_is_queen_attacking_square(e1, BLACK, brd));
-    assert_true(TEST_is_queen_attacking_square(a4, BLACK, brd));
+    assert_true(TEST_is_queen_attacking_square(brd, a8, BLACK));
+    assert_true(TEST_is_queen_attacking_square(brd, f8, BLACK));
+    assert_true(TEST_is_queen_attacking_square(brd, c7, BLACK));
+    assert_true(TEST_is_queen_attacking_square(brd, e1, BLACK));
+    assert_true(TEST_is_queen_attacking_square(brd, a4, BLACK));
 
-    assert_true(TEST_is_queen_attacking_square(d1, WHITE, brd));
-    assert_true(TEST_is_queen_attacking_square(d2, WHITE, brd));
-    assert_true(TEST_is_queen_attacking_square(g1, WHITE, brd));
-    assert_true(TEST_is_queen_attacking_square(e5, WHITE, brd));
-    assert_true(TEST_is_queen_attacking_square(g4, WHITE, brd));
-    assert_true(TEST_is_queen_attacking_square(g6, WHITE, brd));
-    assert_true(TEST_is_queen_attacking_square(e5, WHITE, brd));
-    assert_true(TEST_is_queen_attacking_square(d7, WHITE, brd));
+    assert_true(TEST_is_queen_attacking_square(brd, d1, WHITE));
+    assert_true(TEST_is_queen_attacking_square(brd, d2, WHITE));
+    assert_true(TEST_is_queen_attacking_square(brd, g1, WHITE));
+    assert_true(TEST_is_queen_attacking_square(brd, e5, WHITE));
+    assert_true(TEST_is_queen_attacking_square(brd, g4, WHITE));
+    assert_true(TEST_is_queen_attacking_square(brd, g6, WHITE));
+    assert_true(TEST_is_queen_attacking_square(brd, e5, WHITE));
+    assert_true(TEST_is_queen_attacking_square(brd, d7, WHITE));
 
 }
 
@@ -258,11 +258,11 @@ void test_is_square_being_attacked_by_rook(void)
     struct board *brd = get_clean_board();
     consume_fen_notation(test_fen, brd);
     //print_board(brd);
-    assert_true(TEST_is_rook_attacking_square(c8, WHITE, brd));
-    assert_true(TEST_is_rook_attacking_square(a6, BLACK, brd));
-    assert_true(TEST_is_rook_attacking_square(g6, BLACK, brd));
-    assert_true(TEST_is_rook_attacking_square(d2, BLACK, brd));
-    assert_true(TEST_is_rook_attacking_square(c2, WHITE, brd));
+    assert_true(TEST_is_rook_attacking_square(brd, c8, WHITE));
+    assert_true(TEST_is_rook_attacking_square(brd, a6, BLACK));
+    assert_true(TEST_is_rook_attacking_square(brd, g6, BLACK));
+    assert_true(TEST_is_rook_attacking_square(brd, d2, BLACK));
+    assert_true(TEST_is_rook_attacking_square(brd, c2, WHITE));
 
     // d8 attacked by WR
     // f7 attacked by WR
@@ -276,12 +276,12 @@ void test_is_square_being_attacked_by_rook(void)
     brd = get_clean_board();
     consume_fen_notation(test_fen, brd);
     //print_board(brd);
-    assert_true(TEST_is_rook_attacking_square(d8, WHITE, brd));
-    assert_true(TEST_is_rook_attacking_square(f7, WHITE, brd));
-    assert_true(TEST_is_rook_attacking_square(a6, BLACK, brd));
-    assert_true(TEST_is_rook_attacking_square(e6, WHITE, brd));
-    assert_true(TEST_is_rook_attacking_square(e2, WHITE, brd));
-    assert_true(TEST_is_rook_attacking_square(e3, BLACK, brd));
+    assert_true(TEST_is_rook_attacking_square(brd, d8, WHITE));
+    assert_true(TEST_is_rook_attacking_square(brd, f7, WHITE));
+    assert_true(TEST_is_rook_attacking_square(brd, a6, BLACK));
+    assert_true(TEST_is_rook_attacking_square(brd, e6, WHITE));
+    assert_true(TEST_is_rook_attacking_square(brd, e2, WHITE));
+    assert_true(TEST_is_rook_attacking_square(brd, e3, BLACK));
 
     // a8 attacked by WR
     // d7 attacked by WR
@@ -297,14 +297,14 @@ void test_is_square_being_attacked_by_rook(void)
     brd = get_clean_board();
     consume_fen_notation(test_fen, brd);
     //print_board(brd);
-    assert_true(TEST_is_rook_attacking_square(a8, WHITE, brd));
-    assert_true(TEST_is_rook_attacking_square(d7, WHITE, brd));
-    assert_true(TEST_is_rook_attacking_square(b6, WHITE, brd));
-    assert_true(TEST_is_rook_attacking_square(d4, WHITE, brd));
-    assert_true(TEST_is_rook_attacking_square(f5, BLACK, brd));
-    assert_true(TEST_is_rook_attacking_square(h6, BLACK, brd));
-    assert_true(TEST_is_rook_attacking_square(f2, BLACK, brd));
-    assert_true(TEST_is_rook_attacking_square(h1, BLACK, brd));
+    assert_true(TEST_is_rook_attacking_square(brd, a8, WHITE));
+    assert_true(TEST_is_rook_attacking_square(brd, d7, WHITE));
+    assert_true(TEST_is_rook_attacking_square(brd, b6, WHITE));
+    assert_true(TEST_is_rook_attacking_square(brd, d4, WHITE));
+    assert_true(TEST_is_rook_attacking_square(brd, f5, BLACK));
+    assert_true(TEST_is_rook_attacking_square(brd, h6, BLACK));
+    assert_true(TEST_is_rook_attacking_square(brd, f2, BLACK));
+    assert_true(TEST_is_rook_attacking_square(brd, h1, BLACK));
 
 }
 
@@ -323,12 +323,12 @@ void test_is_square_being_attacked_by_bishop(void)
     struct board *brd = get_clean_board();
     consume_fen_notation(test_fen, brd);
     //print_board(brd);
-    assert_true(TEST_is_bishop_attacking_square(e7, WHITE, brd));
-    assert_true(TEST_is_bishop_attacking_square(d4, WHITE, brd));
-    assert_true(TEST_is_bishop_attacking_square(f5, WHITE, brd));
-    assert_true(TEST_is_bishop_attacking_square(e2, WHITE, brd));
-    assert_true(TEST_is_bishop_attacking_square(b6, WHITE, brd));
-    assert_true(TEST_is_bishop_attacking_square(d5, BLACK, brd));
+    assert_true(TEST_is_bishop_attacking_square(brd, e7, WHITE));
+    assert_true(TEST_is_bishop_attacking_square(brd, d4, WHITE));
+    assert_true(TEST_is_bishop_attacking_square(brd, f5, WHITE));
+    assert_true(TEST_is_bishop_attacking_square(brd, e2, WHITE));
+    assert_true(TEST_is_bishop_attacking_square(brd, b6, WHITE));
+    assert_true(TEST_is_bishop_attacking_square(brd, d5, BLACK));
 
     // f6 attacked by WB
     // g4 attacked by WB
@@ -340,11 +340,11 @@ void test_is_square_being_attacked_by_bishop(void)
     brd = get_clean_board();
     consume_fen_notation(test_fen, brd);
     //print_board(brd);
-    assert_true(TEST_is_bishop_attacking_square(f6, WHITE, brd));
-    assert_true(TEST_is_bishop_attacking_square(g4, WHITE, brd));
-    assert_true(TEST_is_bishop_attacking_square(e4, WHITE, brd));
-    assert_true(TEST_is_bishop_attacking_square(f5, BLACK, brd));
-    assert_true(TEST_is_bishop_attacking_square(c3, BLACK, brd));
+    assert_true(TEST_is_bishop_attacking_square(brd, f6, WHITE));
+    assert_true(TEST_is_bishop_attacking_square(brd, g4, WHITE));
+    assert_true(TEST_is_bishop_attacking_square(brd, e4, WHITE));
+    assert_true(TEST_is_bishop_attacking_square(brd, f5, BLACK));
+    assert_true(TEST_is_bishop_attacking_square(brd, c3, BLACK));
 
     test_fen =
 	"3RN1n1/pp1bQrQP/1pPb1NPq/p1P1p2q/2R1pBPk/5p1P/2K1p2P/1n1B4 w - - 0 1";
@@ -352,147 +352,215 @@ void test_is_square_being_attacked_by_bishop(void)
     brd = get_clean_board();
     consume_fen_notation(test_fen, brd);
     //print_board(brd);
-    assert_true(TEST_is_bishop_attacking_square(e2, WHITE, brd));
-    assert_true(TEST_is_bishop_attacking_square(h6, WHITE, brd));
-    assert_true(TEST_is_bishop_attacking_square(e5, WHITE, brd));
+    assert_true(TEST_is_bishop_attacking_square(brd, e2, WHITE));
+    assert_true(TEST_is_bishop_attacking_square(brd, h6, WHITE));
+    assert_true(TEST_is_bishop_attacking_square(brd, e5, WHITE));
 
-    assert_true(TEST_is_bishop_attacking_square(c5, BLACK, brd));
-    assert_true(TEST_is_bishop_attacking_square(e7, BLACK, brd));
-    assert_true(TEST_is_bishop_attacking_square(c5, BLACK, brd));
-    assert_true(TEST_is_bishop_attacking_square(e8, BLACK, brd));
-    assert_true(TEST_is_bishop_attacking_square(g4, BLACK, brd));
-
-}
-
-void test_is_blocked_up_or_down(void)
-{
-
-    // Rd2 blocked on d3 for attack on d5
-    // Qf1 blocked on f4 for attack on f6
-    // Qg3 blocked on d3 for attack on b3
-    char *test_fen = "1b4b1/7k/1Q3R2/1RQ4B/K4B2/Nn1n2qN/1r4r1/5q2 w - - 0 1";
-
-    struct board *brd = get_clean_board();
-    consume_fen_notation(test_fen, brd);
-    //print_board(brd);
-    assert_true(TEST_is_horizontal_or_vertical_blocked(g3, b3, brd));
-    assert_true(TEST_is_horizontal_or_vertical_blocked(f1, f6, brd));
-    assert_true(TEST_is_horizontal_or_vertical_blocked(d2, d5, brd));
-
-    // Qh1 blocked for attack on d1
-    // Qd6 blocked for attack on d3
-    test_fen = "2k5/5qb1/3qn1rN/3B3R/8/3RK2Q/1r5N/2nbB2Q w - - 0 1";
-
-    brd = get_clean_board();
-    consume_fen_notation(test_fen, brd);
-    //print_board(brd);
-    assert_true(TEST_is_horizontal_or_vertical_blocked(h1, d1, brd));
-    assert_true(TEST_is_horizontal_or_vertical_blocked(d6, d3, brd));
-
-}
-
-void test_is_blocked_diagonally(void)
-{
-
-    // Qf7 blocked for attack on d5
-    // Qh3 blocked for attack on c8
-    // Bd5 blocked for attack on f7
-    char *test_fen = "2k5/5qb1/3qn1rN/3B3R/8/3RK2Q/1r5N/2nbB2Q w - - 0 1";
-
-    struct board *brd = get_clean_board();
-    consume_fen_notation(test_fen, brd);
-    //print_board(brd);
-    assert_true(TEST_is_diagonally_blocked(f7, d5, brd));
-    assert_true(TEST_is_diagonally_blocked(h3, c8, brd));
-    assert_true(TEST_is_diagonally_blocked(d5, f7, brd));
-
-    // Qh3 blocked for attacks on e6, d7, c8
-    // Bb2 blocked for attacks on d4, e5, f6, g7, h8
-    test_fen = "3q4/1R5N/3k3q/4Rb2/1r6/2B3KQ/Qb5n/1Nn1r2B w - - 0 1";
-
-    brd = get_clean_board();
-    consume_fen_notation(test_fen, brd);
-    //print_board(brd);
-    assert_true(TEST_is_diagonally_blocked(h3, e6, brd));
-    assert_true(TEST_is_diagonally_blocked(h3, d7, brd));
-    assert_true(TEST_is_diagonally_blocked(h3, c8, brd));
-    assert_true(TEST_is_diagonally_blocked(b2, d4, brd));
-    assert_true(TEST_is_diagonally_blocked(b2, e5, brd));
-    assert_true(TEST_is_diagonally_blocked(b2, f6, brd));
-    assert_true(TEST_is_diagonally_blocked(b2, g7, brd));
-    assert_true(TEST_is_diagonally_blocked(b2, h8, brd));
-
-    // Qb1 blocked for attacks on f5, g6, h7
-    // Bb3 blocked for attacks on d5, e6, f7, g8
-    // Bc4 blocked for attacks on a2
-    // Qe2 blocked for attacks on b5, a6
-    test_fen = "7K/2Bn4/2Q1nQ2/8/r1B1RR2/bb5k/4q1N1/Nq4r1 w - - 0 1";
-
-    brd = get_clean_board();
-    consume_fen_notation(test_fen, brd);
-    //print_board(brd);
-    assert_true(TEST_is_diagonally_blocked(b1, f5, brd));
-    assert_true(TEST_is_diagonally_blocked(b1, g6, brd));
-    assert_true(TEST_is_diagonally_blocked(b1, h7, brd));
-    assert_true(TEST_is_diagonally_blocked(b3, d5, brd));
-    assert_true(TEST_is_diagonally_blocked(b3, e6, brd));
-    assert_true(TEST_is_diagonally_blocked(b3, f7, brd));
-    assert_true(TEST_is_diagonally_blocked(b3, g8, brd));
-    assert_true(TEST_is_diagonally_blocked(c4, a2, brd));
-    assert_true(TEST_is_diagonally_blocked(e2, b5, brd));
-    assert_true(TEST_is_diagonally_blocked(e2, a6, brd));
+    assert_true(TEST_is_bishop_attacking_square(brd, c5, BLACK));
+    assert_true(TEST_is_bishop_attacking_square(brd, e7, BLACK));
+    assert_true(TEST_is_bishop_attacking_square(brd, c5, BLACK));
+    assert_true(TEST_is_bishop_attacking_square(brd, e8, BLACK));
+    assert_true(TEST_is_bishop_attacking_square(brd, g4, BLACK));
 
 }
 
 void test_is_square_under_attack(void)
 {
     char *test_fen =
-	"2b5/PP2K3/pP1n2R1/2P3P1/2r1p1N1/2pPn3/B1pp1Pkq/4QqB1 w - - 0 1";
+	"2Q3qb/pN3P1p/P4qr1/1KP1BnP1/1p2pPNp/2rkP3/pP3npP/4QbRB w - - 0 1";
 
     struct board *brd = get_clean_board();
     consume_fen_notation(test_fen, brd);
-    //print_board(brd);
-    assert_true(is_sq_attacked(b7, BLACK, brd));
-    assert_true(is_sq_attacked(c5, BLACK, brd));
-    assert_true(is_sq_attacked(d3, BLACK, brd));
-    assert_true(is_sq_attacked(e1, BLACK, brd));
-    assert_true(is_sq_attacked(g1, BLACK, brd));
-    assert_true(is_sq_attacked(f2, BLACK, brd));
-    assert_true(is_sq_attacked(g4, BLACK, brd));
+    print_board(brd);
 
-    assert_true(is_sq_attacked(c8, WHITE, brd));
-    assert_true(is_sq_attacked(d6, WHITE, brd));
-    assert_true(is_sq_attacked(e4, WHITE, brd));
-    assert_true(is_sq_attacked(c4, WHITE, brd));
-    assert_true(is_sq_attacked(e3, WHITE, brd));
-    assert_true(is_sq_attacked(h2, WHITE, brd));
+	assert_true(is_sq_attacked(brd, a1, WHITE) == true);
+	assert_true(is_sq_attacked(brd, a1, BLACK) == false);
+	assert_true(is_sq_attacked(brd, a2, WHITE) == false);
+	assert_true(is_sq_attacked(brd, a2, BLACK) == false);
+	assert_true(is_sq_attacked(brd, a3, WHITE) == true);
+	assert_true(is_sq_attacked(brd, a3, BLACK) == true);
+	assert_true(is_sq_attacked(brd, a4, WHITE) == true);
+	assert_true(is_sq_attacked(brd, a4, BLACK) == false);
+	assert_true(is_sq_attacked(brd, a5, WHITE) == true);
+	assert_true(is_sq_attacked(brd, a5, BLACK) == false);
+	assert_true(is_sq_attacked(brd, a6, WHITE) == true);
+	assert_true(is_sq_attacked(brd, a6, BLACK) == true);
+	assert_true(is_sq_attacked(brd, a7, WHITE) == false);
+	assert_true(is_sq_attacked(brd, a7, BLACK) == false);
+	assert_true(is_sq_attacked(brd, a8, WHITE) == true);
+	assert_true(is_sq_attacked(brd, a8, BLACK) == false);
 
+
+	assert_true(is_sq_attacked(brd, b1, WHITE) == true);
+	assert_true(is_sq_attacked(brd, b1, BLACK) == true);
+	assert_true(is_sq_attacked(brd, b2, WHITE) == false);
+	assert_true(is_sq_attacked(brd, b2, BLACK) == false);
+	assert_true(is_sq_attacked(brd, b3, WHITE) == false);
+	assert_true(is_sq_attacked(brd, b3, BLACK) == true);
+	assert_true(is_sq_attacked(brd, b4, WHITE) == true);
+	assert_true(is_sq_attacked(brd, b4, BLACK) == false);
+	assert_true(is_sq_attacked(brd, b5, WHITE) == false);
+	assert_true(is_sq_attacked(brd, b5, BLACK) == false);
+	assert_true(is_sq_attacked(brd, b6, WHITE) == true);
+	assert_true(is_sq_attacked(brd, b6, BLACK) == true);
+	assert_true(is_sq_attacked(brd, b7, WHITE) == true);
+	assert_true(is_sq_attacked(brd, b7, BLACK) == false);
+	assert_true(is_sq_attacked(brd, b8, WHITE) == true);
+	assert_true(is_sq_attacked(brd, b8, BLACK) == false);
+
+
+	assert_true(is_sq_attacked(brd, c1, WHITE) == true);
+	assert_true(is_sq_attacked(brd, c1, BLACK) == true);
+	assert_true(is_sq_attacked(brd, c2, WHITE) == false);
+	assert_true(is_sq_attacked(brd, c2, BLACK) == true);
+	assert_true(is_sq_attacked(brd, c3, WHITE) == true);
+	assert_true(is_sq_attacked(brd, c3, BLACK) == true);
+	assert_true(is_sq_attacked(brd, c4, WHITE) == true);
+	assert_true(is_sq_attacked(brd, c4, BLACK) == true);
+	assert_true(is_sq_attacked(brd, c5, WHITE) == true);
+	assert_true(is_sq_attacked(brd, c5, BLACK) == true);
+	assert_true(is_sq_attacked(brd, c6, WHITE) == true);
+	assert_true(is_sq_attacked(brd, c6, BLACK) == true);
+	assert_true(is_sq_attacked(brd, c7, WHITE) == true);
+	assert_true(is_sq_attacked(brd, c7, BLACK) == false);
+	assert_true(is_sq_attacked(brd, c8, WHITE) == false);
+	assert_true(is_sq_attacked(brd, c8, BLACK) == true);
+
+
+	assert_true(is_sq_attacked(brd, d1, WHITE) == true);
+	assert_true(is_sq_attacked(brd, d1, BLACK) == true);
+	assert_true(is_sq_attacked(brd, d2, WHITE) == true);
+	assert_true(is_sq_attacked(brd, d2, BLACK) == true);
+	assert_true(is_sq_attacked(brd, d3, WHITE) == false);
+	assert_true(is_sq_attacked(brd, d3, BLACK) == true);
+	assert_true(is_sq_attacked(brd, d4, WHITE) == true);
+	assert_true(is_sq_attacked(brd, d4, BLACK) == true);
+	assert_true(is_sq_attacked(brd, d5, WHITE) == false);
+	assert_true(is_sq_attacked(brd, d5, BLACK) == false);
+	assert_true(is_sq_attacked(brd, d6, WHITE) == true);
+	assert_true(is_sq_attacked(brd, d6, BLACK) == true);
+	assert_true(is_sq_attacked(brd, d7, WHITE) == true);
+	assert_true(is_sq_attacked(brd, d7, BLACK) == false);
+	assert_true(is_sq_attacked(brd, d8, WHITE) == true);
+	assert_true(is_sq_attacked(brd, d8, BLACK) == true);
+
+	assert_true(is_sq_attacked(brd, e1, WHITE) == false);
+	assert_true(is_sq_attacked(brd, e1, BLACK) == false);
+	assert_true(is_sq_attacked(brd, e2, WHITE) == true);
+	assert_true(is_sq_attacked(brd, e2, BLACK) == true);
+	assert_true(is_sq_attacked(brd, e3, WHITE) == true);
+	assert_true(is_sq_attacked(brd, e3, BLACK) == true);
+	assert_true(is_sq_attacked(brd, e4, WHITE) == false);
+	assert_true(is_sq_attacked(brd, e4, BLACK) == true);
+	assert_true(is_sq_attacked(brd, e5, WHITE) == true);
+	assert_true(is_sq_attacked(brd, e5, BLACK) == true);
+	assert_true(is_sq_attacked(brd, e6, WHITE) == true);
+	assert_true(is_sq_attacked(brd, e6, BLACK) == true);
+	assert_true(is_sq_attacked(brd, e7, WHITE) == false);
+	assert_true(is_sq_attacked(brd, e7, BLACK) == true);
+	assert_true(is_sq_attacked(brd, e8, WHITE) == true);
+	assert_true(is_sq_attacked(brd, e8, BLACK) == true);
+
+
+
+	assert_true(is_sq_attacked(brd, f1, WHITE) == true);
+	assert_true(is_sq_attacked(brd, f1, BLACK) == true);
+	assert_true(is_sq_attacked(brd, f2, WHITE) == true);
+	assert_true(is_sq_attacked(brd, f2, BLACK) == false);
+	assert_true(is_sq_attacked(brd, f3, WHITE) == false);
+	assert_true(is_sq_attacked(brd, f3, BLACK) == true);
+	assert_true(is_sq_attacked(brd, f4, WHITE) == true);
+	assert_true(is_sq_attacked(brd, f4, BLACK) == false);
+	assert_true(is_sq_attacked(brd, f5, WHITE) == true);
+	assert_true(is_sq_attacked(brd, f5, BLACK) == true);
+	assert_true(is_sq_attacked(brd, f6, WHITE) == true);
+	assert_true(is_sq_attacked(brd, f6, BLACK) == true);
+	assert_true(is_sq_attacked(brd, f7, WHITE) == false);
+	assert_true(is_sq_attacked(brd, f7, BLACK) == true);
+	assert_true(is_sq_attacked(brd, f8, WHITE) == true);
+	assert_true(is_sq_attacked(brd, f8, BLACK) == true);
+
+
+
+	assert_true(is_sq_attacked(brd, g1, WHITE) == false);
+	assert_true(is_sq_attacked(brd, g1, BLACK) == false);
+	assert_true(is_sq_attacked(brd, g2, WHITE) == true);
+	assert_true(is_sq_attacked(brd, g2, BLACK) == true);
+	assert_true(is_sq_attacked(brd, g3, WHITE) == true);
+	assert_true(is_sq_attacked(brd, g3, BLACK) == true);
+	assert_true(is_sq_attacked(brd, g4, WHITE) == false);
+	assert_true(is_sq_attacked(brd, g4, BLACK) == true);
+	assert_true(is_sq_attacked(brd, g5, WHITE) == true);
+	assert_true(is_sq_attacked(brd, g5, BLACK) == true);
+	assert_true(is_sq_attacked(brd, g6, WHITE) == false);
+	assert_true(is_sq_attacked(brd, g6, BLACK) == true);
+	assert_true(is_sq_attacked(brd, g7, WHITE) == false);
+	assert_true(is_sq_attacked(brd, g7, BLACK) == true);
+	assert_true(is_sq_attacked(brd, g8, WHITE) == true);
+	assert_true(is_sq_attacked(brd, g8, BLACK) == true);
+
+
+
+
+	assert_true(is_sq_attacked(brd, h1, WHITE) == true);
+	assert_true(is_sq_attacked(brd, h1, BLACK) == true);
+	assert_true(is_sq_attacked(brd, h2, WHITE) == true);
+	assert_true(is_sq_attacked(brd, h2, BLACK) == false);
+	assert_true(is_sq_attacked(brd, h3, WHITE) == false);
+	assert_true(is_sq_attacked(brd, h3, BLACK) == true);
+	assert_true(is_sq_attacked(brd, h4, WHITE) == false);
+	assert_true(is_sq_attacked(brd, h4, BLACK) == true);
+	assert_true(is_sq_attacked(brd, h5, WHITE) == false);
+	assert_true(is_sq_attacked(brd, h5, BLACK) == false);
+	assert_true(is_sq_attacked(brd, h6, WHITE) == true);
+	assert_true(is_sq_attacked(brd, h6, BLACK) == true);
+	assert_true(is_sq_attacked(brd, h7, WHITE) == false);
+	assert_true(is_sq_attacked(brd, h7, BLACK) == true);
+	assert_true(is_sq_attacked(brd, h8, WHITE) == false);
+	assert_true(is_sq_attacked(brd, h8, BLACK) == true);
+
+
+
+///////////////////////////////////
     test_fen = "8/1pppp2k/6p1/5p2/8/3B4/8/4K3 w - - 0 1";
 
     brd = get_clean_board();
     consume_fen_notation(test_fen, brd);
-	assert_false(is_sq_attacked(h7, WHITE, brd));
+	assert_false(is_sq_attacked(brd, h7, WHITE));
 
 
-
+///////////////////////////////////////
     test_fen = "rnbq1bnr/ppppp1pp/6k1/5p2/4P3/3B4/PPPP2PP/RNBQK1NR w KQ - 0 1";
 
     brd = get_clean_board();
     consume_fen_notation(test_fen, brd);
+	print_board(brd);
+	assert_false(is_sq_attacked(brd, g6, WHITE));
 
-	assert_false(is_sq_attacked(g6, WHITE, brd));
 
-
-
+///////////////////////////////////////////////
     test_fen = "r3k2r/p1ppqpb1/bn2pnp1/3PN2Q/1p2P3/2N4p/PPPBBPPP/R3K2R w KQkq - 0 1";
+
+
+//8    r  -  -  -  k  -  -  r
+//7    p  -  p  p  q  p  b  -
+//6    b  n  -  -  p  n  p  -
+//5    -  -  -  P  N  -  -  Q
+//4    -  p  -  -  P  -  -  -
+//3    -  -  N  -  -  -  -  p
+//2    P  P  P  B  B  P  P  P
+//1    R  -  -  -  K  -  -  R
+
+     //a  b  c  d  e  f  g  h
 
     brd = get_clean_board();
     consume_fen_notation(test_fen, brd);
+	print_board(brd);
+	assert_false(is_sq_attacked(brd, e8, WHITE));
+	assert_false(is_sq_attacked(brd, a1, WHITE));
 
-	assert_false(is_sq_attacked(e8, WHITE, brd));
-
-
-
+	assert_true(is_sq_attacked(brd, h8, WHITE));
+	assert_true(is_sq_attacked(brd, g6, WHITE));
 
 }
 
@@ -506,9 +574,6 @@ void attack_test_fixture(void)
     //run_test(test_is_square_being_attacked_by_rook);
     //run_test(test_is_square_being_attacked_by_bishop);
     //run_test(test_is_square_attacked_by_queen);
-
-    //run_test(test_is_blocked_up_or_down);
-    //run_test(test_is_blocked_diagonally);
 
     run_test(test_is_square_under_attack);
 

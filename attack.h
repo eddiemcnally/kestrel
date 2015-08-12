@@ -24,15 +24,15 @@
 
 
 
-bool is_sq_attacked(enum square sq, enum colour attacking_side, const struct board *brd);
+bool is_sq_attacked(const struct board *brd, enum square sq, enum colour attacking_side);
 
-bool TEST_is_bishop_attacking_square(enum square sq, enum colour attacking_side, const struct board *brd);
-bool TEST_is_knight_attacking_square(enum square sq, enum colour attacking_side, const struct board *brd);
-bool TEST_is_pawn_attacking_square(enum square sq, enum colour attacking_side, const struct board *brd);
-bool TEST_is_king_attacking_square(enum square sq, enum colour attacking_side, const struct board *brd);
-bool TEST_is_rook_attacking_square(enum square sq, enum colour attacking_side, const struct board *brd);
-bool TEST_is_queen_attacking_square(enum square sq, enum colour attacking_side, const struct board *brd);
-bool TEST_is_horizontal_or_vertical_blocked(enum square sq_one, enum square sq_two, const struct board *brd);
-bool TEST_is_diagonally_blocked(enum square sq_one, enum square sq_two, const struct board *brd);
+bool TEST_is_bishop_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side);
+bool TEST_is_knight_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side);
+bool TEST_is_pawn_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side);
+bool TEST_is_king_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side);
+bool TEST_is_rook_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side);
+bool TEST_is_queen_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side);
+bool TEST_is_attacked_horizontally_or_vertically(const struct board *brd, enum square sq_one, enum square sq_two);
+bool TEST_is_attacked_diagonally(const struct board *brd, enum square sq_one, enum square sq_two);
 
 #endif

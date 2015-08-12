@@ -441,7 +441,7 @@ static inline void generate_castle_moves(const struct board *brd, struct move_li
 	if (col == WHITE){
 		if(brd->castle_perm & WKCA) {
 			if(!is_square_occupied(brd->board, f1) && !is_square_occupied(brd->board, g1)) {
-				if (!is_sq_attacked(e1, BLACK, brd) && !is_sq_attacked(f1, BLACK, brd)){
+				if (!is_sq_attacked(brd, e1, BLACK) && !is_sq_attacked(brd, f1, BLACK)){
 					add_quiet_move(MOVE(e1, g1, NO_PIECE, NO_PIECE, MFLAG_CASTLE), mvl);
 				}
 			}
@@ -450,7 +450,7 @@ static inline void generate_castle_moves(const struct board *brd, struct move_li
 		if(brd->castle_perm & WQCA) {
 			if (!is_square_occupied(brd->board, d1) && !is_square_occupied(brd->board, c1)
 														&& !is_square_occupied(brd->board, b1)){
-				if (!is_sq_attacked(e1, BLACK, brd) && !is_sq_attacked(d1, BLACK, brd)) {
+				if (!is_sq_attacked(brd, e1, BLACK) && !is_sq_attacked(brd, d1, BLACK)) {
 					add_quiet_move(MOVE(e1, c1, NO_PIECE, NO_PIECE, MFLAG_CASTLE), mvl);
 				}
 			}
@@ -458,7 +458,7 @@ static inline void generate_castle_moves(const struct board *brd, struct move_li
 	} else {
 		if(brd->castle_perm & BKCA) {
 			if(!is_square_occupied(brd->board, f8) && !is_square_occupied(brd->board, g8)) {
-				if (!is_sq_attacked(e8, WHITE, brd) && !is_sq_attacked(f8, WHITE, brd)){
+				if (!is_sq_attacked(brd, e8, WHITE) && !is_sq_attacked(brd, f8, WHITE)){
 					add_quiet_move(MOVE(e8, g8, NO_PIECE, NO_PIECE, MFLAG_CASTLE), mvl);
 				}
 			}
@@ -467,7 +467,7 @@ static inline void generate_castle_moves(const struct board *brd, struct move_li
 		if(brd->castle_perm & BQCA) {
 			if (!is_square_occupied(brd->board, d8) && !is_square_occupied(brd->board, c8)
 														&& !is_square_occupied(brd->board, b8)){
-				if (!is_sq_attacked(e8, WHITE, brd) && !is_sq_attacked(d8, WHITE, brd)) {
+				if (!is_sq_attacked(brd, e8, WHITE) && !is_sq_attacked(brd, d8, WHITE)) {
 					add_quiet_move(MOVE(e8, c8, NO_PIECE, NO_PIECE, MFLAG_CASTLE), mvl);
 				}
 			}

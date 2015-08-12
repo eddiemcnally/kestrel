@@ -48,23 +48,24 @@ void test_move_gen_depth(){
 
     consume_fen_notation(sample_position, brd);
 
-	perf_test(3, brd);
+	perf_test(4, brd);
 
-	assert_true(leafNodes == 14252);
+	assert_true(leafNodes == 334705);
 
 
 /////////////////////////////////////////////////////
 
 	leafNodes = 0;
-	//r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 ;D1 48 ;D2 2039 ;D3 97862 ;D4 4085603 ;D5 193690690 ;D6 8031647685
+	// r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 ;D1 48 ;D2 2039 ;D3 97862 ;D4 4085603 ;D5 193690690 ;D6 8031647685
+	//
 	sample_position = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1";
     brd= get_clean_board();
 
     consume_fen_notation(sample_position, brd);
 
-	perf_test(2, brd);
+	perf_test(1, brd);
 
-	assert_true(leafNodes == 2039);
+	assert_true(leafNodes == 48);
 
 
 
