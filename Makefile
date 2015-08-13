@@ -10,7 +10,7 @@
 	CC	=	gcc
 
 # define any compile-time flags
-	CFLAGS	=	-g -std=c11 -mtune=native -lmcheck -fsanitize=undefined \
+	CFLAGS	=	-O3 -g -std=c11 -mtune=native -lmcheck -fsanitize=undefined \
 				-fomit-frame-pointer -Wpedantic -Wformat=2 -Wall \
 				-Wstrict-prototypes -Werror -Wlogical-op -Wextra -Wconversion \
 				-Wsign-conversion -Wshadow -Wmissing-include-dirs \

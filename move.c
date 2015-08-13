@@ -476,7 +476,14 @@ static inline void generate_castle_moves(const struct board *brd, struct move_li
 
 }
 
-
+//              56 57 58 59 60 61 62 63
+//              48 49 50 51 52 53 54 55
+//              40 41 42 43 44 45 46 47
+//              32 33 34 35 36 37 38 39
+//              24 25 26 27 28 29 30 31
+//              16 17 18 19 20 21 22 23
+//              08 09 10 11 12 13 14 15
+//              00 01 02 03 04 05 06 07
 
 
 static inline void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl)
@@ -513,7 +520,7 @@ static inline void generate_white_pawn_moves(const struct board *brd, struct mov
 		}
 
 		// check for capture left
-		if (pawn_file >= FILE_B) {
+		if (pawn_file > FILE_A) {
 			enum square cap_sq = pawn_sq + 7;
 
 
@@ -530,7 +537,7 @@ static inline void generate_white_pawn_moves(const struct board *brd, struct mov
 		}
 
 		// check for capture right
-		if (pawn_file <= FILE_G) {
+		if (pawn_file < FILE_H) {
 			enum square cap_sq = pawn_sq + 9;
 			assert(cap_sq <= h8);
 			enum piece pce = get_piece_at_square(brd, cap_sq);
@@ -548,7 +555,14 @@ static inline void generate_white_pawn_moves(const struct board *brd, struct mov
 	validate_move_list(mvl);
 }
 
-
+//              56 57 58 59 60 61 62 63
+//              48 49 50 51 52 53 54 55
+//              40 41 42 43 44 45 46 47
+//              32 33 34 35 36 37 38 39
+//              24 25 26 27 28 29 30 31
+//              16 17 18 19 20 21 22 23
+//              08 09 10 11 12 13 14 15
+//              00 01 02 03 04 05 06 07
 
 static inline void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl)
 {
@@ -575,7 +589,7 @@ static inline void generate_black_pawn_moves(const struct board *brd, struct mov
 			add_pawn_move(BLACK, pawn_sq, next_sq_1, mvl);
 
 			if (pawn_rank == RANK_7) {
-				enum square next_sq_2 = pawn_sq - 16;
+				enum square next_sq_2 = pawn_sq - 16; // can skip down 2 ranks
 
 				assert(next_sq_2 <= h8 && next_sq_2 >= a1);
 
@@ -589,8 +603,8 @@ static inline void generate_black_pawn_moves(const struct board *brd, struct mov
 		}
 
 		// check for capture left
-		if (pawn_file >= FILE_B) {
-			enum square cap_sq = pawn_sq - 7;
+		if (pawn_file > FILE_A) {
+			enum square cap_sq = pawn_sq - 9;
 
 			assert(cap_sq <= h8 && cap_sq >= a1);
 
@@ -606,8 +620,8 @@ static inline void generate_black_pawn_moves(const struct board *brd, struct mov
 		}
 
 		// check for capture right
-		if (pawn_file <= FILE_G && pawn_sq >= b2) {
-			enum square cap_sq = pawn_sq - 9;
+		if (pawn_file < FILE_H) {
+			enum square cap_sq = pawn_sq - 7;
 
 			assert((cap_sq >= a1) && (cap_sq <= h8));
 

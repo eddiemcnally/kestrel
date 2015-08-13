@@ -48,9 +48,9 @@ void test_move_gen_depth(){
 
     consume_fen_notation(sample_position, brd);
 
-	//perf_test(4, brd);
+	perf_test(4, brd);
 
-	//assert_true(leafNodes == 334705);
+	assert_true(leafNodes == 334705);
 
 
 /////////////////////////////////////////////////////
@@ -63,11 +63,24 @@ void test_move_gen_depth(){
 
     consume_fen_notation(sample_position, brd);
 
-	perf_test(2, brd);
+	perf_test(3, brd);
 
-	assert_true(leafNodes == 2039);
+	assert_true(leafNodes == 97862);
+
+////////////////////////////////////////////
 
 
+	leafNodes = 0;
+	// r3k1r1/8/8/8/8/8/8/R3K2R b KQq - 0 1 ;D1 25 ;D2 547 ;D3 13579 ;D4 316214 ;D5 7878456 ;D6 189224276
+
+	sample_position = "r3k1r1/8/8/8/8/8/8/R3K2R b KQq - 0 1";
+    brd= get_clean_board();
+
+    consume_fen_notation(sample_position, brd);
+
+	perf_test(4, brd);
+
+	assert_true(leafNodes == 316214);
 
 
 
@@ -95,6 +108,7 @@ void perf_test(int depth, struct board *brd) {
         if ( !make_move(brd, mv))  {
             continue;
         }
+		//print_board(brd);
         long total = leafNodes;
         perft(depth - 1, brd);
         take_move(brd);
