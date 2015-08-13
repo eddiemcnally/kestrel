@@ -61,54 +61,54 @@ bool is_sq_attacked(const struct board *brd, enum square sq, enum colour attacki
 	// combine rook/queen and bishop/queen to reduce number of lookups
 
     if (is_knight_attacking_square(brd, sq, attacking_side)){
-		if(attacking_side == WHITE){
-			printf("W Knight attacking %s\n", print_square(sq));
-		} else{
-			printf("B Knight attacking %s\n", print_square(sq));
-		}
+		//if(attacking_side == WHITE){
+			//printf("W Knight attacking %s\n", print_square(sq));
+		//} else{
+			//printf("B Knight attacking %s\n", print_square(sq));
+		//}
 		return true;
 	}
     if (is_pawn_attacking_square(brd, sq, attacking_side)){
-		if(attacking_side == WHITE){
-			printf("W PAWN attacking %s\n", print_square(sq));
-		} else{
-			printf("B PAWN attacking %s\n", print_square(sq));
-		}
+		//if(attacking_side == WHITE){
+			//printf("W PAWN attacking %s\n", print_square(sq));
+		//} else{
+			//printf("B PAWN attacking %s\n", print_square(sq));
+		//}
 
 		return true;
 	}
 
     if (is_king_attacking_square(brd, sq, attacking_side)){
-		if(attacking_side == WHITE){
-			printf("W KING attacking %s\n", print_square(sq));
-		} else{
-			printf("B KING attacking %s\n", print_square(sq));
-		}
+		//if(attacking_side == WHITE){
+			//printf("W KING attacking %s\n", print_square(sq));
+		//} else{
+			//printf("B KING attacking %s\n", print_square(sq));
+		//}
 
 		return true;
 	}
     if (is_queen_attacking_square(brd, sq, attacking_side)){
-		if(attacking_side == WHITE){
-			printf("W QUEEN attacking %s\n", print_square(sq));
-		} else{
-			printf("B QUEEN attacking %s\n", print_square(sq));
-		}
+		//if(attacking_side == WHITE){
+			//printf("W QUEEN attacking %s\n", print_square(sq));
+		//} else{
+			//printf("B QUEEN attacking %s\n", print_square(sq));
+		//}
 		return true;
 	}
     if (is_bishop_attacking_square(brd, sq, attacking_side)){
-		if(attacking_side == WHITE){
-			printf("W BISHOP attacking %s\n", print_square(sq));
-		} else{
-			printf("B BISHOP attacking %s\n", print_square(sq));
-		}
+		//if(attacking_side == WHITE){
+			//printf("W BISHOP attacking %s\n", print_square(sq));
+		//} else{
+			//printf("B BISHOP attacking %s\n", print_square(sq));
+		//}
 		return true;
 	}
     if (is_rook_attacking_square(brd, sq, attacking_side)){
-		if(attacking_side == WHITE){
-			printf("W ROOK attacking %s\n", print_square(sq));
-		} else{
-			printf("B ROOK attacking %s\n", print_square(sq));
-		}
+		//if(attacking_side == WHITE){
+			//printf("W ROOK attacking %s\n", print_square(sq));
+		//} else{
+			//printf("B ROOK attacking %s\n", print_square(sq));
+		//}
 		return true;
 	}
 
@@ -291,10 +291,10 @@ static inline bool is_queen_attacking_square(const struct board *brd, enum squar
     while (bbQueen != 0) {
 		enum square att_pce_sq = POP(&bbQueen);
 
-		if (attacking_side == WHITE)
-			printf("checking W_QUEEN on %s can attack square %s\n", print_square(att_pce_sq), print_square(sq));
-		else
-			printf("checking B_QUEEN on %s can attack square %s\n", print_square(att_pce_sq), print_square(sq));
+		//if (attacking_side == WHITE)
+			//printf("checking W_QUEEN on %s can attack square %s\n", print_square(att_pce_sq), print_square(sq));
+		//else
+			//printf("checking B_QUEEN on %s can attack square %s\n", print_square(att_pce_sq), print_square(sq));
 
 
 		// get occupancy mask for this square
@@ -305,11 +305,11 @@ static inline bool is_queen_attacking_square(const struct board *brd, enum squar
 			// Need to see if any blocking pieces
 
 			if (is_attacked_diagonally(brd, sq, att_pce_sq)) {
-				printf("Queen on %s can attack square %s\n", print_square(att_pce_sq), print_square(sq));
+				//printf("Queen on %s can attack square %s\n", print_square(att_pce_sq), print_square(sq));
 				return true;
 			}
 			if (is_attacked_horizontally_or_vertically(brd, sq, att_pce_sq)) {
-				printf("Queen on %s can attack square %s\n", print_square(att_pce_sq), print_square(sq));
+				//printf("Queen on %s can attack square %s\n", print_square(att_pce_sq), print_square(sq));
 				return true;
 			}
 		}
@@ -447,7 +447,7 @@ static inline bool is_attacked_diagonally(const struct board * brd, enum square 
 
     assert(start_sq != end_sq);
 
-	printf("checking if square %s can attack square %s\n", print_square(start_sq), print_square(end_sq));
+	//printf("checking if square %s can attack square %s\n", print_square(start_sq), print_square(end_sq));
 
     if (start_sq < end_sq) {
 		bool attacked = search_up_left_and_right(brd, start_sq, end_sq);
@@ -480,14 +480,14 @@ static inline bool search_up_left_and_right(const struct board *brd, enum square
 {
 	// check north-east
     if (((end_sq - start_sq) % 9) == 0) {
-		printf("searching NE\n");
+		//printf("searching NE\n");
 		// search up and right from sq_one
 		enum square sq = start_sq + 9;
 		int sq_rank = GET_RANK(sq);
 		int sq_file = GET_FILE(sq);
 
 		while ((sq <= end_sq) && (sq_file <= FILE_H) && (sq_rank <= RANK_8)) {
-			printf("checking %s\n", print_square(sq));
+			//printf("checking %s\n", print_square(sq));
 
 			if (is_square_occupied(brd->board, sq)) {
 				if (sq == end_sq){
@@ -495,7 +495,7 @@ static inline bool search_up_left_and_right(const struct board *brd, enum square
 					return true;
 				} else {
 					// blocked by piece
-					printf("square blocking...%s\n", print_square(sq));
+					//printf("square blocking...%s\n", print_square(sq));
 					return false;
 				}
 			}
@@ -505,13 +505,13 @@ static inline bool search_up_left_and_right(const struct board *brd, enum square
 		}
     } else if (((end_sq - start_sq) % 7) == 0) {
 		// search north-west
-		printf("searching NW\n");
+		//printf("searching NW\n");
 		enum square sq = start_sq + 7;
 		int sq_rank = GET_RANK(sq);
 		int sq_file = GET_FILE(sq);
 
 		while ((sq <= end_sq) && (sq_file >= FILE_A) && (sq_rank <= RANK_8)) {
-			printf("checking %s\n", print_square(sq));
+			//printf("checking %s\n", print_square(sq));
 
 			if (is_square_occupied(brd->board, sq)) {
 				if (sq == end_sq){
@@ -519,7 +519,7 @@ static inline bool search_up_left_and_right(const struct board *brd, enum square
 					return true;
 				} else {
 					// blocked by piece
-					printf("square blocking...%s\n", print_square(sq));
+					//printf("square blocking...%s\n", print_square(sq));
 					return false;
 				}
 			}
@@ -529,10 +529,10 @@ static inline bool search_up_left_and_right(const struct board *brd, enum square
 		}
     } else {
 		// not on a line of sight....ignore
-		printf("not line of sight....\n");
+		//printf("not line of sight....\n");
 		return false;
 	}
-	printf("DEFAULT FALSE.......\n");
+	//printf("DEFAULT FALSE.......\n");
 	return false;
 }
 
@@ -558,13 +558,13 @@ static inline bool search_down_left_and_right(const struct board *brd, enum squa
 	// search south-west
     if (((start_sq - end_sq) % 9) == 0) {
 		// search down and left from sq_one
-		printf("searching SW\n");
+		//printf("searching SW\n");
 		enum square sq = start_sq - 9;
 		int sq_rank = GET_RANK(sq);
 		int sq_file = GET_FILE(sq);
 
 		while ((sq >= end_sq) && (sq_rank >= RANK_1) && (sq_file >= FILE_A)) {
-			printf("checking %s\n", print_square(sq));
+			//printf("checking %s\n", print_square(sq));
 
 			if (is_square_occupied(brd->board, sq)) {
 				if (sq == end_sq){
@@ -572,7 +572,7 @@ static inline bool search_down_left_and_right(const struct board *brd, enum squa
 					return true;
 				} else {
 					// blocked by piece
-					printf("square blocking...%s\n", print_square(sq));
+					//printf("square blocking...%s\n", print_square(sq));
 					return false;
 				}
 			}
@@ -582,12 +582,12 @@ static inline bool search_down_left_and_right(const struct board *brd, enum squa
 		}
     } else if (((start_sq - end_sq) % 7) == 0) {
 		// search south-east
-		printf("searching SE\n");
+		//printf("searching SE\n");
 		enum square sq = start_sq - 7;
 		int sq_rank = GET_RANK(sq);
 		int sq_file = GET_FILE(sq);
 
-		printf("checking %s\n", print_square(sq));
+		//printf("checking %s\n", print_square(sq));
 
 		while ((sq >= end_sq) && (sq_file <= FILE_H) && (sq_rank >= RANK_1)) {
 
@@ -600,7 +600,7 @@ static inline bool search_down_left_and_right(const struct board *brd, enum squa
 					return true;
 				} else {
 					// blocked by piece
-					printf("square blocking...%s\n", print_square(sq));
+					//printf("square blocking...%s\n", print_square(sq));
 					return false;
 				}
 			}

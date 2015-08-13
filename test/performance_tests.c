@@ -48,9 +48,9 @@ void test_move_gen_depth(){
 
     consume_fen_notation(sample_position, brd);
 
-	perf_test(4, brd);
+	//perf_test(4, brd);
 
-	assert_true(leafNodes == 334705);
+	//assert_true(leafNodes == 334705);
 
 
 /////////////////////////////////////////////////////
@@ -63,9 +63,9 @@ void test_move_gen_depth(){
 
     consume_fen_notation(sample_position, brd);
 
-	perf_test(1, brd);
+	perf_test(2, brd);
 
-	assert_true(leafNodes == 48);
+	assert_true(leafNodes == 2039);
 
 
 
