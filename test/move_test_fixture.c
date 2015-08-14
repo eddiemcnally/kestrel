@@ -81,9 +81,7 @@ MoveList Total 26 Moves:
     char *test_fen =
 	"rnbqkb1r/pp1p1pPp/8/2p1pP2/1P1P4/3P3P/P1P1P3/RNBQKBNR w KQkq e6 0 1";
 
-    struct board *brd = get_clean_board();
-
-    consume_fen_notation(test_fen, brd);
+    struct board *brd = init_board(test_fen);
 
 	struct move_list * mvl = TEST_get_empty_move_list();
 	TEST_generate_white_pawn_moves(brd, mvl);
@@ -186,9 +184,7 @@ void test_generation_black_pawn_moves(void)
     char *test_fen =
 	"rnbqkbnr/p1p1p3/3p3p/1p1p4/2P1Pp2/8/PP1P1PpP/RNBQKB1R b KQkq e3 0 1";
 
-    struct board *brd = get_clean_board();
-
-    consume_fen_notation(test_fen, brd);
+    struct board *brd = init_board(test_fen);
 
 	struct move_list * mvl = TEST_get_empty_move_list();
 	TEST_generate_black_pawn_moves(brd, mvl);
@@ -252,9 +248,7 @@ void test_generation_white_knight_pawn_moves(void)
 	// setup
     char *test_fen = "5k2/1n6/4n3/6N1/8/3N4/8/5K2 w - - 0 1";
 
-    struct board *brd = get_clean_board();
-
-    consume_fen_notation(test_fen, brd);
+    struct board *brd = init_board(test_fen);
 
 	struct move_list * mvl = TEST_get_empty_move_list();
 	TEST_generate_knight_piece_moves(brd, mvl, WHITE);
@@ -308,9 +302,7 @@ void test_generation_black_knight_pawn_moves(void)
 	// setup
     char *test_fen = "r1bqkb1r/pppppppp/2N5/3n1N2/8/1n6/PPPPPPPP/R1BQKB1R b KQkq - 0 1";
 
-    struct board *brd = get_clean_board();
-
-    consume_fen_notation(test_fen, brd);
+    struct board *brd = init_board(test_fen);
 
 	struct move_list * mvl = TEST_get_empty_move_list();
 	TEST_generate_knight_piece_moves(brd, mvl, BLACK);
@@ -361,10 +353,7 @@ void test_generation_king_moves(void){
 	// setup
     char *test_fen = "8/p1P4p/R3p2P/P1pP1q2/PRP1p1P1/3Qprr1/kp1p3P/7K w - - 0 1";
 
-    struct board *brd = get_clean_board();
-
-    consume_fen_notation(test_fen, brd);
-
+    struct board *brd = init_board(test_fen);
 	struct move_list * mvl = TEST_get_empty_move_list();
 	TEST_generate_king_moves(brd, mvl, BLACK);
 
@@ -382,9 +371,7 @@ void test_generation_king_moves(void){
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
 	// reset things and check for white king
-	brd = get_clean_board();
-
-    consume_fen_notation(test_fen, brd);
+	brd = init_board(test_fen);
 
 	mvl = TEST_get_empty_move_list();
 	TEST_generate_king_moves(brd, mvl, WHITE);
@@ -399,10 +386,9 @@ void test_generation_king_moves(void){
 
 	//=======================
 	// reset things and do another test
-	brd = get_clean_board();
 	test_fen = "r5r1/2KP2R1/R1PP2p1/1pPp2P1/pp1Pp3/3kp1P1/3P2pQ/6q1 w - - 0 1";
-    consume_fen_notation(test_fen, brd);
 
+	brd = init_board(test_fen);
 	mvl = TEST_get_empty_move_list();
 	TEST_generate_king_moves(brd, mvl, BLACK);
 
@@ -424,9 +410,7 @@ void test_generation_king_moves(void){
 
 
 	// reset things and check for white king
-	brd = get_clean_board();
-
-    consume_fen_notation(test_fen, brd);
+	brd = init_board(test_fen);
 
 	mvl = TEST_get_empty_move_list();
 	TEST_generate_king_moves(brd, mvl, WHITE);
@@ -452,9 +436,7 @@ void test_generation_king_moves(void){
 void test_generation_sliding_diagonal_moves(void){
 
 	char * sliding_test = "8/2B1p2P/4PppK/p2pP1P1/1P4pp/Pb2p3/3P1Pk1/2bB4 w - - 0 1";
-    struct board *brd= get_clean_board();
-
-    consume_fen_notation(sliding_test, brd);
+    struct board *brd = init_board(sliding_test);
 
     struct move_list *mvl = malloc(sizeof(struct move_list));
 	memset(mvl, 0, sizeof(struct move_list));
@@ -492,11 +474,9 @@ void test_generation_sliding_diagonal_moves(void){
 
 ///////////////////////////////////////////////////
 	// now look at white bishops
-    brd= get_clean_board();
+	brd = init_board(sliding_test);
 
-    consume_fen_notation(sliding_test, brd);
-
-    mvl = malloc(sizeof(struct move_list));
+	mvl = malloc(sizeof(struct move_list));
 	memset(mvl, 0, sizeof(struct move_list));
 
     print_board(brd);
@@ -537,9 +517,7 @@ void test_generation_sliding_diagonal_moves(void){
 void test_generation_sliding_horizontal_and_vertical_moves(void){
 
 	char * sliding_test = "K7/1rp5/5R1P/6p1/7P/1k3p1P/1P1p2r1/4R3 w - - 0 1";
-    struct board *brd= get_clean_board();
-    //print_board(brd);
-    consume_fen_notation(sliding_test, brd);
+    struct board *brd = init_board(sliding_test);
 
     struct move_list *mvl = malloc(sizeof(struct move_list));
 	memset(mvl, 0, sizeof(struct move_list));
@@ -574,11 +552,9 @@ void test_generation_sliding_horizontal_and_vertical_moves(void){
 
 
 	// check the white rooks
-    brd= get_clean_board();
-    //print_board(brd);
-    consume_fen_notation(sliding_test, brd);
+	brd = init_board(sliding_test);
 
-    mvl = malloc(sizeof(struct move_list));
+	mvl = malloc(sizeof(struct move_list));
 	memset(mvl, 0, sizeof(struct move_list));
 
 	TEST_generate_sliding_horizontal_vertical_moves(brd, mvl, W_ROOK);
@@ -642,9 +618,7 @@ void test_generation_sliding_horizontal_and_vertical_moves(void){
 
 void test_king_castling_moves(void){
 	char * sliding_test = "r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1";
-    struct board *brd= get_clean_board();
-    //print_board(brd);
-    consume_fen_notation(sliding_test, brd);
+    struct board *brd = init_board(sliding_test);
 
     struct move_list *mvl = malloc(sizeof(struct move_list));
 	memset(mvl, 0, sizeof(struct move_list));
@@ -658,10 +632,7 @@ void test_king_castling_moves(void){
 	mv = MOVE(e1, c1, NO_PIECE, NO_PIECE, MFLAG_CASTLE);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
-	brd= get_clean_board();
-    //print_board(brd);
-    consume_fen_notation(sliding_test, brd);
-
+	brd = init_board(sliding_test);
     mvl = malloc(sizeof(struct move_list));
 	memset(mvl, 0, sizeof(struct move_list));
 
@@ -676,10 +647,7 @@ void test_king_castling_moves(void){
 
 
 	sliding_test = "3rk2r/8/8/8/8/8/6p1/R3K2R b KQk - 0 1";
-    brd= get_clean_board();
-    //print_board(brd);
-    consume_fen_notation(sliding_test, brd);
-
+    brd = init_board(sliding_test);
     mvl = malloc(sizeof(struct move_list));
 	memset(mvl, 0, sizeof(struct move_list));
 
@@ -687,9 +655,7 @@ void test_king_castling_moves(void){
 
 	assert_true(mvl->move_count == 0);
 
-    brd= get_clean_board();
-    //print_board(brd);
-    consume_fen_notation(sliding_test, brd);
+	brd = init_board(sliding_test);
     mvl = malloc(sizeof(struct move_list));
 	memset(mvl, 0, sizeof(struct move_list));
 
@@ -705,9 +671,7 @@ void test_king_castling_moves(void){
 void test_generation_queen_moves(void){
 
 	char * sliding_test = "4q3/4p2p/q4p1Q/1k2p2P/1p4P1/p1Pp1KPP/PpQ2PP1/8 w - - 0 1";
-    struct board *brd= get_clean_board();
-    //print_board(brd);
-    consume_fen_notation(sliding_test, brd);
+    struct board *brd = init_board(sliding_test);
 
     struct move_list *mvl = malloc(sizeof(struct move_list));
 	memset(mvl, 0, sizeof(struct move_list));
@@ -760,10 +724,7 @@ void test_generation_queen_moves(void){
 
 
 	// now look at the black queens
-	brd= get_clean_board();
-    //print_board(brd);
-    consume_fen_notation(sliding_test, brd);
-
+	brd = init_board(sliding_test);
     mvl = malloc(sizeof(struct move_list));
 	memset(mvl, 0, sizeof(struct move_list));
 
@@ -825,9 +786,7 @@ void test_generation_queen_moves(void){
 void test_sample_board_position(){
 
 	char * sample_position = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1";
-    struct board *brd= get_clean_board();
-
-    consume_fen_notation(sample_position, brd);
+    struct board *brd= init_board(sample_position);
 
     struct move_list *list = malloc(sizeof(struct move_list));
 	memset(list, 0, sizeof(struct move_list));
@@ -845,9 +804,7 @@ void test_clear_piece(){
 	// remove the knight from c3
 	//
 	char * sample_position = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1";
-    struct board *brd= get_clean_board();
-
-    consume_fen_notation(sample_position, brd);
+    struct board *brd= init_board(sample_position);
 
 	assert_true(check_bit(&brd->board, c3) == true);
 	assert_true(check_bit(&brd->bitboards[W_KNIGHT], c3) == true);
@@ -884,9 +841,7 @@ void test_add_piece(){
 	// add a White Knight to c4
 	//
 	char * sample_position = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1";
-    struct board *brd= get_clean_board();
-
-    consume_fen_notation(sample_position, brd);
+    struct board *brd= init_board(sample_position);
 
 	assert_true(check_bit(&brd->board, c4) == false);
 	assert_true(check_bit(&brd->bitboards[W_KNIGHT], c4) == false);
@@ -921,9 +876,7 @@ void test_move_piece(){
 	// move White Knight from e5 to d3
 	//
 	char * sample_position = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1";
-    struct board *brd= get_clean_board();
-
-    consume_fen_notation(sample_position, brd);
+    struct board *brd= init_board(sample_position);
 
 	assert_true(check_bit(&brd->board, e5) == true);
 	assert_true(check_bit(&brd->bitboards[W_KNIGHT], e5) == true);
@@ -959,19 +912,19 @@ void move_test_fixture(void)
 {
     test_fixture_start();	// starts a fixture
 
-    //run_test(test_generation_white_pawn_moves);
-    //run_test(test_generation_black_pawn_moves);
-	//run_test(test_generation_white_knight_pawn_moves);
-	//run_test(test_generation_black_knight_pawn_moves);
-	//run_test(test_generation_king_moves);
-	//run_test(test_king_castling_moves);
-	//run_test(test_generation_sliding_horizontal_and_vertical_moves);
-	//run_test(test_generation_sliding_diagonal_moves);
-	//run_test(test_generation_queen_moves);
-	//run_test(test_sample_board_position);
-	//run_test(test_clear_piece);
-	//run_test(test_add_piece);
-	//run_test(test_move_piece);
+    run_test(test_generation_white_pawn_moves);
+    run_test(test_generation_black_pawn_moves);
+	run_test(test_generation_white_knight_pawn_moves);
+	run_test(test_generation_black_knight_pawn_moves);
+	run_test(test_generation_king_moves);
+	run_test(test_king_castling_moves);
+	run_test(test_generation_sliding_horizontal_and_vertical_moves);
+	run_test(test_generation_sliding_diagonal_moves);
+	run_test(test_generation_queen_moves);
+	run_test(test_sample_board_position);
+	run_test(test_clear_piece);
+	run_test(test_add_piece);
+	run_test(test_move_piece);
 
     test_fixture_end();		// ends a fixture
 }

@@ -40,19 +40,23 @@ static const U8 BitTable[64] = {
     58, 20, 37, 17, 36, 8
 };
 
+
+static struct board *get_clean_board(void);
+
+
 /*
  * Creates and initialises a new board. The default starting piece
  * positions are populated.
  * name: init_board
- * @param
+ * @param fen : the FEN string
  * @return	a new board
  *
  */
-struct board *init_board(void)
+struct board *init_board(char * fen)
 {
     struct board *brd = get_clean_board();
 
-    consume_fen_notation(STARTING_FEN, brd);
+    consume_fen_notation(fen, brd);
 
     return brd;
 }
@@ -101,7 +105,7 @@ void add_piece_to_board(struct board *brd, enum piece pce, enum square sq){
  * @return	ptr to a created board struct
  *
  */
-struct board *get_clean_board(void)
+static struct board *get_clean_board(void)
 {
     struct board *brd = malloc(sizeof(struct board));
 

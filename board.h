@@ -61,8 +61,7 @@ enum {
 #define POP(bb)			pop_1st_bit(bb)
 #define	CNT(bb)			count_bits(bb)
 
-struct board *init_board(void);
-struct board *get_clean_board(void);
+struct board *init_board(char * fen);
 void remove_piece_from_board(struct board *brd, enum piece pce, enum square sq);
 void add_piece_to_board(struct board *brd, enum piece pce, enum square sq);
 enum piece get_piece_at_square(const struct board *the_board, enum square square);

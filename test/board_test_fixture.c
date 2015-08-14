@@ -45,7 +45,7 @@ void board_test_fixture(void);
 void test_initial_board_placement()
 {
     init_hash_keys();
-    struct board *the_board = init_board();
+    struct board *the_board = init_board(STARTING_FEN);
 	assert_true(W_ROOK == get_piece_at_square(the_board, a1));
     assert_true(W_KNIGHT == get_piece_at_square(the_board, b1));
     assert_true(W_BISHOP == get_piece_at_square(the_board, c1));
@@ -98,21 +98,13 @@ void test_initial_board_placement()
 
     assert_true(the_board->board_hash != 0);
 
-}void test_clean_board(void)
+}void test_fen_parsing_initial_board_layout(void)
 {
-    struct board *the_board = get_clean_board();
-
-	// check all squares are zero
-	assert_true(the_board->board == (U64) 0);
-	for (int i = 0; i < NUM_PIECES; i++) {
-		assert_true(the_board->bitboards[i] == (U64) 0);
-	}}void test_fen_parsing_initial_board_layout(void)
-{
-	struct board *the_board = get_clean_board();
 
 	// this is the initial bpard setup
     char *test_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-	consume_fen_notation(test_fen, the_board);
+
+	struct board *the_board = init_board(test_fen);
 
 	//print_board(the_board);
 
@@ -161,11 +153,11 @@ void test_initial_board_placement()
     assert_true(the_board->en_passant == NO_SQUARE);
 }void test_fen_parsing_general_layout_1()
 {
-    struct board *the_board = get_clean_board();
 
 	// this is the initial board setup
     char *test_fen = "k7/8/8/4N3/8/8/8/3K4 b - - 13 56";
-	consume_fen_notation(test_fen, the_board);
+
+	struct board *the_board = init_board(test_fen);
 
 	//print_board(the_board);
 
@@ -181,13 +173,12 @@ void test_initial_board_placement()
     assert_true(the_board->en_passant == NO_SQUARE);
 }void test_fen_parsing_general_layout_2()
 {
-    struct board *the_board = get_clean_board();
 
     // this is the initial board setup
     char *test_fen =
 	"rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2";
 
-    consume_fen_notation(test_fen, the_board);
+	struct board *the_board = init_board(test_fen);
 
     //print_board(the_board);
 
@@ -340,7 +331,6 @@ void test_LSB_clear(void)
 {
 	test_fixture_start();	// starts a fixture
 	run_test(test_initial_board_placement);
-    run_test(test_clean_board);
 	run_test(test_setting_bits_in_a_board);
     run_test(test_checking_bits_in_a_board);
     run_test(test_clearing_bits_in_a_board);

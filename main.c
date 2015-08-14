@@ -117,7 +117,7 @@ int main(int argc, char **argv)
 
 
 	char * sliding_test = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1";
-    struct board *brd= get_clean_board();
+    struct board *brd= init_game(sliding_test);
     //print_board(brd);
     consume_fen_notation(sliding_test, brd);
 
