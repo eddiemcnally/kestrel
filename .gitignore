@@ -5,3 +5,4 @@ kestrel
 *.bak
 *.c~
 *.h~
+gmon.out
