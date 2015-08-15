@@ -30,8 +30,6 @@
 #include "hashkeys.h"
 
 
-
-
 //bit mask for castle permissions
 static const U8 castle_permission_mask[NUM_SQUARES] = {
     13, 15, 15, 15, 12, 15, 15, 14,
