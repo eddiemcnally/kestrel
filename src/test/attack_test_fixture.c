@@ -355,7 +355,7 @@ void test_is_square_under_attack(void)
 	"2Q3qb/pN3P1p/P4qr1/1KP1BnP1/1p2pPNp/2rkP3/pP3npP/4QbRB w - - 0 1";
 
     struct board *brd = init_board(test_fen);
-    print_board(brd);
+    //print_board(brd);
 
 	assert_true(is_sq_attacked(brd, a1, WHITE) == true);
 	assert_true(is_sq_attacked(brd, a1, BLACK) == false);
@@ -516,7 +516,7 @@ void test_is_square_under_attack(void)
     test_fen = "rnbq1bnr/ppppp1pp/6k1/5p2/4P3/3B4/PPPP2PP/RNBQK1NR w KQ - 0 1";
 
     brd = init_board(test_fen);
-	print_board(brd);
+	//print_board(brd);
 	assert_false(is_sq_attacked(brd, g6, WHITE));
 
 
@@ -536,7 +536,7 @@ void test_is_square_under_attack(void)
      //a  b  c  d  e  f  g  h
 
     brd = init_board(test_fen);
-	print_board(brd);
+	//print_board(brd);
 	assert_false(is_sq_attacked(brd, e8, WHITE));
 	assert_false(is_sq_attacked(brd, a1, WHITE));
 

@@ -15,7 +15,8 @@
 	CFLAGS	=	-O3 -g -std=c11 -mtune=native -lmcheck -fsanitize=undefined \
 				--param large-function-growth=8000 --param max-inline-insns-single=30000 \
 				-fomit-frame-pointer -Wpedantic -Wformat=2 -Wall \
-				-Wstrict-prototypes -Werror -Wlogical-op -Wextra -Wconversion \
+				-Wstrict-prototypes -Werror \
+				-Wlogical-op -Wextra -Wconversion \
 				-Wsign-conversion -Wshadow -Wmissing-include-dirs \
 				-Wpointer-arith -Winline -lubsan
 

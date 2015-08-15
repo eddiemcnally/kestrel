@@ -19,10 +19,10 @@
 #define _HASHKEYS_H_
 
 void init_hash_keys(void);
-U64 get_position_hashkey(const struct board *brd);
-U64 get_castle_key(U8 castle_map);
-U64 get_side_key(void);
-U64 get_piece_key(enum piece piece, enum square square);
-U64 get_hash(enum piece pce, enum square sq);
+U64 get_position_hash(const struct board *brd);
+U64 get_castle_hash(U8 castle_map);
+U64 get_side_hash(void);
+U64 get_en_passant_hash(enum square sq);
+U64 get_piece_hash(enum piece pce, enum square sq);
 
 #endif

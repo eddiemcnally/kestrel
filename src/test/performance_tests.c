@@ -94,7 +94,7 @@ void perf_test(int depth, struct board *brd) {
 
 	generate_all_moves(brd, mv_list);
 
-	print_move_list_details(mv_list);
+	//print_move_list_details(mv_list);
 
     mv_bitmap mv;
     for(U32 mv_num = 0; mv_num < mv_list->move_count; ++mv_num) {

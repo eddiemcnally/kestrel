@@ -440,13 +440,13 @@ void test_generation_sliding_diagonal_moves(void){
 
     struct move_list *mvl = malloc(sizeof(struct move_list));
 	memset(mvl, 0, sizeof(struct move_list));
-    print_board(brd);
+    //print_board(brd);
 
 
 	// black bishops
 	TEST_generate_sliding_diagonal_moves(brd, mvl, B_BISHOP);
 
-	print_move_list_details(mvl);
+	//print_move_list_details(mvl);
 
 	assert_true(mvl->move_count == 8);
 
@@ -479,12 +479,12 @@ void test_generation_sliding_diagonal_moves(void){
 	mvl = malloc(sizeof(struct move_list));
 	memset(mvl, 0, sizeof(struct move_list));
 
-    print_board(brd);
+    //print_board(brd);
 
 	TEST_generate_sliding_diagonal_moves(brd, mvl, W_BISHOP);
 	assert_true(mvl->move_count == 10);
 
-	print_move_list_details(mvl);
+	//print_move_list_details(mvl);
 
 
 	mv = MOVE(d1, c2, NO_PIECE, NO_PIECE, 0);

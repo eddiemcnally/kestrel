@@ -64,12 +64,12 @@ void init_hash_keys()
 
 /* Returns the castle hashkey for a given castle permission map
  *
- * name: 	get_castle_key
+ * name: 	get_castle_hash
  * @param: 	castle_map - the map of castle options
  * @return:	the U64 hashkey
  *
  */
-inline U64 get_castle_key(U8 castle_map)
+inline U64 get_castle_hash(U8 castle_map)
 {
     assert(castle_map < 16);	// 4 bits, 0..F valid values
 
@@ -78,46 +78,44 @@ inline U64 get_castle_key(U8 castle_map)
 
 /* Returns the side hashkey
  *
- * name: 	get_side_key
+ * name: 	get_side_hash
  * @param:
  * @return:	the U64 hashkey
  *
  */
-inline U64 get_side_key(void)
+inline U64 get_side_hash(void)
 {
     return side_to_move_key;
 }
 
+
 /* Returns the hashkey for a particular piece on a given square
  *
- * name: 	get_piece_key
+ * name: 	get_piece_hash
  * @param: 	piece and square
  * @return:	the U64 hashkey
  *
  */
-inline U64 get_piece_key(enum piece pce, enum square sq)
-{
-	assert((sq >= a1) && (sq <= h8));
-	assert(is_valid_piece(pce));
-
-    return piece_keys[pce][sq];
-}
-
-
-U64 get_hash(enum piece pce, enum square sq){
+inline U64 get_piece_hash(enum piece pce, enum square sq){
 	return piece_keys[pce][sq];
 }
 
 
+inline U64 get_en_passant_hash(enum square sq){
+	return piece_keys[NO_PIECE][sq];
+}
+
+
+
 /*Given a board, return a positon hashkey
  *
- * name: 	get_position_hashkey
+ * name: 	get_position_hash
  * @param:	ptr ot a board struct
  * @return:	the position hashkey
  *
  */
 
-U64 get_position_hashkey(const struct board * brd)
+U64 get_position_hash(const struct board * brd)
 {
     U64 retval = 0;
 
@@ -125,19 +123,19 @@ U64 get_position_hashkey(const struct board * brd)
 		enum piece pce = get_piece_at_square(brd, sq);
 
 		if (pce != NO_PIECE) {
-			retval ^= get_piece_key(pce, sq);
+			retval ^= get_piece_hash(pce, sq);
 		}
     }
 
     if (brd->side_to_move == WHITE) {
-		retval ^= get_side_key();
+		retval ^= get_side_hash();
     }
 
     if (brd->en_passant != NO_SQUARE) {
-		retval ^= get_piece_key(NO_PIECE, brd->en_passant);
+		retval ^= get_piece_hash(NO_PIECE, brd->en_passant);
     }
 
-    retval ^= get_castle_key(brd->castle_perm);
+    retval ^= get_castle_hash(brd->castle_perm);
 
     return retval;
 }

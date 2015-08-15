@@ -293,18 +293,18 @@ void take_move(struct board *brd){
 
 
 inline void update_piece_hash(struct board *brd, enum piece pce, enum square sq){
-	brd->board_hash ^= get_hash(pce, sq);
+	brd->board_hash ^= get_piece_hash(pce, sq);
 }
 
 inline void update_castle_hash(struct board *brd){
-	brd->board_hash ^= get_castle_key(brd->castle_perm);
+	brd->board_hash ^= get_castle_hash(brd->castle_perm);
 }
 
 
 inline void update_side_hash(struct board *brd){
-	brd->board_hash ^= get_side_key();
+	brd->board_hash ^= get_side_hash();
 }
 
 inline void update_EP_hash(struct board *brd){
-	brd->board_hash ^= get_side_key();
+	brd->board_hash ^= get_en_passant_hash(brd->en_passant);
 }

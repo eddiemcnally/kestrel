@@ -119,6 +119,7 @@ int consume_fen_notation(const char *fen_string, struct board *board_to_setup)
 		fen_string++;
 		}
 
+	assert((*fen_string == 'w') || (*fen_string == 'b'));
     if (*fen_string == 'w') {
 		board_to_setup->side_to_move = WHITE;
     } else {
@@ -154,16 +155,22 @@ int consume_fen_notation(const char *fen_string, struct board *board_to_setup)
 
     fen_string++;
 
+	assert(board_to_setup->castle_perm <= 15);
+
     if (*fen_string != '-') {
 		// en passant square present
 		file = fen_string[0] - 'a';
 		rank = fen_string[1] - '1';
+
+		assert(IS_VALID_FILE(file));
+		assert(IS_VALID_RANK(rank));
+
 		board_to_setup->en_passant = GET_SQUARE(rank, file);
     } else {
 		board_to_setup->en_passant = NO_SQUARE;
     }
 
-    board_to_setup->board_hash = get_position_hashkey(board_to_setup);
+    board_to_setup->board_hash = get_position_hash(board_to_setup);
 
     return 0;
 }
