@@ -34,6 +34,8 @@
 void perf_test(int depth, struct board *brd);
 void test_move_gen_depth(void);
 void perft(int depth, struct board *brd);
+void bug_check(void);
+
 
 // struct representing a line in the perftsuite.epd file
 typedef struct EPD{
@@ -243,24 +245,25 @@ void perf_test(int depth, struct board *brd) {
 	memset(mv_list, 0, sizeof(struct move_list));
 
 	generate_all_moves(brd, mv_list);
-
+	print_board(brd);
 	//print_move_list_details(mv_list);
 
     mv_bitmap mv;
     for(U32 mv_num = 0; mv_num < mv_list->move_count; ++mv_num) {
         mv = mv_list->moves[mv_num].move_bitmap;
+		printf("**depth %d, move : %s\n", depth, print_move(mv));
         if ( !make_move(brd, mv))  {
             continue;
         }
 		//print_board(brd);
-        //long total = leafNodes;
+        U64 total = leafNodes;
         perft(depth - 1, brd);
         take_move(brd);
-        //long oldnodes = leafNodes - total;
-        //printf("move %d : %s : %ld\n", mv_num+1, print_move(mv),oldnodes);
+        U64 oldnodes = leafNodes - total;
+        printf("move %d : %s : %llu\n", mv_num+1, print_move(mv),oldnodes);
     }
 
-	//printf("\nTest Complete : %ld nodes visited\n",leafNodes);
+	printf("\nTest Complete : %llu nodes visited\n",leafNodes);
 
     return;
 }
@@ -280,33 +283,38 @@ void perft(int depth, struct board *brd) {
 	memset(mv_list, 0, sizeof(struct move_list));
 
 	generate_all_moves(brd, mv_list);
-
+	print_board(brd);
 	//printf("# moves generated = %d\n", mv_list->move_count);
 
     mv_bitmap mv;
     for(U32 mv_num = 0; mv_num < mv_list->move_count; mv_num++) {
         mv = mv_list->moves[mv_num].move_bitmap;
+		printf("**depth %d, move : %s\n", depth, print_move(mv));
         if ( !make_move(brd, mv))  {
             continue;
         }
         perft(depth - 1, brd);
         take_move(brd);
     }
-
     return;
 }
 
 
+void bug_check(void){
+	struct board *brd= init_board("6kq/8/8/8/8/8/8/7K w - - 0 1");
 
+	leafNodes = 0;
+	perf_test(4, brd);
+}
 
 
 void perf_test_fixture(void)
 {
     test_fixture_start();	// starts a fixture
 
-    run_test(test_move_gen_depth);
+    //run_test(test_move_gen_depth);
 
-
+	run_test(bug_check);
 
 
     test_fixture_end();		// ends a fixture
