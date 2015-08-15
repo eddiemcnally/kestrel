@@ -1,10 +1,10 @@
 #
 # 'make depend' uses makedepend to automatically generate dependencies
 #               (dependencies are added to end of Makefile)
-# 'make'        build executable file 'kestrel'
-# 'make all'	makes executable file 'kestrel'
+# 'make'        build executable file 'test_kestrel'
+# 'make all'	makes executable file 'test_kestrel'
 # 'make clean'  removes all .o and executable files
-
+#
 # define the C compiler to use
 	CC	=	gcc
 
@@ -21,7 +21,6 @@
 				-Wpedantic \
 				-Wformat=2 \
 				-Wall \
-				-Wstrict-prototypes \
 				-Werror \
 				-Wlogical-op \
 				-Wextra \
@@ -41,7 +40,7 @@
 
 # define any directories containing header files other than /usr/include
 #
-	INCLUDES =	-I.
+	INCLUDES =	-I. -I../src
 
 # define library paths in addition to /usr/lib
 #   if I wanted to include libraries not in /usr/lib I'd specify
@@ -54,9 +53,26 @@
 #LIBS = -lmylib -lm
 
 # define the C source files
-	SRCS		=	main.c board.c pieces.c board_utils.c move.c \
-					init.c hashkeys.c fen.c utils.c attack.c \
-					occupancy_mask.c makemove.c
+	SRCS	=	../src/board.c \
+				../src/pieces.c \
+				../src/board_utils.c \
+				../src/move.c \
+				../src/init.c \
+				../src/hashkeys.c \
+				../src/fen.c \
+				../src/utils.c \
+				../src/attack.c \
+				../src/occupancy_mask.c \
+				../src/makemove.c \
+				all_tests.c \
+				board_test_fixture.c \
+				piece_test_fixture.c \
+				seatest.c \
+				occupancy_mask_test_fixture.c \
+				attack_test_fixture.c \
+				utils_test_feature.c \
+				move_test_fixture.c \
+				performance_tests.c
 
 
 # define the C object files
@@ -71,7 +87,7 @@
 
 
 # define the executable files
-	MAIN		=	kestrel
+	MAIN		=	test_kestrel
 
 #
 # The following part of the makefile is generic; it can be used to
@@ -82,7 +98,7 @@
 .PHONY:	depend	clean
 
 all:	$(MAIN)
-		@echo  'kestrel' build complete
+		@echo  'test_kestrel' build complete
 
 $(MAIN):		$(OBJS)
 				$(CC) $(CFLAGS) $(INCLUDES) -o $(MAIN) $(OBJS) $(LFLAGS) $(LIBS)

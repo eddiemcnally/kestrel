@@ -1,6 +1,6 @@
-- add function description comments to all functions
-- put a unit test around print_board()
-- look at SIMD
-- magic boards for bishop and queen
-- figure out how to manage pawns
-
+- parse EPD file and add perft.epd to unit tests
+- look at changing unit test framework for 'check' or something more extensive
+- set up #define's to exclude some debug code from a release build
+- rename 'struct board' to 'struct position' (to reflect better on its function
+- move to using CMake instead of make
+- 
