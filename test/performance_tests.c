@@ -22,6 +22,7 @@
 #include "seatest.h"
 #include "types.h"
 #include "attack.h"
+#include "init.h"
 #include "fen.h"
 #include "board.h"
 #include "pieces.h"
@@ -188,7 +189,7 @@ void test_move_gen_depth(){
 	for (int i = 0; i < NUM_EPD; i++){
 		struct EPD e = test_positions[i];
 
-		struct board *brd= init_board(e.fen);
+		struct board *brd= init_game(e.fen);
 
 		leafNodes = 0;
 		perf_test(1, brd);
@@ -198,7 +199,7 @@ void test_move_gen_depth(){
 		assert_true(leafNodes == e.depth1);
 		free(brd);
 
-		brd= init_board(e.fen);
+		brd= init_game(e.fen);
 		leafNodes = 0;
 		perf_test(2, brd);
 		if (leafNodes != e.depth2){
@@ -207,7 +208,7 @@ void test_move_gen_depth(){
 		assert_true(leafNodes == e.depth2);
 		free(brd);
 
-		brd= init_board(e.fen);
+		brd= init_game(e.fen);
 		leafNodes = 0;
 		perf_test(3, brd);
 		if (leafNodes != e.depth3){
@@ -216,7 +217,7 @@ void test_move_gen_depth(){
 		assert_true(leafNodes == e.depth3);
 		free(brd);
 
-		brd= init_board(e.fen);
+		brd= init_game(e.fen);
 		leafNodes = 0;
 		perf_test(4, brd);
 		if (leafNodes != e.depth4){
@@ -238,7 +239,9 @@ void perf_test(int depth, struct board *brd) {
     ASSERT_BOARD_OK(brd);
 
 	//print_board(brd);
-	//printf("\nStarting Test To Depth:%d\n",depth);
+    printf("\n+++++++++++++++++++++++++++++++++++++++++++++\n");
+
+	printf("\nStarting Test To Depth:%d\n",depth);
 
 
     struct move_list *mv_list = malloc(sizeof(struct move_list));
@@ -281,6 +284,9 @@ void perft(int depth, struct board *brd) {
 
     struct move_list *mv_list = malloc(sizeof(struct move_list));
 	memset(mv_list, 0, sizeof(struct move_list));
+    printf("\n+++++++++++++++++++++++++++++++++++++++++++++\n");
+
+	printf("\nStarting Test To Depth:%d\n",depth);
 
 	generate_all_moves(brd, mv_list);
 	print_board(brd);
@@ -301,7 +307,7 @@ void perft(int depth, struct board *brd) {
 
 
 void bug_check(void){
-	struct board *brd= init_board("6kq/8/8/8/8/8/8/7K w - - 0 1");
+	struct board *brd= init_game("6kq/8/8/8/8/8/8/7K w - - 0 1");
 
 	leafNodes = 0;
 	perf_test(4, brd);

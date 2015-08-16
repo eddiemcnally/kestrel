@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include "seatest.h"
 #include "types.h"
+#include "init.h"
 #include "hashkeys.h"
 #include "board_utils.h"
 #include "board.h"
@@ -45,7 +46,7 @@ void board_test_fixture(void);
 void test_initial_board_placement()
 {
     init_hash_keys();
-    struct board *the_board = init_board(STARTING_FEN);
+    struct board *the_board = init_game(STARTING_FEN);
 	assert_true(W_ROOK == get_piece_at_square(the_board, a1));
     assert_true(W_KNIGHT == get_piece_at_square(the_board, b1));
     assert_true(W_BISHOP == get_piece_at_square(the_board, c1));
@@ -104,7 +105,7 @@ void test_initial_board_placement()
 	// this is the initial bpard setup
     char *test_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
-	struct board *the_board = init_board(test_fen);
+	struct board *the_board = init_game(test_fen);
 
 	//print_board(the_board);
 
@@ -157,7 +158,7 @@ void test_initial_board_placement()
 	// this is the initial board setup
     char *test_fen = "k7/8/8/4N3/8/8/8/3K4 b - - 13 56";
 
-	struct board *the_board = init_board(test_fen);
+	struct board *the_board = init_game(test_fen);
 
 	//print_board(the_board);
 
@@ -178,7 +179,7 @@ void test_initial_board_placement()
     char *test_fen =
 	"rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2";
 
-	struct board *the_board = init_board(test_fen);
+	struct board *the_board = init_game(test_fen);
 
     //print_board(the_board);
 
