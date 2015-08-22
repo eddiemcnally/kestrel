@@ -532,7 +532,7 @@ static inline void generate_white_pawn_moves(const struct board *brd, struct mov
 			}
 
 			if (cap_sq == brd->en_passant) {
-				add_pawn_capture_move(WHITE, pawn_sq, cap_sq, pce, mvl);
+				add_en_passent_move(MOVE(pawn_sq, cap_sq, pce, NO_PIECE, 0), mvl);
 			}
 		}
 
@@ -547,7 +547,7 @@ static inline void generate_white_pawn_moves(const struct board *brd, struct mov
 			}
 
 			if (cap_sq == brd->en_passant) {
-				add_pawn_capture_move(WHITE, pawn_sq, cap_sq, pce, mvl);
+				add_en_passent_move(MOVE(pawn_sq, cap_sq, pce, NO_PIECE, 0), mvl);
 			}
 		}
     }
