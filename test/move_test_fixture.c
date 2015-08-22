@@ -909,6 +909,32 @@ void test_move_piece(){
 }
 
 
+void test_make_move_take_move(void){
+	
+	char * sample_position = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1";
+    struct board *brd= init_game(sample_position);
+
+    struct move_list *list = malloc(sizeof(struct move_list));
+	memset(list, 0, sizeof(struct move_list));
+
+	generate_all_moves(brd, list);
+
+	struct board * starting_brd = clone_board(brd);
+	
+	for(int i = 0; i < list->move_count; i++){
+		// make a move, tke it back, and compare board to starting board
+		
+		mv_bitmap mv = list->moves[i].move_bitmap;
+		
+		make_move(brd, mv);
+		take_move(brd);
+		
+		assert_boards_are_equal(brd, starting_brd);
+	
+	}
+}
+
+
 void move_test_fixture(void)
 {
     test_fixture_start();	// starts a fixture
@@ -926,6 +952,7 @@ void move_test_fixture(void)
 	run_test(test_clear_piece);
 	run_test(test_add_piece);
 	run_test(test_move_piece);
+	run_test(test_make_move_take_move);
 
     test_fixture_end();		// ends a fixture
 }
