@@ -257,8 +257,8 @@ void perf_test(int depth, struct board *brd) {
 		if ( !make_move(brd, mv))  {
             continue;
         }
-        printf("--depth %d, move : %s\n", depth, print_move(mv));
-        
+        //printf("--depth %d, move : %s\n", depth, print_move(mv));
+
 		//print_board(brd);
         //U64 total = leafNodes;
         perft(depth - 1, brd, mv);
@@ -278,11 +278,15 @@ void perft(int depth, struct board *brd, mv_bitmap mvb) {
 
     ASSERT_BOARD_OK(brd);
 
+	if(mvb == 0){
+		printf("IBOYBOYB\n");
+	}
+
 	if(depth == 0) {
-		printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
-		printf("**** NODE INCR - mv = %s\n", print_move(mvb));
-		print_board(brd);
-		printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
+		//printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
+		//printf("**** NODE INCR - mv = %s\n", print_move(mvb));
+		//print_board(brd);
+		//printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
 
         leafNodes++;
         return;
@@ -297,7 +301,7 @@ void perft(int depth, struct board *brd, mv_bitmap mvb) {
 	generate_all_moves(brd, mv_list);
 	//printf("# moves generated = %d\n", mv_list->move_count);
 	//print_move_list(mv_list);
-	
+
     mv_bitmap mv;
     for(U32 mv_num = 0; mv_num < mv_list->move_count; ++mv_num) {
         mv = mv_list->moves[mv_num].move_bitmap;
@@ -324,9 +328,9 @@ void perf_test_fixture(void)
 {
     test_fixture_start();	// starts a fixture
 
-    //run_test(test_move_gen_depth);
+    run_test(test_move_gen_depth);
 
-	run_test(bug_check);
+	//run_test(bug_check);
 
 
     test_fixture_end();		// ends a fixture
