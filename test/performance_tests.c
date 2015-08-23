@@ -217,14 +217,14 @@ void test_move_gen_depth(){
 		assert_true(leafNodes == e.depth3);
 		free(brd);
 
-		brd= init_game(e.fen);
-		leafNodes = 0;
-		perf_test(4, brd);
-		if (leafNodes != e.depth4){
-			printf("fen %s  ; #nodes is %llu, should be %llu\n", e.fen, leafNodes, e.depth4);
-		}
-		assert_true(leafNodes == e.depth4);
-		free(brd);
+		//brd= init_game(e.fen);
+		//leafNodes = 0;
+		//perf_test(4, brd);
+		//if (leafNodes != e.depth4){
+			//printf("fen %s  ; #nodes is %llu, should be %llu\n", e.fen, leafNodes, e.depth4);
+		//}
+		//assert_true(leafNodes == e.depth4);
+		//free(brd);
 
 
 
@@ -232,6 +232,8 @@ void test_move_gen_depth(){
 
 
 }
+
+
 
 
 void perf_test(int depth, struct board *brd) {
@@ -283,10 +285,10 @@ void perft(int depth, struct board *brd, mv_bitmap mvb) {
 	}
 
 	if(depth == 0) {
-		//printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
-		//printf("**** NODE INCR - mv = %s\n", print_move(mvb));
-		//print_board(brd);
-		//printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
+		printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
+		printf("**** NODE INCR - mv = %s\n", print_move(mvb));
+		print_board(brd);
+		printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
 
         leafNodes++;
         return;
@@ -317,10 +319,16 @@ void perft(int depth, struct board *brd, mv_bitmap mvb) {
 
 
 void bug_check(void){
-	struct board *brd= init_game("6kq/8/8/8/8/8/8/7K w - - 0 1");
+	struct board *brd= init_game("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
 
 	leafNodes = 0;
-	perf_test(3, brd);
+	perf_test(2, brd);
+
+	if (leafNodes != 2039){
+		printf("fen r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1  ; #nodes is %llu, should be 2039\n", leafNodes);
+	}
+	assert_true(leafNodes == 2039);
+
 }
 
 
@@ -328,9 +336,9 @@ void perf_test_fixture(void)
 {
     test_fixture_start();	// starts a fixture
 
-    run_test(test_move_gen_depth);
+    //run_test(test_move_gen_depth);
 
-	//run_test(bug_check);
+	run_test(bug_check);
 
 
     test_fixture_end();		// ends a fixture
