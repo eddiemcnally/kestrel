@@ -432,7 +432,7 @@ static inline bool search_vertically(const struct board *brd, enum square start_
 		}
     } else {
 		// search down
-		for (int i = e_rank + 1; i < s_rank; i++) {
+		for (int i = e_rank - 1; i > s_rank; i--) {
 			enum square s = GET_SQUARE(i, s_file);
 			if (is_square_occupied(brd->board, s))
 				return false;

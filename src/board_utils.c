@@ -59,7 +59,7 @@ void print_board(const struct board *the_board)
 				char c = get_piece_label(pce);
 				printf("%3c", c);
 			} else {
-				printf("  -");
+				printf("  .");
 			}
 		}
 		printf("\n");
