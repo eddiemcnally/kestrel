@@ -34,7 +34,7 @@
 
 void perf_test(int depth, struct board *brd);
 void test_move_gen_depth(void);
-void perft(int depth, struct board *brd);
+void perft(int depth, struct board *brd, mv_bitmap mv);
 void bug_check(void);
 
 
@@ -238,32 +238,33 @@ void perf_test(int depth, struct board *brd) {
 
     ASSERT_BOARD_OK(brd);
 
+    //printf("\n+++++++++++++++++++++++++++++++++++++++++++++\n");
 	//print_board(brd);
-    printf("\n+++++++++++++++++++++++++++++++++++++++++++++\n");
+	//printf("\nStarting Test To Depth:%d\n",depth);
 
-	printf("\nStarting Test To Depth:%d\n",depth);
-
+	leafNodes = 0;
 
     struct move_list *mv_list = malloc(sizeof(struct move_list));
 	memset(mv_list, 0, sizeof(struct move_list));
 
 	generate_all_moves(brd, mv_list);
-	print_board(brd);
-	//print_move_list_details(mv_list);
+	//printf("# moves generated = %d\n", mv_list->move_count);
+	//print_move_list(mv_list);
 
     mv_bitmap mv;
     for(U32 mv_num = 0; mv_num < mv_list->move_count; ++mv_num) {
         mv = mv_list->moves[mv_num].move_bitmap;
-		printf("**depth %d, move : %s\n", depth, print_move(mv));
-        if ( !make_move(brd, mv))  {
+		if ( !make_move(brd, mv))  {
             continue;
         }
+        printf("--depth %d, move : %s\n", depth, print_move(mv));
+        
 		//print_board(brd);
-        U64 total = leafNodes;
-        perft(depth - 1, brd);
+        //U64 total = leafNodes;
+        perft(depth - 1, brd, mv);
         take_move(brd);
-        U64 oldnodes = leafNodes - total;
-        printf("move %d : %s : %llu\n", mv_num+1, print_move(mv),oldnodes);
+        //U64 oldnodes = leafNodes - total;
+        //printf("move %d : %s : %llu\n", mv_num+1, print_move(mv),oldnodes);
     }
 
 	printf("\nTest Complete : %llu nodes visited\n",leafNodes);
@@ -273,33 +274,38 @@ void perf_test(int depth, struct board *brd) {
 
 
 
-void perft(int depth, struct board *brd) {
+void perft(int depth, struct board *brd, mv_bitmap mvb) {
 
     ASSERT_BOARD_OK(brd);
 
 	if(depth == 0) {
+		printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
+		printf("**** NODE INCR - mv = %s\n", print_move(mvb));
+		print_board(brd);
+		printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
+
         leafNodes++;
         return;
     }
 
     struct move_list *mv_list = malloc(sizeof(struct move_list));
 	memset(mv_list, 0, sizeof(struct move_list));
-    printf("\n+++++++++++++++++++++++++++++++++++++++++++++\n");
-
-	printf("\nStarting Test To Depth:%d\n",depth);
+    //printf("\n+++++++++++++++++++++++++++++++++++++++++++++\n");
+	//print_board(brd);
+	//printf("\nStarting Test To Depth:%d\n",depth);
 
 	generate_all_moves(brd, mv_list);
-	print_board(brd);
 	//printf("# moves generated = %d\n", mv_list->move_count);
-
+	//print_move_list(mv_list);
+	
     mv_bitmap mv;
-    for(U32 mv_num = 0; mv_num < mv_list->move_count; mv_num++) {
+    for(U32 mv_num = 0; mv_num < mv_list->move_count; ++mv_num) {
         mv = mv_list->moves[mv_num].move_bitmap;
-		printf("**depth %d, move : %s\n", depth, print_move(mv));
-        if ( !make_move(brd, mv))  {
+		if ( !make_move(brd, mv))  {
             continue;
         }
-        perft(depth - 1, brd);
+        //printf("--depth %d, move : %s\n", depth, print_move(mv));
+        perft(depth - 1, brd, mv);
         take_move(brd);
     }
     return;
@@ -310,7 +316,7 @@ void bug_check(void){
 	struct board *brd= init_game("6kq/8/8/8/8/8/8/7K w - - 0 1");
 
 	leafNodes = 0;
-	perf_test(4, brd);
+	perf_test(3, brd);
 }
 
 
