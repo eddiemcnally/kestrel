@@ -618,7 +618,7 @@ static inline bool search_down_left_and_right(const struct board *brd, enum squa
 
 /**
  * Test wrapper functions.
- * These wrapper functions facilitate access to unit test framework while
+ * These wrapper functions provide access for the unit test framework while
  * allowing the functions themselves to be static to this file and inline-able
  */
 bool TEST_is_bishop_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side){
