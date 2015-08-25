@@ -526,6 +526,104 @@ void print_occupancy_masks(enum piece pce)
 
 
 
+// when checking to see if a queen or bishop can attack a
+// square, have a localised occupancy mask us useful
+void generate_diagonal_occupancy_masks(void){
+
+    U64 NE[NUM_SQUARES] = { 0 }; // north-east
+    U64 NW[NUM_SQUARES] = { 0 }; // north-west
+    U64 SW[NUM_SQUARES] = { 0 };
+    U64 SE[NUM_SQUARES] = { 0 };
+
+    for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
+
+		int rank = GET_RANK(sq);
+		int file = GET_FILE(sq);
+
+		//printf("rank/file : %d/%d\n", rank, file);
+
+		int dest_rank = 0;
+		int dest_file = 0;
+		U64 b = 0;
+
+		// move SW
+		dest_rank = rank;
+		dest_file = file;
+		while (IS_VALID_FILE(dest_file) && IS_VALID_RANK(dest_rank)) {
+			set_dest_sq_if_valid(dest_rank, dest_file, &b);
+			dest_rank--;
+			dest_file--;
+		}
+		// clear our square
+		clear_bit(&b, sq);
+		SW[sq] = b;
+
+
+		// move NW
+		b = 0;
+		dest_rank = rank;
+		dest_file = file;
+		while (IS_VALID_FILE(dest_file) && IS_VALID_RANK(dest_rank)) {
+			set_dest_sq_if_valid(dest_rank, dest_file, &b);
+			dest_rank++;
+			dest_file--;
+		}
+		// clear our square
+		clear_bit(&b, sq);
+		NW[sq] = b;
+
+
+
+
+		// move SE
+		b = 0;
+		dest_rank = rank;
+		dest_file = file;
+		while (IS_VALID_FILE(dest_file) && IS_VALID_RANK(dest_rank)) {
+			set_dest_sq_if_valid(dest_rank, dest_file, &b);
+			dest_rank--;
+			dest_file++;
+		}
+		// clear our square
+		clear_bit(&b, sq);
+		SE[sq] = b;
+
+
+
+		// move NE
+		b = 0;
+		dest_rank = rank;
+		dest_file = file;
+		while (IS_VALID_FILE(dest_file) && IS_VALID_RANK(dest_rank)) {
+			set_dest_sq_if_valid(dest_rank, dest_file, &b);
+			dest_rank++;
+			dest_file++;
+		}
+		// clear our square
+		clear_bit(&b, sq);
+		NE[sq] = b;
+
+	}
+
+	printf("NE\n");
+	print_out_masks(NE);
+	printf("SE\n");
+	print_out_masks(SE);
+	printf("SW\n");
+	print_out_masks(SW);
+	printf("NW\n");
+	print_out_masks(NW);
+
+
+
+
+}
+
+
+
+
+
+
 
 
 
@@ -570,5 +668,8 @@ void print_out_masks(const U64 * masks)
 {
     for (int i = 0; i < NUM_SQUARES; i++) {
 		printf("0x%016llx\n", masks[i]);
+
+		//print_mask_as_board(&masks[i], W_QUEEN, i);
+
     }
 }

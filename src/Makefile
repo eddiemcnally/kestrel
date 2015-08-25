@@ -37,7 +37,7 @@
 #	CFLAGS	=	-O3 -pg -std=c11
 
 # more lax compiler options
-	CFLAGS	=	-Wall -g -std=c11
+	CFLAGS	=	-Wall -g -std=c11 -lubsan
 
 # define any directories containing header files other than /usr/include
 #
