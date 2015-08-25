@@ -247,6 +247,11 @@ static inline bool is_move_in_list(struct move_list *mvl, mv_bitmap mv){
 
 static inline void add_quiet_move(mv_bitmap move_bitmap, struct move_list *mvlist)
 {
+
+	if (move_bitmap & MFLAG_CASTLE){
+		printf("**** castle move\n");
+	}
+
 	assert( mvlist->move_count < MAX_POSITION_MOVES);
 
     mvlist->moves[mvlist->move_count].move_bitmap = move_bitmap;

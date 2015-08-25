@@ -57,7 +57,7 @@ for key in v_dict.keys():
         print(key)
     if count_v > count_k:
         print("------------------------")
-        print("Extra " + str(count_v - count_k) + " in VVV....")
+        print("Extra " + str(count_v - count_k) + " in VVV....total in VVV = " + str(count_v))
         print(key)
 
 

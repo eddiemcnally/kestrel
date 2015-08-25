@@ -49,8 +49,6 @@ struct move_list {
 //
 //#define MOVE(from,to,capture,promote,fl) ( (from) | ((to) << 7) | ( (capture) << 14 ) | ( (promote) << 20 ) | (fl))
 
-mv_bitmap MOVE(enum square from, enum square to, enum piece capture, enum piece promote, U32 fl);
-
 
 #define MFLAG_EN_PASSANT 	0x0040000
 #define MFLAG_PAWN_START 	0x0080000
@@ -66,6 +64,7 @@ void print_move_list(const struct move_list *list);
 void print_move_list_details(const struct move_list *list);
 void generate_all_moves(const struct board *brd, struct move_list *mvl);
 void validate_move_list(struct move_list *mvl);
+mv_bitmap MOVE(enum square from, enum square to, enum piece capture, enum piece promote, U32 fl);
 
 void TEST_generate_white_pawn_moves(const struct board *brd, struct move_list *mvl);
 void TEST_generate_black_pawn_moves(const struct board *brd, struct move_list *mvl);

@@ -319,15 +319,16 @@ void perft(int depth, struct board *brd, mv_bitmap mvb) {
 
 
 void bug_check(void){
-	struct board *brd= init_game("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
+	struct board *brd= init_game("r3k2r/p1ppq1b1/bn2pnp1/3P4/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
 
-	leafNodes = 0;
-	perf_test(2, brd);
+    struct move_list *mv_list = malloc(sizeof(struct move_list));
+	memset(mv_list, 0, sizeof(struct move_list));
 
-	if (leafNodes != 2039){
-		printf("fen r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1  ; #nodes is %llu, should be 2039\n", leafNodes);
-	}
-	assert_true(leafNodes == 2039);
+	generate_all_moves(brd, mv_list);
+
+	printf("move count = %d\n", mv_list->move_count);
+
+	assert_true(mv_list->move_count == 1);
 
 }
 
@@ -336,9 +337,9 @@ void perf_test_fixture(void)
 {
     test_fixture_start();	// starts a fixture
 
-    //run_test(test_move_gen_depth);
+    run_test(test_move_gen_depth);
 
-	run_test(bug_check);
+	//run_test(bug_check);
 
 
     test_fixture_end();		// ends a fixture
