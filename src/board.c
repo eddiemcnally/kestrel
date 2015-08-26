@@ -66,6 +66,8 @@ struct board *init_board(char * fen)
 void remove_piece_from_board(struct board *brd, enum piece pce, enum square sq){
 
 	assert((sq >= a1) && (sq <= h8));
+	assert(pce != W_KING);
+	assert(pce != B_KING);
 
 	enum colour col = GET_COLOUR(pce);
 

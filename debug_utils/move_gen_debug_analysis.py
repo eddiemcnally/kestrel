@@ -31,16 +31,16 @@ def construct_dict_of_moves(my_list):
 
 
 k_file = read_lines_from_file("/home/eddie/kkk.kkk")
-#print ("number of line in kkk.kkk = ", (str(len(k_file))))
+print ("number of line in kkk.kkk = ", (str(len(k_file))))
 
 v_file = read_lines_from_file("/home/eddie/vvv.vvv")
-#print ("number of line in kkk.kkk = ", (str(len(v_file))))
+print ("number of line in kkk.kkk = ", (str(len(v_file))))
 
 k_dict = construct_dict_of_moves(k_file)
-#print ("dict size of kkk.kkk = ", (str(len(k_dict))))
+print ("dict size of kkk.kkk = ", (str(len(k_dict))))
 
 v_dict = construct_dict_of_moves(v_file)
-#print ("dict size of vvv.vvv = ", (str(len(v_dict))))
+print ("dict size of vvv.vvv = ", (str(len(v_dict))))
 
 for key in v_dict.keys():
     if key not in k_dict.keys():
@@ -53,7 +53,7 @@ for key in v_dict.keys():
         count_k = k_dict[key]
     if count_v < count_k:
         print("------------------------")
-        print("Extra " + str(count_k - count_v) + " in KKK....")
+        print("Extra " + str(count_k - count_v) + " in KKK....total in KKK = " + str(count_k))
         print(key)
     if count_v > count_k:
         print("------------------------")

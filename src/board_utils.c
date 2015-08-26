@@ -141,6 +141,14 @@ bool ASSERT_BOARD_OK(const struct board * brd)
     }
     assert(conflated == brd->board);
 
+
+	U64 wking_bb = brd->bitboards[W_KING];
+	assert(CNT(wking_bb) == 1);
+
+	U64 bking_bb = brd->bitboards[B_KING];
+	assert(CNT(bking_bb) == 1);
+
+
     // check where Kings are
     for (enum square sq = a1; sq <= h8; sq++) {
 		enum piece pce = get_piece_at_square(brd, sq);
@@ -203,11 +211,11 @@ bool ASSERT_BOARD_OK(const struct board * brd)
 }
 
 /* Compares two boards and checks for equality
- * 
+ *
  * name: assert_boards_are_equal
  * @param
- * @return 
- * 
+ * @return
+ *
  */
 void assert_boards_are_equal(const struct board * brd1, const struct board * brd2){
 
@@ -216,16 +224,16 @@ void assert_boards_are_equal(const struct board * brd1, const struct board * brd
 	}
 
 	assert(brd1->board == brd2->board);
-	
+
 	assert(brd1->side_to_move == brd2->side_to_move);
 
 	assert(brd1->en_passant == brd2->en_passant);
-	
+
 	assert(brd1->fifty_move_counter == brd2->fifty_move_counter);
 
 	assert(brd1->ply == brd2->ply);
 	assert(brd1->history_ply == brd2->history_ply);
-	
+
 	assert(brd1->material[WHITE] == brd2->material[WHITE]);
 	assert(brd1->material[BLACK] == brd2->material[BLACK]);
 
@@ -250,16 +258,16 @@ void assert_boards_are_equal(const struct board * brd1, const struct board * brd
 }
 
 /*
- * Clones the given board. Returns malloc'ed memory that needs to be free'd 
+ * Clones the given board. Returns malloc'ed memory that needs to be free'd
  * name: clone_board
  * @param
  * @return
- * 
+ *
  */
 struct board * clone_board(const struct board * board_to_clone){
-	
+
 	U16 size = sizeof(struct board);
-	
+
     struct board *brd = malloc(size);
 
 	memcpy(brd, board_to_clone, size);

@@ -162,6 +162,8 @@ static const U64 negative_diagonal_masks [] = {
  */
 void generate_all_moves(const struct board *brd, struct move_list *mvl)
 {
+	ASSERT_BOARD_OK(brd);
+
     if (brd->side_to_move == WHITE) {
 		generate_white_pawn_moves(brd, mvl);
 		generate_knight_piece_moves(brd, mvl, WHITE);
@@ -400,6 +402,12 @@ static inline void generate_king_moves(const struct board *brd, struct move_list
 	// get the bitboard representing the king
     U64 bbKing = brd->bitboards[pce];
 
+
+	if (CNT(bbKing) != 1){
+		printf("********* bad # kings \n");
+		print_board(brd);
+
+	}
 	assert(CNT(bbKing) == 1);
 
 	enum square king_sq = POP(&bbKing);

@@ -27,10 +27,9 @@
 #include "attack.h"
 #include "occupancy_mask.h"
 
+static bool are_intervening_squares_empty(const struct board *brd, U64 occ_mask, enum square attacking_sq, enum square target_sq);
 static bool is_blocked_horizontally(const struct board *brd, enum square sq1, enum square sq2);
 static bool is_blocked_vertically(const struct board *brd, enum square sq1, enum square sq2);
-static bool is_blocked_diagonally_up_left_and_right(const struct board *brd, enum square sq_one, enum square sq_two);
-static bool is_blocked_diagonally_down_left_and_right(const struct board *brd, enum square sq_one, enum square sq_two);
 static bool is_bishop_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side);
 static bool is_knight_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side);
 static bool is_pawn_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side);
@@ -182,7 +181,7 @@ static bool is_bishop_attacking_square(const struct board *brd, enum square sq, 
 		if (mask & sqBB) {
 			// a bishop is possibly attacking this square
 			// search for any blocking pieces
-			bool attacked = is_attacked_diagonally(brd, sq, att_pce_sq);
+			bool attacked = is_attacked_diagonally(brd, att_pce_sq, sq);
 			if (attacked){
 				//printf("not blocked between %s and %s\n", print_square(sq), print_square(att_pce_sq));
 				return true;
@@ -291,10 +290,10 @@ static inline bool is_queen_attacking_square(const struct board *brd, enum squar
     while (bbQueen != 0) {
 		enum square att_pce_sq = POP(&bbQueen);
 
-		if (attacking_side == WHITE)
-			printf("checking W_QUEEN on %s can attack square %s\n", print_square(att_pce_sq), print_square(sq));
-		else
-			printf("checking B_QUEEN on %s can attack square %s\n", print_square(att_pce_sq), print_square(sq));
+		//if (attacking_side == WHITE)
+			//printf("checking W_QUEEN on %s can attack square %s\n", print_square(att_pce_sq), print_square(sq));
+		//else
+			//printf("checking B_QUEEN on %s can attack square %s\n", print_square(att_pce_sq), print_square(sq));
 
 
 		// get occupancy mask for this square
@@ -305,11 +304,11 @@ static inline bool is_queen_attacking_square(const struct board *brd, enum squar
 			// Need to see if any blocking pieces
 
 			if (is_attacked_diagonally(brd, sq, att_pce_sq)) {
-				printf("Queen on %s can DIAGONALLY attack square %s\n", print_square(att_pce_sq), print_square(sq));
+				//printf("Queen on %s can DIAGONALLY attack square %s\n", print_square(att_pce_sq), print_square(sq));
 				return true;
 			}
 			if (is_attacked_horizontally_or_vertically(brd, sq, att_pce_sq)) {
-				printf("Queen on %s can HORIZ or VERT attack square %s\n", print_square(att_pce_sq), print_square(sq));
+				//printf("Queen on %s can HORIZ or VERT attack square %s\n", print_square(att_pce_sq), print_square(sq));
 				return true;
 			}
 		}
@@ -429,192 +428,75 @@ static inline bool is_blocked_vertically(const struct board *brd, enum square st
 
 }
 
-static inline bool is_attacked_diagonally(const struct board * brd, enum square start_sq, enum square end_sq)
-{
-
-    assert(start_sq != end_sq);
-
-	printf("checking if square %s can attack square %s\n", print_square(start_sq), print_square(end_sq));
-
-    if (start_sq < end_sq) {
-		bool attacked = is_blocked_diagonally_up_left_and_right(brd, start_sq, end_sq);
-		return attacked;
-    } else {
-		bool attacked = is_blocked_diagonally_down_left_and_right(brd, start_sq, end_sq);
-		return attacked;
-    }
-}
-
-/*
- * Searches diagonally up left and right, seeing of the path is blocked
- * between the two squares.
- *
- * name: is_blocked_diagonally_up_left_and_right
- * @param
- * @return : true if attack is blocked by a piece, false otherwise
- *
- */
-//              56 57 58 59 60 61 62 63
-//              48 49 50 51 52 53 54 55
-//              40 41 42 43 44 45 46 47
-//              32 33 34 35 36 37 38 39
-//              24 25 26 27 28 29 30 31
-//              16 17 18 19 20 21 22 23
-//              08 09 10 11 12 13 14 15
-//              00 01 02 03 40 05 06 07
-
-static inline bool is_blocked_diagonally_up_left_and_right(const struct board *brd, enum square start_sq, enum square end_sq)
-{
-	// check north-east
-	printf("searching NE\n");
-
-	enum square start = start_sq;
-	enum square end = end_sq;
-	if (start > end){
-		// swap for convenience
-		start = end_sq;
-		end = start_sq;
-	}
-
-	for(enum square s = start + 9; s < end; s = s + 9){
-		if (is_square_occupied(brd->board, s)){
-			return true;
-		}
-	}
-
-
-
-
-	// search up and right from sq_one
-	enum square sq = start_sq + 9;
-	int sq_rank = GET_RANK(sq);
-	int sq_file = GET_FILE(sq);
-
-	while ((sq <= end_sq) && (sq_file <= FILE_H) && (sq_rank <= RANK_8)) {
-		//printf("checking %s\n", print_square(sq));
-
-		if (is_square_occupied(brd->board, sq)) {
-			if (sq == end_sq){
-				// attacked
-				return true;
-			} else {
-				// blocked by piece
-				//printf("square blocking...%s\n", print_square(sq));
-				return false;
-			}
-		}
-		sq += 9;
-		sq_rank = GET_RANK(sq);
-		sq_file = GET_FILE(sq);
-	}
-
-	// search north-west
-	printf("searching NW\n");
-	sq = start_sq + 7;
-	sq_rank = GET_RANK(sq);
-	sq_file = GET_FILE(sq);
-
-	while ((sq <= end_sq) && (sq_file >= FILE_A) && (sq_rank <= RANK_8)) {
-		printf("checking %s\n", print_square(sq));
-
-		if (is_square_occupied(brd->board, sq)) {
-			if (sq == end_sq){
-				// attacked
-				return true;
-			} else {
-				// blocked by piece
-				//printf("square blocking...%s\n", print_square(sq));
-				return false;
-			}
-		}
-		sq += 7;
-		sq_rank = GET_RANK(sq);
-		sq_file = GET_FILE(sq);
-	}
-
-	//printf("DEFAULT FALSE.......\n");
-	return false;
-}
 
 /*
  * Searches diagonally down left and right, seeing of the path is blocked
  * between the two squares.
  *
- * name: is_blocked_diagonally_down_left_and_right
+ * name: is_attacked_diagonally
  * @param
- * @return : true if attack is blocked by a piece, false otherwise
+ * @return : true if attack is possible, false otherwise
  *
  */
-//              56 57 58 59 60 61 62 63
-//              48 49 50 51 52 53 54 55
-//              40 41 42 43 44 45 46 47
-//              32 33 34 35 36 37 38 39
-//              24 25 26 27 28 29 30 31
-//              16 17 18 19 20 21 22 23
-//              08 09 10 11 12 13 14 15
-//              00 01 02 03 04 05 06 07
-//
-static inline bool is_blocked_diagonally_down_left_and_right(const struct board *brd, enum square start_sq, enum square end_sq)
+static inline bool is_attacked_diagonally(const struct board *brd, enum square attacking_sq, enum square target_sq)
 {
-	// search south-west
-    if (((start_sq - end_sq) % 9) == 0) {
-		// search down and left from sq_one
-		//printf("searching SW\n");
-		enum square sq = start_sq - 9;
-		int sq_rank = GET_RANK(sq);
-		int sq_file = GET_FILE(sq);
-
-		while ((sq >= end_sq) && (sq_rank >= RANK_1) && (sq_file >= FILE_A)) {
-			//printf("checking %s\n", print_square(sq));
-
-			if (is_square_occupied(brd->board, sq)) {
-				if (sq == end_sq){
-					// attacked
-					return true;
-				} else {
-					// blocked by piece
-					//printf("square blocking...%s\n", print_square(sq));
-					return false;
-				}
-			}
-			sq -= 9;
-			sq_rank = GET_RANK(sq);
-			sq_file = GET_FILE(sq);
-		}
-    } else if (((start_sq - end_sq) % 7) == 0) {
-		// search south-east
-		//printf("searching SE\n");
-		enum square sq = start_sq - 7;
-		int sq_rank = GET_RANK(sq);
-		int sq_file = GET_FILE(sq);
-
-		//printf("checking %s\n", print_square(sq));
-
-		while ((sq >= end_sq) && (sq_file <= FILE_H) && (sq_rank >= RANK_1)) {
-
-			//printf("----------------\n");
-			//print_board(brd);
-			//printf("----------------\n");
-			if (is_square_occupied(brd->board, sq)) {
-				if (sq == end_sq){
-					// attacked
-					return true;
-				} else {
-					// blocked by piece
-					//printf("square blocking...%s\n", print_square(sq));
-					return false;
-				}
-			}
-			sq -= 7;
-			sq_rank = GET_RANK(sq);
-			sq_file = GET_FILE(sq);
-		}
-    } else {
-		// not on a line of sight....ignore
-		return false;
+	U64 ne_occ_mask = GET_NORTH_EAST_OCC_MASK(attacking_sq);
+	if (check_bit(&ne_occ_mask, target_sq)){
+		// target sq is on diagnoal....check to see if vector between
+		// attacking square and target is blocked
+		bool is_attack_possible = are_intervening_squares_empty(brd, ne_occ_mask, attacking_sq, target_sq);
+		return is_attack_possible;
 	}
-    return false;
+
+	U64 nw_occ_mask = GET_NORTH_WEST_OCC_MASK(attacking_sq);
+	if (check_bit(&nw_occ_mask, target_sq)){
+		// target sq is on diagnoal....check to see if vector between
+		// attacking square and target is blocked
+		bool is_attack_possible = are_intervening_squares_empty(brd, nw_occ_mask, attacking_sq, target_sq);
+		return is_attack_possible;
+	}
+
+	U64 se_occ_mask = GET_SOUTH_EAST_OCC_MASK(attacking_sq);
+	if (check_bit(&se_occ_mask, target_sq)){
+		// target sq is on diagnoal....check to see if vector between
+		// attacking square and target is blocked
+		bool is_attack_possible = are_intervening_squares_empty(brd, se_occ_mask, attacking_sq, target_sq);
+		return is_attack_possible;
+	}
+
+
+	U64 sw_occ_mask = GET_SOUTH_WEST_OCC_MASK(attacking_sq);
+	if (check_bit(&sw_occ_mask, target_sq)){
+		// target sq is on diagnoal....check to see if vector between
+		// attacking square and target is blocked
+		bool is_attack_possible = are_intervening_squares_empty(brd, sw_occ_mask, attacking_sq, target_sq);
+		return is_attack_possible;
+	}
+
+	return false;
+
 }
+
+static inline bool are_intervening_squares_empty(const struct board *brd, U64 occ_mask, enum square attacking_sq, enum square target_sq){
+
+	//printf("checking interim squares between %s and %s\n", print_square(attacking_sq), print_square(target_sq));
+
+	// clear target bit and attacker bit from mask
+	clear_bit(&occ_mask, target_sq);
+	clear_bit(&occ_mask, attacking_sq);
+
+	// now check all bits between attacker and target
+	while (occ_mask != 0){
+		enum square interim_sq = POP(&occ_mask);
+		if (is_square_occupied(brd->board, interim_sq)){
+			// squares not empty
+			return false;
+		}
+	}
+	// squares empty
+	return true;
+}
+
 
 
 /**
