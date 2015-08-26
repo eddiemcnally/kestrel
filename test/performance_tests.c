@@ -285,10 +285,10 @@ void perft(int depth, struct board *brd, mv_bitmap mvb) {
 	}
 
 	if(depth == 0) {
-		printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
-		printf("**** NODE INCR - mv = %s\n", print_move(mvb));
-		print_board(brd);
-		printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
+		//printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
+		//printf("**** NODE INCR - mv = %s\n", print_move(mvb));
+		//print_board(brd);
+		//printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
 
         leafNodes++;
         return;
@@ -319,17 +319,12 @@ void perft(int depth, struct board *brd, mv_bitmap mvb) {
 
 
 void bug_check(void){
-	struct board *brd= init_game("r3k2r/p1ppq1b1/bn2pnp1/3P4/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
+	struct board *brd= init_game("B6b/8/8/8/2K5/4k3/8/b6B w - - 0 1 ");
 
-    struct move_list *mv_list = malloc(sizeof(struct move_list));
-	memset(mv_list, 0, sizeof(struct move_list));
+		leafNodes = 0;
+		perf_test(1, brd);
 
-	generate_all_moves(brd, mv_list);
-
-	printf("move count = %d\n", mv_list->move_count);
-
-	assert_true(mv_list->move_count == 1);
-
+		assert_true(leafNodes == 18);
 }
 
 
