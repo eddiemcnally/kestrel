@@ -37,7 +37,7 @@ static bool is_king_attacking_square(const struct board *brd, enum square sq, en
 static bool is_rook_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side);
 static bool is_queen_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side);
 static bool is_attacked_horizontally_or_vertically(const struct board *brd, enum square sq_one, enum square sq_two);
-static bool is_attacked_diagonally(const struct board *brd, enum square sq_one, enum square sq_two);
+static bool is_attacked_diagonally(const struct board *brd, enum square attacking_sq, enum square target_sq);
 
 
 /*
@@ -156,11 +156,11 @@ static inline bool is_knight_attacking_square(const struct board *brd, enum squa
     return false;
 }
 
-static bool is_bishop_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side)
+static bool is_bishop_attacking_square(const struct board *brd, enum square target_sq, enum colour attacking_side)
 {
     // create bitboard for square under attack
     U64 sqBB = 0;
-    set_bit(&sqBB, sq);
+    set_bit(&sqBB, target_sq);
 
     enum piece attacking_piece;
 
@@ -176,16 +176,9 @@ static bool is_bishop_attacking_square(const struct board *brd, enum square sq, 
     while (bbBishop != 0) {
 		enum square att_pce_sq = POP(&bbBishop);
 
-		// get occupancy mask for this piece and square
-		U64 mask = GET_BISHOP_OCC_MASK(att_pce_sq);
-		if (mask & sqBB) {
-			// a bishop is possibly attacking this square
-			// search for any blocking pieces
-			bool attacked = is_attacked_diagonally(brd, att_pce_sq, sq);
-			if (attacked){
-				//printf("not blocked between %s and %s\n", print_square(sq), print_square(att_pce_sq));
-				return true;
-			}
+		bool is_attacked = is_attacked_diagonally(brd, att_pce_sq, target_sq);
+		if (is_attacked){
+			return true;
 		}
     }
 
@@ -473,6 +466,10 @@ static inline bool is_attacked_diagonally(const struct board *brd, enum square a
 		return is_attack_possible;
 	}
 
+	if (target_sq == c3){
+		printf("*** %s isn't being attacked by %s\n", print_square(target_sq), print_square(attacking_sq));
+		print_board(brd);
+	}
 	return false;
 
 }
