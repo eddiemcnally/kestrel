@@ -182,7 +182,7 @@ static bool is_bishop_attacking_square(const struct board *brd, enum square targ
 		}
     }
 
-	//printf("not attacking %s\n", print_square(sq));
+	//printf("not attacking %s\n", print_square(target_sq));
     return false;
 }
 
@@ -466,28 +466,31 @@ static inline bool is_attacked_diagonally(const struct board *brd, enum square a
 		return is_attack_possible;
 	}
 
-	if (target_sq == c3){
-		printf("*** %s isn't being attacked by %s\n", print_square(target_sq), print_square(attacking_sq));
-		print_board(brd);
-	}
 	return false;
 
 }
+
 
 static inline bool are_intervening_squares_empty(const struct board *brd, U64 occ_mask, enum square attacking_sq, enum square target_sq){
 
 	//printf("checking interim squares between %s and %s\n", print_square(attacking_sq), print_square(target_sq));
 
-	// clear target bit and attacker bit from mask
-	clear_bit(&occ_mask, target_sq);
 	clear_bit(&occ_mask, attacking_sq);
 
 	// now check all bits between attacker and target
-	while (occ_mask != 0){
+	while (occ_mask != 0) {
 		enum square interim_sq = POP(&occ_mask);
-		if (is_square_occupied(brd->board, interim_sq)){
-			// squares not empty
-			return false;
+		if (interim_sq == target_sq){
+			// stop looking
+			//printf("reached target sq, squares empty\n");
+			return true;
+		} else {
+			//printf("checking sq %s for occupancy\n", print_square(interim_sq));
+			if (is_square_occupied(brd->board, interim_sq)){
+				// squares not empty
+				//printf("squares not empty\n");
+				return false;
+			}
 		}
 	}
 	// squares empty

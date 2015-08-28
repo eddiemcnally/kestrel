@@ -189,6 +189,8 @@ void test_move_gen_depth(){
 	for (int i = 0; i < NUM_EPD; i++){
 		struct EPD e = test_positions[i];
 
+		//printf("Analysing FEN : %s\n", e.fen);
+
 		struct board *brd= init_game(e.fen);
 
 		leafNodes = 0;
@@ -319,12 +321,14 @@ void perft(int depth, struct board *brd, mv_bitmap mvb) {
 
 
 void bug_check(void){
-	struct board *brd= init_game("B6b/8/8/8/2K5/4k3/8/b6B w - - 0 1 ");
+	struct board *brd= init_game("B6b/8/8/8/8/2K1k3/8/b6B w - - 0 1");
 
-		leafNodes = 0;
-		perf_test(1, brd);
+		TEST_is_bishop_attacking_square(brd, c3, BLACK);
 
-		assert_true(leafNodes == 18);
+		//leafNodes = 0;
+		//perf_test(1, brd);
+
+		//assert_true(leafNodes == 17);
 }
 
 

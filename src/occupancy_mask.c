@@ -669,7 +669,7 @@ void print_out_masks(const U64 * masks)
     for (int i = 0; i < NUM_SQUARES; i++) {
 		printf("0x%016llx\n", masks[i]);
 
-		//print_mask_as_board(&masks[i], W_QUEEN, i);
+		print_mask_as_board(&masks[i], W_QUEEN, i);
 
     }
 }
