@@ -546,18 +546,30 @@ void test_is_square_under_attack(void)
 
 }
 
+void debug_move(){
+    char *test_fen =
+	"2Q3qb/pN3P1p/P4qr1/1KP1BnP1/1p2pPNp/2rkP3/pP3npP/4QbRB w - - 0 1";
+
+    struct board *brd = init_game(test_fen);
+    //print_board(brd);
+
+	//assert_true(is_sq_attacked(brd, e6, WHITE) == true);
+	assert_true(is_sq_attacked(brd, g7, WHITE) == false);
+}
+
 void attack_test_fixture(void)
 {
     test_fixture_start();	// starts a fixture
 
-    //run_test(test_is_square_being_attacked_by_knight);
-    //run_test(test_is_square_being_attacked_by_pawn);
-    //run_test(test_is_square_being_attacked_by_king);
-    //run_test(test_is_square_being_attacked_by_rook);
-    //run_test(test_is_square_being_attacked_by_bishop);
-    //run_test(test_is_square_attacked_by_queen);
-
+    run_test(test_is_square_being_attacked_by_knight);
+    run_test(test_is_square_being_attacked_by_pawn);
+    run_test(test_is_square_being_attacked_by_king);
+    run_test(test_is_square_being_attacked_by_rook);
+    run_test(test_is_square_being_attacked_by_bishop);
+    run_test(test_is_square_attacked_by_queen);
     run_test(test_is_square_under_attack);
+
+	//run_test(debug_move);
 
     test_fixture_end();		// ends a fixture
 }

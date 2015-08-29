@@ -195,18 +195,18 @@ bool make_move(struct board *brd, mv_bitmap mv){
 	// side is already flipped above, so use that as the attacking side
 	if (is_sq_attacked(brd, king_sq, brd->side_to_move)){
 
-		printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> invalid move....reverting ------------------\n");
-		printf("invalid move %s\n", print_move(mv));
-		printf("king_sq %s\n", print_square(king_sq));
-		printf("BRD before:\n");
-		print_board(brd);
+		//printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> invalid move....reverting ------------------\n");
+		//printf("invalid move %s\n", print_move(mv));
+		//printf("king_sq %s\n", print_square(king_sq));
+		//printf("BRD before:\n");
+		//print_board(brd);
 
 
 		take_move(brd);
 
-		printf("BRD *after*:\n");
-		print_board(brd);
-		printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
+		//printf("BRD *after*:\n");
+		//print_board(brd);
+		//printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
 
 
 		return false;

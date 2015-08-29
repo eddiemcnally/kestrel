@@ -260,25 +260,48 @@ inline U8 pop_1st_bit(U64 * bb)
 
 
 void clear_MSB_to_inclusive_bit(U64 * bb, U8 bit){
-	U8 msb = bit_scan_reverse(*bb);
-	while (msb > bit){
-		msb = bit_scan_reverse(*bb);
-		clear_bit(bb, msb);
+	if (*bb == 0){
+		return;
 	}
+
+	U8 msb = bit_scan_reverse(*bb);
+	//printf("bit = %d\n", bit);
+	//printf("first MSB check %d\n", msb);
+
+	if (msb < bit){
+		//printf("MSB < %d\n", bit);
+		// nothing to do
+		return;
+	} else {
+		while (msb >= bit) {
+			clear_bit(bb, msb);
+			//printf("cleared MSB bit %d\n", msb);
+			msb = bit_scan_reverse(*bb);
+		}
+	}
+
+
 }
 
 
 void clear_LSB_to_inclusive_bit(U64 * bb, U8 bit){
 
+	if (*bb == 0){
+		return;
+	}
+
 	U8 lsb_offset = get_LSB_index(*bb);
 
 	if (lsb_offset > bit){
+		//printf("LSB > %d\n", bit);
 		// nothing to do
 		return;
 	} else {
-		do {
+		while (lsb_offset <= bit) {
 			lsb_offset = POP(bb);
-		} while(lsb_offset < bit);
+			//printf("cleared LSB %d\n", lsb_offset);
+			lsb_offset = get_LSB_index(*bb);
+		};
 	}
 }
 
@@ -289,6 +312,9 @@ void clear_LSB_to_inclusive_bit(U64 * bb, U8 bit){
  * counts trailing 0's on the right of the U64
  */
 static inline U8 get_LSB_index(U64 bb){
+	if (bb == 0){
+		return 0;
+	}
 	U8 c;  // output: c will count v's trailing zero bits,
         // so if v is 1101000 (base 2), then c will be 3
 	if (bb) {
