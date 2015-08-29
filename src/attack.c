@@ -25,6 +25,7 @@
 #include "board_utils.h"
 #include "move.h"
 #include "attack.h"
+#include "utils.h"
 #include "occupancy_mask.h"
 
 static bool are_intervening_squares_empty(const struct board *brd, U64 occ_mask, enum square attacking_sq, enum square target_sq);
@@ -51,10 +52,28 @@ static bool is_attacked_diagonally(const struct board *brd, enum square attackin
 
 bool is_sq_attacked(const struct board *brd, enum square sq, enum colour attacking_side)
 {
+
+/////////////////////// debug code
+
+	enum piece pce_e8 = get_piece_at_square(brd, e8);
+	enum piece pce_b5 = get_piece_at_square(brd, b5);
+
+	if ((pce_e8 == B_KING) && (pce_b5 == W_BISHOP)){
+		if ( (get_piece_at_square(brd, c6) == NO_PIECE) && (get_piece_at_square(brd, d7) == NO_PIECE)){
+			printf("INIUNUINIUNUN");
+		}
+	}
+
+
+//////////////////////
+
+
+
+
     ASSERT_BOARD_OK(brd);
 
-	//printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
-	//printf("checking sq %s being attacked\n", print_square(sq));
+	printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
+	printf("checking sq %s being attacked\n", print_square(sq));
 
 	// TODO:
 	// combine rook/queen and bishop/queen to reduce number of lookups
@@ -161,11 +180,6 @@ static bool is_bishop_attacking_square(const struct board *brd, enum square targ
     // create bitboard for square under attack
     U64 sqBB = 0;
     set_bit(&sqBB, target_sq);
-
-	if (target_sq == a1 || target_sq == a2){
-		printf("IUBPIUUI");
-	}
-
 
     enum piece attacking_piece;
 
@@ -438,36 +452,19 @@ static inline bool is_blocked_vertically(const struct board *brd, enum square st
  */
 static inline bool is_attacked_diagonally(const struct board *brd, enum square attacking_sq, enum square target_sq)
 {
-	U64 ne_occ_mask = GET_NORTH_EAST_OCC_MASK(attacking_sq);
-	if (check_bit(&ne_occ_mask, target_sq)){
+	U64 diag_occ_mask = GET_DIAGONAL_OCC_MASK(attacking_sq);
+	if (check_bit(&diag_occ_mask, target_sq)){
 		// target sq is on diagnoal....check to see if vector between
 		// attacking square and target is blocked
-		bool is_attack_possible = are_intervening_squares_empty(brd, ne_occ_mask, attacking_sq, target_sq);
+		bool is_attack_possible = are_intervening_squares_empty(brd, diag_occ_mask, attacking_sq, target_sq);
 		return is_attack_possible;
 	}
 
-	U64 nw_occ_mask = GET_NORTH_WEST_OCC_MASK(attacking_sq);
-	if (check_bit(&nw_occ_mask, target_sq)){
+	U64 anti_diag_occ_mask = GET_ANTI_DIAGONAL_OCC_MASK(attacking_sq);
+	if (check_bit(&anti_diag_occ_mask, target_sq)){
 		// target sq is on diagnoal....check to see if vector between
 		// attacking square and target is blocked
-		bool is_attack_possible = are_intervening_squares_empty(brd, nw_occ_mask, attacking_sq, target_sq);
-		return is_attack_possible;
-	}
-
-	U64 se_occ_mask = GET_SOUTH_EAST_OCC_MASK(attacking_sq);
-	if (check_bit(&se_occ_mask, target_sq)){
-		// target sq is on diagnoal....check to see if vector between
-		// attacking square and target is blocked
-		bool is_attack_possible = are_intervening_squares_empty(brd, se_occ_mask, attacking_sq, target_sq);
-		return is_attack_possible;
-	}
-
-
-	U64 sw_occ_mask = GET_SOUTH_WEST_OCC_MASK(attacking_sq);
-	if (check_bit(&sw_occ_mask, target_sq)){
-		// target sq is on diagnoal....check to see if vector between
-		// attacking square and target is blocked
-		bool is_attack_possible = are_intervening_squares_empty(brd, sw_occ_mask, attacking_sq, target_sq);
+		bool is_attack_possible = are_intervening_squares_empty(brd, anti_diag_occ_mask, attacking_sq, target_sq);
 		return is_attack_possible;
 	}
 
@@ -480,25 +477,42 @@ static inline bool are_intervening_squares_empty(const struct board *brd, U64 oc
 
 	//printf("checking interim squares between %s and %s\n", print_square(attacking_sq), print_square(target_sq));
 
-	clear_bit(&occ_mask, attacking_sq);
+	//// clear all bits outside the range between the 2 squares.
+	if (attacking_sq < target_sq){
 
-	// now check all bits between attacker and target
-	while (occ_mask != 0) {
-		enum square interim_sq = POP(&occ_mask);
-		if (interim_sq == target_sq){
-			// stop looking
-			//printf("reached target sq, squares empty\n");
-			return true;
-		} else {
-			//printf("checking sq %s for occupancy\n", print_square(interim_sq));
-			if (is_square_occupied(brd->board, interim_sq)){
-				// squares not empty
-				//printf("squares not empty\n");
-				return false;
-			}
-		}
+		//printf("1: mask before : \t0x%016llx\n", occ_mask);
+		//print_mask_as_board(&occ_mask);
+
+		clear_LSB_to_inclusive_bit(&occ_mask, attacking_sq);
+		clear_MSB_to_inclusive_bit(&occ_mask, target_sq);
+
+		//printf("1: mask after : \t0x%016llx\n", occ_mask);
+		//print_mask_as_board(&occ_mask);
+
+	} else {
+		//printf("2: mask before : \t0x%016llx\n", occ_mask);
+		//print_mask_as_board(&occ_mask);
+
+
+		clear_LSB_to_inclusive_bit(&occ_mask, target_sq);
+		clear_MSB_to_inclusive_bit(&occ_mask, attacking_sq);
+
+		//printf("2: mask after : \t0x%016llx\n", occ_mask);
+		//print_mask_as_board(&occ_mask);
+
 	}
+
+	if ((brd->board & occ_mask) != 0){
+		// there are pieces in the way
+		//printf("brd-<board : \t0x%016llx\n", brd->board);
+
+		printf("there are blocking pieces  between %s and %s\n", print_square(attacking_sq), print_square(target_sq));
+		return false;
+	}
+
 	// squares empty
+	printf("Attack possible between %s and %s\n", print_square(attacking_sq), print_square(target_sq));
+	print_board(brd);
 	return true;
 }
 

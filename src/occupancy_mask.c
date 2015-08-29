@@ -527,13 +527,11 @@ void print_occupancy_masks(enum piece pce)
 
 
 // when checking to see if a queen or bishop can attack a
-// square, have a localised occupancy mask us useful
+// square, having a localised occupancy mask can be useful
 void generate_diagonal_occupancy_masks(void){
 
-    U64 NE[NUM_SQUARES] = { 0 }; // north-east
-    U64 NW[NUM_SQUARES] = { 0 }; // north-west
-    U64 SW[NUM_SQUARES] = { 0 };
-    U64 SE[NUM_SQUARES] = { 0 };
+    U64 diagonal[NUM_SQUARES] = { 0 }; // bottom left to upper right
+    U64 antidiagonal[NUM_SQUARES] = { 0 }; // top left to bottom right
 
     for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
 
@@ -556,7 +554,7 @@ void generate_diagonal_occupancy_masks(void){
 		}
 		// clear our square
 		clear_bit(&b, sq);
-		SW[sq] = b;
+		diagonal[sq] |= b;
 
 
 		// move NW
@@ -570,7 +568,7 @@ void generate_diagonal_occupancy_masks(void){
 		}
 		// clear our square
 		clear_bit(&b, sq);
-		NW[sq] = b;
+		antidiagonal[sq] |= b;
 
 
 
@@ -586,7 +584,7 @@ void generate_diagonal_occupancy_masks(void){
 		}
 		// clear our square
 		clear_bit(&b, sq);
-		SE[sq] = b;
+		antidiagonal[sq] |= b;
 
 
 
@@ -601,20 +599,14 @@ void generate_diagonal_occupancy_masks(void){
 		}
 		// clear our square
 		clear_bit(&b, sq);
-		NE[sq] = b;
+		diagonal[sq] |= b;
 
 	}
 
-	printf("NE\n");
-	print_out_masks(NE);
-	printf("SE\n");
-	print_out_masks(SE);
-	printf("SW\n");
-	print_out_masks(SW);
-	printf("NW\n");
-	print_out_masks(NW);
-
-
+	printf("DIAGONAL\n");
+	print_out_masks(diagonal);
+	printf("ANTI_DIAGONAL\n");
+	print_out_masks(antidiagonal);
 
 
 }
@@ -631,26 +623,18 @@ void generate_diagonal_occupancy_masks(void){
  * Thanks again to Bluefever Software for this code
  */
 void
-print_mask_as_board(const U64 * mask, enum piece pce,
-			      enum square square)
+print_mask_as_board(const U64 * mask)
 {
-
-    //int sq,piece;
 
     for (int rank = RANK_8; rank >= RANK_1; rank--) {
 		printf("%d  ", rank + 1);	// enum is zero-based
 		for (int file = FILE_A; file <= FILE_H; file++) {
 			enum square sq = GET_SQUARE(rank, file);
-			if (square == sq) {
-				char c = get_piece_label(pce);
-				printf("%3c", c);
+			if (check_bit(mask, sq)) {
+				// attack square
+				printf("  X");
 			} else {
-				if (check_bit(mask, sq)) {
-					// attack square
-					printf("  X");
-				} else {
-					printf("  -");
-				}
+				printf("  -");
 			}
 		}
 	printf("\n");
@@ -669,7 +653,7 @@ void print_out_masks(const U64 * masks)
     for (int i = 0; i < NUM_SQUARES; i++) {
 		printf("0x%016llx\n", masks[i]);
 
-		print_mask_as_board(&masks[i], W_QUEEN, i);
+		//print_mask_as_board(&masks[i], W_QUEEN, i);
 
     }
 }

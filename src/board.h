@@ -62,6 +62,8 @@ enum {
 #define	CNT(bb)			count_bits(bb)
 
 struct board *init_board(char * fen);
+void clear_MSB_to_inclusive_bit(U64 * bb, U8 bit);
+void clear_LSB_to_inclusive_bit(U64 * bb, U8 bit);
 void remove_piece_from_board(struct board *brd, enum piece pce, enum square sq);
 void add_piece_to_board(struct board *brd, enum piece pce, enum square sq);
 enum piece get_piece_at_square(const struct board *the_board, enum square square);
@@ -72,6 +74,8 @@ bool check_bit(const U64 * brd, enum square sq);
 void set_piece_material(struct board *brd);
 U64 overlay_colours(const struct board *the_board, enum colour col);
 void overlay_boards(struct board *the_board);
+
+
 
 // test
 U8 pop_1st_bit(U64 * bb);

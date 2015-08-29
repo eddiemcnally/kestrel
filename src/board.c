@@ -41,8 +41,22 @@ static const U8 BitTable[64] = {
 };
 
 
-static struct board *get_clean_board(void);
 
+const int debruijn_index64[64] = {
+    0, 47,  1, 56, 48, 27,  2, 60,
+   57, 49, 41, 37, 28, 16,  3, 61,
+   54, 58, 35, 52, 50, 42, 21, 44,
+   38, 32, 29, 23, 17, 11,  4, 62,
+   46, 55, 26, 59, 40, 36, 15, 53,
+   34, 51, 20, 43, 31, 22, 10, 45,
+   25, 39, 14, 33, 19, 30,  9, 24,
+   13, 18,  8, 12,  7,  6,  5, 63
+};
+
+
+static struct board *get_clean_board(void);
+static inline U8 bit_scan_reverse(U64 bb);
+static inline U8 get_LSB_index(U64 bb);
 
 /*
  * Creates and initialises a new board. The default starting piece
@@ -65,6 +79,11 @@ struct board *init_board(char * fen)
 
 void remove_piece_from_board(struct board *brd, enum piece pce, enum square sq){
 
+
+	if ((pce == W_KING) || (pce == B_KING)){
+		print_board(brd);
+		printf("pce = %c on square %s\n", get_piece_label(pce), print_square(sq));
+	}
 	assert((sq >= a1) && (sq <= h8));
 	assert(pce != W_KING);
 	assert(pce != B_KING);
@@ -171,9 +190,6 @@ inline enum piece get_piece_at_square(const struct board *the_board, enum square
  */
 inline void set_bit(U64 * brd, enum square sq)
 {
-	if ((sq < a1) || (sq > h8)){
-		printf("uibiupiuv");
-	}
 
     assert((sq >= a1) && (sq <= h8));
 
@@ -189,9 +205,6 @@ inline void set_bit(U64 * brd, enum square sq)
  */
 inline void clear_bit(U64 * brd, enum square sq)
 {
-	if ((sq < a1) || (sq > h8)){
-		printf("uibiupiuv");
-	}
 
     assert((sq >= a1) && (sq <= h8));
 
@@ -243,6 +256,71 @@ inline U8 pop_1st_bit(U64 * bb)
     *bb &= (*bb - 1);
     return BitTable[(fold * 0x783a9b23) >> 26];
 }
+
+
+
+void clear_MSB_to_inclusive_bit(U64 * bb, U8 bit){
+	U8 msb = bit_scan_reverse(*bb);
+	while (msb > bit){
+		msb = bit_scan_reverse(*bb);
+		clear_bit(bb, msb);
+	}
+}
+
+
+void clear_LSB_to_inclusive_bit(U64 * bb, U8 bit){
+
+	U8 lsb_offset = get_LSB_index(*bb);
+
+	if (lsb_offset > bit){
+		// nothing to do
+		return;
+	} else {
+		do {
+			lsb_offset = POP(bb);
+		} while(lsb_offset < bit);
+	}
+}
+
+
+/**
+ * Taken from https://graphics.stanford.edu/~seander/bithacks.html#ZerosOnRightLinear
+ *
+ * counts trailing 0's on the right of the U64
+ */
+static inline U8 get_LSB_index(U64 bb){
+	U8 c;  // output: c will count v's trailing zero bits,
+        // so if v is 1101000 (base 2), then c will be 3
+	if (bb) {
+		bb = (bb ^ (bb - 1)) >> 1;  // Set bb's trailing 0s to 1s and zero rest
+		for (c = 0; bb; c++) {
+			bb >>= 1;
+		}
+		return c;
+	}
+	return 0;
+}
+
+
+/**
+ * bitScanReverse
+ * @authors Kim Walisch, Mark Dickinson
+ * @param bb bitboard to scan
+ * @precondition bb != 0
+ * @return index (0..63) of most significant one bit
+ */
+static inline U8 bit_scan_reverse(U64 bb) {
+	const U64 debruijn64 = 0x03f79d71b4cb0a89;
+	bb |= bb >> 1;
+	bb |= bb >> 2;
+	bb |= bb >> 4;
+	bb |= bb >> 8;
+	bb |= bb >> 16;
+	bb |= bb >> 32;
+	return debruijn_index64[(bb * debruijn64) >> 58];
+}
+
+
 
 inline bool is_square_occupied(U64 board, enum square square)
 {

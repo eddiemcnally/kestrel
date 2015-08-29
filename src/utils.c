@@ -24,6 +24,7 @@ static U8 reverse_bits_in_byte(U8 bits);
 
 
 
+
 U64 generate_rand64(void)
 {
     U64 retval = 0;
@@ -60,6 +61,8 @@ U64 reverse_bits(U64 word){
 
 	return __builtin_bswap64(retval);
 }
+
+
 
 /* Reverses the bits in a byte
  * Taken from https://graphics.stanford.edu/~seander/bithacks.html

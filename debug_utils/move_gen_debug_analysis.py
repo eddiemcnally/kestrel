@@ -47,18 +47,27 @@ for key in v_dict.keys():
         print("------------------------")
         print("Not in KKK....")
         print(key)
-    count_v = v_dict[key]
-    count_k = 0;
-    if key in k_dict:
-        count_k = k_dict[key]
-    if count_v < count_k:
+
+for key in k_dict.keys():
+    if key not in v_dict.keys():
         print("------------------------")
-        print("Extra " + str(count_k - count_v) + " in KKK....total in KKK = " + str(count_k))
+        print("Not in VVV....")
         print(key)
-    if count_v > count_k:
-        print("------------------------")
-        print("Extra " + str(count_v - count_k) + " in VVV....total in VVV = " + str(count_v))
-        print(key)
+
+
+
+#    count_v = v_dict[key]
+#    count_k = 0;
+#    if key in k_dict:
+#        count_k = k_dict[key]
+#    if count_v < count_k:
+#        print("------------------------")
+#        print("Extra " + str(count_k - count_v) + " in KKK....total in KKK = " + str(count_k))
+#        print(key)
+#    if count_v > count_k:
+#        print("------------------------")
+#        print("Extra " + str(count_v - count_k) + " in VVV....total in VVV = " + str(count_v))
+#        print(key)
 
 
 

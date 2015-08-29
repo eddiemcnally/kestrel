@@ -24,4 +24,6 @@
 U64 reverse_bits(U64 word);
 U64 generate_rand64(void);
 
+
+
 #endif
