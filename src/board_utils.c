@@ -119,6 +119,17 @@ char *print_square(enum square sq)
 
 
 
+void print_compressed_board(const struct board * brd){
+	for(enum square sq = a1; sq <= h8; sq++){
+		enum piece pce = get_piece_at_square(brd, sq);
+		if(pce == NO_PIECE){
+			printf(".");
+		} else {
+			printf("%c", get_piece_label(pce));
+		}
+	}
+}
+
 
 
 /*

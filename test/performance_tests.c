@@ -287,10 +287,12 @@ void perft(int depth, struct board *brd, mv_bitmap mvb) {
 	}
 
 	if(depth == 0) {
-		//printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
-		//printf("**** NODE INCR - mv = %s\n", print_move(mvb));
-		//print_board(brd);
-		//printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
+		printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
+		printf("**** NODE INCR - mv = %s  ", print_move(mvb));
+		print_compressed_board(brd);
+		printf("\n");
+		print_board(brd);
+		printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
 
         leafNodes++;
         return;
@@ -321,14 +323,12 @@ void perft(int depth, struct board *brd, mv_bitmap mvb) {
 
 
 void bug_check(void){
-	struct board *brd= init_game("B6b/8/8/8/8/2K1k3/8/b6B w - - 0 1");
+	struct board *brd= init_game("4k3/8/8/3b4/2B5/8/8/K4B2 w - - 0 1");
 
-		TEST_is_bishop_attacking_square(brd, c3, BLACK);
+		leafNodes = 0;
+		perf_test(1, brd);
 
-		//leafNodes = 0;
-		//perf_test(1, brd);
-
-		//assert_true(leafNodes == 17);
+		assert_true(leafNodes == 3242);
 }
 
 
@@ -336,9 +336,9 @@ void perf_test_fixture(void)
 {
     test_fixture_start();	// starts a fixture
 
-    run_test(test_move_gen_depth);
+    //run_test(test_move_gen_depth);
 
-	//run_test(bug_check);
+	run_test(bug_check);
 
 
     test_fixture_end();		// ends a fixture

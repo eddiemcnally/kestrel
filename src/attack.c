@@ -162,6 +162,11 @@ static bool is_bishop_attacking_square(const struct board *brd, enum square targ
     U64 sqBB = 0;
     set_bit(&sqBB, target_sq);
 
+	if (target_sq == a1 || target_sq == a2){
+		printf("IUBPIUUI");
+	}
+
+
     enum piece attacking_piece;
 
     if (attacking_side == WHITE)

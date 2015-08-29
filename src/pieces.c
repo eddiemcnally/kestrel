@@ -52,9 +52,9 @@ static const U32 piece_values[NUM_PIECES] = {
 /**
  * Takes a typed piece and returns a human-readable representation
  */
-inline char get_piece_label(enum piece piece)
+inline char get_piece_label(enum piece pce)
 {
-    return pieceToChar[piece];
+    return pieceToChar[pce];
 }
 
 
