@@ -282,10 +282,6 @@ void perft(int depth, struct board *brd, mv_bitmap mvb) {
 
     ASSERT_BOARD_OK(brd);
 
-	if(mvb == 0){
-		printf("IBOYBOYB\n");
-	}
-
 	if(depth == 0) {
 		printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
 		printf("**** NODE INCR - mv = %s  ", print_move(mvb));
@@ -323,12 +319,12 @@ void perft(int depth, struct board *brd, mv_bitmap mvb) {
 
 
 void bug_check(void){
-	struct board *brd= init_game("4k3/8/8/3b4/2B5/8/8/K4B2 w - - 0 1");
+	struct board *brd= init_game("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
 
 		leafNodes = 0;
-		perf_test(1, brd);
+		perf_test(2, brd);
 
-		assert_true(leafNodes == 3242);
+		assert_true(leafNodes == 2039);
 }
 
 
@@ -336,9 +332,9 @@ void perf_test_fixture(void)
 {
     test_fixture_start();	// starts a fixture
 
-    //run_test(test_move_gen_depth);
+    run_test(test_move_gen_depth);
 
-	run_test(bug_check);
+	//run_test(bug_check);
 
 
     test_fixture_end();		// ends a fixture

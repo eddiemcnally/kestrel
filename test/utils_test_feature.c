@@ -28,6 +28,7 @@
 
 void test_bit_reversal(void);
 void utils_test_fixture(void);
+void test_clear_MSB(void);
 
 void test_bit_reversal(void){
 
@@ -56,6 +57,22 @@ void test_bit_reversal(void){
 }
 
 
+void test_clear_MSB(void){
+	U64 bb = 0x54673;
+	clear_MSB_to_inclusive_bit(&bb, 10);
+
+	assert_true(bb == 0x273);
+}
+
+
+
+void test_clear_LSB(void){
+	U64 bb = 0x54673;
+	clear_LSB_to_inclusive_bit(&bb, 5);
+
+	assert_true(bb == 0x54640);
+}
+
 
 void utils_test_fixture(void)
 {
@@ -63,6 +80,8 @@ void utils_test_fixture(void)
 	test_fixture_start();
 
 	run_test(test_bit_reversal);
+	run_test(test_clear_MSB);
+	run_test(test_clear_LSB);
 
 	test_fixture_end();
 }
