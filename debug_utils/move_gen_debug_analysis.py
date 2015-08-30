@@ -3,11 +3,11 @@
 
 
 def read_lines_from_file(f):
-    infile = open(f, "r")
-    #print(infile)
-    my_list = []
-    for line in infile.readlines():
-        my_list.append(line)
+    with open(f, encoding='utf-8') as a_file:
+        my_list = []
+        for line in a_file:
+            if "**** NODE INCR - mv = " in line:
+                my_list.append(line)
     return my_list
 
 
