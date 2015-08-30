@@ -284,10 +284,10 @@ static inline bool is_queen_attacking_square(const struct board *brd, enum squar
     while (bbQueen != 0) {
 		enum square att_pce_sq = POP(&bbQueen);
 
-		if (attacking_side == WHITE)
-			printf("checking W_QUEEN on %s can attack square %s\n", print_square(att_pce_sq), print_square(sq));
-		else
-			printf("checking B_QUEEN on %s can attack square %s\n", print_square(att_pce_sq), print_square(sq));
+		//if (attacking_side == WHITE)
+			//printf("checking W_QUEEN on %s can attack square %s\n", print_square(att_pce_sq), print_square(sq));
+		//else
+			//printf("checking B_QUEEN on %s can attack square %s\n", print_square(att_pce_sq), print_square(sq));
 
 
 		// get occupancy mask for this square
@@ -298,11 +298,11 @@ static inline bool is_queen_attacking_square(const struct board *brd, enum squar
 			// Need to see if any blocking pieces
 
 			if (is_attacked_diagonally(brd, att_pce_sq, sq)) {
-				printf("Queen on %s can DIAGONALLY attack square %s\n", print_square(att_pce_sq), print_square(sq));
+				//printf("Queen on %s can DIAGONALLY attack square %s\n", print_square(att_pce_sq), print_square(sq));
 				return true;
 			}
 			if (is_attacked_horizontally_or_vertically(brd, att_pce_sq, sq)) {
-				printf("Queen on %s can HORIZ or VERT attack square %s\n", print_square(att_pce_sq), print_square(sq));
+				//printf("Queen on %s can HORIZ or VERT attack square %s\n", print_square(att_pce_sq), print_square(sq));
 				return true;
 			}
 		}
@@ -435,10 +435,10 @@ static inline bool is_blocked_vertically(const struct board *brd, enum square st
 static inline bool is_attacked_diagonally(const struct board *brd, enum square attacking_sq, enum square target_sq)
 {
 
-	printf("checking if attacking_sq %s can attack target_sq %s\n", print_square(attacking_sq), print_square(target_sq));
+	//printf("checking if attacking_sq %s can attack target_sq %s\n", print_square(attacking_sq), print_square(target_sq));
 	U64 diag_occ_mask = GET_DIAGONAL_OCC_MASK(attacking_sq);
 	if (check_bit(&diag_occ_mask, target_sq)){
-		printf("checking DIAGONAL...\n");
+		//printf("checking DIAGONAL...\n");
 		// target sq is on diagnoal....check to see if vector between
 		// attacking square and target is blocked
 		bool is_attack_possible = are_intervening_squares_empty(brd, diag_occ_mask, attacking_sq, target_sq);
@@ -447,7 +447,7 @@ static inline bool is_attacked_diagonally(const struct board *brd, enum square a
 
 	U64 anti_diag_occ_mask = GET_ANTI_DIAGONAL_OCC_MASK(attacking_sq);
 	if (check_bit(&anti_diag_occ_mask, target_sq)){
-		printf("checking ANTI_DIAGONAL...\n");
+		//printf("checking ANTI_DIAGONAL...\n");
 
 		// target sq is on diagnoal....check to see if vector between
 		// attacking square and target is blocked
@@ -462,8 +462,8 @@ static inline bool is_attacked_diagonally(const struct board *brd, enum square a
 
 static inline bool are_intervening_squares_empty(const struct board *brd, U64 occ_mask, enum square attacking_sq, enum square target_sq){
 
-	printf("checking interim squares between (attacking) %s and (target) %s\n", print_square(attacking_sq), print_square(target_sq));
-	print_board(brd);
+	//printf("checking interim squares between (attacking) %s and (target) %s\n", print_square(attacking_sq), print_square(target_sq));
+	//print_board(brd);
 
 	//// clear all bits outside the range between the 2 squares.
 	if (attacking_sq < target_sq){

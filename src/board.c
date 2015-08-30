@@ -221,11 +221,7 @@ inline bool check_bit(const U64 * brd, enum square sq)
  */
 inline U8 count_bits(U64 bb)
 {
-    U8 cntr;
-    for (cntr = 0; bb; cntr++) {
-		bb &= bb - 1;		// clear the least significant bit set
-    }
-    return cntr;
+	return (U8)__builtin_popcountll(bb);
 }
 
 /*
@@ -253,7 +249,7 @@ void clear_MSB_to_inclusive_bit(U64 * bb, U8 bit){
 	U8 msb = get_MSB_index(*bb);
 	while ((msb >= bit) && (*bb != 0)) {
 		clear_bit(bb, msb);
-		printf("cleared MSB %d, bb_bit = %d\n", msb, bit);
+		//printf("cleared MSB %d, bb_bit = %d\n", msb, bit);
 		msb = get_MSB_index(*bb);
 	}
 
@@ -270,7 +266,7 @@ void clear_LSB_to_inclusive_bit(U64 * bb, U8 bit){
 
 	while ((lsb <= bit) && (*bb != 0)) {
 		clear_bit(bb, lsb);
-		printf("cleared LSB %d bb_bit %d, bb  \t0x%016llx\n", lsb, bit, *bb);
+		//printf("cleared LSB %d bb_bit %d, bb  \t0x%016llx\n", lsb, bit, *bb);
 		lsb = get_LSB_index(*bb);
 	}
 }

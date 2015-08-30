@@ -11,32 +11,32 @@
 # define any compile-time flags
 # NOTE: setting the inline limit values to be obscenely high since the size of
 #		the binary isn't a concern
-#	CFLAGS	=	-O3 -g -std=c11 \
-#				-mtune=native \
-#				-lmcheck \
-#				-fsanitize=undefined \
-#				--param large-function-growth=8000 \
-#				--param max-inline-insns-single=30000 \
-#				-fomit-frame-pointer \
+	CFLAGS	=	-O3 -g -std=c11 \
+				-mtune=native \
+				-lmcheck \
+				-fsanitize=undefined \
+				--param large-function-growth=8000 \
+				--param max-inline-insns-single=30000 \
+				-fomit-frame-pointer \
 #				-Wpedantic \
-#				-Wformat=2 \
-#				-Wall \
-#				-Werror \
-#				-Wlogical-op \
-#				-Wextra \
-#				-Wconversion \
-#				-Wsign-conversion \
-#				-Wshadow \
-#				-Wmissing-include-dirs \
-#				-Wpointer-arith \
-#				-Winline \
-#				-lubsan
+				-Wformat=2 \
+				-Wall \
+				-Werror \
+				-Wlogical-op \
+				-Wextra \
+				-Wconversion \
+				-Wsign-conversion \
+				-Wshadow \
+				-Wmissing-include-dirs \
+				-Wpointer-arith \
+				-Winline \
+				-lubsan
 
 # flags for profiling code
 #	CFLAGS	=	-O3 -pg -std=c11
 
 # more lax compiler options
-	CFLAGS	=	-Wall -g -std=c11 -lubsan
+#	CFLAGS	=	-Wall -g -std=c11 -lubsan
 
 # define any directories containing header files other than /usr/include
 #

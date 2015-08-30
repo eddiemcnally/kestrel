@@ -192,41 +192,13 @@ void test_move_gen_depth(){
 		//printf("Analysing FEN : %s\n", e.fen);
 
 		struct board *brd= init_game(e.fen);
-
 		leafNodes = 0;
-		perf_test(1, brd);
-		if (leafNodes != e.depth1){
-			printf("fen %s  ; #nodes is %llu, should be %llu\n", e.fen, leafNodes, e.depth1);
+		perf_test(4, brd);
+		if (leafNodes != e.depth4){
+			printf("fen %s  ; #nodes is %llu, should be %llu\n", e.fen, leafNodes, e.depth4);
 		}
-		assert_true(leafNodes == e.depth1);
+		assert_true(leafNodes == e.depth4);
 		free(brd);
-
-		brd= init_game(e.fen);
-		leafNodes = 0;
-		perf_test(2, brd);
-		if (leafNodes != e.depth2){
-			printf("fen %s  ; #nodes is %llu, should be %llu\n", e.fen, leafNodes, e.depth2);
-		}
-		assert_true(leafNodes == e.depth2);
-		free(brd);
-
-		brd= init_game(e.fen);
-		leafNodes = 0;
-		perf_test(3, brd);
-		if (leafNodes != e.depth3){
-			printf("fen %s  ; #nodes is %llu, should be %llu\n", e.fen, leafNodes, e.depth3);
-		}
-		assert_true(leafNodes == e.depth3);
-		free(brd);
-
-		//brd= init_game(e.fen);
-		//leafNodes = 0;
-		//perf_test(4, brd);
-		//if (leafNodes != e.depth4){
-			//printf("fen %s  ; #nodes is %llu, should be %llu\n", e.fen, leafNodes, e.depth4);
-		//}
-		//assert_true(leafNodes == e.depth4);
-		//free(brd);
 
 
 
@@ -271,6 +243,8 @@ void perf_test(int depth, struct board *brd) {
         //printf("move %d : %s : %llu\n", mv_num+1, print_move(mv),oldnodes);
     }
 
+	free(mv_list);
+
 	printf("\nTest Complete : %llu nodes visited\n",leafNodes);
 
     return;
@@ -283,12 +257,12 @@ void perft(int depth, struct board *brd, mv_bitmap mvb) {
     ASSERT_BOARD_OK(brd);
 
 	if(depth == 0) {
-		printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
-		printf("**** NODE INCR - mv = %s  ", print_move(mvb));
-		print_compressed_board(brd);
-		printf("\n");
-		print_board(brd);
-		printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
+		//printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
+		//printf("**** NODE INCR - mv = %s  ", print_move(mvb));
+		//print_compressed_board(brd);
+		//printf("\n");
+		//print_board(brd);
+		//printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
 
         leafNodes++;
         return;
@@ -314,6 +288,7 @@ void perft(int depth, struct board *brd, mv_bitmap mvb) {
         perft(depth - 1, brd, mv);
         take_move(brd);
     }
+    free(mv_list);
     return;
 }
 
