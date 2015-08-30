@@ -62,6 +62,8 @@ enum {
 #define	CNT(bb)			count_bits(bb)
 
 struct board *init_board(char * fen);
+U8 get_LSB_index(U64 bb);
+U8 get_MSB_index(U64 bb);
 void clear_MSB_to_inclusive_bit(U64 * bb, U8 bit);
 void clear_LSB_to_inclusive_bit(U64 * bb, U8 bit);
 void remove_piece_from_board(struct board *brd, enum piece pce, enum square sq);

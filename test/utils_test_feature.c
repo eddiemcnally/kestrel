@@ -65,11 +65,49 @@ void test_clear_MSB(void){
 }
 
 
+void test_find_LSB(){
+	U64 test_val = 0x526200817;
+	U8 b = get_LSB_index(test_val);
+	assert_true(b == 0);
+
+
+	test_val = 0x29310040;
+	b = get_LSB_index(test_val);
+	assert_true(b == 6);
+
+	test_val = 0x1;
+	b = get_LSB_index(test_val);
+	assert_true(b == 0);
+
+}
+
+
+
+void test_find_MSB(){
+	U64 test_val = 0x526200817;
+	U8 b = get_MSB_index(test_val);
+	assert_true(b == 34);
+
+
+	test_val = 0x29310040;
+	b = get_MSB_index(test_val);
+	assert_true(b == 29);
+
+	test_val = 0x8000000000000000;
+	b = get_MSB_index(test_val);
+	assert_true(b == 63);
+
+	test_val = 0x1;
+	b = get_MSB_index(test_val);
+	assert_true(b == 0);
+
+}
+
+
 
 void test_clear_LSB(void){
 	U64 bb = 0x54673;
 	clear_LSB_to_inclusive_bit(&bb, 5);
-
 	assert_true(bb == 0x54640);
 }
 
@@ -79,6 +117,8 @@ void utils_test_fixture(void)
 
 	test_fixture_start();
 
+	run_test(test_find_LSB);
+	run_test(test_find_MSB);
 	run_test(test_bit_reversal);
 	run_test(test_clear_MSB);
 	run_test(test_clear_LSB);

@@ -42,21 +42,7 @@ static const U8 BitTable[64] = {
 
 
 
-const int debruijn_index64[64] = {
-    0, 47,  1, 56, 48, 27,  2, 60,
-   57, 49, 41, 37, 28, 16,  3, 61,
-   54, 58, 35, 52, 50, 42, 21, 44,
-   38, 32, 29, 23, 17, 11,  4, 62,
-   46, 55, 26, 59, 40, 36, 15, 53,
-   34, 51, 20, 43, 31, 22, 10, 45,
-   25, 39, 14, 33, 19, 30,  9, 24,
-   13, 18,  8, 12,  7,  6,  5, 63
-};
-
-
 static struct board *get_clean_board(void);
-static inline U8 bit_scan_reverse(U64 bb);
-static inline U8 get_LSB_index(U64 bb);
 
 /*
  * Creates and initialises a new board. The default starting piece
@@ -264,22 +250,12 @@ void clear_MSB_to_inclusive_bit(U64 * bb, U8 bit){
 		return;
 	}
 
-	U8 msb = bit_scan_reverse(*bb);
-	//printf("bit = %d\n", bit);
-	//printf("first MSB check %d\n", msb);
-
-	if (msb < bit){
-		//printf("MSB < %d\n", bit);
-		// nothing to do
-		return;
-	} else {
-		while (msb >= bit) {
-			clear_bit(bb, msb);
-			//printf("cleared MSB bit %d\n", msb);
-			msb = bit_scan_reverse(*bb);
-		}
+	U8 msb = get_MSB_index(*bb);
+	while ((msb >= bit) && (*bb != 0)) {
+		clear_bit(bb, msb);
+		printf("cleared MSB %d, bb_bit = %d\n", msb, bit);
+		msb = get_MSB_index(*bb);
 	}
-
 
 }
 
@@ -290,62 +266,36 @@ void clear_LSB_to_inclusive_bit(U64 * bb, U8 bit){
 		return;
 	}
 
-	U8 lsb_offset = get_LSB_index(*bb);
+	U8 lsb = get_LSB_index(*bb);
 
-	if (lsb_offset > bit){
-		//printf("LSB > %d\n", bit);
-		// nothing to do
-		return;
-	} else {
-		while (lsb_offset <= bit) {
-			lsb_offset = POP(bb);
-			//printf("cleared LSB %d\n", lsb_offset);
-			lsb_offset = get_LSB_index(*bb);
-		};
+	while ((lsb <= bit) && (*bb != 0)) {
+		clear_bit(bb, lsb);
+		printf("cleared LSB %d bb_bit %d, bb  \t0x%016llx\n", lsb, bit, *bb);
+		lsb = get_LSB_index(*bb);
 	}
 }
 
 
 /**
- * Taken from https://graphics.stanford.edu/~seander/bithacks.html#ZerosOnRightLinear
+ * int __builtin_ctz (unsigned int x)
  *
- * counts trailing 0's on the right of the U64
+ * Returns the number of trailing 0-bits in x, starting at the least
+ * significant bit position. If x is 0, the result is undefined
  */
-static inline U8 get_LSB_index(U64 bb){
-	if (bb == 0){
-		return 0;
-	}
-	U8 c;  // output: c will count v's trailing zero bits,
-        // so if v is 1101000 (base 2), then c will be 3
-	if (bb) {
-		bb = (bb ^ (bb - 1)) >> 1;  // Set bb's trailing 0s to 1s and zero rest
-		for (c = 0; bb; c++) {
-			bb >>= 1;
-		}
-		return c;
-	}
-	return 0;
+U8 get_LSB_index(U64 bb){
+	// gcc built-in function (see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html)
+	return (U8)__builtin_ctzll(bb);
 }
 
 
-/**
- * bitScanReverse
- * @authors Kim Walisch, Mark Dickinson
- * @param bb bitboard to scan
- * @precondition bb != 0
- * @return index (0..63) of most significant one bit
- */
-static inline U8 bit_scan_reverse(U64 bb) {
-	const U64 debruijn64 = 0x03f79d71b4cb0a89;
-	bb |= bb >> 1;
-	bb |= bb >> 2;
-	bb |= bb >> 4;
-	bb |= bb >> 8;
-	bb |= bb >> 16;
-	bb |= bb >> 32;
-	return debruijn_index64[(bb * debruijn64) >> 58];
-}
+U8 get_MSB_index(U64 bb){
+// gcc built-in function (see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html)
+	U8 b = (U8)__builtin_clzll(bb);
 
+	// the above is number of leading zeros.
+	// the MSB index is (63-b)
+	return (U8)(63 - b);
+}
 
 
 inline bool is_square_occupied(U64 board, enum square square)
