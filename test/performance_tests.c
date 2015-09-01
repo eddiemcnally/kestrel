@@ -32,9 +32,9 @@
 
 
 
-void perf_test(int depth, struct board *brd);
+void perf_test(int depth, struct board *brd, bool do_print);
 void test_move_gen_depth(void);
-void perft(int depth, struct board *brd, mv_bitmap mv);
+void perft(int depth, struct board *brd, mv_bitmap mv, bool do_print);
 void bug_check(void);
 
 
@@ -193,7 +193,7 @@ void test_move_gen_depth(){
 
 		struct board *brd= init_game(e.fen);
 		leafNodes = 0;
-		perf_test(4, brd);
+		perf_test(3, brd, false);
 		if (leafNodes != e.depth4){
 			printf("fen %s  ; #nodes is %llu, should be %llu\n", e.fen, leafNodes, e.depth4);
 		}
@@ -210,7 +210,7 @@ void test_move_gen_depth(){
 
 
 
-void perf_test(int depth, struct board *brd) {
+void perf_test(int depth, struct board *brd, bool do_print) {
 
     ASSERT_BOARD_OK(brd);
 
@@ -237,7 +237,7 @@ void perf_test(int depth, struct board *brd) {
 
 		//print_board(brd);
         //U64 total = leafNodes;
-        perft(depth - 1, brd, mv);
+        perft(depth - 1, brd, mv, do_print);
         take_move(brd);
         //U64 oldnodes = leafNodes - total;
         //printf("move %d : %s : %llu\n", mv_num+1, print_move(mv),oldnodes);
@@ -252,18 +252,19 @@ void perf_test(int depth, struct board *brd) {
 
 
 
-void perft(int depth, struct board *brd, mv_bitmap mvb) {
+void perft(int depth, struct board *brd, mv_bitmap mvb, bool do_print) {
 
     ASSERT_BOARD_OK(brd);
 
 	if(depth == 0) {
-		printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
-		printf("**** NODE INCR - mv = %s  ", print_move(mvb));
-		print_compressed_board(brd);
-		printf("\n");
-		print_board(brd);
-		printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
-
+		if (do_print){
+			printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
+			printf("**** NODE INCR - mv = %s  ", print_move(mvb));
+			print_compressed_board(brd);
+			printf("\n");
+			print_board(brd);
+			printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
+		}
         leafNodes++;
         return;
     }
@@ -285,7 +286,7 @@ void perft(int depth, struct board *brd, mv_bitmap mvb) {
             continue;
         }
         //printf("--depth %d, move : %s\n", depth, print_move(mv));
-        perft(depth - 1, brd, mv);
+        perft(depth - 1, brd, mv, do_print);
         take_move(brd);
     }
     free(mv_list);
@@ -297,7 +298,7 @@ void bug_check(void){
 	struct board *brd= init_game("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
 
 		leafNodes = 0;
-		perf_test(4, brd);
+		perf_test(4, brd, false);
 
 		assert_true(leafNodes == 4085603);
 }

@@ -98,7 +98,7 @@ struct board {
     U64 bitboards[NUM_PIECES];
 
     // The above array piece arrays overlayed into a single bitboard.
-    // In effect, an OR of all elements in piece_boards[]
+    // In effect, an OR of all elements in bitboards[]
     U64 board;
 
     // the next side to move
