@@ -256,6 +256,13 @@ void perft(int depth, struct board *brd, mv_bitmap mvb, bool do_print) {
 
     ASSERT_BOARD_OK(brd);
 
+	if (depth == 4){
+		leafNodes++;
+		printf("%s,  %d\n", print_move(mvb), leafNodes);
+		return ;
+	}
+
+
 	if(depth == 0) {
 		if (do_print){
 			printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
@@ -298,7 +305,7 @@ void bug_check(void){
 	struct board *brd= init_game("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
 
 		leafNodes = 0;
-		perf_test(4, brd, false);
+		perf_test(4, brd, true);
 
 		assert_true(leafNodes == 4085603);
 }

@@ -144,6 +144,10 @@ void print_compressed_board(const struct board * brd){
 bool ASSERT_BOARD_OK(const struct board * brd)
 {
 
+#ifdef DEBUG
+	return true;
+#endif
+
     // check bit boards
     U64 conflated = 0;
 
