@@ -33,6 +33,8 @@
 
 
 void perf_test(int depth, struct board *brd, bool do_print);
+void divide_perft(int depth, struct board *brd);
+U32 divide(int depth, struct board *brd, mv_bitmap mvb);
 void test_move_gen_depth(void);
 void perft(int depth, struct board *brd, mv_bitmap mv, bool do_print);
 void bug_check(void);
@@ -256,13 +258,6 @@ void perft(int depth, struct board *brd, mv_bitmap mvb, bool do_print) {
 
     ASSERT_BOARD_OK(brd);
 
-	if (depth == 4){
-		leafNodes++;
-		printf("%s,  %d\n", print_move(mvb), leafNodes);
-		return ;
-	}
-
-
 	if(depth == 0) {
 		if (do_print){
 			printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
@@ -301,13 +296,81 @@ void perft(int depth, struct board *brd, mv_bitmap mvb, bool do_print) {
 }
 
 
+///////////////////
+
+void divide_perft(int depth, struct board *brd) {
+
+    ASSERT_BOARD_OK(brd);
+
+	U32 move_cnt = 0;
+
+    struct move_list *mv_list = malloc(sizeof(struct move_list));
+	memset(mv_list, 0, sizeof(struct move_list));
+
+	generate_all_moves(brd, mv_list);
+
+    mv_bitmap mv;
+    for(U32 mv_num = 0; mv_num < mv_list->move_count; ++mv_num) {
+		mv = mv_list->moves[mv_num].move_bitmap;
+
+		if (make_move(brd, mv)){
+			move_cnt = divide(depth - 1, brd, mv);
+			take_move(brd);
+
+			printf("%s : %d\n", print_move(mv), move_cnt);
+		}
+
+    }
+
+	free(mv_list);
+
+	printf("\nTest Complete : %llu nodes visited\n",leafNodes);
+
+    return;
+}
+
+
+
+U32 divide(int depth, struct board *brd, mv_bitmap mvb) {
+
+    ASSERT_BOARD_OK(brd);
+
+	U32 nodes = 0;
+
+	if(depth == 0) {
+		return 1;
+    }
+
+    struct move_list *mv_list = malloc(sizeof(struct move_list));
+	memset(mv_list, 0, sizeof(struct move_list));
+
+	generate_all_moves(brd, mv_list);
+
+    mv_bitmap mv;
+    for(U32 mv_num = 0; mv_num < mv_list->move_count; ++mv_num) {
+        mv = mv_list->moves[mv_num].move_bitmap;
+		if (make_move(brd, mv)){
+			nodes += divide(depth - 1, brd, mv);
+			take_move(brd);
+		}
+    }
+    free(mv_list);
+    return nodes;
+}
+
+
+
+////////////////////
+
+
+
 void bug_check(void){
-	struct board *brd= init_game("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
+	struct board *brd= init_game("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
 		leafNodes = 0;
-		perf_test(4, brd, true);
+		divide_perft(5, brd);
 
-		assert_true(leafNodes == 4085603);
+		assert_true(leafNodes == 4865609);
 }
 
 
