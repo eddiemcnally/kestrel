@@ -11,7 +11,7 @@
 # define any compile-time flags
 # NOTE: setting the inline limit values to be obscenely high since the size of
 #		the binary isn't a concern
-	CFLAGS	=	-O3 -g -std=c11 \
+	CFLAGS	=	-O3 -g -std=iso9899:2011 \
 				-mtune=native \
 				-lmcheck \
 				-fsanitize=undefined \
@@ -37,10 +37,10 @@
 				-lubsan
 
 # flags for profiling code
-#	CFLAGS	=	-O3 -pg -std=c11
+#	CFLAGS	=	-O3 -pg -std=iso9899:2011
 
 # more lax compiler options
-#	CFLAGS	=	-Wall -g -std=c11 -lubsan
+#	CFLAGS	=	-Wall -g -std=iso9899:2011 -lubsan
 
 # define any directories containing header files other than /usr/include
 #
