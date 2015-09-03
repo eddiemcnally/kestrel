@@ -195,7 +195,7 @@ void test_move_gen_depth(){
 
 		struct board *brd= init_game(e.fen);
 		leafNodes = 0;
-		perf_test(3, brd, false);
+		perf_test(4, brd, false);
 		if (leafNodes != e.depth4){
 			printf("fen %s  ; #nodes is %llu, should be %llu\n", e.fen, leafNodes, e.depth4);
 		}
@@ -365,10 +365,10 @@ U32 divide(int depth, struct board *brd, mv_bitmap mvb) {
 
 
 void bug_check(void){
-	struct board *brd= init_game("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+	struct board *brd= init_game("r3k2r/p1ppqpb1/bn2pnp1/3P4/1pN1P3/2N2Q1p/PPPBBPPP/R3K2R b KQkq - 1 1");
 
 		leafNodes = 0;
-		divide_perft(5, brd);
+		divide_perft(2, brd);
 
 		assert_true(leafNodes == 4865609);
 }
