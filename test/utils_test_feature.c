@@ -112,6 +112,19 @@ void test_clear_LSB(void){
 }
 
 
+void test_flip_side(){
+
+	enum colour fs = FLIP_SIDE(WHITE);
+	assert_true(fs == BLACK);
+
+	fs = FLIP_SIDE(fs);
+	assert_true(fs == WHITE);
+
+
+	fs = FLIP_SIDE(fs);
+	assert_true(fs == BLACK);
+}
+
 void utils_test_fixture(void)
 {
 
@@ -122,6 +135,7 @@ void utils_test_fixture(void)
 	run_test(test_bit_reversal);
 	run_test(test_clear_MSB);
 	run_test(test_clear_LSB);
+	run_test(test_flip_side);
 
 	test_fixture_end();
 }

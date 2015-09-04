@@ -365,10 +365,10 @@ U32 divide(int depth, struct board *brd, mv_bitmap mvb) {
 
 
 void bug_check(void){
-	struct board *brd= init_game("r3k2r/p1ppqpb1/bn2pnp1/3P4/1pN1P3/2N2Q1p/PPPBBPPP/R3K2R b KQkq - 1 1");
+	struct board *brd= init_game("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1pB1P3/2N2Q1p/PPPB1PPP/R3K2R b KQkq - 1 1");
 
 		leafNodes = 0;
-		divide_perft(2, brd);
+		divide_perft(4, brd);
 
 		assert_true(leafNodes == 4865609);
 }
