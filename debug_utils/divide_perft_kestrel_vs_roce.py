@@ -33,13 +33,13 @@ def read_lines_from_KESTREL_file(f):
 
 k_file = read_lines_from_KESTREL_file("/home/eddie/kkk.kkk")
 print("# Kestrel moves : " + str(len(k_file.keys())))
-for k in k_file.keys():
-    print("KKK key : " + k)
+#for k in k_file.keys():
+#    print("KKK key : " + k)
 
 r_file = read_lines_from_ROCE_file("/home/eddie/rrr.rrr")
 print("# ROCE moves : " + str(len(r_file.keys())))
-for k in r_file.keys():
-    print("RRR key : " + k)
+#for k in r_file.keys():
+#    print("RRR key : " + k)
 
 
 for key in k_file.keys():
@@ -50,6 +50,16 @@ for key in k_file.keys():
             print("\tROCE # = " + str(r_file[key]))
     else:
         print("Move " + key + " not in ROCE")
+
+
+for key in r_file.keys():
+    if key in k_file.keys():
+        if (r_file[key] != r_file[key]):
+            print("Diff : move = " + key)
+            print("\tKestrel # = " + str(k_file[key]))
+            print("\tROCE # = " + str(r_file[key]))
+    else:
+        print("Move " + key + " not in KESTREL")
 
 
 

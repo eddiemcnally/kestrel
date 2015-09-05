@@ -73,6 +73,9 @@ void remove_piece_from_board(struct board *brd, enum piece pce, enum square sq){
 	assert((sq >= a1) && (sq <= h8));
 	assert(pce != W_KING);
 	assert(pce != B_KING);
+	assert(is_square_occupied(brd->board, sq) == true);
+	assert(pce != NO_PIECE);
+
 
 	enum colour col = GET_COLOUR(pce);
 

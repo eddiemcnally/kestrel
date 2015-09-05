@@ -248,10 +248,6 @@ void take_move(struct board *brd){
 		update_EP_hash(brd);
 	update_castle_hash(brd);
 
-	// flip side
-	brd->side_to_move = FLIP_SIDE(brd->side_to_move);
-	update_side_hash(brd);
-
 	if (MFLAG_EN_PASSANT & mv){
 		if (brd->side_to_move == WHITE){
 			add_piece_to_board(brd, B_PAWN, to - 8);
@@ -293,6 +289,11 @@ void take_move(struct board *brd){
 		enum piece pce_to_add = (prom_col == WHITE) ? W_PAWN : B_PAWN;
 		add_piece_to_board(brd, pce_to_add, from);
 	}
+
+
+	// flip side
+	brd->side_to_move = FLIP_SIDE(brd->side_to_move);
+	update_side_hash(brd);
 
 	ASSERT_BOARD_OK(brd);
 }
