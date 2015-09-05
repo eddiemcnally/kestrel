@@ -66,10 +66,6 @@ struct board *init_board(char * fen)
 void remove_piece_from_board(struct board *brd, enum piece pce, enum square sq){
 
 
-	if ((pce == W_KING) || (pce == B_KING)){
-		print_board(brd);
-		printf("pce = %c on square %s\n", get_piece_label(pce), print_square(sq));
-	}
 	assert((sq >= a1) && (sq <= h8));
 	assert(pce != W_KING);
 	assert(pce != B_KING);
@@ -92,6 +88,8 @@ void remove_piece_from_board(struct board *brd, enum piece pce, enum square sq){
 
 
 void add_piece_to_board(struct board *brd, enum piece pce, enum square sq){
+
+	assert(is_square_occupied(brd->board, sq) == false);
 
 	enum colour col = GET_COLOUR(pce);
 

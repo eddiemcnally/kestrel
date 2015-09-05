@@ -541,7 +541,7 @@ static inline void generate_white_pawn_moves(const struct board *brd, struct mov
 			}
 
 			if (cap_sq == brd->en_passant) {
-				add_en_passent_move(MOVE(pawn_sq, cap_sq, pce, NO_PIECE, 0), mvl);
+				add_en_passent_move(MOVE(pawn_sq, cap_sq, pce, NO_PIECE, MFLAG_EN_PASSANT), mvl);
 			}
 		}
 
@@ -556,7 +556,7 @@ static inline void generate_white_pawn_moves(const struct board *brd, struct mov
 			}
 
 			if (cap_sq == brd->en_passant) {
-				add_en_passent_move(MOVE(pawn_sq, cap_sq, pce, NO_PIECE, 0), mvl);
+				add_en_passent_move(MOVE(pawn_sq, cap_sq, pce, NO_PIECE, MFLAG_EN_PASSANT), mvl);
 			}
 		}
     }
@@ -954,6 +954,17 @@ void TEST_generate_queen_moves(const struct board *brd, struct move_list *mvl, e
 bool TEST_is_move_in_list(struct move_list *mvl, mv_bitmap mv){
 	return is_move_in_list(mvl, mv);
 }
+void TEST_add_quiet_move(mv_bitmap move_bitmap, struct move_list *mvlist){
+	add_quiet_move(move_bitmap, mvlist);
+}
+void TEST_add_en_passent_move(mv_bitmap move_bitmap, struct move_list *mvlist){
+	add_en_passent_move(move_bitmap, mvlist);
+}
+void TEST_add_capture_move(mv_bitmap move_bitmap, struct move_list *mvlist){
+	add_capture_move(move_bitmap, mvlist);
+}
+
+
 struct move_list * TEST_get_empty_move_list(void){
 	return get_empty_move_list();
 }

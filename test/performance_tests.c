@@ -309,6 +309,11 @@ void divide_perft(int depth, struct board *brd) {
 
 	generate_all_moves(brd, mv_list);
 
+	//printf("+++++++++++++++++++++++++++++ moves generated for depth %d\n", depth);
+	//print_board(brd);
+	//print_move_list(mv_list);
+
+
     mv_bitmap mv;
     for(U32 mv_num = 0; mv_num < mv_list->move_count; ++mv_num) {
 		mv = mv_list->moves[mv_num].move_bitmap;
@@ -318,6 +323,8 @@ void divide_perft(int depth, struct board *brd) {
 			take_move(brd);
 
 			printf("%s : %d\n", print_move(mv), move_cnt);
+		} else {
+			printf("Invalid move %s\n", print_move(mv));
 		}
 
     }
@@ -346,6 +353,11 @@ U32 divide(int depth, struct board *brd, mv_bitmap mvb) {
 
 	generate_all_moves(brd, mv_list);
 
+	//printf("+++++++++++++++++++++++++++++ moves generated for depth %d\n", depth);
+	//print_board(brd);
+	//print_move_list(mv_list);
+
+
     mv_bitmap mv;
     for(U32 mv_num = 0; mv_num < mv_list->move_count; ++mv_num) {
         mv = mv_list->moves[mv_num].move_bitmap;
@@ -365,10 +377,10 @@ U32 divide(int depth, struct board *brd, mv_bitmap mvb) {
 
 
 void bug_check(void){
-	struct board *brd= init_game("r3k2r/p2pqpb1/bn2pnp1/2pPN3/1pB1P3/2N2Q1p/PPPB1PPP/R3K2R w KQkq c6 0 2");
+	struct board *brd= init_game("4k3/2p5/8/3P4/8/8/8/4K3 b - - 0 1");
 
 		leafNodes = 0;
-		divide_perft(1, brd);
+		divide_perft(4, brd);
 
 		assert_true(leafNodes == 4865609);
 }
@@ -378,9 +390,9 @@ void perf_test_fixture(void)
 {
     test_fixture_start();	// starts a fixture
 
-    //run_test(test_move_gen_depth);
+    run_test(test_move_gen_depth);
 
-	run_test(bug_check);
+	//run_test(bug_check);
 
 
     test_fixture_end();		// ends a fixture

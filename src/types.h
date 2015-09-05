@@ -76,6 +76,8 @@ enum piece {
 	PIECE_ENUM_SIZE = 14
 };
 
+#define IS_VALID_PIECE(pce)		((pce >= W_PAWN) && (pce <= B_KING))
+
 // contains information before the current
 // move was made
 struct undo {

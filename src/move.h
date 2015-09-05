@@ -75,6 +75,9 @@ void TEST_generate_sliding_horizontal_vertical_moves(const struct board *brd, st
 void TEST_generate_sliding_diagonal_moves(const struct board *brd, struct move_list *mvl, enum piece pce);
 void TEST_generate_queen_moves(const struct board *brd, struct move_list *mvl, enum piece pce);
 bool TEST_is_move_in_list(struct move_list *mvl, mv_bitmap mv);
+void TEST_add_quiet_move(mv_bitmap move_bitmap, struct move_list *mvlist);
+void TEST_add_en_passent_move(mv_bitmap move_bitmap, struct move_list *mvlist);
+void TEST_add_capture_move(mv_bitmap move_bitmap, struct move_list *mvlist);
 struct move_list * TEST_get_empty_move_list(void);
 
 #endif

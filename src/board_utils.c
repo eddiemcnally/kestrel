@@ -210,11 +210,6 @@ bool ASSERT_BOARD_OK(const struct board * brd)
 		}
     }
 
-	if (local_material[WHITE] != brd->material[WHITE]){
-		printf("--------------------------------------\n");
-		print_board(brd);
-	}
-
     assert(local_material[WHITE] == brd->material[WHITE]);
     assert(local_material[BLACK] == brd->material[BLACK]);
 

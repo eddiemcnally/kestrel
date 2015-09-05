@@ -614,6 +614,7 @@ void test_generation_sliding_horizontal_and_vertical_moves(void){
 	mv = MOVE(f6, f3, B_PAWN, NO_PIECE, 0);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
+
 }
 
 
@@ -781,6 +782,48 @@ void test_generation_queen_moves(void){
 
 
 
+// check the queen
+	brd = init_game("r3k2r/p2pqpb1/bn2pnp1/2pPN3/1pB1P3/2N2Q1p/PPPB1PPP/R3K2R w KQkq c6 0 2");
+
+	mvl = malloc(sizeof(struct move_list));
+	memset(mvl, 0, sizeof(struct move_list));
+
+	TEST_generate_queen_moves(brd, mvl, W_QUEEN);
+
+	assert_true(mvl->move_count == 11);
+
+	mv = MOVE(f3, e3, NO_PIECE, NO_PIECE, 0);
+	assert_true(TEST_is_move_in_list(mvl, mv));
+
+	mv = MOVE(f3, d3, NO_PIECE, NO_PIECE, 0);
+	assert_true(TEST_is_move_in_list(mvl, mv));
+
+	mv = MOVE(f3, e2, NO_PIECE, NO_PIECE, 0);
+	assert_true(TEST_is_move_in_list(mvl, mv));
+
+	mv = MOVE(f3, d1, NO_PIECE, NO_PIECE, 0);
+	assert_true(TEST_is_move_in_list(mvl, mv));
+
+	mv = MOVE(f3, g3, NO_PIECE, NO_PIECE, 0);
+	assert_true(TEST_is_move_in_list(mvl, mv));
+
+	mv = MOVE(f3, h3, B_PAWN, NO_PIECE, 0);
+	assert_true(TEST_is_move_in_list(mvl, mv));
+
+	mv = MOVE(f3, f4, NO_PIECE, NO_PIECE, 0);
+	assert_true(TEST_is_move_in_list(mvl, mv));
+
+	mv = MOVE(f3, f5, NO_PIECE, NO_PIECE, 0);
+	assert_true(TEST_is_move_in_list(mvl, mv));
+
+	mv = MOVE(f3, f6, B_KNIGHT, NO_PIECE, 0);
+	assert_true(TEST_is_move_in_list(mvl, mv));
+
+	mv = MOVE(f3, g4, NO_PIECE, NO_PIECE, 0);
+	assert_true(TEST_is_move_in_list(mvl, mv));
+	mv = MOVE(f3, h5, NO_PIECE, NO_PIECE, 0);
+	assert_true(TEST_is_move_in_list(mvl, mv));
+
 }
 
 
@@ -869,6 +912,52 @@ void test_add_piece(){
 }
 
 
+/**
+ * Sets up board and verifies that the board is as expected after an en passant move
+ *
+ 8   .  .  .  .  k  .  .  .
+ 7   .  .  p  .  .  .  .  .
+ 6   .  .  .  .  .  .  .  .
+ 5   .  .  .  P  .  .  .  .
+ 4   .  .  .  .  .  .  .  .
+ 3   .  .  .  .  .  .  .  .
+ 2   .  .  .  .  .  .  .  .
+ 1   .  .  .  .  K  .  .  .
+
+     A  B  C  D  E  F  G  H
+
+ */
+void test_en_passant(void){
+    struct board *brd= init_game("4k3/2p5/8/3P4/8/8/8/4K3 b - - 0 1");
+
+	mv_bitmap mv = MOVE(c7, c5, NO_PIECE, NO_PIECE, 0);
+	make_move(brd, mv);
+
+	// make sure all other pieces are as expected
+	assert_true(get_piece_at_square(brd, e8) == B_KING);
+	assert_true(get_piece_at_square(brd, c5) == B_PAWN);
+	assert_true(get_piece_at_square(brd, d5) == W_PAWN);
+	assert_true(get_piece_at_square(brd, e1) == W_KING);
+	// 4 pieces on the board
+	assert_true(CNT(brd->board) == 4);
+
+
+	// now, make the en passant move
+	mv = MOVE(d5, c6, NO_PIECE, NO_PIECE, MFLAG_EN_PASSANT);
+	make_move(brd, mv);
+
+	// make sure all other pieces are as expected
+	assert_true(get_piece_at_square(brd, e8) == B_KING);
+	assert_true(get_piece_at_square(brd, c6) == W_PAWN);
+	assert_true(get_piece_at_square(brd, e1) == W_KING);
+	// 4 pieces on the board
+	assert_true(CNT(brd->board) == 3);
+
+
+
+
+
+}
 
 void test_move_piece(){
 
@@ -910,7 +999,7 @@ void test_move_piece(){
 
 
 void test_make_move_take_move(void){
-	
+
 	char * sample_position = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1";
     struct board *brd= init_game(sample_position);
 
@@ -920,18 +1009,23 @@ void test_make_move_take_move(void){
 	generate_all_moves(brd, list);
 
 	struct board * starting_brd = clone_board(brd);
-	
+
 	for(int i = 0; i < list->move_count; i++){
-		// make a move, tke it back, and compare board to starting board
-		
+		// make a move, take it back, and compare board before and after
 		mv_bitmap mv = list->moves[i].move_bitmap;
-		
+
+		struct board *before_move = clone_board(brd);
 		make_move(brd, mv);
 		take_move(brd);
-		
-		assert_boards_are_equal(brd, starting_brd);
-	
+
+		assert_boards_are_equal(brd, before_move);
+		free(before_move);
+
 	}
+
+	assert_boards_are_equal(brd, starting_brd);
+	free(starting_brd);
+
 }
 
 
@@ -939,20 +1033,22 @@ void move_test_fixture(void)
 {
     test_fixture_start();	// starts a fixture
 
-    run_test(test_generation_white_pawn_moves);
-    run_test(test_generation_black_pawn_moves);
-	run_test(test_generation_white_knight_pawn_moves);
-	run_test(test_generation_black_knight_pawn_moves);
-	run_test(test_generation_king_moves);
-	run_test(test_king_castling_moves);
-	run_test(test_generation_sliding_horizontal_and_vertical_moves);
-	run_test(test_generation_sliding_diagonal_moves);
-	run_test(test_generation_queen_moves);
-	run_test(test_sample_board_position);
-	run_test(test_clear_piece);
-	run_test(test_add_piece);
-	run_test(test_move_piece);
+    //run_test(test_generation_white_pawn_moves);
+    //run_test(test_generation_black_pawn_moves);
+	//run_test(test_generation_white_knight_pawn_moves);
+	//run_test(test_generation_black_knight_pawn_moves);
+	//run_test(test_generation_king_moves);
+	//run_test(test_king_castling_moves);
+	run_test(test_en_passant);
+	//run_test(test_generation_sliding_horizontal_and_vertical_moves);
+	//run_test(test_generation_sliding_diagonal_moves);
+	//run_test(test_generation_queen_moves);
+	//run_test(test_sample_board_position);
+	//run_test(test_clear_piece);
+	//run_test(test_add_piece);
+	//run_test(test_move_piece);
 	run_test(test_make_move_take_move);
 
-    test_fixture_end();		// ends a fixture
+
+	test_fixture_end();		// ends a fixture
 }
