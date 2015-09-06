@@ -17,8 +17,6 @@
 				-fsanitize=undefined \
 				--param large-function-growth=8000 \
 				--param max-inline-insns-single=30000 \
-				-fomit-frame-pointer \
-#				-Wpedantic \
 				-Wformat=2 \
 				-Wall \
 				-Werror \
@@ -113,6 +111,7 @@ $(MAIN):		$(OBJS)
 
 clean:
 		$(RM) *.o *~ $(MAIN)
+		$(RM) ../src/*.o *~ $(MAIN)
 
 
 depend:	$(SRCS)
