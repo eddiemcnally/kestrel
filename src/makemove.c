@@ -49,21 +49,65 @@ static const U8 castle_permission_mask[NUM_SQUARES] = {
 
  void move_piece(struct board *brd, enum square from, enum square to){
 
+
+	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
+	assert(IS_VALID_SQUARE(to));
+	assert(IS_VALID_SQUARE(from));
+	assert(is_square_occupied(brd->board, from) == true);
+	assert(is_square_occupied(brd->board, to) == false);
+
+
+	printf("from %d\n", from);
+	printf("from : %s\n", print_square(from));
+	print_board(brd);
+
 	enum piece pce = get_piece_at_square(brd, from);
+	printf("PPPPP %c\n", get_piece_label(pce));
+	assert(IS_VALID_PIECE(pce));
+
+
+	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
+
 
 	update_piece_hash(brd, pce, from);
 	brd->pieces[from] = NO_PIECE;
+
+
+
+	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
+
+	printf("PPPPP %c\n", get_piece_label(pce));
+	assert(IS_VALID_PIECE(pce));
+	assert(IS_VALID_SQUARE(from));
+
 	clear_bit(&brd->bitboards[pce], from);
+
+
+	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
+
+
+
 	clear_bit(&brd->board, from);
 
+
+	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
 
 	update_piece_hash(brd, pce, to);
 	brd->pieces[to] = pce;
 	set_bit(&brd->bitboards[pce], to);
 	set_bit(&brd->board, to);
 
+
+	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
+
+
 	overlay_colours(brd, GET_COLOUR(pce));
 	overlay_boards(brd);
+
+
+	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
+
+
 }
 
 
@@ -100,9 +144,9 @@ bool make_move(struct board *brd, mv_bitmap mv){
 
 	if(mv & MFLAG_EN_PASSANT) {
         if(side == WHITE) {
-            remove_piece_from_board(brd, pce, to-8);
+            remove_piece_from_board(brd, to-8);
         } else {
-            remove_piece_from_board(brd, pce, to+8);
+            remove_piece_from_board(brd, to+8);
         }
     } else if (mv & MFLAG_CASTLE) {
         switch(to) {
@@ -124,6 +168,8 @@ bool make_move(struct board *brd, mv_bitmap mv){
         }
     }
 
+	printf("sq %d\n", brd->en_passant);
+	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
 
 	if (brd->en_passant != NO_SQUARE){
 		update_EP_hash(brd);
@@ -146,7 +192,7 @@ bool make_move(struct board *brd, mv_bitmap mv){
 	brd->fifty_move_counter++;
 
 	if (captured != NO_PIECE){
-		remove_piece_from_board(brd, captured, to);
+		remove_piece_from_board(brd, to);
 		brd->fifty_move_counter = 0;
 	}
 
@@ -174,7 +220,7 @@ bool make_move(struct board *brd, mv_bitmap mv){
 
 	enum piece promoted = PROMOTED(mv);
 	if (promoted != NO_PIECE){
-		remove_piece_from_board(brd, pce_being_moved, to);
+		remove_piece_from_board(brd, to);
 		add_piece_to_board(brd, promoted, to);
 	}
 
@@ -235,18 +281,26 @@ void take_move(struct board *brd){
 
 
 	// hash out en passant and castle if set
-	if (brd->en_passant != NO_SQUARE)
+	if (brd->en_passant != NO_SQUARE){
 		update_EP_hash(brd);
+	}
 	update_castle_hash(brd);
 
     brd->castle_perm = brd->history[brd->history_ply].castle_perm;
     brd->fifty_move_counter = brd->history[brd->history_ply].fifty_move_counter;
     brd->en_passant = brd->history[brd->history_ply].en_passant;
 
+	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
+
 	// now, hash back in
-	if (brd->en_passant != NO_SQUARE)
+	if (brd->en_passant != NO_SQUARE){
 		update_EP_hash(brd);
+	}
 	update_castle_hash(brd);
+
+
+	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
+
 
 	if (MFLAG_EN_PASSANT & mv){
 		if (brd->side_to_move == WHITE){
@@ -254,6 +308,10 @@ void take_move(struct board *brd){
 		} else{
 			add_piece_to_board(brd, W_PAWN, to + 8);
 		}
+
+	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
+
+
 	} else if (MFLAG_CASTLE & mv){
 		switch(to){
 			case c1:
@@ -272,28 +330,53 @@ void take_move(struct board *brd){
 				assert(false);
 				break;
 		}
+
+	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
+
 	}
 
-	move_piece(brd, to, from);
+
+	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
+
+
+
+	move_piece(brd, from, to);
+
+
+	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
+
+
 
 	enum piece captured = CAPTURED(mv);
 	if (captured != NO_PIECE){
 		add_piece_to_board(brd, captured, to);
 	}
 
+
+	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
+
+
 	enum piece promoted = PROMOTED(mv);
 	if (promoted != NO_PIECE){
 		enum colour prom_col = GET_COLOUR(promoted);
-		remove_piece_from_board(brd, brd->pieces[from], from);
+		remove_piece_from_board(brd, from);
 
 		enum piece pce_to_add = (prom_col == WHITE) ? W_PAWN : B_PAWN;
 		add_piece_to_board(brd, pce_to_add, from);
 	}
 
 
+	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
+
 	// flip side
 	brd->side_to_move = FLIP_SIDE(brd->side_to_move);
 	update_side_hash(brd);
+
+
+
+	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
+
+
 
 	ASSERT_BOARD_OK(brd);
 }

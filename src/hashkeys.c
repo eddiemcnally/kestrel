@@ -102,6 +102,7 @@ inline U64 get_piece_hash(enum piece pce, enum square sq){
 
 
 inline U64 get_en_passant_hash(enum square sq){
+	assert(sq != NO_SQUARE);
 	return piece_keys[NO_PIECE][sq];
 }
 

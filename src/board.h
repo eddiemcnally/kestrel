@@ -36,7 +36,6 @@ enum {
     FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H
 };
 
-#define	NO_SQUARE	((enum square)(-1))
 
 #define GET_PIECE_MASK(square)	((U64)(0x01ull << (int)(square)))
 
@@ -47,7 +46,7 @@ enum {
 
 #define IS_VALID_RANK(rank)		((rank >= RANK_1) && (rank <= RANK_8))
 #define IS_VALID_FILE(file)		((file >= FILE_A) && (file <= FILE_H))
-
+#define IS_VALID_SQUARE(sq)		((sq >= a1) && (sq <= h8))
 
 // castling permissions
 enum {
@@ -66,7 +65,7 @@ U8 get_LSB_index(U64 bb);
 U8 get_MSB_index(U64 bb);
 void clear_MSB_to_inclusive_bit(U64 * bb, U8 bit);
 void clear_LSB_to_inclusive_bit(U64 * bb, U8 bit);
-void remove_piece_from_board(struct board *brd, enum piece pce, enum square sq);
+void remove_piece_from_board(struct board *brd, enum square sq);
 void add_piece_to_board(struct board *brd, enum piece pce, enum square sq);
 enum piece get_piece_at_square(const struct board *the_board, enum square square);
 bool is_square_occupied(U64 board, enum square square);

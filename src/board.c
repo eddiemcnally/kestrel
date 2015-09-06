@@ -62,17 +62,16 @@ struct board *init_board(char * fen)
 }
 
 
-
-void remove_piece_from_board(struct board *brd, enum piece pce, enum square sq){
-
+void remove_piece_from_board(struct board *brd, enum square sq){
 
 	assert((sq >= a1) && (sq <= h8));
-	assert(pce != W_KING);
-	assert(pce != B_KING);
 	assert(is_square_occupied(brd->board, sq) == true);
-	assert(pce != NO_PIECE);
+
+	//print_board(brd);
+	//printf("removing from square %s\n", print_square(sq));
 
 
+	enum piece pce = get_piece_at_square(brd, sq);
 	enum colour col = GET_COLOUR(pce);
 
 	update_piece_hash(brd, pce, sq);

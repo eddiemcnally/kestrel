@@ -861,7 +861,7 @@ void test_clear_piece(){
 
 
 	// remove the knight from c3
-	remove_piece_from_board(brd, old_pce, c3);
+	remove_piece_from_board(brd, c3);
 
 	assert_true(old_hash != brd->board_hash);
 
@@ -930,7 +930,7 @@ void test_add_piece(){
 void test_en_passant(void){
     struct board *brd= init_game("4k3/2p5/8/3P4/8/8/8/4K3 b - - 0 1");
 
-	mv_bitmap mv = MOVE(c7, c5, NO_PIECE, NO_PIECE, 0);
+	mv_bitmap mv = MOVE(c7, c5, NO_PIECE, NO_PIECE, MFLAG_PAWN_START );
 	make_move(brd, mv);
 
 	// make sure all other pieces are as expected
@@ -940,7 +940,7 @@ void test_en_passant(void){
 	assert_true(get_piece_at_square(brd, e1) == W_KING);
 	// 4 pieces on the board
 	assert_true(CNT(brd->board) == 4);
-
+	assert_true(brd->en_passant == c6);
 
 	// now, make the en passant move
 	mv = MOVE(d5, c6, NO_PIECE, NO_PIECE, MFLAG_EN_PASSANT);
@@ -952,9 +952,6 @@ void test_en_passant(void){
 	assert_true(get_piece_at_square(brd, e1) == W_KING);
 	// 4 pieces on the board
 	assert_true(CNT(brd->board) == 3);
-
-
-
 
 
 }
@@ -1033,20 +1030,20 @@ void move_test_fixture(void)
 {
     test_fixture_start();	// starts a fixture
 
-    //run_test(test_generation_white_pawn_moves);
-    //run_test(test_generation_black_pawn_moves);
-	//run_test(test_generation_white_knight_pawn_moves);
-	//run_test(test_generation_black_knight_pawn_moves);
-	//run_test(test_generation_king_moves);
-	//run_test(test_king_castling_moves);
+    run_test(test_generation_white_pawn_moves);
+    run_test(test_generation_black_pawn_moves);
+	run_test(test_generation_white_knight_pawn_moves);
+	run_test(test_generation_black_knight_pawn_moves);
+	run_test(test_generation_king_moves);
+	run_test(test_king_castling_moves);
 	run_test(test_en_passant);
-	//run_test(test_generation_sliding_horizontal_and_vertical_moves);
-	//run_test(test_generation_sliding_diagonal_moves);
-	//run_test(test_generation_queen_moves);
-	//run_test(test_sample_board_position);
-	//run_test(test_clear_piece);
-	//run_test(test_add_piece);
-	//run_test(test_move_piece);
+	run_test(test_generation_sliding_horizontal_and_vertical_moves);
+	run_test(test_generation_sliding_diagonal_moves);
+	run_test(test_generation_queen_moves);
+	run_test(test_sample_board_position);
+	run_test(test_clear_piece);
+	run_test(test_add_piece);
+	run_test(test_move_piece);
 	run_test(test_make_move_take_move);
 
 

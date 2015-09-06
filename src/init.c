@@ -23,11 +23,14 @@
 #include "board.h"
 #include "hashkeys.h"
 #include "init.h"
+#include "board_utils.h"
 
 struct board *init_game(char * fen)
 {
     init_hash_keys();
     struct board *brd = init_board(fen);
+
+	ASSERT_BOARD_OK(brd);
 
     return brd;
 }

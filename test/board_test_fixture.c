@@ -26,7 +26,10 @@
 #include "board.h"
 #include "fen.h"
 #include "pieces.h"
-void verify_initial_board_placement(struct board *the_board);
+
+
+
+void verify_initial_board_placement(struct board *the_board);
 void test_initial_board_placement(void);
 void test_clean_board(void);
 void test_fen_parsing_initial_board_layout(void);
@@ -39,7 +42,9 @@ void test_checking_bits_in_a_board(void);
 void test_bit_counting(void);
 void test_LSB_clear(void);
 void board_test_fixture(void);
-
+
+
+
 /**
  * Verifies the initial board setup plus some supporting code
  */
@@ -47,7 +52,8 @@ void test_initial_board_placement()
 {
     init_hash_keys();
     struct board *the_board = init_game(STARTING_FEN);
-	assert_true(W_ROOK == get_piece_at_square(the_board, a1));
+
+	assert_true(W_ROOK == get_piece_at_square(the_board, a1));
     assert_true(W_KNIGHT == get_piece_at_square(the_board, b1));
     assert_true(W_BISHOP == get_piece_at_square(the_board, c1));
     assert_true(W_QUEEN == get_piece_at_square(the_board, d1));
@@ -55,7 +61,8 @@ void test_initial_board_placement()
     assert_true(W_BISHOP == get_piece_at_square(the_board, f1));
     assert_true(W_KNIGHT == get_piece_at_square(the_board, g1));
     assert_true(W_ROOK == get_piece_at_square(the_board, h1));
-	assert_true(W_PAWN == get_piece_at_square(the_board, a2));
+
+	assert_true(W_PAWN == get_piece_at_square(the_board, a2));
     assert_true(W_PAWN == get_piece_at_square(the_board, b2));
     assert_true(W_PAWN == get_piece_at_square(the_board, c2));
     assert_true(W_PAWN == get_piece_at_square(the_board, d2));
@@ -63,7 +70,8 @@ void test_initial_board_placement()
     assert_true(W_PAWN == get_piece_at_square(the_board, f2));
     assert_true(W_PAWN == get_piece_at_square(the_board, g2));
     assert_true(W_PAWN == get_piece_at_square(the_board, h2));
-	assert_true(B_PAWN == get_piece_at_square(the_board, a7));
+
+	assert_true(B_PAWN == get_piece_at_square(the_board, a7));
     assert_true(B_PAWN == get_piece_at_square(the_board, b7));
     assert_true(B_PAWN == get_piece_at_square(the_board, c7));
     assert_true(B_PAWN == get_piece_at_square(the_board, d7));
@@ -71,7 +79,8 @@ void test_initial_board_placement()
     assert_true(B_PAWN == get_piece_at_square(the_board, f7));
     assert_true(B_PAWN == get_piece_at_square(the_board, g7));
     assert_true(B_PAWN == get_piece_at_square(the_board, h7));
-	assert_true(B_ROOK == get_piece_at_square(the_board, a8));
+
+	assert_true(B_ROOK == get_piece_at_square(the_board, a8));
     assert_true(B_KNIGHT == get_piece_at_square(the_board, b8));
     assert_true(B_BISHOP == get_piece_at_square(the_board, c8));
     assert_true(B_QUEEN == get_piece_at_square(the_board, d8));
@@ -79,7 +88,8 @@ void test_initial_board_placement()
     assert_true(B_BISHOP == get_piece_at_square(the_board, f8));
     assert_true(B_KNIGHT == get_piece_at_square(the_board, g8));
     assert_true(B_ROOK == get_piece_at_square(the_board, h8));
-
+
+
 	// no piece present
 	for (int i = a3; i < h6; i++) {
 		assert_true(get_piece_at_square(the_board, i) == NO_PIECE);
@@ -99,7 +109,14 @@ void test_initial_board_placement()
 
     assert_true(the_board->board_hash != 0);
 
-}void test_fen_parsing_initial_board_layout(void)
+
+
+}
+
+
+
+
+void test_fen_parsing_initial_board_layout(void)
 {
 
 	// this is the initial bpard setup
@@ -118,7 +135,9 @@ void test_initial_board_placement()
     assert_true(W_BISHOP == get_piece_at_square(the_board, f1));
     assert_true(W_KNIGHT == get_piece_at_square(the_board, g1));
     assert_true(W_ROOK == get_piece_at_square(the_board, h1));
-	assert_true(W_PAWN == get_piece_at_square(the_board, a2));
+
+
+	assert_true(W_PAWN == get_piece_at_square(the_board, a2));
     assert_true(W_PAWN == get_piece_at_square(the_board, b2));
     assert_true(W_PAWN == get_piece_at_square(the_board, c2));
     assert_true(W_PAWN == get_piece_at_square(the_board, d2));
@@ -126,7 +145,9 @@ void test_initial_board_placement()
     assert_true(W_PAWN == get_piece_at_square(the_board, f2));
     assert_true(W_PAWN == get_piece_at_square(the_board, g2));
     assert_true(W_PAWN == get_piece_at_square(the_board, h2));
-	assert_true(B_PAWN == get_piece_at_square(the_board, a7));
+
+
+	assert_true(B_PAWN == get_piece_at_square(the_board, a7));
     assert_true(B_PAWN == get_piece_at_square(the_board, b7));
     assert_true(B_PAWN == get_piece_at_square(the_board, c7));
     assert_true(B_PAWN == get_piece_at_square(the_board, d7));
@@ -134,7 +155,8 @@ void test_initial_board_placement()
     assert_true(B_PAWN == get_piece_at_square(the_board, f7));
     assert_true(B_PAWN == get_piece_at_square(the_board, g7));
     assert_true(B_PAWN == get_piece_at_square(the_board, h7));
-	assert_true(B_ROOK == get_piece_at_square(the_board, a8));
+
+	assert_true(B_ROOK == get_piece_at_square(the_board, a8));
     assert_true(B_KNIGHT == get_piece_at_square(the_board, b8));
     assert_true(B_BISHOP == get_piece_at_square(the_board, c8));
     assert_true(B_QUEEN == get_piece_at_square(the_board, d8));
@@ -142,24 +164,32 @@ void test_initial_board_placement()
     assert_true(B_BISHOP == get_piece_at_square(the_board, f8));
     assert_true(B_KNIGHT == get_piece_at_square(the_board, g8));
     assert_true(B_ROOK == get_piece_at_square(the_board, h8));
-
+
+
 	// no piece present
 	for (int i = a3; i < h6; i++) {
 		assert_true(NO_PIECE == get_piece_at_square(the_board, i));
     }
-	assert_true(the_board->side_to_move == WHITE);
+
+	assert_true(the_board->side_to_move == WHITE);
 
     assert_true(the_board->castle_perm == (WKCA | WQCA | BKCA | BQCA));
 
     assert_true(the_board->en_passant == NO_SQUARE);
-}void test_fen_parsing_general_layout_1()
+
+}
+
+
+void test_fen_parsing_general_layout_1()
 {
-
+
+
 	// this is the initial board setup
     char *test_fen = "k7/8/8/4N3/8/8/8/3K4 b - - 13 56";
 
 	struct board *the_board = init_game(test_fen);
-
+
+
 	//print_board(the_board);
 
 	// verify the board
@@ -172,7 +202,9 @@ void test_initial_board_placement()
     assert_true(the_board->castle_perm == 0);
 
     assert_true(the_board->en_passant == NO_SQUARE);
-}void test_fen_parsing_general_layout_2()
+}
+
+void test_fen_parsing_general_layout_2()
 {
 
     // this is the initial board setup
@@ -222,9 +254,12 @@ void test_initial_board_placement()
     assert_true(the_board->en_passant == NO_SQUARE);
 }
 
-void test_setting_bits_in_a_board()
+
+
+void test_setting_bits_in_a_board()
 {
-	U64 test_brd = 0;
+
+	U64 test_brd = 0;
 
 	//
 	// Test setting bits
@@ -233,16 +268,19 @@ void test_initial_board_placement()
     assert_true(test_brd == 4194304);
     assert_true(1 == CNT(test_brd));
 
-	test_brd = 0;
+
+	test_brd = 0;
     set_bit(&test_brd, 0);
     assert_true(test_brd == 1);
     assert_true(1 == CNT(test_brd));
 
-	test_brd = 0;
+
+	test_brd = 0;
     set_bit(&test_brd, 63);
     assert_true(test_brd == 0x8000000000000000);
     assert_true(1 == CNT(test_brd));
-	test_brd = 0;
+
+	test_brd = 0;
     set_bit(&test_brd, 31);
     assert_true(test_brd == 2147483648);
     assert_true(1 == CNT(test_brd));
@@ -255,9 +293,14 @@ void test_initial_board_placement()
     set_bit(&test_brd, 8);
     assert_true(test_brd == 0x80000080200102);
     assert_true(5 == CNT(test_brd));
-}void test_clearing_bits_in_a_board()
+
+}
+
+
+void test_clearing_bits_in_a_board()
 {
-	U64 test_brd = 0;
+
+	U64 test_brd = 0;
 
 	//
 	// Test clearing bits
@@ -272,22 +315,37 @@ void test_initial_board_placement()
     assert_true(1 == CNT(test_brd));
 
     test_brd = 0;
-	set_bit(&test_brd, 1);
+
+	set_bit(&test_brd, 1);
     clear_bit(&test_brd, 1);
     assert_true(test_brd == 0);
-	test_brd = 0;
+
+	test_brd = 0;
     set_bit(&test_brd, 31);
     clear_bit(&test_brd, 31);
     assert_true(test_brd == 0);
-	set_bit(&test_brd, 32);
+
+
+	set_bit(&test_brd, 32);
     clear_bit(&test_brd, 32);
     assert_true(test_brd == 0);
-	set_bit(&test_brd, 63);
+
+	set_bit(&test_brd, 63);
     clear_bit(&test_brd, 63);
     assert_true(test_brd == 0);
-}void test_checking_bits_in_a_board(void)
+
+}
+
+
+
+
+
+
+
+void test_checking_bits_in_a_board(void)
 {
-	U64 test_brd = 0;
+
+	U64 test_brd = 0;
 
     for (int i = 0; i < NUM_SQUARES; i++) {
 		set_bit(&test_brd, i);
@@ -296,9 +354,11 @@ void test_initial_board_placement()
 		clear_bit(&test_brd, i);
 		assert_false(check_bit(&test_brd, i));
     }
-}
 
-void test_bit_counting(void)
+}
+
+
+void test_bit_counting(void)
 {
     U64 brd = 0;
 
@@ -328,19 +388,25 @@ void test_LSB_clear(void)
     assert_false(check_bit(&brd, a1));
 }
 
-void board_test_fixture(void)
+
+
+void board_test_fixture(void)
 {
-	test_fixture_start();	// starts a fixture
-	run_test(test_initial_board_placement);
-	run_test(test_setting_bits_in_a_board);
+
+	test_fixture_start();	// starts a fixture
+
+	run_test(test_initial_board_placement);
+
+	run_test(test_setting_bits_in_a_board);
     run_test(test_checking_bits_in_a_board);
     run_test(test_clearing_bits_in_a_board);
-	run_test(test_fen_parsing_initial_board_layout);
+
+	run_test(test_fen_parsing_initial_board_layout);
     run_test(test_fen_parsing_general_layout_1);
     run_test(test_fen_parsing_general_layout_2);
-
     run_test(test_bit_counting);
     run_test(test_LSB_clear);
 
-	test_fixture_end();	// ends a fixture
+
+	test_fixture_end();	// ends a fixture
 }

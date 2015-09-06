@@ -34,7 +34,7 @@
 
 void perf_test(int depth, struct board *brd, bool do_print);
 void divide_perft(int depth, struct board *brd);
-U32 divide(int depth, struct board *brd, mv_bitmap mvb);
+U32 divide(int depth, struct board *brd);
 void test_move_gen_depth(void);
 void perft(int depth, struct board *brd, mv_bitmap mv, bool do_print);
 void bug_check(void);
@@ -51,9 +51,9 @@ typedef struct EPD{
 	U64 depth6;
 } epd;
 
-#define NUM_EPD	126
+#define NUM_EPD	125
 struct EPD test_positions[NUM_EPD] = {
-	{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",20,400,8902,197281,4865609,119060324},
+	//{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",20,400,8902,197281,4865609,119060324},
 	{"r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1",48,2039,97862,4085603,193690690,8031647685},
 	{"4k3/8/8/8/8/8/8/4K2R w K - 0 1",15,66,1197,7059,133987,764643 },
 	{"4k3/8/8/8/8/8/8/R3K3 w Q - 0 1",16,71,1287,7626,145232,846648},
@@ -319,7 +319,7 @@ void divide_perft(int depth, struct board *brd) {
 		mv = mv_list->moves[mv_num].move_bitmap;
 
 		if (make_move(brd, mv)){
-			move_cnt = divide(depth - 1, brd, mv);
+			move_cnt = divide(depth - 1, brd);
 			take_move(brd);
 
 			printf("%s : %d\n", print_move(mv), move_cnt);
@@ -338,7 +338,7 @@ void divide_perft(int depth, struct board *brd) {
 
 
 
-U32 divide(int depth, struct board *brd, mv_bitmap mvb) {
+U32 divide(int depth, struct board *brd) {
 
     ASSERT_BOARD_OK(brd);
 
@@ -362,7 +362,7 @@ U32 divide(int depth, struct board *brd, mv_bitmap mvb) {
     for(U32 mv_num = 0; mv_num < mv_list->move_count; ++mv_num) {
         mv = mv_list->moves[mv_num].move_bitmap;
 		if (make_move(brd, mv)){
-			nodes += divide(depth - 1, brd, mv);
+			nodes += divide(depth - 1, brd);
 			take_move(brd);
 		}
     }

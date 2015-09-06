@@ -42,10 +42,10 @@ void all_tests(void)
     //board_test_fixture();
     //piece_test_fixture();
     //occupancy_mask_test_fixture();
-	move_test_fixture();
+	//move_test_fixture();
 	//attack_test_fixture();
 	//utils_test_fixture();
-	//perf_test_fixture();
+	perf_test_fixture();
 }
 
 void my_suite_setup(void)

@@ -58,6 +58,8 @@ enum square {
     NUM_SQUARES
 };
 
+#define	NO_SQUARE	(100)
+
 enum piece {
     W_PAWN 			= 0,
     W_ROOK 			= 1,
