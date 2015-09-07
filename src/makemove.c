@@ -56,77 +56,46 @@ static const U8 castle_permission_mask[NUM_SQUARES] = {
 	assert(is_square_occupied(brd->board, from) == true);
 	assert(is_square_occupied(brd->board, to) == false);
 
-
-	printf("from %d\n", from);
-	printf("from : %s\n", print_square(from));
-	print_board(brd);
-
 	enum piece pce = get_piece_at_square(brd, from);
-	printf("PPPPP %c\n", get_piece_label(pce));
+
 	assert(IS_VALID_PIECE(pce));
-
-
-	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
 
 
 	update_piece_hash(brd, pce, from);
 	brd->pieces[from] = NO_PIECE;
 
-
-
-	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
-
-	printf("PPPPP %c\n", get_piece_label(pce));
 	assert(IS_VALID_PIECE(pce));
 	assert(IS_VALID_SQUARE(from));
 
 	clear_bit(&brd->bitboards[pce], from);
-
-
-	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
-
-
-
 	clear_bit(&brd->board, from);
-
-
-	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
 
 	update_piece_hash(brd, pce, to);
 	brd->pieces[to] = pce;
 	set_bit(&brd->bitboards[pce], to);
 	set_bit(&brd->board, to);
 
-
-	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
-
-
 	overlay_colours(brd, GET_COLOUR(pce));
 	overlay_boards(brd);
-
-
-	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
-
-
 }
 
 
 
 // return false if move is invalid, true otherwise
 bool make_move(struct board *brd, mv_bitmap mv){
+	printf("*** entering make_move ***\n");
 
 	ASSERT_BOARD_OK(brd);
 
 	enum square from = FROMSQ(mv);
 	enum square to = TOSQ(mv);
 
-	//printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
-	//print_move_details(mv, 0);
-	//printf("move : %s\n",print_move(mv));
-//	printf("from : %s\n", print_square(from));
-//	printf("to   : %s\n", print_square(to));
-
-	//print_board(brd);
+	printf("------------------ making move ---------------\n");
+	print_move_details(mv, 0);
+	printf("move : %s\n",print_move(mv));
+	printf("from : %s\n", print_square(from));
+	printf("to   : %s\n", print_square(to));
+	print_board(brd);
 
 
 
@@ -240,23 +209,18 @@ bool make_move(struct board *brd, mv_bitmap mv){
 
 	// side is already flipped above, so use that as the attacking side
 	if (is_sq_attacked(brd, king_sq, brd->side_to_move)){
-
-		//printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> invalid move....reverting ------------------\n");
-		//printf("invalid move %s\n", print_move(mv));
-		//printf("king_sq %s\n", print_square(king_sq));
-		//printf("BRD before:\n");
-		//print_board(brd);
-
-
 		take_move(brd);
 
-		//printf("BRD *after*:\n");
-		//print_board(brd);
-		//printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
-
+		printf("*** existing make_move ***\n");
 
 		return false;
 	} else {
+		printf("------------------------ move complete -----------------------------\n");
+		printf("Move made.....BRD : \n");
+		print_board(brd);
+
+		printf("*** exiting make_move ***\n");
+
 		return true;
 	}
 }
@@ -266,19 +230,35 @@ bool make_move(struct board *brd, mv_bitmap mv){
 
 void take_move(struct board *brd){
 
+	printf("*** entering take_move ***\n");
+
+
+
 	ASSERT_BOARD_OK(brd);
 
 	brd->history_ply--;
 	brd->ply--;
 
 	mv_bitmap mv = brd->history[brd->history_ply].move;
+
+
+
+	printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> reverting ------------------\n");
+	printf("reverting move %s\n", print_move(mv));
+	printf("BRD before:\n");
+	print_board(brd);
+
+
+
+	// note: when reverting, the 'from' square will be empty and the 'to'
+	// square has the piece in it.
 	enum square from = FROMSQ(mv);
 	enum square to = TOSQ(mv);
 
-	assert(from >= a1 && from <= h8);
-	assert(to >= a1 && to <= h8);
-
-
+	printf("from %s\n", print_square(from));
+	printf("to %s\n", print_square(to));
+	assert(is_square_occupied(brd->board, to) == true);
+	assert(is_square_occupied(brd->board, from) == false);
 
 	// hash out en passant and castle if set
 	if (brd->en_passant != NO_SQUARE){
@@ -290,17 +270,11 @@ void take_move(struct board *brd){
     brd->fifty_move_counter = brd->history[brd->history_ply].fifty_move_counter;
     brd->en_passant = brd->history[brd->history_ply].en_passant;
 
-	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
-
 	// now, hash back in
 	if (brd->en_passant != NO_SQUARE){
 		update_EP_hash(brd);
 	}
 	update_castle_hash(brd);
-
-
-	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
-
 
 	if (MFLAG_EN_PASSANT & mv){
 		if (brd->side_to_move == WHITE){
@@ -308,10 +282,6 @@ void take_move(struct board *brd){
 		} else{
 			add_piece_to_board(brd, W_PAWN, to + 8);
 		}
-
-	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
-
-
 	} else if (MFLAG_CASTLE & mv){
 		switch(to){
 			case c1:
@@ -330,31 +300,15 @@ void take_move(struct board *brd){
 				assert(false);
 				break;
 		}
-
-	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
-
 	}
 
-
-	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
-
-
-
-	move_piece(brd, from, to);
-
-
-	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
-
-
+	// note: to revert move, move piece from 'to' to 'from'
+	move_piece(brd, to, from);
 
 	enum piece captured = CAPTURED(mv);
 	if (captured != NO_PIECE){
 		add_piece_to_board(brd, captured, to);
 	}
-
-
-	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
-
 
 	enum piece promoted = PROMOTED(mv);
 	if (promoted != NO_PIECE){
@@ -365,18 +319,18 @@ void take_move(struct board *brd){
 		add_piece_to_board(brd, pce_to_add, from);
 	}
 
-
-	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
-
 	// flip side
 	brd->side_to_move = FLIP_SIDE(brd->side_to_move);
 	update_side_hash(brd);
 
+	printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> REVERTED ------------------\n");
+	printf("move reverted\n");
+	printf("BRD after:\n");
+	print_board(brd);
 
 
-	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
 
-
+	printf("*** exiting take_move ***\n");
 
 	ASSERT_BOARD_OK(brd);
 }
