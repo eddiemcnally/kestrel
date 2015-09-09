@@ -213,7 +213,7 @@ void test_move_gen_depth(){
 
 
 void perf_test(int depth, struct board *brd, bool do_print) {
-	printf("*** entering perft_test depth %d ***\n", depth);
+	//printf("*** entering perft_test depth %d ***\n", depth);
 
     ASSERT_BOARD_OK(brd);
 
@@ -248,17 +248,12 @@ void perf_test(int depth, struct board *brd, bool do_print) {
 
 	free(mv_list);
 
-	printf("*** exiting perft_test depth %d***\n", depth);
-	printf("\nTest Complete : %llu nodes visited\n",leafNodes);
-
     return;
 }
 
 
 
 void perft(int depth, struct board *brd, mv_bitmap mvb, bool do_print) {
-	printf("*** entering perft depth %d ***\n", depth);
-
 
     ASSERT_BOARD_OK(brd);
 
@@ -272,7 +267,7 @@ void perft(int depth, struct board *brd, mv_bitmap mvb, bool do_print) {
 			printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
 		}
         leafNodes++;
-       	printf("*** exiting perft with depth 0 ***\n");
+       	//printf("*** exiting perft with depth 0 ***\n");
         return;
     }
 
@@ -296,7 +291,7 @@ void perft(int depth, struct board *brd, mv_bitmap mvb, bool do_print) {
 		}
     }
     free(mv_list);
-	printf("*** exiting perft depth %d ***\n", depth);
+	printf("\nTest Complete : %lld nodes visited\n",leafNodes);
 
     return;
 

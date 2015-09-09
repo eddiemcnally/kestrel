@@ -83,34 +83,10 @@ static const U8 castle_permission_mask[NUM_SQUARES] = {
 
 // return false if move is invalid, true otherwise
 bool make_move(struct board *brd, mv_bitmap mv){
-	printf("*** entering make_move ***\n");
-
 	ASSERT_BOARD_OK(brd);
-
-	struct board *cloned_brd_before_move = clone_board(brd);
 
 	enum square from = FROMSQ(mv);
 	enum square to = TOSQ(mv);
-
-	// debug
-	if ((from == c7) && (to == c5) && (brd->board_hash == 0x961b5b3c03664f64)
-		&& (brd->history_ply == 1) && (brd->en_passant == NO_SQUARE))
-		{
-			// debug
-			printf("eddie eddie eddie\n");
-		}
-
-
-
-	printf("------------------ making move ---------------\n");
-	print_move_details(mv, 0);
-	printf("move : %s\n",print_move(mv));
-	printf("from : %s\n", print_square(from));
-	printf("to   : %s\n", print_square(to));
-	print_board(brd);
-
-
-
 
 	assert(from >= a1 && from <= h8);
 	assert(to >= a1 && to <= h8);
@@ -149,8 +125,6 @@ bool make_move(struct board *brd, mv_bitmap mv){
         }
     }
 
-	printf("en pass #1 sq %d\n", brd->en_passant);
-
 	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
 
 	if (brd->en_passant != NO_SQUARE){
@@ -178,6 +152,9 @@ bool make_move(struct board *brd, mv_bitmap mv){
 		brd->fifty_move_counter = 0;
 	}
 
+	brd->ply++;
+	brd->history_ply++;
+
 	enum piece pce_being_moved = brd->pieces[from];
 
 	if (IS_PAWN(pce_being_moved)){
@@ -192,12 +169,9 @@ bool make_move(struct board *brd, mv_bitmap mv){
 				assert(GET_RANK(from - 8) == RANK_6);
 			}
 			update_EP_hash(brd);
-			brd->history[brd->history_ply].en_passant = brd->en_passant;
 		}
 	}
 
-	brd->ply++;
-	brd->history_ply++;
 
 	move_piece(brd, from, to);
 
@@ -206,10 +180,6 @@ bool make_move(struct board *brd, mv_bitmap mv){
 		remove_piece_from_board(brd, to);
 		add_piece_to_board(brd, promoted, to);
 	}
-
-	// flip side
-	brd->side_to_move = FLIP_SIDE(brd->side_to_move);
-	update_side_hash(brd);
 
 
 	ASSERT_BOARD_OK(brd);
@@ -221,27 +191,16 @@ bool make_move(struct board *brd, mv_bitmap mv){
 
 	assert(king_sq >= a1 && king_sq <= h8);
 
+	// flip side
+	brd->side_to_move = FLIP_SIDE(brd->side_to_move);
+	update_side_hash(brd);
+
+
 	// side is already flipped above, so use that as the attacking side
 	if (is_sq_attacked(brd, king_sq, brd->side_to_move)){
-
-
 		take_move(brd);
-
-		assert_boards_are_equal(cloned_brd_before_move, brd);
-		free(cloned_brd_before_move);
-
-		printf("*** exiting make_move false ***\n");
-
 		return false;
 	} else {
-		printf("------------------------ move complete -----------------------------\n");
-		printf("en pass #2 sq %d\n", brd->en_passant);
-		printf("Move made.....BRD : \n");
-		print_board(brd);
-
-		printf("*** exiting make_move true ***\n");
-
-		free(cloned_brd_before_move);
 		return true;
 	}
 }
@@ -251,8 +210,6 @@ bool make_move(struct board *brd, mv_bitmap mv){
 
 void take_move(struct board *brd){
 
-	printf("*** entering take_move ***\n");
-
 	ASSERT_BOARD_OK(brd);
 
 	brd->history_ply--;
@@ -260,22 +217,11 @@ void take_move(struct board *brd){
 
 	mv_bitmap mv = brd->history[brd->history_ply].move;
 
-
-
-	printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> reverting ------------------\n");
-	printf("reverting move %s\n", print_move(mv));
-	printf("BRD before:\n");
-	print_board(brd);
-
-
-
 	// note: when reverting, the 'from' square will be empty and the 'to'
 	// square has the piece in it.
 	enum square from = FROMSQ(mv);
 	enum square to = TOSQ(mv);
 
-	printf("from %s\n", print_square(from));
-	printf("to %s\n", print_square(to));
 	assert(is_square_occupied(brd->board, to) == true);
 	assert(is_square_occupied(brd->board, from) == false);
 
@@ -294,6 +240,10 @@ void take_move(struct board *brd){
 		update_EP_hash(brd);
 	}
 	update_castle_hash(brd);
+
+	// flip side
+	brd->side_to_move = FLIP_SIDE(brd->side_to_move);
+	update_side_hash(brd);
 
 	if (MFLAG_EN_PASSANT & mv){
 		if (brd->side_to_move == WHITE){
@@ -337,19 +287,6 @@ void take_move(struct board *brd){
 		enum piece pce_to_add = (prom_col == WHITE) ? W_PAWN : B_PAWN;
 		add_piece_to_board(brd, pce_to_add, from);
 	}
-
-	// flip side
-	brd->side_to_move = FLIP_SIDE(brd->side_to_move);
-	update_side_hash(brd);
-
-	printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> REVERTED ------------------\n");
-	printf("move reverted\n");
-	printf("BRD after:\n");
-	print_board(brd);
-
-
-
-	printf("*** exiting take_move ***\n");
 
 	ASSERT_BOARD_OK(brd);
 }

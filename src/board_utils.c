@@ -205,16 +205,6 @@ bool ASSERT_BOARD_OK(const struct board * brd)
 
 	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
 
-	if (brd->en_passant != NO_SQUARE){
-		U8 rank = GET_RANK(brd->en_passant);
-		printf("*** rank = %d\n", rank);
-		if (brd->side_to_move == WHITE){
-			assert(rank == RANK_6);
-		} else {
-			assert(rank == RANK_3);
-		}
-	}
-
     // calc and verify the material count
     U32 local_material[NUM_COLOURS] = { 0 };
     for (enum square sq = 0; sq <= h8; sq++) {
