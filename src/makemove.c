@@ -87,8 +87,20 @@ bool make_move(struct board *brd, mv_bitmap mv){
 
 	ASSERT_BOARD_OK(brd);
 
+	struct board *cloned_brd_before_move = clone_board(brd);
+
 	enum square from = FROMSQ(mv);
 	enum square to = TOSQ(mv);
+
+	// debug
+	if ((from == c7) && (to == c5) && (brd->board_hash == 0x961b5b3c03664f64)
+		&& (brd->history_ply == 1) && (brd->en_passant == NO_SQUARE))
+		{
+			// debug
+			printf("eddie eddie eddie\n");
+		}
+
+
 
 	printf("------------------ making move ---------------\n");
 	print_move_details(mv, 0);
@@ -137,7 +149,8 @@ bool make_move(struct board *brd, mv_bitmap mv){
         }
     }
 
-	printf("sq %d\n", brd->en_passant);
+	printf("en pass #1 sq %d\n", brd->en_passant);
+
 	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
 
 	if (brd->en_passant != NO_SQUARE){
@@ -165,9 +178,6 @@ bool make_move(struct board *brd, mv_bitmap mv){
 		brd->fifty_move_counter = 0;
 	}
 
-	brd->ply++;
-	brd->history_ply++;
-
 	enum piece pce_being_moved = brd->pieces[from];
 
 	if (IS_PAWN(pce_being_moved)){
@@ -182,8 +192,12 @@ bool make_move(struct board *brd, mv_bitmap mv){
 				assert(GET_RANK(from - 8) == RANK_6);
 			}
 			update_EP_hash(brd);
+			brd->history[brd->history_ply].en_passant = brd->en_passant;
 		}
 	}
+
+	brd->ply++;
+	brd->history_ply++;
 
 	move_piece(brd, from, to);
 
@@ -209,18 +223,25 @@ bool make_move(struct board *brd, mv_bitmap mv){
 
 	// side is already flipped above, so use that as the attacking side
 	if (is_sq_attacked(brd, king_sq, brd->side_to_move)){
+
+
 		take_move(brd);
 
-		printf("*** existing make_move ***\n");
+		assert_boards_are_equal(cloned_brd_before_move, brd);
+		free(cloned_brd_before_move);
+
+		printf("*** exiting make_move false ***\n");
 
 		return false;
 	} else {
 		printf("------------------------ move complete -----------------------------\n");
+		printf("en pass #2 sq %d\n", brd->en_passant);
 		printf("Move made.....BRD : \n");
 		print_board(brd);
 
-		printf("*** exiting make_move ***\n");
+		printf("*** exiting make_move true ***\n");
 
+		free(cloned_brd_before_move);
 		return true;
 	}
 }
@@ -231,8 +252,6 @@ bool make_move(struct board *brd, mv_bitmap mv){
 void take_move(struct board *brd){
 
 	printf("*** entering take_move ***\n");
-
-
 
 	ASSERT_BOARD_OK(brd);
 

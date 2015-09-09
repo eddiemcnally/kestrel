@@ -528,6 +528,7 @@ static inline void generate_white_pawn_moves(const struct board *brd, struct mov
 			}
 		}
 
+
 		// check for capture left
 		if (pawn_file > FILE_A) {
 			enum square cap_sq = pawn_sq + 7;
@@ -861,11 +862,9 @@ void print_move_details(U32 move_bitmap, U32 score){
 	enum piece promoted = PROMOTED(move_bitmap);
 
 	char c_capt = get_piece_label(captured);
-	printf("capt %c\n", c_capt);
 	char c_promoted = get_piece_label(promoted);
-	printf("prom %c\n", c_promoted);
 
-	printf("move : %c%c%c%c, captured '%c' promote '%c' score %d\n", ('a' + from_file),
+	printf("%c%c%c%c, captured '%c' promote '%c' score %d\n", ('a' + from_file),
 				('1' + from_rank), ('a' + to_file), ('1' + to_rank), c_capt, c_promoted, score);
 
 

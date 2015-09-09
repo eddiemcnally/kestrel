@@ -21,6 +21,7 @@
 #include <string.h>
 #include <assert.h>
 #include "types.h"
+#include "move.h"
 #include "hashkeys.h"
 #include "board.h"
 #include "pieces.h"
@@ -93,6 +94,20 @@ void print_board(const struct board *the_board)
 	   (the_board->castle_perm & BQCA) ? 'q' : '-');
 
     printf("PosKey:\t0x%016llx\n", the_board->board_hash);
+
+	printf("Move history\n");
+	for(int i = 0; i < the_board->history_ply; i++){
+		printf("Move #%d\n", i);
+		printf("\t");
+		print_move_details(the_board->history[i].move, 0);
+		if (the_board->history[i].en_passant != NO_SQUARE){
+			printf("\ten passant : %s\n", print_square(the_board->history[i].en_passant));
+		} else{
+			printf("\ten passant : -\n");
+		}
+	}
+
+
 
     printf("\n\n");
 
@@ -191,10 +206,13 @@ bool ASSERT_BOARD_OK(const struct board * brd)
 	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
 
 	if (brd->en_passant != NO_SQUARE){
-		assert((GET_RANK(brd->en_passant) == RANK_6
-								&& brd->side_to_move == WHITE)
-			|| (GET_RANK(brd->en_passant) == RANK_3
-								&& brd->side_to_move == BLACK));
+		U8 rank = GET_RANK(brd->en_passant);
+		printf("*** rank = %d\n", rank);
+		if (brd->side_to_move == WHITE){
+			assert(rank == RANK_6);
+		} else {
+			assert(rank == RANK_3);
+		}
 	}
 
     // calc and verify the material count
