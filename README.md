@@ -8,9 +8,7 @@ The ./test directory contains test fixtures for running unit tests (uses seatest
 This is a work-in-progress. Current state:
 - Can read in FEN
 - Can generate moves
-- Currently (Sept 2015) ironing out bugs in the Perft tests (current bug is associated with reverting en passant moves).
-
-
+- Currently (Sept 2015) completes the perft tests without errors to a depth of 4 (going any deeper will require some performance optimisations).
 
 
 
