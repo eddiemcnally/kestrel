@@ -32,11 +32,11 @@
 
 
 
-void perf_test(int depth, struct board *brd, bool do_print);
+void perf_test(int depth, struct board *brd);
 void divide_perft(int depth, struct board *brd);
 U32 divide(int depth, struct board *brd);
 void test_move_gen_depth(void);
-void perft(int depth, struct board *brd, mv_bitmap mv, bool do_print);
+void perft(int depth, struct board *brd);
 void bug_check(void);
 
 
@@ -51,9 +51,9 @@ typedef struct EPD{
 	U64 depth6;
 } epd;
 
-#define NUM_EPD	125
+#define NUM_EPD	126
 struct EPD test_positions[NUM_EPD] = {
-	//{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",20,400,8902,197281,4865609,119060324},
+	{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",20,400,8902,197281,4865609,119060324},
 	{"r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1",48,2039,97862,4085603,193690690,8031647685},
 	{"4k3/8/8/8/8/8/8/4K2R w K - 0 1",15,66,1197,7059,133987,764643 },
 	{"4k3/8/8/8/8/8/8/R3K3 w Q - 0 1",16,71,1287,7626,145232,846648},
@@ -195,11 +195,11 @@ void test_move_gen_depth(){
 
 		struct board *brd= init_game(e.fen);
 		leafNodes = 0;
-		perf_test(4, brd, false);
-		if (leafNodes != e.depth4){
-			printf("fen %s  ; #nodes is %llu, should be %llu\n", e.fen, leafNodes, e.depth4);
+		perf_test(5, brd);
+		if (leafNodes != e.depth5){
+			printf("fen %s  ; #nodes is %llu, should be %llu\n", e.fen, leafNodes, e.depth5);
 		}
-		assert_true(leafNodes == e.depth4);
+		assert_true(leafNodes == e.depth5);
 		free(brd);
 
 
@@ -212,14 +212,9 @@ void test_move_gen_depth(){
 
 
 
-void perf_test(int depth, struct board *brd, bool do_print) {
-	//printf("*** entering perft_test depth %d ***\n", depth);
+void perf_test(int depth, struct board *brd) {
 
     ASSERT_BOARD_OK(brd);
-
-    //printf("\n+++++++++++++++++++++++++++++++++++++++++++++\n");
-	//print_board(brd);
-	//printf("\nStarting Test To Depth:%d\n",depth);
 
 	leafNodes = 0;
 
@@ -227,8 +222,6 @@ void perf_test(int depth, struct board *brd, bool do_print) {
 	memset(mv_list, 0, sizeof(struct move_list));
 
 	generate_all_moves(brd, mv_list);
-	//printf("# moves generated = %d\n", mv_list->move_count);
-	//print_move_list(mv_list);
 
     mv_bitmap mv;
     for(U32 mv_num = 0; mv_num < mv_list->move_count; ++mv_num) {
@@ -236,63 +229,43 @@ void perf_test(int depth, struct board *brd, bool do_print) {
 		if ( !make_move(brd, mv))  {
             continue;
         }
-        //printf("--depth %d, move : %s\n", depth, print_move(mv));
-
-		//print_board(brd);
-        //U64 total = leafNodes;
-        perft(depth - 1, brd, mv, do_print);
+        perft(depth - 1, brd);
         take_move(brd);
-        //U64 oldnodes = leafNodes - total;
-        //printf("move %d : %s : %llu\n", mv_num+1, print_move(mv),oldnodes);
-    }
+     }
 
 	free(mv_list);
+
+	printf("\nTest Complete : %lld nodes visited\n",leafNodes);
 
     return;
 }
 
 
 
-void perft(int depth, struct board *brd, mv_bitmap mvb, bool do_print) {
+void perft(int depth, struct board *brd) {
 
     ASSERT_BOARD_OK(brd);
 
 	if(depth == 0) {
-		if (do_print){
-			printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
-			printf("**** NODE INCR - mv = %s  ", print_move(mvb));
-			print_compressed_board(brd);
-			printf("\n");
-			print_board(brd);
-			printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
-		}
-        leafNodes++;
-       	//printf("*** exiting perft with depth 0 ***\n");
+	    leafNodes++;
         return;
     }
 
     struct move_list *mv_list = malloc(sizeof(struct move_list));
 	memset(mv_list, 0, sizeof(struct move_list));
-    //printf("\n+++++++++++++++++++++++++++++++++++++++++++++\n");
-	//print_board(brd);
-	//printf("\nStarting Test To Depth:%d\n",depth);
 
 	generate_all_moves(brd, mv_list);
-	//printf("# moves generated = %d\n", mv_list->move_count);
-	//print_move_list(mv_list);
 
     mv_bitmap mv;
     for(U32 mv_num = 0; mv_num < mv_list->move_count; ++mv_num) {
         mv = mv_list->moves[mv_num].move_bitmap;
 		if (make_move(brd, mv))  {
 			//printf("--depth %d, move : %s\n", depth, print_move(mv));
-			perft(depth - 1, brd, mv, do_print);
+			perft(depth - 1, brd);
 			take_move(brd);
 		}
     }
     free(mv_list);
-	printf("\nTest Complete : %lld nodes visited\n",leafNodes);
-
     return;
 
 }

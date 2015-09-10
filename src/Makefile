@@ -11,7 +11,7 @@
 # define any compile-time flags
 # NOTE: setting the inline limit values to be obscenely high since the size of
 #		the binary isn't a concern
-	CFLAGS	=	-O3 -g -std=iso9899:2011 \
+	CFLAGS	=	-O3 -std=iso9899:2011 \
 				-mtune=native \
 				-lmcheck \
 				-fsanitize=undefined \
@@ -100,7 +100,6 @@ $(MAIN):		$(OBJS)
 
 clean:
 		$(RM) *.o *~ $(MAIN)
-
 
 depend:	$(SRCS)
 		makedepend $(INCLUDES) $^
