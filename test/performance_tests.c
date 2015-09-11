@@ -352,12 +352,12 @@ U32 divide(int depth, struct board *brd) {
 
 
 void bug_check(void){
-	struct board *brd= init_game("4k3/2p5/8/3P4/8/8/8/4K3 b - - 0 1");
+	struct board *brd= init_game("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
 
 		leafNodes = 0;
-		divide_perft(4, brd);
+		divide_perft(5, brd);
 
-		assert_true(leafNodes == 4865609);
+		assert_true(leafNodes == 193690690);
 }
 
 
@@ -365,9 +365,9 @@ void perf_test_fixture(void)
 {
     test_fixture_start();	// starts a fixture
 
-    run_test(test_move_gen_depth);
+    //run_test(test_move_gen_depth);
 
-	//run_test(bug_check);
+	run_test(bug_check);
 
 
     test_fixture_end();		// ends a fixture
