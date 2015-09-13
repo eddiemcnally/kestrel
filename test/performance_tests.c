@@ -297,7 +297,7 @@ void divide_perft(int depth, struct board *brd) {
 			move_cnt = divide(depth - 1, brd);
 			take_move(brd);
 
-			printf("%s : %d\n", print_move(mv), move_cnt);
+			printf("%s %d\n", print_move(mv), move_cnt);
 		} else {
 			printf("Invalid move %s\n", print_move(mv));
 		}
@@ -328,9 +328,9 @@ U32 divide(int depth, struct board *brd) {
 
 	generate_all_moves(brd, mv_list);
 
-	//printf("+++++++++++++++++++++++++++++ moves generated for depth %d\n", depth);
-	//print_board(brd);
-	//print_move_list(mv_list);
+	printf("+++++++++++++++++++++++++++++ moves generated for depth %d\n", depth);
+	print_board(brd);
+	print_move_list(mv_list);
 
 
     mv_bitmap mv;
@@ -352,10 +352,10 @@ U32 divide(int depth, struct board *brd) {
 
 
 void bug_check(void){
-	struct board *brd= init_game("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
+	struct board *brd= init_game("r3k2r/p1ppqpb1/bn2pnp1/3PN3/Pp2P3/2N2Q1p/1PPBBPPP/R3K2R b Kkq a3 0 3");
 
 		leafNodes = 0;
-		divide_perft(5, brd);
+		divide_perft(4, brd);
 
 		assert_true(leafNodes == 193690690);
 }

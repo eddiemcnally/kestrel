@@ -199,8 +199,12 @@ bool make_move(struct board *brd, mv_bitmap mv){
 	// side is already flipped above, so use that as the attacking side
 	if (is_sq_attacked(brd, king_sq, brd->side_to_move)){
 		take_move(brd);
+
+		ASSERT_BOARD_OK(brd);
 		return false;
 	} else {
+
+		ASSERT_BOARD_OK(brd);
 		return true;
 	}
 }

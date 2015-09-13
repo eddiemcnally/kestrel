@@ -909,11 +909,11 @@ void print_move_list(const struct move_list *list)
 
     for (int i = 0; i < list->move_count; i++) {
 		U32 move = list->moves[i].move_bitmap;
-		U32 score = list->moves[i].score;
+		//U32 score = list->moves[i].score;
 
-		printf("Move:%d > %s (score:%d)\n", (i + 1), print_move(move), score);
+		printf("%s\n", print_move(move));
     }
-    printf("MoveList Total %d Moves:\n\n", list->move_count);
+    //printf("MoveList Total %d Moves:\n\n", list->move_count);
 }
 
 
