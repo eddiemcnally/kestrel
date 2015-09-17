@@ -6,4 +6,3 @@ kestrel
 *.c~
 *.h~
 gmon.out
-*.ods
