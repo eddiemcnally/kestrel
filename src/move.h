@@ -54,6 +54,8 @@ struct move_list {
 #define MFLAG_PAWN_START 	0x0080000
 #define MFLAG_CASTLE 		0x1000000
 
+#define	IS_EN_PASS_MOVE(mv)	((mv & MFLAG_EN_PASSANT) != 0)
+
 //#define MFLAG_CAPTURED 		0x007C000	// En Passant | Captures
 //#define MFLAG_PROMOTED		0x0F00000
 //---

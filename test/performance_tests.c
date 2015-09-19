@@ -22,6 +22,7 @@
 #include "seatest.h"
 #include "types.h"
 #include "attack.h"
+#include "assert.h"
 #include "init.h"
 #include "fen.h"
 #include "board.h"
@@ -38,6 +39,8 @@ U32 divide(int depth, struct board *brd);
 void test_move_gen_depth(void);
 void perft(int depth, struct board *brd);
 void bug_check(void);
+void debug_divide_perft(int depth, struct board *brd);
+U32 debug_divide(int depth, struct board *brd);
 
 
 // struct representing a line in the perftsuite.epd file
@@ -284,10 +287,7 @@ void divide_perft(int depth, struct board *brd) {
 
 	generate_all_moves(brd, mv_list);
 
-	//printf("+++++++++++++++++++++++++++++ moves generated for depth %d\n", depth);
-	//print_board(brd);
-	//print_move_list(mv_list);
-
+	//TEST_add_quiet_move(MOVE(a2, a4, NO_PIECE, NO_PIECE, MFLAG_PAWN_START), mv_list);
 
     mv_bitmap mv;
     for(U32 mv_num = 0; mv_num < mv_list->move_count; ++mv_num) {
@@ -331,7 +331,7 @@ U32 divide(int depth, struct board *brd) {
 	//printf("+++++++++++++++++++++++++++++ moves generated for depth %d\n", depth);
 	//print_board(brd);
 	//print_move_list(mv_list);
-
+	
 
     mv_bitmap mv;
     for(U32 mv_num = 0; mv_num < mv_list->move_count; ++mv_num) {
@@ -347,12 +347,9 @@ U32 divide(int depth, struct board *brd) {
 
 
 
-////////////////////
-
-
 
 void bug_check(void){
-	struct board *brd= init_game("r3k2r/p1ppqpb1/1n2pnp1/1b1PN3/Pp2P3/2N2Q1p/1PPBBPPP/R3K2R w KQkq - 0 1");
+	struct board *brd= init_game("r3k2r/p1ppqpb1/bn2pnp1/3PN3/4P3/p1N2Q1p/1PPBBPPP/R3K2R w KQkq - 0 2");
 
 		leafNodes = 0;
 		divide_perft(5, brd);

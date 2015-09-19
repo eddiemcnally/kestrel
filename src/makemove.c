@@ -49,6 +49,7 @@ static const U8 castle_permission_mask[NUM_SQUARES] = {
 
  void move_piece(struct board *brd, enum square from, enum square to){
 
+	ASSERT_BOARD_OK(brd);
 
 	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
 	assert(IS_VALID_SQUARE(to));
@@ -71,12 +72,17 @@ static const U8 castle_permission_mask[NUM_SQUARES] = {
 	clear_bit(&brd->board, from);
 
 	update_piece_hash(brd, pce, to);
+	
 	brd->pieces[to] = pce;
 	set_bit(&brd->bitboards[pce], to);
 	set_bit(&brd->board, to);
 
 	overlay_colours(brd, GET_COLOUR(pce));
 	overlay_boards(brd);
+
+	ASSERT_BOARD_OK(brd);
+
+
 }
 
 
@@ -171,7 +177,6 @@ bool make_move(struct board *brd, mv_bitmap mv){
 			update_EP_hash(brd);
 		}
 	}
-
 
 	move_piece(brd, from, to);
 
