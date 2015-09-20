@@ -35,7 +35,7 @@
 
 void perf_test(int depth, struct board *brd);
 void divide_perft(int depth, struct board *brd);
-U32 divide(int depth, struct board *brd);
+U32 divide(int depth, struct board *brd, mv_bitmap source_mv);
 void test_move_gen_depth(void);
 void perft(int depth, struct board *brd);
 void bug_check(void);
@@ -285,16 +285,16 @@ void divide_perft(int depth, struct board *brd) {
     struct move_list *mv_list = malloc(sizeof(struct move_list));
 	memset(mv_list, 0, sizeof(struct move_list));
 
-	generate_all_moves(brd, mv_list);
+	//generate_all_moves(brd, mv_list);
 
-	//TEST_add_quiet_move(MOVE(a2, a4, NO_PIECE, NO_PIECE, MFLAG_PAWN_START), mv_list);
+	TEST_add_quiet_move(MOVE(a2, a4, NO_PIECE, NO_PIECE, MFLAG_PAWN_START), mv_list);
 
     mv_bitmap mv;
     for(U32 mv_num = 0; mv_num < mv_list->move_count; ++mv_num) {
 		mv = mv_list->moves[mv_num].move_bitmap;
 
 		if (make_move(brd, mv)){
-			move_cnt = divide(depth - 1, brd);
+			move_cnt = divide(depth - 1, brd, mv);
 			take_move(brd);
 
 			printf("%s %d\n", print_move(mv), move_cnt);
@@ -313,9 +313,9 @@ void divide_perft(int depth, struct board *brd) {
 
 
 
-U32 divide(int depth, struct board *brd) {
+U32 divide(int depth, struct board *brd, mv_bitmap source_mv) {
 
-    ASSERT_BOARD_OK(brd);
+    //ASSERT_BOARD_OK(brd);
 
 	U32 nodes = 0;
 
@@ -328,16 +328,16 @@ U32 divide(int depth, struct board *brd) {
 
 	generate_all_moves(brd, mv_list);
 
-	//printf("+++++++++++++++++++++++++++++ moves generated for depth %d\n", depth);
-	//print_board(brd);
-	//print_move_list(mv_list);
+	printf("+++++++++++++++++++++++++++++ moves generated for depth %d and source move %s\n", depth, print_move(source_mv));
+	print_board(brd);
+	print_move_list(mv_list);
 	
 
     mv_bitmap mv;
     for(U32 mv_num = 0; mv_num < mv_list->move_count; ++mv_num) {
         mv = mv_list->moves[mv_num].move_bitmap;
 		if (make_move(brd, mv)){
-			nodes += divide(depth - 1, brd);
+			nodes += divide(depth - 1, brd, mv);
 			take_move(brd);
 		}
     }
@@ -349,7 +349,7 @@ U32 divide(int depth, struct board *brd) {
 
 
 void bug_check(void){
-	struct board *brd= init_game("r3k2r/p1ppqpb1/bn2pnp1/3PN3/4P3/p1N2Q1p/1PPBBPPP/R3K2R w KQkq - 0 2");
+	struct board *brd= init_game("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
 
 		leafNodes = 0;
 		divide_perft(5, brd);

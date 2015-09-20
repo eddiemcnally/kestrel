@@ -157,7 +157,7 @@ static inline bool is_knight_attacking_square(const struct board *brd, enum squa
     return false;
 }
 
-static bool is_bishop_attacking_square(const struct board *brd, enum square target_sq, enum colour attacking_side)
+static inline bool is_bishop_attacking_square(const struct board *brd, enum square target_sq, enum colour attacking_side)
 {
     // create bitboard for square under attack
     U64 sqBB = 0;

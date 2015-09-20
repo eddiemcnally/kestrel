@@ -15,8 +15,8 @@
 				-mtune=native \
 				-lmcheck \
 				-fsanitize=undefined \
-				--param large-function-growth=8000 \
-				--param max-inline-insns-single=30000 \
+				--param large-function-growth=20000 \
+				--param max-inline-insns-single=90000 \
 				-fomit-frame-pointer \
 				-Wpedantic \
 				-Wformat=2 \
