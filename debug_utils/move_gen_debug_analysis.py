@@ -12,9 +12,9 @@ def construct_dict_of_moves(f):
 
             if "+++++++++++++ moves generated for depth " in line:
                 if counter is not 0:
-                    print(str(counter))
+                    #print(str(counter))
                     my_dict[currentline] = counter
-                print(line)
+                #print(line)
                 currentline = line
                 inmovelist = False
                 counter = 0
@@ -28,6 +28,17 @@ def construct_dict_of_moves(f):
 
 k_file = construct_dict_of_moves("/home/eddie/kkk.kkk")
 v_file = construct_dict_of_moves("/home/eddie/vvv.vvv")
+
+print(str(len(k_file.keys())))
+print(str(len(v_file.keys())))
+
+for v in v_file.keys():
+    if v not in k_file.keys():
+        print("not in k: " + v)
+    if v_file[v] != k_file[v]:
+        print("k = " + str(k_file[v]) + " v = " + str(v_file[v]))
+
+
 
 
 
