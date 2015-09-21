@@ -10,9 +10,11 @@ def construct_dict_of_moves(f):
         my_dict = dict()
         for line in a_file:
 
-            if "+++++++++++++ moves generated for depth " in line:
+            if "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ moves generated for depth " in line:
                 if counter is not 0:
                     #print(str(counter))
+                    if currentline in my_dict.keys():
+                        print("dup key " + currentline)
                     my_dict[currentline] = counter
                 #print(line)
                 currentline = line
@@ -36,7 +38,9 @@ for v in v_file.keys():
     if v not in k_file.keys():
         print("not in k: " + v)
     if v_file[v] != k_file[v]:
+        print("line: " + v)
         print("k = " + str(k_file[v]) + " v = " + str(v_file[v]))
+        print("\n\n\n\n\n")
 
 
 
