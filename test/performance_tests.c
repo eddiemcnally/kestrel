@@ -189,26 +189,20 @@ U64 leafNodes = 0;
 
 void test_move_gen_depth(){
 
+	int depth = 5;
 
 	for (int i = 0; i < NUM_EPD; i++){
 		struct EPD e = test_positions[i];
 
-		//printf("Analysing FEN : %s\n", e.fen);
+		printf("Analysing FEN : %s\n", e.fen);
 
 		struct board *brd= init_game(e.fen);
 		leafNodes = 0;
-		perf_test(5, brd);
-		if (leafNodes != e.depth5){
-			printf("fen %s  ; #nodes is %llu, should be %llu\n", e.fen, leafNodes, e.depth5);
-		}
+		perf_test(depth, brd);
+
 		assert_true(leafNodes == e.depth5);
 		free(brd);
-
-
-
 	}
-
-
 }
 
 
@@ -216,7 +210,7 @@ void test_move_gen_depth(){
 
 void perf_test(int depth, struct board *brd) {
 
-    ASSERT_BOARD_OK(brd);
+    //ASSERT_BOARD_OK(brd);
 
 	leafNodes = 0;
 
@@ -237,7 +231,7 @@ void perf_test(int depth, struct board *brd) {
 
 	free(mv_list);
 
-	printf("\nTest Complete : %lld nodes visited\n",leafNodes);
+	printf("Test Complete : %lld nodes visited\n\n\n",leafNodes);
 
     return;
 }
@@ -246,12 +240,13 @@ void perf_test(int depth, struct board *brd) {
 
 void perft(int depth, struct board *brd) {
 
-    ASSERT_BOARD_OK(brd);
+    //ASSERT_BOARD_OK(brd);
 
 	if(depth == 0) {
 	    leafNodes++;
         return;
     }
+
 
     struct move_list *mv_list = malloc(sizeof(struct move_list));
 	memset(mv_list, 0, sizeof(struct move_list));
@@ -261,11 +256,18 @@ void perft(int depth, struct board *brd) {
     mv_bitmap mv;
     for(U32 mv_num = 0; mv_num < mv_list->move_count; ++mv_num) {
         mv = mv_list->moves[mv_num].move_bitmap;
+        
+        //struct board *brd_cloned = clone_board(brd);
+        
 		if (make_move(brd, mv))  {
 			//printf("--depth %d, move : %s\n", depth, print_move(mv));
 			perft(depth - 1, brd);
 			take_move(brd);
-		}
+			
+			//assert_boards_are_equal(brd, brd_cloned);
+		}	
+		//free(brd_cloned);
+		
     }
     free(mv_list);
     return;
@@ -361,9 +363,9 @@ void perf_test_fixture(void)
 {
     test_fixture_start();	// starts a fixture
 
-    //run_test(test_move_gen_depth);
+    run_test(test_move_gen_depth);
 
-	run_test(bug_check);
+	//run_test(bug_check);
 
 
     test_fixture_end();		// ends a fixture
