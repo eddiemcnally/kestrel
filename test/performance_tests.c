@@ -194,7 +194,7 @@ void test_move_gen_depth(){
 	for (int i = 0; i < NUM_EPD; i++){
 		struct EPD e = test_positions[i];
 
-		printf("Analysing FEN : %s\n", e.fen);
+		printf("Analysing FEN : '%s'\n", e.fen);
 
 		struct board *brd= init_game(e.fen);
 		leafNodes = 0;
@@ -214,22 +214,22 @@ void perf_test(int depth, struct board *brd) {
 
 	leafNodes = 0;
 
-    struct move_list *mv_list = malloc(sizeof(struct move_list));
-	memset(mv_list, 0, sizeof(struct move_list));
+	struct move_list mv_list = {
+		.moves = {{0,0}},
+		.move_count = 0
+		};
 
-	generate_all_moves(brd, mv_list);
+	generate_all_moves(brd, &mv_list);
 
     mv_bitmap mv;
-    for(U32 mv_num = 0; mv_num < mv_list->move_count; ++mv_num) {
-        mv = mv_list->moves[mv_num].move_bitmap;
+    for(U32 mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
+        mv = mv_list.moves[mv_num].move_bitmap;
 		if ( !make_move(brd, mv))  {
             continue;
         }
         perft(depth - 1, brd);
         take_move(brd);
      }
-
-	free(mv_list);
 
 	printf("Test Complete : %lld nodes visited\n\n\n",leafNodes);
 
@@ -248,14 +248,16 @@ void perft(int depth, struct board *brd) {
     }
 
 
-    struct move_list *mv_list = malloc(sizeof(struct move_list));
-	memset(mv_list, 0, sizeof(struct move_list));
-
-	generate_all_moves(brd, mv_list);
+	struct move_list mv_list = {
+		.moves = {{0,0}},
+		.move_count = 0
+		};
+		
+	generate_all_moves(brd, &mv_list);
 
     mv_bitmap mv;
-    for(U32 mv_num = 0; mv_num < mv_list->move_count; ++mv_num) {
-        mv = mv_list->moves[mv_num].move_bitmap;
+    for(U32 mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
+        mv = mv_list.moves[mv_num].move_bitmap;
         
         //struct board *brd_cloned = clone_board(brd);
         
@@ -269,7 +271,6 @@ void perft(int depth, struct board *brd) {
 		//free(brd_cloned);
 		
     }
-    free(mv_list);
     return;
 
 }
