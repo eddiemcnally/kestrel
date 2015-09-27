@@ -280,20 +280,22 @@ void perft(int depth, struct board *brd) {
 
 void divide_perft(int depth, struct board *brd) {
 
-    ASSERT_BOARD_OK(brd);
+    //ASSERT_BOARD_OK(brd);
 
 	U32 move_cnt = 0;
 
-    struct move_list *mv_list = malloc(sizeof(struct move_list));
-	memset(mv_list, 0, sizeof(struct move_list));
+	struct move_list mv_list = {
+		.moves = {{0,0}},
+		.move_count = 0
+		};
 
-	//generate_all_moves(brd, mv_list);
+	//generate_all_moves(brd, &mv_list);
 
-	TEST_add_quiet_move(MOVE(a2, a4, NO_PIECE, NO_PIECE, MFLAG_PAWN_START), mv_list);
+	TEST_add_quiet_move(MOVE(a2, a4, NO_PIECE, NO_PIECE, MFLAG_PAWN_START), &mv_list);
 
     mv_bitmap mv;
-    for(U32 mv_num = 0; mv_num < mv_list->move_count; ++mv_num) {
-		mv = mv_list->moves[mv_num].move_bitmap;
+    for(U32 mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
+		mv = mv_list.moves[mv_num].move_bitmap;
 
 		if (make_move(brd, mv)){
 			move_cnt = divide((depth - 1), brd, mv);
@@ -305,8 +307,6 @@ void divide_perft(int depth, struct board *brd) {
 		}
 
     }
-
-	free(mv_list);
 
 	printf("\nTest Complete : %llu nodes visited\n",leafNodes);
 
@@ -325,25 +325,28 @@ U32 divide(int depth, struct board *brd, mv_bitmap source_mv) {
 		return 1;
     }
 
-    struct move_list *mv_list = malloc(sizeof(struct move_list));
-	memset(mv_list, 0, sizeof(struct move_list));
+	struct move_list mv_list = {
+		.moves = {{0,0}},
+		.move_count = 0
+		};
+		
+	generate_all_moves(brd, &mv_list);
 
-	generate_all_moves(brd, mv_list);
-
-	printf("QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ moves generated for depth %d and source move %s\n", depth, print_move(source_mv));
+	printf("QQQ moves generated for depth %d and source move %s : ", depth, print_move(source_mv));
+	print_compressed_board(brd);
+	printf("\n");
 	//print_board(brd);
-	//print_move_list(mv_list);
+	print_move_list(&mv_list);
 	
 
     mv_bitmap mv;
-    for(U32 mv_num = 0; mv_num < mv_list->move_count; ++mv_num) {
-        mv = mv_list->moves[mv_num].move_bitmap;
+    for(U32 mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
+        mv = mv_list.moves[mv_num].move_bitmap;
 		if (make_move(brd, mv)){
 			nodes += divide((depth - 1), brd, mv);
 			take_move(brd);
 		}
     }
-    free(mv_list);
     return nodes;
 }
 
@@ -364,9 +367,9 @@ void perf_test_fixture(void)
 {
     test_fixture_start();	// starts a fixture
 
-    run_test(test_move_gen_depth);
+    //run_test(test_move_gen_depth);
 
-	//run_test(bug_check);
+	run_test(bug_check);
 
 
     test_fixture_end();		// ends a fixture

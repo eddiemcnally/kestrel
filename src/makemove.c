@@ -49,7 +49,7 @@ static const U8 castle_permission_mask[NUM_SQUARES] = {
 
  void move_piece(struct board *brd, enum square from, enum square to){
 
-	ASSERT_BOARD_OK(brd);
+	//ASSERT_BOARD_OK(brd);
 
 	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
 	assert(IS_VALID_SQUARE(to));
@@ -80,7 +80,7 @@ static const U8 castle_permission_mask[NUM_SQUARES] = {
 	overlay_colours(brd, GET_COLOUR(pce));
 	overlay_boards(brd);
 
-	ASSERT_BOARD_OK(brd);
+	//ASSERT_BOARD_OK(brd);
 
 
 }
@@ -89,19 +89,22 @@ static const U8 castle_permission_mask[NUM_SQUARES] = {
 
 // return false if move is invalid, true otherwise
 bool make_move(struct board *brd, mv_bitmap mv){
-	ASSERT_BOARD_OK(brd);
+	//ASSERT_BOARD_OK(brd);
 
 	enum square from = FROMSQ(mv);
 	enum square to = TOSQ(mv);
 
-	assert(from >= a1 && from <= h8);
-	assert(to >= a1 && to <= h8);
+///////// debug
+
+	//printf("MMMMMMMMMMMMMMMMMMM Before MakeMove : %s\n", print_move(mv));
+	//print_board(brd);
 
 
-	enum piece pce = get_piece_at_square(brd, from);
+
+	//enum piece pce = get_piece_at_square(brd, from);
 	enum colour side = brd->side_to_move;
 
-	assert(GET_COLOUR(pce) == side);
+	//assert(GET_COLOUR(pce) == side);
 
 	brd->history[brd->history_ply].board_hash  = brd->board_hash;
 
@@ -131,7 +134,7 @@ bool make_move(struct board *brd, mv_bitmap mv){
         }
     }
 
-	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
+	//assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
 
 	if (brd->en_passant != NO_SQUARE){
 		update_EP_hash(brd);
@@ -187,14 +190,14 @@ bool make_move(struct board *brd, mv_bitmap mv){
 	}
 
 
-	ASSERT_BOARD_OK(brd);
+	//ASSERT_BOARD_OK(brd);
 
 	// check if move is valid (ie, king in check)
 	enum piece king = (side == BLACK) ? B_KING : W_KING;
 	U64 bb_king = brd->bitboards[king];
 	enum square king_sq = POP(&bb_king);
 
-	assert(king_sq >= a1 && king_sq <= h8);
+	//assert(king_sq >= a1 && king_sq <= h8);
 
 	// flip side
 	brd->side_to_move = FLIP_SIDE(brd->side_to_move);
@@ -203,13 +206,19 @@ bool make_move(struct board *brd, mv_bitmap mv){
 
 	// side is already flipped above, so use that as the attacking side
 	if (is_sq_attacked(brd, king_sq, brd->side_to_move)){
+		
+		//printf("uuuuuuuuuuuuuuuuuuuuuuu unmaking move : %s\n", print_move(mv));
+		//print_board(brd);
+		
+		
 		take_move(brd);
-
-		ASSERT_BOARD_OK(brd);
+		//ASSERT_BOARD_OK(brd);
 		return false;
 	} else {
 
-		ASSERT_BOARD_OK(brd);
+		//printf("cccccccccccccccccccccccccccc move complete %s\n", print_move(mv));
+
+		//ASSERT_BOARD_OK(brd);
 		return true;
 	}
 }
@@ -219,7 +228,7 @@ bool make_move(struct board *brd, mv_bitmap mv){
 
 void take_move(struct board *brd){
 
-	ASSERT_BOARD_OK(brd);
+	//ASSERT_BOARD_OK(brd);
 
 	brd->history_ply--;
 	brd->ply--;
@@ -231,8 +240,8 @@ void take_move(struct board *brd){
 	enum square from = FROMSQ(mv);
 	enum square to = TOSQ(mv);
 
-	assert(is_square_occupied(brd->board, to) == true);
-	assert(is_square_occupied(brd->board, from) == false);
+	//assert(is_square_occupied(brd->board, to) == true);
+	//assert(is_square_occupied(brd->board, from) == false);
 
 	// hash out en passant and castle if set
 	if (brd->en_passant != NO_SQUARE){
@@ -297,7 +306,7 @@ void take_move(struct board *brd){
 		add_piece_to_board(brd, pce_to_add, from);
 	}
 
-	ASSERT_BOARD_OK(brd);
+	//ASSERT_BOARD_OK(brd);
 }
 
 

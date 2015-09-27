@@ -10,11 +10,11 @@ def construct_dict_of_moves(f):
         my_dict = dict()
         for line in a_file:
 
-            if "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ moves generated for depth " in line:
+            if "QQQ moves generated for depth " in line:
                 if counter is not 0:
                     #print(str(counter))
-                    if currentline in my_dict.keys():
-                        print("dup key " + currentline)
+                    if currentline in list(my_dict.keys()):
+                        print(("dup key in " + f + " : " + currentline))
                     my_dict[currentline] = counter
                 #print(line)
                 currentline = line
@@ -29,18 +29,18 @@ def construct_dict_of_moves(f):
 
 
 k_file = construct_dict_of_moves("/home/eddie/kkk.kkk")
+print("# keys in kkk.kkk : " + str(len(k_file.keys())))
+
 v_file = construct_dict_of_moves("/home/eddie/vvv.vvv")
+print("# keys in vvv.vvv : " + str(len(v_file.keys())))
 
-print(str(len(k_file.keys())))
-print(str(len(v_file.keys())))
-
-for v in v_file.keys():
-    if v not in k_file.keys():
-        print("not in k: " + v)
-    if v_file[v] != k_file[v]:
-        print("line: " + v)
-        print("k = " + str(k_file[v]) + " v = " + str(v_file[v]))
-        print("\n\n\n\n\n")
+#for v in v_file.keys():
+#    if v not in k_file.keys():
+#        print("not in k: " + v)
+#    if v_file[v] != k_file[v]:
+#        print("line: " + v)
+#        print("k = " + str(k_file[v]) + " v = " + str(v_file[v]))
+#        print("\n\n\n\n\n")
 
 
 

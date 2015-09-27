@@ -162,7 +162,7 @@ static const U64 negative_diagonal_masks [] = {
  */
 void generate_all_moves(const struct board *brd, struct move_list *mvl)
 {
-	ASSERT_BOARD_OK(brd);
+	//ASSERT_BOARD_OK(brd);
 
     if (brd->side_to_move == WHITE) {
 		generate_white_pawn_moves(brd, mvl);
@@ -208,11 +208,11 @@ void validate_move_list(struct move_list *mvl){
 
 mv_bitmap MOVE(enum square from, enum square to, enum piece capture, enum piece promote, U32 fl){
 
-	assert (from >= a1 && from <= h8);
-	assert (to >= a1 && to <= h8);
+	//assert (from >= a1 && from <= h8);
+	//assert (to >= a1 && to <= h8);
 
-	assert(is_valid_piece(capture));
-	assert(is_valid_piece(promote));
+	//assert(is_valid_piece(capture));
+	//assert(is_valid_piece(promote));
 
 
 	return ( (from) | ((to) << 7) | ( (capture) << 14 ) | ( (promote) << 20 ) | (fl));
@@ -402,14 +402,6 @@ static inline void generate_king_moves(const struct board *brd, struct move_list
 	// get the bitboard representing the king
     U64 bbKing = brd->bitboards[pce];
 
-
-	if (CNT(bbKing) != 1){
-		printf("********* bad # kings \n");
-		print_board(brd);
-
-	}
-	assert(CNT(bbKing) == 1);
-
 	enum square king_sq = POP(&bbKing);
 
 	// get occupancy mask for this piece and square
@@ -562,7 +554,7 @@ static inline void generate_white_pawn_moves(const struct board *brd, struct mov
 		}
     }
 
-	validate_move_list(mvl);
+	//validate_move_list(mvl);
 }
 
 //              56 57 58 59 60 61 62 63
@@ -590,10 +582,6 @@ static inline void generate_black_pawn_moves(const struct board *brd, struct mov
 		int pawn_file = GET_FILE(pawn_sq);
 		int pawn_rank = GET_RANK(pawn_sq);
 		enum square next_sq_1 = pawn_sq - 8;
-
-
-		assert(next_sq_1 <= h8 && next_sq_1 >= a1);
-
 
 		if (is_square_occupied(brd->board, next_sq_1) == false) {
 			add_pawn_move(BLACK, pawn_sq, next_sq_1, mvl);
@@ -665,8 +653,6 @@ static inline void generate_black_pawn_moves(const struct board *brd, struct mov
  */
 static inline void generate_sliding_horizontal_vertical_moves(const struct board *brd, struct move_list *mvl, enum piece pce){
 
-	assert((pce == W_ROOK) || (pce == B_ROOK) || (pce == W_QUEEN) || (pce == B_QUEEN));
-
 	U64 bb = brd->bitboards[pce];
 
 	while (bb != 0) {
@@ -733,8 +719,6 @@ static inline void generate_sliding_horizontal_vertical_moves(const struct board
  */
 
 static inline void generate_sliding_diagonal_moves(const struct board *brd, struct move_list *mvl, enum piece pce){
-
-	assert((pce == W_BISHOP) || (pce == B_BISHOP) || (pce == W_QUEEN) || (pce == B_QUEEN));
 
 	U64 bb = brd->bitboards[pce];
 
