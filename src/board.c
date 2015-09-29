@@ -67,10 +67,6 @@ void remove_piece_from_board(struct board *brd, enum square sq){
 	assert((sq >= a1) && (sq <= h8));
 	assert(is_square_occupied(brd->board, sq) == true);
 
-	//print_board(brd);
-	//printf("removing from square %s\n", print_square(sq));
-
-
 	enum piece pce = get_piece_at_square(brd, sq);
 	enum colour col = GET_COLOUR(pce);
 

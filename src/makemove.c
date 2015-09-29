@@ -94,17 +94,8 @@ bool make_move(struct board *brd, mv_bitmap mv){
 	enum square from = FROMSQ(mv);
 	enum square to = TOSQ(mv);
 
-///////// debug
-
-	//printf("MMMMMMMMMMMMMMMMMMM Before MakeMove : %s\n", print_move(mv));
-	//print_board(brd);
-
-
-
 	//enum piece pce = get_piece_at_square(brd, from);
 	enum colour side = brd->side_to_move;
-
-	//assert(GET_COLOUR(pce) == side);
 
 	brd->history[brd->history_ply].board_hash  = brd->board_hash;
 
@@ -133,8 +124,6 @@ bool make_move(struct board *brd, mv_bitmap mv){
 				break;
         }
     }
-
-	//assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
 
 	if (brd->en_passant != NO_SQUARE){
 		update_EP_hash(brd);
@@ -187,15 +176,10 @@ bool make_move(struct board *brd, mv_bitmap mv){
 		add_piece_to_board(brd, promoted, to);
 	}
 
-
-	//ASSERT_BOARD_OK(brd);
-
 	// check if move is valid (ie, king in check)
 	enum piece king = (side == BLACK) ? B_KING : W_KING;
 	U64 bb_king = brd->bitboards[king];
 	enum square king_sq = POP(&bb_king);
-
-	//assert(king_sq >= a1 && king_sq <= h8);
 
 	// flip side
 	brd->side_to_move = FLIP_SIDE(brd->side_to_move);
@@ -225,9 +209,6 @@ void take_move(struct board *brd){
 	// square has the piece in it.
 	enum square from = FROMSQ(mv);
 	enum square to = TOSQ(mv);
-
-	//assert(is_square_occupied(brd->board, to) == true);
-	//assert(is_square_occupied(brd->board, from) == false);
 
 	// hash out en passant and castle if set
 	if (brd->en_passant != NO_SQUARE){
