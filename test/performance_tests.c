@@ -35,7 +35,7 @@
 
 U64 perf_test(int depth, struct board *brd);
 void divide_perft(int depth, struct board *brd);
-U32 divide(int depth, struct board *brd, mv_bitmap source_mv);
+U32 divide(int depth, struct board *brd);
 void test_move_gen_depth(void);
 U64 perft(int depth, struct board *brd);
 void bug_check(void);
@@ -296,7 +296,7 @@ void divide_perft(int depth, struct board *brd) {
 
 		if (make_move(brd, mv)){
 			//move_cnt = divide((depth - 1), brd, mv);
-			divide((depth - 1), brd, mv);
+			divide((depth - 1), brd);
 			take_move(brd);
 
 			//printf("%s %d\n", print_move(mv), move_cnt);
@@ -313,7 +313,7 @@ void divide_perft(int depth, struct board *brd) {
 
 
 
-U32 divide(int depth, struct board *brd, mv_bitmap source_mv) {
+U32 divide(int depth, struct board *brd) {
 
     //ASSERT_BOARD_OK(brd);
 
@@ -332,18 +332,11 @@ U32 divide(int depth, struct board *brd, mv_bitmap source_mv) {
 
 
 
-	printf("QQQ moves generated for depth %d and source move %s : ", depth, print_move(source_mv));
-	print_compressed_board(brd);
-	printf("\n");
-	print_board(brd);
-	//print_move_list(&mv_list);
-	
-
     mv_bitmap mv;
     for(U32 mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
         mv = mv_list.moves[mv_num].move_bitmap;
 		if (make_move(brd, mv)){
-			nodes += divide((depth - 1), brd, mv);
+			nodes += divide((depth - 1), brd);
 			take_move(brd);
 		}
     }
