@@ -36,7 +36,6 @@ static void add_pawn_capture_move(enum colour col,
 static void add_pawn_move(enum colour col,enum square from, enum square to, struct move_list *mvl);
 static void add_quiet_move(mv_bitmap move_bitmap, struct move_list *mvlist);
 static void add_capture_move(mv_bitmap move_bitmap, struct move_list *mvlist);
-static void add_en_passent_move(mv_bitmap move_bitmap, struct move_list *mvlist);
 static void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl);
 static void generate_black_pawn_moves(const struct board *brd, struct move_list *mvl);
 static U64 get_horizontal_mask(enum square sq);
@@ -262,15 +261,6 @@ static inline void add_capture_move(mv_bitmap move_bitmap, struct move_list *mvl
 	assert( mvlist->move_count < MAX_POSITION_MOVES);
 
 	mvlist->moves[mvlist->move_count].move_bitmap = move_bitmap;
-    mvlist->moves[mvlist->move_count].score = 0;
-    mvlist->move_count++;
-}
-
-static inline void add_en_passent_move(mv_bitmap move_bitmap, struct move_list *mvlist)
-{
-	assert( mvlist->move_count < MAX_POSITION_MOVES);
-
-    mvlist->moves[mvlist->move_count].move_bitmap = move_bitmap;
     mvlist->moves[mvlist->move_count].score = 0;
     mvlist->move_count++;
 }
@@ -534,7 +524,7 @@ static inline void generate_white_pawn_moves(const struct board *brd, struct mov
 			}
 
 			if (cap_sq == brd->en_passant) {
-				add_en_passent_move(MOVE(pawn_sq, cap_sq, pce, NO_PIECE, MFLAG_EN_PASSANT), mvl);
+				add_capture_move(MOVE(pawn_sq, cap_sq, pce, NO_PIECE, MFLAG_EN_PASSANT), mvl);
 			}
 		}
 
@@ -549,7 +539,7 @@ static inline void generate_white_pawn_moves(const struct board *brd, struct mov
 			}
 
 			if (cap_sq == brd->en_passant) {
-				add_en_passent_move(MOVE(pawn_sq, cap_sq, pce, NO_PIECE, MFLAG_EN_PASSANT), mvl);
+				add_capture_move(MOVE(pawn_sq, cap_sq, pce, NO_PIECE, MFLAG_EN_PASSANT), mvl);
 			}
 		}
     }
@@ -613,7 +603,7 @@ static inline void generate_black_pawn_moves(const struct board *brd, struct mov
 			}
 
 			if (cap_sq == brd->en_passant) {
-				add_pawn_capture_move(BLACK, pawn_sq, cap_sq, pce, mvl);
+				add_capture_move(MOVE(pawn_sq, cap_sq, pce, NO_PIECE, MFLAG_EN_PASSANT), mvl);
 			}
 		}
 
@@ -631,7 +621,7 @@ static inline void generate_black_pawn_moves(const struct board *brd, struct mov
 			}
 
 			if (cap_sq == brd->en_passant) {
-				add_pawn_capture_move(BLACK, pawn_sq, cap_sq, pce, mvl);
+				add_capture_move(MOVE(pawn_sq, cap_sq, pce, NO_PIECE, MFLAG_EN_PASSANT), mvl);
 			}
 		}
     }
@@ -939,9 +929,6 @@ bool TEST_is_move_in_list(struct move_list *mvl, mv_bitmap mv){
 }
 void TEST_add_quiet_move(mv_bitmap move_bitmap, struct move_list *mvlist){
 	add_quiet_move(move_bitmap, mvlist);
-}
-void TEST_add_en_passent_move(mv_bitmap move_bitmap, struct move_list *mvlist){
-	add_en_passent_move(move_bitmap, mvlist);
 }
 void TEST_add_capture_move(mv_bitmap move_bitmap, struct move_list *mvlist){
 	add_capture_move(move_bitmap, mvlist);

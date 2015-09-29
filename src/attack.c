@@ -244,6 +244,7 @@ static inline bool is_pawn_attacking_square(const struct board *brd, enum square
     // get the bitboard representing all pawns on the board of
     // this colour
     U64 bbPawn = brd->bitboards[attacking_piece];
+        
     while (bbPawn != 0) {
 		enum square att_pce_sq = POP(&bbPawn);
 

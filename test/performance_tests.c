@@ -33,11 +33,11 @@
 
 
 
-void perf_test(int depth, struct board *brd);
+U64 perf_test(int depth, struct board *brd);
 void divide_perft(int depth, struct board *brd);
 U32 divide(int depth, struct board *brd, mv_bitmap source_mv);
 void test_move_gen_depth(void);
-void perft(int depth, struct board *brd);
+U64 perft(int depth, struct board *brd);
 void bug_check(void);
 
 
@@ -191,6 +191,8 @@ void test_move_gen_depth(){
 
 	int depth = 5;
 
+	U64 move_count = 0;
+
 	for (int i = 0; i < NUM_EPD; i++){
 		struct EPD e = test_positions[i];
 
@@ -198,20 +200,22 @@ void test_move_gen_depth(){
 
 		struct board *brd= init_game(e.fen);
 		leafNodes = 0;
-		perf_test(depth, brd);
+		move_count += perf_test(depth, brd);
 
 		assert_true(leafNodes == e.depth5);
 		free(brd);
 	}
+	
+	printf("Total node count : %llu\n", move_count);
+	
 }
 
 
 
 
-void perf_test(int depth, struct board *brd) {
+U64 perf_test(int depth, struct board *brd) {
 
-    //ASSERT_BOARD_OK(brd);
-
+	U64 move_count = 0;
 	leafNodes = 0;
 
 	struct move_list mv_list = {
@@ -227,24 +231,24 @@ void perf_test(int depth, struct board *brd) {
 		if ( !make_move(brd, mv))  {
             continue;
         }
-        perft(depth - 1, brd);
+        move_count += perft(depth - 1, brd);
         take_move(brd);
      }
 
-	printf("Test Complete : %lld nodes visited\n\n\n",leafNodes);
+	printf("Test Complete : %llu nodes visited\n\n\n",leafNodes);
 
-    return;
+    return move_count;
 }
 
 
 
-void perft(int depth, struct board *brd) {
+U64 perft(int depth, struct board *brd) {
 
-    //ASSERT_BOARD_OK(brd);
+	U64 move_count = 0;
 
 	if(depth == 0) {
 	    leafNodes++;
-        return;
+        return 0;
     }
 
 
@@ -257,21 +261,14 @@ void perft(int depth, struct board *brd) {
 
     mv_bitmap mv;
     for(U32 mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
-        mv = mv_list.moves[mv_num].move_bitmap;
-        
-        //struct board *brd_cloned = clone_board(brd);
+		mv = mv_list.moves[mv_num].move_bitmap;
         
 		if (make_move(brd, mv))  {
-			//printf("--depth %d, move : %s\n", depth, print_move(mv));
-			perft(depth - 1, brd);
+			move_count += perft(depth - 1, brd);
 			take_move(brd);
-			
-			//assert_boards_are_equal(brd, brd_cloned);
-		}	
-		//free(brd_cloned);
-		
+		}		
     }
-    return;
+    return move_count;
 
 }
 
@@ -282,7 +279,7 @@ void divide_perft(int depth, struct board *brd) {
 
     //ASSERT_BOARD_OK(brd);
 
-	U32 move_cnt = 0;
+	//U32 move_cnt = 0;
 
 	struct move_list mv_list = {
 		.moves = {{0,0}},
@@ -291,24 +288,25 @@ void divide_perft(int depth, struct board *brd) {
 
 	//generate_all_moves(brd, &mv_list);
 
-	TEST_add_quiet_move(MOVE(a2, a4, NO_PIECE, NO_PIECE, MFLAG_PAWN_START), &mv_list);
+	TEST_add_quiet_move(MOVE(b4, a3, NO_PIECE, NO_PIECE, MFLAG_PAWN_START), &mv_list);
 
     mv_bitmap mv;
     for(U32 mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
 		mv = mv_list.moves[mv_num].move_bitmap;
 
 		if (make_move(brd, mv)){
-			move_cnt = divide((depth - 1), brd, mv);
+			//move_cnt = divide((depth - 1), brd, mv);
+			divide((depth - 1), brd, mv);
 			take_move(brd);
 
-			printf("%s %d\n", print_move(mv), move_cnt);
+			//printf("%s %d\n", print_move(mv), move_cnt);
 		} else {
 			printf("Invalid move %s\n", print_move(mv));
 		}
 
     }
 
-	printf("\nTest Complete : %llu nodes visited\n",leafNodes);
+	printf("\nTest Complete :%llu nodes visited\n",leafNodes);
 
     return;
 }
@@ -332,11 +330,13 @@ U32 divide(int depth, struct board *brd, mv_bitmap source_mv) {
 		
 	generate_all_moves(brd, &mv_list);
 
+
+
 	printf("QQQ moves generated for depth %d and source move %s : ", depth, print_move(source_mv));
 	print_compressed_board(brd);
 	printf("\n");
-	//print_board(brd);
-	print_move_list(&mv_list);
+	print_board(brd);
+	//print_move_list(&mv_list);
 	
 
     mv_bitmap mv;
@@ -354,10 +354,10 @@ U32 divide(int depth, struct board *brd, mv_bitmap source_mv) {
 
 
 void bug_check(void){
-	struct board *brd= init_game("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
+	struct board *brd= init_game("r3k2r/p1ppqpb1/bn2pnp1/3PN3/Pp2P3/2N2Q1p/1PPBBPPP/R3K2R b KQkq a3 0 1");
 
 		leafNodes = 0;
-		divide_perft((U8)5, brd);
+		divide_perft((U8)3, brd);
 
 		assert_true(leafNodes == 193690690);
 }
@@ -367,9 +367,9 @@ void perf_test_fixture(void)
 {
     test_fixture_start();	// starts a fixture
 
-    //run_test(test_move_gen_depth);
+    run_test(test_move_gen_depth);
 
-	run_test(bug_check);
+	//run_test(bug_check);
 
 
     test_fixture_end();		// ends a fixture

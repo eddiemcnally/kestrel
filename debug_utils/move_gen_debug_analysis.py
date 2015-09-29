@@ -2,7 +2,7 @@
 # differences
 
 
-def construct_dict_of_moves(f):
+def construct_dict_of_moves_with_details(f):
     with open(f, encoding='utf-8') as a_file:
         counter = 0
         inmovelist = False
@@ -28,15 +28,33 @@ def construct_dict_of_moves(f):
     return my_dict
 
 
-k_file = construct_dict_of_moves("/home/eddie/kkk.kkk")
-print("# keys in kkk.kkk : " + str(len(k_file.keys())))
+def construct_set_of_moves(f):
+    with open(f, encoding='utf-8') as a_file:
+        my_set = set()
+        for line in a_file:
+            if "QQQ moves generated for depth " in line:
+                if line in my_set:
+                    print(("dup key in " + f + " : " + line))
+                else:
+                    my_set.add(line)
+    return my_set
 
-v_file = construct_dict_of_moves("/home/eddie/vvv.vvv")
-print("# keys in vvv.vvv : " + str(len(v_file.keys())))
 
-#for v in v_file.keys():
-#    if v not in k_file.keys():
-#        print("not in k: " + v)
+k_file = construct_set_of_moves("/home/eddie/kkk.kkk")
+print("# keys in kkk.kkk : " + str(len(k_file)))
+
+v_file = construct_set_of_moves("/home/eddie/vvv.vvv")
+print("# keys in vvv.vvv : " + str(len(v_file)))
+
+for v in v_file:
+    if v not in k_file:
+        print("not in k: " + v)
+
+for k in k_file:
+    if v not in k_file:
+        print("not in v: " + k)
+
+
 #    if v_file[v] != k_file[v]:
 #        print("line: " + v)
 #        print("k = " + str(k_file[v]) + " v = " + str(v_file[v]))

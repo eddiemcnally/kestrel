@@ -171,11 +171,9 @@ bool make_move(struct board *brd, mv_bitmap mv){
 
 		if (mv & MFLAG_PAWN_START){
 			if (side == WHITE){
-				brd->en_passant = from + 8;
-				assert(GET_RANK(from + 8) == RANK_3);
+				brd->en_passant = from + 8;				
 			} else {
-				brd->en_passant = from - 8;
-				assert(GET_RANK(from - 8) == RANK_6);
+				brd->en_passant = from - 8;				
 			}
 			update_EP_hash(brd);
 		}
@@ -206,19 +204,9 @@ bool make_move(struct board *brd, mv_bitmap mv){
 
 	// side is already flipped above, so use that as the attacking side
 	if (is_sq_attacked(brd, king_sq, brd->side_to_move)){
-		
-		//printf("uuuuuuuuuuuuuuuuuuuuuuu unmaking move : %s\n", print_move(mv));
-		//print_board(brd);
-		
-		
 		take_move(brd);
-		//ASSERT_BOARD_OK(brd);
 		return false;
 	} else {
-
-		//printf("cccccccccccccccccccccccccccc move complete %s\n", print_move(mv));
-
-		//ASSERT_BOARD_OK(brd);
 		return true;
 	}
 }
@@ -227,8 +215,6 @@ bool make_move(struct board *brd, mv_bitmap mv){
 
 
 void take_move(struct board *brd){
-
-	//ASSERT_BOARD_OK(brd);
 
 	brd->history_ply--;
 	brd->ply--;
@@ -305,8 +291,6 @@ void take_move(struct board *brd){
 		enum piece pce_to_add = (prom_col == WHITE) ? W_PAWN : B_PAWN;
 		add_piece_to_board(brd, pce_to_add, from);
 	}
-
-	//ASSERT_BOARD_OK(brd);
 }
 
 
