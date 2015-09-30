@@ -33,11 +33,11 @@
 
 
 
-U64 perf_test(int depth, struct board *brd);
+void perf_test(int depth, struct board *brd);
 void divide_perft(int depth, struct board *brd);
 U32 divide(int depth, struct board *brd);
 void test_move_gen_depth(void);
-U64 perft(int depth, struct board *brd);
+void perft(int depth, struct board *brd);
 void bug_check(void);
 
 
@@ -189,9 +189,8 @@ U64 leafNodes = 0;
 
 void test_move_gen_depth(){
 
-	int depth = 5;
-
-	U64 move_count = 0;
+	int depth = 6;
+	U64 total_nodes = 0;
 
 	for (int i = 0; i < NUM_EPD; i++){
 		struct EPD e = test_positions[i];
@@ -200,22 +199,22 @@ void test_move_gen_depth(){
 
 		struct board *brd= init_game(e.fen);
 		leafNodes = 0;
-		move_count += perf_test(depth, brd);
+		perf_test(depth, brd);
 
-		assert_true(leafNodes == e.depth5);
+		assert_true(leafNodes == e.depth6);
+		total_nodes += leafNodes;
 		free(brd);
 	}
 	
-	printf("Total node count : %llu\n", move_count);
+	printf("Total node count : %llu\n", total_nodes);
 	
 }
 
 
 
 
-U64 perf_test(int depth, struct board *brd) {
+void perf_test(int depth, struct board *brd) {
 
-	U64 move_count = 0;
 	leafNodes = 0;
 
 	struct move_list mv_list = {
@@ -231,24 +230,22 @@ U64 perf_test(int depth, struct board *brd) {
 		if ( !make_move(brd, mv))  {
             continue;
         }
-        move_count += perft(depth - 1, brd);
+        perft(depth - 1, brd);
         take_move(brd);
      }
 
 	printf("Test Complete : %llu nodes visited\n\n\n",leafNodes);
 
-    return move_count;
+    return;
 }
 
 
 
-U64 perft(int depth, struct board *brd) {
-
-	U64 move_count = 0;
+void perft(int depth, struct board *brd) {
 
 	if(depth == 0) {
 	    leafNodes++;
-        return 0;
+        return;
     }
 
 
@@ -264,11 +261,11 @@ U64 perft(int depth, struct board *brd) {
 		mv = mv_list.moves[mv_num].move_bitmap;
         
 		if (make_move(brd, mv))  {
-			move_count += perft(depth - 1, brd);
+			perft(depth - 1, brd);
 			take_move(brd);
 		}		
     }
-    return move_count;
+    return;
 
 }
 

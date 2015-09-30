@@ -187,8 +187,7 @@ inline void set_bit(U64 * brd, enum square sq)
  */
 inline void clear_bit(U64 * brd, enum square sq)
 {
-
-    assert((sq >= a1) && (sq <= h8));
+    //assert((sq >= a1) && (sq <= h8));
 
     *brd = *brd & (U64) (~(0x01ull << sq));
 }

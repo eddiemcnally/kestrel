@@ -329,6 +329,10 @@ static inline bool is_blocked_horizontally(const struct board *brd, enum square 
 		end = start_sq;
 	}
 
+
+	// TODO : replace this loop with a lookup mask for all
+	// possible horizontal intervening squares (could then so a simple
+	// bit mask check instead of a loop) 
 	for(enum square s = start + 1; s < end; s++){
 		if (is_square_occupied(brd->board, s)){
 			return true;
@@ -358,6 +362,9 @@ static inline bool is_blocked_vertically(const struct board *brd, enum square st
 		end = start_sq;
 	}
 
+	// TODO : replace this loop with a lookup mask for all
+	// possible vertical intervening squares (could then so a simple
+	// bit mask check instead of a loop) 
 	for(enum square s = start + 8; s < end; s = s + 8){
 		if (is_square_occupied(brd->board, s)){
 			return true;
