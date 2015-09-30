@@ -889,7 +889,7 @@ void test_add_piece(){
 
 	assert_true(check_bit(&brd->board, c4) == false);
 	assert_true(check_bit(&brd->bitboards[W_KNIGHT], c4) == false);
-	assert_true(CNT(brd->bitboards[W_KNIGHT]) == 2);
+	assert_true(count_bits(brd->bitboards[W_KNIGHT]) == 2);
 
 
 	// save some info before the move for comparison
@@ -939,7 +939,7 @@ void test_en_passant(void){
 	assert_true(get_piece_at_square(brd, d5) == W_PAWN);
 	assert_true(get_piece_at_square(brd, e1) == W_KING);
 	// 4 pieces on the board
-	assert_true(CNT(brd->board) == 4);
+	assert_true(count_bits(brd->board) == 4);
 	assert_true(brd->en_passant == c6);
 
 	// now, make the en passant move
@@ -951,7 +951,7 @@ void test_en_passant(void){
 	assert_true(get_piece_at_square(brd, c6) == W_PAWN);
 	assert_true(get_piece_at_square(brd, e1) == W_KING);
 	// 4 pieces on the board
-	assert_true(CNT(brd->board) == 3);
+	assert_true(count_bits(brd->board) == 3);
 
 
 }
@@ -967,7 +967,7 @@ void test_move_piece(){
 
 	assert_true(check_bit(&brd->board, e5) == true);
 	assert_true(check_bit(&brd->bitboards[W_KNIGHT], e5) == true);
-	assert_true(CNT(brd->bitboards[W_KNIGHT]) == 2);
+	assert_true(count_bits(brd->bitboards[W_KNIGHT]) == 2);
 
 
 	// save some info before the move for comparison

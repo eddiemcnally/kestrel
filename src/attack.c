@@ -31,14 +31,15 @@
 static bool are_intervening_squares_empty(const struct board *brd, U64 occ_mask, enum square attacking_sq, enum square target_sq);
 static bool is_blocked_horizontally(const struct board *brd, enum square sq1, enum square sq2);
 static bool is_blocked_vertically(const struct board *brd, enum square sq1, enum square sq2);
-static bool is_bishop_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side);
 static bool is_knight_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side);
 static bool is_pawn_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side);
 static bool is_king_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side);
-static bool is_rook_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side);
-static bool is_queen_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side);
 static bool is_attacked_horizontally_or_vertically(const struct board *brd, enum square sq_one, enum square sq_two);
 static bool is_attacked_diagonally(const struct board *brd, enum square attacking_sq, enum square target_sq);
+static bool is_rook_or_queen_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side);
+static bool is_bishop_or_queen_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side);
+
+
 
 
 /*
@@ -52,9 +53,6 @@ static bool is_attacked_diagonally(const struct board *brd, enum square attackin
 
 bool is_sq_attacked(const struct board *brd, enum square sq, enum colour attacking_side)
 {
-    // TODO:
-	// combine rook/queen and bishop/queen to reduce number of lookups
-
     if (is_knight_attacking_square(brd, sq, attacking_side)){
 		return true;
 	}
@@ -65,18 +63,73 @@ bool is_sq_attacked(const struct board *brd, enum square sq, enum colour attacki
     if (is_king_attacking_square(brd, sq, attacking_side)){
 		return true;
 	}
-    if (is_queen_attacking_square(brd, sq, attacking_side)){
+	
+	if (is_rook_or_queen_attacking_square(brd, sq, attacking_side)){
 		return true;
 	}
-    if (is_bishop_attacking_square(brd, sq, attacking_side)){
-		return true;
-	}
-    if (is_rook_attacking_square(brd, sq, attacking_side)){
+	if (is_bishop_or_queen_attacking_square(brd, sq, attacking_side)){
 		return true;
 	}
 
     return false;
 }
+
+
+// checks vertical and horizontal for both rook and queen
+static inline bool is_rook_or_queen_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side){
+    U64 sqBB = 0;
+    set_bit(&sqBB, sq);
+
+	// Logical OR the rook and queen bitboards for the relevant colour
+    U64 rq_bb = 0;
+    if (attacking_side == BLACK){
+		rq_bb = brd->bitboards[B_ROOK];
+		rq_bb |= brd->bitboards[B_QUEEN];
+	} else {
+		rq_bb = brd->bitboards[W_ROOK];
+		rq_bb |= brd->bitboards[W_QUEEN];
+	}
+    
+    while (rq_bb!= 0) {
+		enum square att_pce_sq = pop_1st_bit(&rq_bb);
+
+		bool is_attacked = is_attacked_horizontally_or_vertically(brd, att_pce_sq, sq);
+		if (is_attacked){
+			return true;
+		}
+    }
+
+    return false;	
+}
+
+
+// checks diagonal and anti-diagonal for quuen and bishop
+static inline bool is_bishop_or_queen_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side){
+    U64 sqBB = 0;
+    set_bit(&sqBB, sq);
+
+	// Logical OR the bishop and queen bitboards for the relevant colour
+    U64 bq_bb = 0;
+    if (attacking_side == BLACK){
+		bq_bb = brd->bitboards[B_BISHOP];
+		bq_bb |= brd->bitboards[B_QUEEN];
+	} else {
+		bq_bb = brd->bitboards[W_BISHOP];
+		bq_bb |= brd->bitboards[W_QUEEN];
+	}
+    
+    while (bq_bb!= 0) {
+		enum square att_pce_sq = pop_1st_bit(&bq_bb);
+
+		bool is_attacked = is_attacked_diagonally(brd, att_pce_sq, sq);
+		if (is_attacked){
+			return true;
+		}
+    }
+
+    return false;	
+}
+
 
 
 static inline bool is_knight_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side)
@@ -97,7 +150,7 @@ static inline bool is_knight_attacking_square(const struct board *brd, enum squa
     U64 bbKnight = brd->bitboards[attacking_piece];
 
     while (bbKnight != 0) {
-		enum square att_pce_sq = POP(&bbKnight);
+		enum square att_pce_sq = pop_1st_bit(&bbKnight);
 
 		// get occupancy mask for this piece and square
 		U64 mask = GET_KNIGHT_OCC_MASK(att_pce_sq);
@@ -105,74 +158,6 @@ static inline bool is_knight_attacking_square(const struct board *brd, enum squa
 		if ((mask & sqBB) != 0) {
 			// a Knight is attacking this square
 			return true;
-		}
-    }
-    return false;
-}
-
-static inline bool is_bishop_attacking_square(const struct board *brd, enum square target_sq, enum colour attacking_side)
-{
-    // create bitboard for square under attack
-    U64 sqBB = 0;
-    set_bit(&sqBB, target_sq);
-
-    enum piece attacking_piece;
-
-    if (attacking_side == WHITE)
-		attacking_piece = W_BISHOP;
-    else
-		attacking_piece = B_BISHOP;
-
-    // get the bitboard representing all bishops on the board of
-    // this colour
-    U64 bbBishop = brd->bitboards[attacking_piece];
-
-    while (bbBishop != 0) {
-		enum square att_pce_sq = POP(&bbBishop);
-
-		bool is_attacked = is_attacked_diagonally(brd, att_pce_sq, target_sq);
-		if (is_attacked){
-			return true;
-		}
-    }
-
-	//printf("not attacking %s\n", print_square(target_sq));
-    return false;
-}
-
-static bool is_rook_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side)
-{
-    // create bitboard for square under attack
-    U64 sqBB = 0;
-    set_bit(&sqBB, sq);
-
-    enum piece attacking_piece;
-
-    if (attacking_side == WHITE)
-		attacking_piece = W_ROOK;
-    else
-		attacking_piece = B_ROOK;
-
-    // get the bitboard representing all rooks on the board of
-    // this colour
-    U64 bbRook = brd->bitboards[attacking_piece];
-
-    // check all rooks
-    while (bbRook != 0) {
-		enum square att_pce_sq = POP(&bbRook);
-
-		// get occupancy mask for this piece and square
-		U64 mask = GET_ROOK_OCC_MASK(att_pce_sq);
-		if (mask & sqBB) {
-			// a Rook is possibly attacking this square
-			// search for any blocking pieces
-			bool attacked = is_attacked_horizontally_or_vertically(brd, sq, att_pce_sq);
-			if (attacked){
-				return true;
-			} else {
-				// keep looking
-				continue;
-			}
 		}
     }
     return false;
@@ -199,7 +184,7 @@ static inline bool is_pawn_attacking_square(const struct board *brd, enum square
     U64 bbPawn = brd->bitboards[attacking_piece];
         
     while (bbPawn != 0) {
-		enum square att_pce_sq = POP(&bbPawn);
+		enum square att_pce_sq = pop_1st_bit(&bbPawn);
 
 		// get occupancy mask for this piece
 		U64 mask = 0;
@@ -216,47 +201,6 @@ static inline bool is_pawn_attacking_square(const struct board *brd, enum square
     return false;
 }
 
-static inline bool is_queen_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side)
-{
-
-    // create bitboard for square under attack
-    U64 sqBB = 0;
-    set_bit(&sqBB, sq);
-
-    enum piece attacking_piece;
-
-    if (attacking_side == WHITE)
-		attacking_piece = W_QUEEN;
-    else
-		attacking_piece = B_QUEEN;
-
-    // get the bitboard representing all queens on the board of
-    // this colour
-    U64 bbQueen = brd->bitboards[attacking_piece];
-
-    // check *all* queens to see if blocked.
-    while (bbQueen != 0) {
-		enum square att_pce_sq = POP(&bbQueen);
-
-		// get occupancy mask for this square
-		U64 mask = GET_QUEEN_OCC_MASK(att_pce_sq);
-
-		if (mask & sqBB) {
-			// the queen is potentially attacking this square.
-			// Need to see if any blocking pieces
-
-			if (is_attacked_diagonally(brd, att_pce_sq, sq)) {
-				return true;
-			}
-			if (is_attacked_horizontally_or_vertically(brd, att_pce_sq, sq)) {
-				return true;
-			}
-		}
-    }
-
-    return false;
-
-}
 
 static inline bool is_king_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side)
 {
@@ -279,7 +223,7 @@ static inline bool is_king_attacking_square(const struct board *brd, enum square
     // this colour
     U64 bbPawn = brd->bitboards[attacking_piece];
     while (bbPawn != 0) {
-		enum square att_pce_sq = POP(&bbPawn);
+		enum square att_pce_sq = pop_1st_bit(&bbPawn);
 
 		// get occupancy mask for this square
 		U64 mask = GET_KING_OCC_MASK(att_pce_sq);

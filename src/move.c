@@ -249,7 +249,7 @@ static inline bool is_move_in_list(struct move_list *mvl, mv_bitmap mv){
 static inline void add_quiet_move(mv_bitmap move_bitmap, struct move_list *mvlist)
 {
 
-	assert( mvlist->move_count < MAX_POSITION_MOVES);
+	//assert( mvlist->move_count < MAX_POSITION_MOVES);
 
     mvlist->moves[mvlist->move_count].move_bitmap = move_bitmap;
     mvlist->moves[mvlist->move_count].score = 0;
@@ -258,7 +258,7 @@ static inline void add_quiet_move(mv_bitmap move_bitmap, struct move_list *mvlis
 
 static inline void add_capture_move(mv_bitmap move_bitmap, struct move_list *mvlist)
 {
-	assert( mvlist->move_count < MAX_POSITION_MOVES);
+	//assert( mvlist->move_count < MAX_POSITION_MOVES);
 
 	mvlist->moves[mvlist->move_count].move_bitmap = move_bitmap;
     mvlist->moves[mvlist->move_count].score = 0;
@@ -339,7 +339,7 @@ static inline void generate_knight_piece_moves(const struct board *brd, struct m
 	// iterate over all knights of this colour on the board
     while (bbKnight != 0) {
 
-		enum square knight_sq = POP(&bbKnight);
+		enum square knight_sq = pop_1st_bit(&bbKnight);
 
 		// get occupancy mask for this piece and square
 		U64 mask = GET_KNIGHT_OCC_MASK(knight_sq);
@@ -347,9 +347,9 @@ static inline void generate_knight_piece_moves(const struct board *brd, struct m
 		while (mask != 0){
 			// iterate over all the possible destination squares
 			// for this knight
-			enum square knight_dest_sq = POP(&mask);
+			enum square knight_dest_sq = pop_1st_bit(&mask);
 
-			assert(knight_dest_sq != knight_sq);
+			//assert(knight_dest_sq != knight_sq);
 
 			enum piece p = get_piece_at_square(brd, knight_dest_sq);
 			if (p != NO_PIECE){
@@ -392,7 +392,7 @@ static inline void generate_king_moves(const struct board *brd, struct move_list
 	// get the bitboard representing the king
     U64 bbKing = brd->bitboards[pce];
 
-	enum square king_sq = POP(&bbKing);
+	enum square king_sq = pop_1st_bit(&bbKing);
 
 	// get occupancy mask for this piece and square
 	U64 mask = GET_KING_OCC_MASK(king_sq);
@@ -400,7 +400,7 @@ static inline void generate_king_moves(const struct board *brd, struct move_list
 	while (mask != 0){
 		// iterate over all the possible destination squares
 		// for this king
-		enum square king_dest_sq = POP(&mask);
+		enum square king_dest_sq = pop_1st_bit(&mask);
 
 		enum piece p = get_piece_at_square(brd, king_dest_sq);
 		if (p != NO_PIECE){
@@ -485,14 +485,14 @@ static inline void generate_white_pawn_moves(const struct board *brd, struct mov
 
     while (bbPawn != 0) {
 
-		enum square pawn_sq = POP(&bbPawn);
+		enum square pawn_sq = pop_1st_bit(&bbPawn);
 
 		//int pawn_rank = GET_RANK(pawn_sq);
 		int pawn_file = GET_FILE(pawn_sq);
 		int pawn_rank = GET_RANK(pawn_sq);
 		enum square next_sq_1 = pawn_sq + 8;
 
-		assert(next_sq_1 <= h8);
+		//assert(next_sq_1 <= h8);
 
 		if (is_square_occupied(brd->board, next_sq_1) == false) {
 			add_pawn_move(WHITE, pawn_sq, next_sq_1, mvl);
@@ -500,7 +500,7 @@ static inline void generate_white_pawn_moves(const struct board *brd, struct mov
 			if (pawn_rank == RANK_2) {
 				enum square next_sq_2 = pawn_sq + 16;
 
-				assert(next_sq_2 <= h8);
+				//assert(next_sq_2 <= h8);
 				bool sq_2_occupied = is_square_occupied(brd->board, next_sq_2);
 				if (sq_2_occupied == false) {
 					add_quiet_move(MOVE(pawn_sq, next_sq_2,	NO_PIECE, NO_PIECE, MFLAG_PAWN_START), mvl);
@@ -514,7 +514,7 @@ static inline void generate_white_pawn_moves(const struct board *brd, struct mov
 			enum square cap_sq = pawn_sq + 7;
 
 
-			assert(cap_sq <= h8);
+			//assert(cap_sq <= h8);
 			enum piece pce = get_piece_at_square(brd, cap_sq);
 
 			if ((pce != NO_PIECE) && (GET_COLOUR(pce) == BLACK)) {
@@ -529,7 +529,7 @@ static inline void generate_white_pawn_moves(const struct board *brd, struct mov
 		// check for capture right
 		if (pawn_file < FILE_H) {
 			enum square cap_sq = pawn_sq + 9;
-			assert(cap_sq <= h8);
+			//assert(cap_sq <= h8);
 			enum piece pce = get_piece_at_square(brd, cap_sq);
 
 			if ((pce != NO_PIECE) && (GET_COLOUR(pce) == BLACK)) {
@@ -552,7 +552,7 @@ static inline void generate_black_pawn_moves(const struct board *brd, struct mov
 
     while (bbPawn != 0) {
 
-		enum square pawn_sq = POP(&bbPawn);
+		enum square pawn_sq = pop_1st_bit(&bbPawn);
 
 		//int pawn_rank = GET_RANK(pawn_sq);
 		int pawn_file = GET_FILE(pawn_sq);
@@ -565,7 +565,7 @@ static inline void generate_black_pawn_moves(const struct board *brd, struct mov
 			if (pawn_rank == RANK_7) {
 				enum square next_sq_2 = pawn_sq - 16; // can skip down 2 ranks
 
-				assert(next_sq_2 <= h8 && next_sq_2 >= a1);
+				//assert(next_sq_2 <= h8 && next_sq_2 >= a1);
 
 				bool sq_2_occupied = is_square_occupied(brd->board, next_sq_2);
 				if (sq_2_occupied == false) {
@@ -580,7 +580,7 @@ static inline void generate_black_pawn_moves(const struct board *brd, struct mov
 		if (pawn_file > FILE_A) {
 			enum square cap_sq = pawn_sq - 9;
 
-			assert(cap_sq <= h8 && cap_sq >= a1);
+			//assert(cap_sq <= h8 && cap_sq >= a1);
 
 			enum piece pce = get_piece_at_square(brd, cap_sq);
 
@@ -597,7 +597,7 @@ static inline void generate_black_pawn_moves(const struct board *brd, struct mov
 		if (pawn_file < FILE_H) {
 			enum square cap_sq = pawn_sq - 7;
 
-			assert((cap_sq >= a1) && (cap_sq <= h8));
+			//assert((cap_sq >= a1) && (cap_sq <= h8));
 
 
 			enum piece pce = get_piece_at_square(brd, cap_sq);
@@ -633,7 +633,7 @@ static inline void generate_sliding_horizontal_vertical_moves(const struct board
 
 	while (bb != 0) {
 
-		enum square pce_sq = POP(&bb);
+		enum square pce_sq = pop_1st_bit(&bb);
 
 		U64 hmask = get_horizontal_mask(pce_sq);
 		U64 vmask = get_vertical_mask(pce_sq);
@@ -666,7 +666,7 @@ static inline void generate_sliding_horizontal_vertical_moves(const struct board
 
 		while (excl_same_col != 0) {
 
-			enum square sq = POP(&excl_same_col);
+			enum square sq = pop_1st_bit(&excl_same_col);
 
 			enum piece mv_pce = get_piece_at_square(brd, sq);
 
@@ -700,7 +700,7 @@ static inline void generate_sliding_diagonal_moves(const struct board *brd, stru
 
     while (bb != 0) {
 
-		enum square pce_sq = POP(&bb);
+		enum square pce_sq = pop_1st_bit(&bb);
 
 		U64 posmask = get_positive_diagonal_mask(pce_sq);
 		U64 negmask = get_negative_diagonal_mask(pce_sq);
@@ -732,7 +732,7 @@ static inline void generate_sliding_diagonal_moves(const struct board *brd, stru
 
 		while (excl_same_col != 0) {
 
-			enum square sq = POP(&excl_same_col);
+			enum square sq = pop_1st_bit(&excl_same_col);
 
 			enum piece mv_pce = get_piece_at_square(brd, sq);
 

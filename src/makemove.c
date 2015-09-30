@@ -51,22 +51,22 @@ static const U8 castle_permission_mask[NUM_SQUARES] = {
 
 	//ASSERT_BOARD_OK(brd);
 
-	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
-	assert(IS_VALID_SQUARE(to));
-	assert(IS_VALID_SQUARE(from));
-	assert(is_square_occupied(brd->board, from) == true);
-	assert(is_square_occupied(brd->board, to) == false);
+	//assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
+	//assert(IS_VALID_SQUARE(to));
+	//assert(IS_VALID_SQUARE(from));
+	//assert(is_square_occupied(brd->board, from) == true);
+	//assert(is_square_occupied(brd->board, to) == false);
 
 	enum piece pce = get_piece_at_square(brd, from);
 
-	assert(IS_VALID_PIECE(pce));
+	//assert(IS_VALID_PIECE(pce));
 
 
 	update_piece_hash(brd, pce, from);
 	brd->pieces[from] = NO_PIECE;
 
-	assert(IS_VALID_PIECE(pce));
-	assert(IS_VALID_SQUARE(from));
+	//assert(IS_VALID_PIECE(pce));
+	//assert(IS_VALID_SQUARE(from));
 
 	clear_bit(&brd->bitboards[pce], from);
 	clear_bit(&brd->board, from);
@@ -179,7 +179,7 @@ bool make_move(struct board *brd, mv_bitmap mv){
 	// check if move is valid (ie, king in check)
 	enum piece king = (side == BLACK) ? B_KING : W_KING;
 	U64 bb_king = brd->bitboards[king];
-	enum square king_sq = POP(&bb_king);
+	enum square king_sq = pop_1st_bit(&bb_king);
 
 	// flip side
 	brd->side_to_move = FLIP_SIDE(brd->side_to_move);

@@ -266,24 +266,24 @@ void test_setting_bits_in_a_board()
 	//
 	set_bit(&test_brd, 22);
     assert_true(test_brd == 4194304);
-    assert_true(1 == CNT(test_brd));
+    assert_true(1 == count_bits(test_brd));
 
 
 	test_brd = 0;
     set_bit(&test_brd, 0);
     assert_true(test_brd == 1);
-    assert_true(1 == CNT(test_brd));
+    assert_true(1 == count_bits(test_brd));
 
 
 	test_brd = 0;
     set_bit(&test_brd, 63);
     assert_true(test_brd == 0x8000000000000000);
-    assert_true(1 == CNT(test_brd));
+    assert_true(1 == count_bits(test_brd));
 
 	test_brd = 0;
     set_bit(&test_brd, 31);
     assert_true(test_brd == 2147483648);
-    assert_true(1 == CNT(test_brd));
+    assert_true(1 == count_bits(test_brd));
 
     test_brd = 0;
     set_bit(&test_brd, 31);
@@ -292,7 +292,7 @@ void test_setting_bits_in_a_board()
     set_bit(&test_brd, 55);
     set_bit(&test_brd, 8);
     assert_true(test_brd == 0x80000080200102);
-    assert_true(5 == CNT(test_brd));
+    assert_true(5 == count_bits(test_brd));
 
 }
 
@@ -307,12 +307,12 @@ void test_clearing_bits_in_a_board()
 	//
 	set_bit(&test_brd, 22);
     set_bit(&test_brd, 23);
-    assert_true(2 == CNT(test_brd));
+    assert_true(2 == count_bits(test_brd));
     assert_true(check_bit(&test_brd, 22));
     assert_true(check_bit(&test_brd, 23));
     clear_bit(&test_brd, 22);
     assert_true(check_bit(&test_brd, 23));
-    assert_true(1 == CNT(test_brd));
+    assert_true(1 == count_bits(test_brd));
 
     test_brd = 0;
 

@@ -56,9 +56,7 @@ enum {
     BQCA = 0x08			// black, queen-side
 };
 
-// some shortcut macros
-#define POP(bb)			pop_1st_bit(bb)
-#define	CNT(bb)			count_bits(bb)
+
 
 struct board *init_board(char * fen);
 U8 get_LSB_index(U64 bb);
@@ -75,6 +73,8 @@ bool check_bit(const U64 * brd, enum square sq);
 void set_piece_material(struct board *brd);
 U64 overlay_colours(const struct board *the_board, enum colour col);
 void overlay_boards(struct board *the_board);
+U8 pop_1st_bit(U64 * bb);
+U8 count_bits(U64 bb);
 
 
 

@@ -20,12 +20,15 @@ Some implementation notes:
 This is a work-in-progress. Current state:
 * Can read in FEN
 * Can generate moves (currently un-scored, and pruning not implemented)
-* Currently (Sept 2015) completes the perft tests without errors to a depth of 6 (> 12x10^9 move generated)
+* Currently (Oct 2015) completes the perft tests without errors to a depth of 6 (> 12x10^9 move generated)
 * The code is unoptimised, in the sense that no explicit effort has been undertaken to profile and tune the code paths.
 * The main code (./src) doesn't execute any meaningful operations. The main launch point is the test framework. To build and execute the test framework, run the following:
 	* cd ./test
 	* make
 	* ./test_kestrel
+* In terms of performance, does about 2.5x10^6 moves/sec. Spec of host:
+	Intel® Core™ i5-3337U CPU @ 1.80GHz × 4 
+	Debian GNU/Linux stretch/sid 64-bit
 	
 
 Next steps:

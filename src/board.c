@@ -64,8 +64,8 @@ struct board *init_board(char * fen)
 
 void remove_piece_from_board(struct board *brd, enum square sq){
 
-	assert((sq >= a1) && (sq <= h8));
-	assert(is_square_occupied(brd->board, sq) == true);
+	//assert((sq >= a1) && (sq <= h8));
+	//assert(is_square_occupied(brd->board, sq) == true);
 
 	enum piece pce = get_piece_at_square(brd, sq);
 	enum colour col = GET_COLOUR(pce);
@@ -84,7 +84,7 @@ void remove_piece_from_board(struct board *brd, enum square sq){
 
 void add_piece_to_board(struct board *brd, enum piece pce, enum square sq){
 
-	assert(is_square_occupied(brd->board, sq) == false);
+	//assert(is_square_occupied(brd->board, sq) == false);
 
 	enum colour col = GET_COLOUR(pce);
 
@@ -158,7 +158,7 @@ void overlay_boards(struct board *the_board)
 
 inline enum piece get_piece_at_square(const struct board *the_board, enum square sq)
 {
-    assert((sq >= a1) && (sq <= h8));
+    //assert((sq >= a1) && (sq <= h8));
 
     return the_board->pieces[sq];
 }
@@ -173,7 +173,7 @@ inline enum piece get_piece_at_square(const struct board *the_board, enum square
 inline void set_bit(U64 * brd, enum square sq)
 {
 
-    assert((sq >= a1) && (sq <= h8));
+    //assert((sq >= a1) && (sq <= h8));
 
     *brd = *brd | (U64) (0x01ull << sq);
 }

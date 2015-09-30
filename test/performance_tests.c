@@ -19,6 +19,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "seatest.h"
 #include "types.h"
 #include "attack.h"
@@ -189,7 +190,12 @@ U64 leafNodes = 0;
 
 void test_move_gen_depth(){
 
-	int depth = 6;
+	clock_t start, end;
+	double cpu_time_used;
+
+	start = clock();
+
+	int depth = 4;
 	U64 total_nodes = 0;
 
 	for (int i = 0; i < NUM_EPD; i++){
@@ -201,12 +207,17 @@ void test_move_gen_depth(){
 		leafNodes = 0;
 		perf_test(depth, brd);
 
-		assert_true(leafNodes == e.depth6);
+		assert_true(leafNodes == e.depth4);
 		total_nodes += leafNodes;
 		free(brd);
 	}
 	
+	end = clock();
+	cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+	
+	double moves_per_sec = ((double)total_nodes / (double)cpu_time_used);
 	printf("Total node count : %llu\n", total_nodes);
+	printf("#moves/sec : %f\n", moves_per_sec);
 	
 }
 

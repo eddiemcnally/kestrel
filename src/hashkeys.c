@@ -71,7 +71,7 @@ void init_hash_keys()
  */
 inline U64 get_castle_hash(U8 castle_map)
 {
-    assert(castle_map < 16);	// 4 bits, 0..F valid values
+    //assert(castle_map < 16);	// 4 bits, 0..F valid values
 
     return castle_keys[castle_map];
 }
@@ -102,7 +102,7 @@ inline U64 get_piece_hash(enum piece pce, enum square sq){
 
 
 inline U64 get_en_passant_hash(enum square sq){
-	assert(sq != NO_SQUARE);
+	//assert(sq != NO_SQUARE);
 	return piece_keys[NO_PIECE][sq];
 }
 
