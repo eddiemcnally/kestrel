@@ -143,7 +143,6 @@ void overlay_boards(struct board *the_board)
  * @param	the board container and the square to test
  * @return	the piece or NO_PIECE
  *
- * TODO - possibly replace this with a cache lookup on a new board array
  */
 
 inline enum piece get_piece_at_square(const struct board *the_board, enum square sq)
@@ -209,21 +208,6 @@ inline U8 count_bits(U64 bb)
 	return (U8)__builtin_popcountll(bb);
 }
 
-
-
-void clear_MSB_to_inclusive_bit(U64 * bb, U8 bit){
-	if (*bb == 0){
-		return;
-	}
-
-	U8 msb = get_MSB_index(*bb);
-	while ((msb >= bit) && (*bb != 0)) {
-		clear_bit(bb, msb);
-		//printf("cleared MSB %d, bb_bit = %d\n", msb, bit);
-		msb = get_MSB_index(*bb);
-	}
-
-}
 
 
 /**

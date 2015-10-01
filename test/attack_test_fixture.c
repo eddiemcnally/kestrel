@@ -386,7 +386,7 @@ void debug_move(){
     struct board *brd = init_game(test_fen);
     //print_board(brd);
 
-	//assert_true(is_sq_attacked(brd, e6, WHITE) == true);
+	assert_true(is_sq_attacked(brd, e6, WHITE) == true);
 	assert_true(is_sq_attacked(brd, g7, WHITE) == false);
 }
 

@@ -11,13 +11,13 @@
 # define any compile-time flags
 # NOTE: setting the inline limit values to be obscenely high since the size of
 #		the binary isn't a concern
-	CFLAGS	=	-O3 \
-				-g -std=c11 \
+CFLAGS	=	-O3 -std=c11 \
 				-mtune=native \
 				-lmcheck \
 				-fsanitize=undefined \
 				--param large-function-growth=20000 \
 				--param max-inline-insns-single=90000 \
+				-fomit-frame-pointer \
 				-Wformat=2 \
 				-Wall \
 				-Werror \
@@ -26,6 +26,8 @@
 				-Wconversion \
 				-Wsign-conversion \
 				-Wshadow \
+				-Wcast-qual \
+				-Wcast-align \
 				-Wmissing-include-dirs \
 				-Wpointer-arith \
 				-Winline \

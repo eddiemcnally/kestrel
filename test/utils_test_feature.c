@@ -23,6 +23,7 @@
 #include "types.h"
 #include "board.h"
 #include "pieces.h"
+#include "attack.h"
 #include "board_utils.h"
 #include "utils.h"
 

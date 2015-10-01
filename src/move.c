@@ -467,15 +467,6 @@ static inline void generate_castle_moves(const struct board *brd, struct move_li
 
 }
 
-//              56 57 58 59 60 61 62 63
-//              48 49 50 51 52 53 54 55
-//              40 41 42 43 44 45 46 47
-//              32 33 34 35 36 37 38 39
-//              24 25 26 27 28 29 30 31
-//              16 17 18 19 20 21 22 23
-//              08 09 10 11 12 13 14 15
-//              00 01 02 03 04 05 06 07
-
 
 static inline void generate_white_pawn_moves(const struct board *brd, struct move_list *mvl)
 {
@@ -487,9 +478,8 @@ static inline void generate_white_pawn_moves(const struct board *brd, struct mov
 
 		enum square pawn_sq = pop_1st_bit(&bbPawn);
 
-		//int pawn_rank = GET_RANK(pawn_sq);
-		int pawn_file = GET_FILE(pawn_sq);
-		int pawn_rank = GET_RANK(pawn_sq);
+		U8 pawn_file = GET_FILE(pawn_sq);
+		U8 pawn_rank = GET_RANK(pawn_sq);
 		enum square next_sq_1 = pawn_sq + 8;
 
 		//assert(next_sq_1 <= h8);
@@ -614,7 +604,7 @@ static inline void generate_black_pawn_moves(const struct board *brd, struct mov
 }
 
 
-/* Generates horizontal and vertical moves (a la Rook)
+/* Generates sliding horizontal and vertical moves (a la Rook)
  *
  * Based on the code on page:
  * 		http://chessprogramming.wikispaces.com/Efficient+Generation+of+Sliding+Piece+Attacks
@@ -680,7 +670,7 @@ static inline void generate_sliding_horizontal_vertical_moves(const struct board
 }
 
 
-/* Generates diagonal moves (a la Bishop)
+/* Generates sliding diagonal moves (a la Bishop)
  *
  * Based on the code on page:
  * 		http://chessprogramming.wikispaces.com/Efficient+Generation+of+Sliding+Piece+Attacks
@@ -749,10 +739,7 @@ static inline void generate_sliding_diagonal_moves(const struct board *brd, stru
 
 inline bool is_square_occupied(U64 board, enum square square)
 {
-    if (check_bit(&board, square) != 0) {
-		return true;
-    }
-    return false;
+	return check_bit(&board, square);
 }
 
 static const U8 BitTable[64] = {

@@ -61,8 +61,6 @@ enum {
 struct board *init_board(char * fen);
 U8 get_LSB_index(U64 bb);
 U8 get_MSB_index(U64 bb);
-void clear_MSB_to_inclusive_bit(U64 * bb, U8 bit);
-void clear_LSB_to_inclusive_bit(U64 * bb, U8 bit);
 void remove_piece_from_board(struct board *brd, enum square sq);
 void add_piece_to_board(struct board *brd, enum piece pce, enum square sq);
 enum piece get_piece_at_square(const struct board *the_board, enum square square);

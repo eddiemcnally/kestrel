@@ -25,6 +25,7 @@
 #include "board_utils.h"
 #include "move.h"
 #include "attack.h"
+#include "pieces.h"
 #include "utils.h"
 #include "occupancy_mask.h"
 
@@ -79,6 +80,7 @@ bool is_sq_attacked(const struct board *brd, enum square sq, enum colour attacki
 static inline bool is_rook_or_queen_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side){
     U64 sqBB = 0;
     set_bit(&sqBB, sq);
+    
 
 	// Logical OR the rook and queen bitboards for the relevant colour
     U64 rq_bb = 0;
@@ -89,13 +91,16 @@ static inline bool is_rook_or_queen_attacking_square(const struct board *brd, en
 		rq_bb = brd->bitboards[W_ROOK];
 		rq_bb |= brd->bitboards[W_QUEEN];
 	}
-    
+        
     while (rq_bb!= 0) {
 		enum square att_pce_sq = pop_1st_bit(&rq_bb);
 
-		bool is_attacked = is_attacked_horizontally_or_vertically(brd, att_pce_sq, sq);
-		if (is_attacked){
-			return true;
+		// exclude our target square
+		if (att_pce_sq != sq){
+			bool is_attacked = is_attacked_horizontally_or_vertically(brd, att_pce_sq, sq);
+			if (is_attacked){
+				return true;
+			}	
 		}
     }
 
@@ -107,6 +112,7 @@ static inline bool is_rook_or_queen_attacking_square(const struct board *brd, en
 static inline bool is_bishop_or_queen_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side){
     U64 sqBB = 0;
     set_bit(&sqBB, sq);
+
 
 	// Logical OR the bishop and queen bitboards for the relevant colour
     U64 bq_bb = 0;
@@ -120,10 +126,12 @@ static inline bool is_bishop_or_queen_attacking_square(const struct board *brd, 
     
     while (bq_bb!= 0) {
 		enum square att_pce_sq = pop_1st_bit(&bq_bb);
-
-		bool is_attacked = is_attacked_diagonally(brd, att_pce_sq, sq);
-		if (is_attacked){
-			return true;
+		// exclude target square
+		if (att_pce_sq != sq){
+			bool is_attacked = is_attacked_diagonally(brd, att_pce_sq, sq);
+			if (is_attacked){
+				return true;
+			}
 		}
     }
 
@@ -391,6 +399,24 @@ inline void clear_LSB_to_inclusive_bit(U64 * bb, U8 bit){
 		lsb = get_LSB_index(*bb);
 	}
 }
+
+
+
+
+void clear_MSB_to_inclusive_bit(U64 * bb, U8 bit){
+	if (*bb == 0){
+		return;
+	}
+
+	U8 msb = get_MSB_index(*bb);
+	while ((msb >= bit) && (*bb != 0)) {
+		clear_bit(bb, msb);
+		//printf("cleared MSB %d, bb_bit = %d\n", msb, bit);
+		msb = get_MSB_index(*bb);
+	}
+
+}
+
 
 
 /**
