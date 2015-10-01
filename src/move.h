@@ -67,6 +67,9 @@ void print_move_list_details(const struct move_list *list);
 void generate_all_moves(const struct board *brd, struct move_list *mvl);
 void validate_move_list(struct move_list *mvl);
 mv_bitmap MOVE(enum square from, enum square to, enum piece capture, enum piece promote, U32 fl);
+U8 pop_1st_bit(U64 * bb);
+bool is_square_occupied(U64 board, enum square square);
+
 
 void TEST_generate_white_pawn_moves(const struct board *brd, struct move_list *mvl);
 void TEST_generate_black_pawn_moves(const struct board *brd, struct move_list *mvl);

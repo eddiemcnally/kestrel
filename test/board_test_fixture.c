@@ -25,6 +25,7 @@
 #include "board_utils.h"
 #include "board.h"
 #include "fen.h"
+#include "move.h"
 #include "pieces.h"
 
 

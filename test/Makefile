@@ -11,7 +11,8 @@
 # define any compile-time flags
 # NOTE: setting the inline limit values to be obscenely high since the size of
 #		the binary isn't a concern
-	CFLAGS	=	-O3 -g -std=c11 \
+	CFLAGS	=	-O3 \
+				-g -std=c11 \
 				-mtune=native \
 				-lmcheck \
 				-fsanitize=undefined \

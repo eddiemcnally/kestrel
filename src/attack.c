@@ -377,14 +377,27 @@ static inline bool are_intervening_squares_empty(const struct board *brd, U64 oc
 
 
 
+inline void clear_LSB_to_inclusive_bit(U64 * bb, U8 bit){
+
+	if (*bb == 0){
+		return;
+	}
+
+	U8 lsb = get_LSB_index(*bb);
+
+	while ((lsb <= bit) && (*bb != 0)) {
+		clear_bit(bb, lsb);
+		//printf("cleared LSB %d bb_bit %d, bb  \t0x%016llx\n", lsb, bit, *bb);
+		lsb = get_LSB_index(*bb);
+	}
+}
+
+
 /**
  * Test wrapper functions.
  * These wrapper functions provide access for the unit test framework while
  * allowing the functions themselves to be static to this file and inline-able
  */
-bool TEST_is_bishop_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side){
-	return is_bishop_attacking_square(brd, sq, attacking_side);
-}
 bool TEST_is_knight_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side){
 	return is_knight_attacking_square(brd, sq, attacking_side);
 }
@@ -393,12 +406,6 @@ bool TEST_is_pawn_attacking_square(const struct board *brd, enum square sq, enum
 }
 bool TEST_is_king_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side){
 	return is_king_attacking_square(brd, sq, attacking_side);
-}
-bool TEST_is_rook_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side){
-	return is_rook_attacking_square(brd, sq, attacking_side);
-}
-bool TEST_is_queen_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side){
-	return is_queen_attacking_square(brd, sq, attacking_side);
 }
 bool TEST_is_attacked_horizontally_or_vertically(const struct board *brd, enum square sq_one, enum square sq_two){
 	return is_attacked_horizontally_or_vertically(brd, sq_one, sq_two);

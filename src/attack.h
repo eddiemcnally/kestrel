@@ -23,7 +23,7 @@
 #include "types.h"
 
 
-
+void clear_LSB_to_inclusive_bit(U64 * bb, U8 bit);
 bool is_sq_attacked(const struct board *brd, enum square sq, enum colour attacking_side);
 
 bool TEST_is_bishop_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side);
