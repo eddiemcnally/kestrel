@@ -27,6 +27,7 @@
 #include "fen.h"
 #include "move.h"
 #include "pieces.h"
+#include "utils.h"
 
 
 
@@ -309,10 +310,10 @@ void test_clearing_bits_in_a_board()
 	set_bit(&test_brd, 22);
     set_bit(&test_brd, 23);
     assert_true(2 == count_bits(test_brd));
-    assert_true(check_bit(&test_brd, 22));
-    assert_true(check_bit(&test_brd, 23));
+    assert_true(CHECK_BIT(test_brd, 22));
+    assert_true(CHECK_BIT(test_brd, 23));
     clear_bit(&test_brd, 22);
-    assert_true(check_bit(&test_brd, 23));
+    assert_true(CHECK_BIT(test_brd, 23));
     assert_true(1 == count_bits(test_brd));
 
     test_brd = 0;
@@ -350,10 +351,10 @@ void test_checking_bits_in_a_board(void)
 
     for (int i = 0; i < NUM_SQUARES; i++) {
 		set_bit(&test_brd, i);
-		assert_true(check_bit(&test_brd, i));
+		assert_true(CHECK_BIT(test_brd, i));
 
 		clear_bit(&test_brd, i);
-		assert_false(check_bit(&test_brd, i));
+		assert_false(CHECK_BIT(test_brd, i));
     }
 
 }
@@ -386,7 +387,7 @@ void test_LSB_clear(void)
     U8 cleared_bit = pop_1st_bit(&brd);
 
     assert_true(cleared_bit == a1);
-    assert_false(check_bit(&brd, a1));
+    assert_false(CHECK_BIT(brd, a1));
 }
 
 
