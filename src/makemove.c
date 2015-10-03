@@ -51,12 +51,6 @@ static const U8 castle_permission_mask[NUM_SQUARES] = {
 
 	//ASSERT_BOARD_OK(brd);
 
-	//assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
-	//assert(IS_VALID_SQUARE(to));
-	//assert(IS_VALID_SQUARE(from));
-	//assert(is_square_occupied(brd->board, from) == true);
-	//assert(is_square_occupied(brd->board, to) == false);
-
 	enum piece pce = get_piece_at_square(brd, from);
 
 	//assert(IS_VALID_PIECE(pce));
@@ -94,7 +88,6 @@ bool make_move(struct board *brd, mv_bitmap mv){
 	enum square from = FROMSQ(mv);
 	enum square to = TOSQ(mv);
 
-	//enum piece pce = get_piece_at_square(brd, from);
 	enum colour side = brd->side_to_move;
 
 	brd->history[brd->history_ply].board_hash  = brd->board_hash;

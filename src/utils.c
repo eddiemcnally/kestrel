@@ -15,8 +15,13 @@
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+#define _GNU_SOURCE
+#include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
+#include <sched.h>
+#include <sys/times.h>
+#include <sys/resource.h>
 #include "types.h"
 #include "utils.h"
 
@@ -37,6 +42,27 @@ U64 generate_rand64(void)
 
     return retval;
 }
+
+void set_priority_and_affinity(void){
+	// set up CPU affinity
+	cpu_set_t my_set;
+	CPU_ZERO(&my_set);
+	CPU_SET(1, &my_set);
+	if (sched_setaffinity(0, sizeof(cpu_set_t), &my_set) > 0)
+	{
+		printf("affinity error");
+		exit(-1);
+	}
+
+	// set process priority to max
+	if (setpriority (PRIO_PROCESS, 0, PRIO_MAX) != 0)
+	{
+		printf("process priority error");
+		exit(-1);
+	}
+	
+}
+
 
 
 /* Reverse the bits in a word

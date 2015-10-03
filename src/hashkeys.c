@@ -26,7 +26,7 @@
 #include "board.h"
 #include "utils.h"
 #include "board_utils.h"
-
+#include "move.h"
 #include "hashkeys.h"
 
 

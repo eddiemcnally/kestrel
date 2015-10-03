@@ -15,10 +15,9 @@
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
+#include <stdbool.h>
 #include "types.h"
 #include "board.h"
 #include "hashkeys.h"
@@ -30,7 +29,7 @@ struct board *init_game(char * fen)
     init_hash_keys();
     struct board *brd = init_board(fen);
 
-	ASSERT_BOARD_OK(brd);
+	//ASSERT_BOARD_OK(brd);
 
     return brd;
 }

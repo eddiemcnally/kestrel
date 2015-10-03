@@ -16,6 +16,7 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -37,8 +38,9 @@ int main(int argc, char **argv)
 		printf("%d", **argv);
     }
 
-    init_hash_keys();
+	set_priority_and_affinity();
 
+    init_hash_keys();
 
 	generate_diagonal_occupancy_masks();
 

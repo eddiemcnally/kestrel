@@ -24,6 +24,7 @@
 #include "types.h"
 #include "fen.h"
 #include "board.h"
+#include "move.h"
 #include "board_utils.h"
 #include "makemove.h"
 #include "hashkeys.h"
@@ -54,9 +55,6 @@ struct board *init_board(char * fen)
 
 void remove_piece_from_board(struct board *brd, enum square sq){
 
-	//assert((sq >= a1) && (sq <= h8));
-	//assert(is_square_occupied(brd->board, sq) == true);
-
 	enum piece pce = get_piece_at_square(brd, sq);
 	enum colour col = GET_COLOUR(pce);
 
@@ -73,8 +71,6 @@ void remove_piece_from_board(struct board *brd, enum square sq){
 
 
 void add_piece_to_board(struct board *brd, enum piece pce, enum square sq){
-
-	//assert(is_square_occupied(brd->board, sq) == false);
 
 	enum colour col = GET_COLOUR(pce);
 
@@ -136,21 +132,6 @@ void overlay_boards(struct board *the_board)
     the_board->board = flat_board;
 }
 
-/*
- * Returns the piece type os the given square
- *
- * name: 	get_piece_at_square
- * @param	the board container and the square to test
- * @return	the piece or NO_PIECE
- *
- */
-
-inline enum piece get_piece_at_square(const struct board *the_board, enum square sq)
-{
-    //assert((sq >= a1) && (sq <= h8));
-
-    return the_board->pieces[sq];
-}
 
 /*
  *
@@ -167,6 +148,13 @@ inline void set_bit(U64 * brd, enum square sq)
     *brd = *brd | (U64) (0x01ull << sq);
 }
 
+
+U64 square_to_bitboard(enum square sq){
+	U64 retval = 0;
+	set_bit(&retval, sq);
+	return retval;
+}
+
 /*
  *
  * name: clear_bit
@@ -181,20 +169,22 @@ inline void clear_bit(U64 * brd, enum square sq)
     *brd = *brd & (U64) (~(0x01ull << sq));
 }
 
-/*
- *
- * name: check_bit
- * @param : board, square
- * @return : bool false if unset, bool true otherwise
- *
- */
-inline bool check_bit(const U64 * brd, enum square sq)
-{
-    if (((*brd >> sq) & 0x01ull) != 0) {
-		return true;
-    }
-    return false;
-}
+///*
+ //*
+ //* name: check_bit
+ //* @param : board, square
+ //* @return : bool false if unset, bool true otherwise
+ //*
+ //*/
+//inline bool check_bit(const U64 * brd, enum square sq)
+//{
+	//return ((*brd >> sq) & 0x01ull) != 0;
+	
+////    if (((*brd >> sq) & 0x01ull) != 0) {
+////		return true;
+////   }
+////    return false;
+//}
 
 /*
  * Counts set bits in a U64

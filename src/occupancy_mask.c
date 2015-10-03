@@ -23,6 +23,7 @@
 #include "types.h"
 #include "board.h"
 #include "pieces.h"
+#include "utils.h" 
 #include "occupancy_mask.h"
 
 void generate_king_occupancy_masks(U64 * occ_mask_array);
@@ -625,12 +626,12 @@ void generate_diagonal_occupancy_masks(void){
 void
 print_mask_as_board(const U64 * mask)
 {
-
+	U64 m = *mask;
     for (int rank = RANK_8; rank >= RANK_1; rank--) {
 		printf("%d  ", rank + 1);	// enum is zero-based
 		for (int file = FILE_A; file <= FILE_H; file++) {
 			enum square sq = GET_SQUARE(rank, file);
-			if (check_bit(mask, sq)) {
+			if (CHECK_BIT(m, sq)) {
 				// attack square
 				printf("  X");
 			} else {

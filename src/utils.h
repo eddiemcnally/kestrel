@@ -23,7 +23,11 @@
 
 U64 reverse_bits(U64 word);
 U64 generate_rand64(void);
+void set_priority_and_affinity(void);
 
+// These are the same, but use different name to aid reading if code
+#define IS_SQUARE_OCCUPIED(BB, SQ)	( ( (BB >> SQ) & 0x01ull) != 0)
+#define CHECK_BIT(BB, SQ)				(IS_SQUARE_OCCUPIED(BB, SQ))
 
 
 #endif

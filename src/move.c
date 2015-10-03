@@ -204,18 +204,27 @@ void validate_move_list(struct move_list *mvl){
 	}
 }
 
-
-mv_bitmap MOVE(enum square from, enum square to, enum piece capture, enum piece promote, U32 fl){
-
-	//assert (from >= a1 && from <= h8);
-	//assert (to >= a1 && to <= h8);
-
-	//assert(is_valid_piece(capture));
-	//assert(is_valid_piece(promote));
-
+inline mv_bitmap MOVE(enum square from, enum square to, enum piece capture, enum piece promote, U32 fl){
 
 	return ( (from) | ((to) << 7) | ( (capture) << 14 ) | ( (promote) << 20 ) | (fl));
 }
+
+
+
+/*
+ * Returns the piece type on the given square
+ *
+ * name: 	get_piece_at_square
+ * @param	the board container and the square to test
+ * @return	the piece or NO_PIECE
+ *
+ */
+
+inline enum piece get_piece_at_square(const struct board *the_board, enum square sq)
+{	
+	return the_board->pieces[sq];
+}
+
 
 
 static inline struct move_list * get_empty_move_list(){
@@ -431,7 +440,7 @@ static inline void generate_castle_moves(const struct board *brd, struct move_li
 	// check for castling
 	if (col == WHITE){
 		if(brd->castle_perm & WKCA) {
-			if(!is_square_occupied(brd->board, f1) && !is_square_occupied(brd->board, g1)) {
+			if(!IS_SQUARE_OCCUPIED(brd->board, f1) && !IS_SQUARE_OCCUPIED(brd->board, g1)) {
 				if (!is_sq_attacked(brd, e1, BLACK) && !is_sq_attacked(brd, f1, BLACK)){
 					add_quiet_move(MOVE(e1, g1, NO_PIECE, NO_PIECE, MFLAG_CASTLE), mvl);
 				}
@@ -439,8 +448,8 @@ static inline void generate_castle_moves(const struct board *brd, struct move_li
 		}
 
 		if(brd->castle_perm & WQCA) {
-			if (!is_square_occupied(brd->board, d1) && !is_square_occupied(brd->board, c1)
-														&& !is_square_occupied(brd->board, b1)){
+			if (!IS_SQUARE_OCCUPIED(brd->board, d1) && !IS_SQUARE_OCCUPIED(brd->board, c1)
+														&& !IS_SQUARE_OCCUPIED(brd->board, b1)){
 				if (!is_sq_attacked(brd, e1, BLACK) && !is_sq_attacked(brd, d1, BLACK)) {
 					add_quiet_move(MOVE(e1, c1, NO_PIECE, NO_PIECE, MFLAG_CASTLE), mvl);
 				}
@@ -448,7 +457,7 @@ static inline void generate_castle_moves(const struct board *brd, struct move_li
 		}
 	} else {
 		if(brd->castle_perm & BKCA) {
-			if(!is_square_occupied(brd->board, f8) && !is_square_occupied(brd->board, g8)) {
+			if(!IS_SQUARE_OCCUPIED(brd->board, f8) && !IS_SQUARE_OCCUPIED(brd->board, g8)) {
 				if (!is_sq_attacked(brd, e8, WHITE) && !is_sq_attacked(brd, f8, WHITE)){
 					add_quiet_move(MOVE(e8, g8, NO_PIECE, NO_PIECE, MFLAG_CASTLE), mvl);
 				}
@@ -456,8 +465,8 @@ static inline void generate_castle_moves(const struct board *brd, struct move_li
 		}
 
 		if(brd->castle_perm & BQCA) {
-			if (!is_square_occupied(brd->board, d8) && !is_square_occupied(brd->board, c8)
-														&& !is_square_occupied(brd->board, b8)){
+			if (!IS_SQUARE_OCCUPIED(brd->board, d8) && !IS_SQUARE_OCCUPIED(brd->board, c8)
+														&& !IS_SQUARE_OCCUPIED(brd->board, b8)){
 				if (!is_sq_attacked(brd, e8, WHITE) && !is_sq_attacked(brd, d8, WHITE)) {
 					add_quiet_move(MOVE(e8, c8, NO_PIECE, NO_PIECE, MFLAG_CASTLE), mvl);
 				}
@@ -484,14 +493,14 @@ static inline void generate_white_pawn_moves(const struct board *brd, struct mov
 
 		//assert(next_sq_1 <= h8);
 
-		if (is_square_occupied(brd->board, next_sq_1) == false) {
+		if (IS_SQUARE_OCCUPIED(brd->board, next_sq_1) == false) {
 			add_pawn_move(WHITE, pawn_sq, next_sq_1, mvl);
 
 			if (pawn_rank == RANK_2) {
 				enum square next_sq_2 = pawn_sq + 16;
 
 				//assert(next_sq_2 <= h8);
-				bool sq_2_occupied = is_square_occupied(brd->board, next_sq_2);
+				bool sq_2_occupied = IS_SQUARE_OCCUPIED(brd->board, next_sq_2);
 				if (sq_2_occupied == false) {
 					add_quiet_move(MOVE(pawn_sq, next_sq_2,	NO_PIECE, NO_PIECE, MFLAG_PAWN_START), mvl);
 				}
@@ -507,7 +516,7 @@ static inline void generate_white_pawn_moves(const struct board *brd, struct mov
 			//assert(cap_sq <= h8);
 			enum piece pce = get_piece_at_square(brd, cap_sq);
 
-			if ((pce != NO_PIECE) && (GET_COLOUR(pce) == BLACK)) {
+			if ((pce != NO_PIECE) && (IS_BLACK(pce))) {
 				add_pawn_capture_move(WHITE, pawn_sq, cap_sq, pce, mvl);
 			}
 
@@ -522,7 +531,7 @@ static inline void generate_white_pawn_moves(const struct board *brd, struct mov
 			//assert(cap_sq <= h8);
 			enum piece pce = get_piece_at_square(brd, cap_sq);
 
-			if ((pce != NO_PIECE) && (GET_COLOUR(pce) == BLACK)) {
+			if ((pce != NO_PIECE) && (IS_BLACK(pce))) {
 				add_pawn_capture_move(WHITE, pawn_sq, cap_sq, pce, mvl);
 			}
 
@@ -549,7 +558,7 @@ static inline void generate_black_pawn_moves(const struct board *brd, struct mov
 		int pawn_rank = GET_RANK(pawn_sq);
 		enum square next_sq_1 = pawn_sq - 8;
 
-		if (is_square_occupied(brd->board, next_sq_1) == false) {
+		if (IS_SQUARE_OCCUPIED(brd->board, next_sq_1) == false) {
 			add_pawn_move(BLACK, pawn_sq, next_sq_1, mvl);
 
 			if (pawn_rank == RANK_7) {
@@ -557,7 +566,7 @@ static inline void generate_black_pawn_moves(const struct board *brd, struct mov
 
 				//assert(next_sq_2 <= h8 && next_sq_2 >= a1);
 
-				bool sq_2_occupied = is_square_occupied(brd->board, next_sq_2);
+				bool sq_2_occupied = IS_SQUARE_OCCUPIED(brd->board, next_sq_2);
 				if (sq_2_occupied == false) {
 					add_quiet_move(MOVE(pawn_sq, next_sq_2,
 						NO_PIECE, NO_PIECE,
@@ -574,7 +583,7 @@ static inline void generate_black_pawn_moves(const struct board *brd, struct mov
 
 			enum piece pce = get_piece_at_square(brd, cap_sq);
 
-			if ((pce != NO_PIECE) && (GET_COLOUR(pce) == WHITE)) {
+			if ((pce != NO_PIECE) && (IS_WHITE(pce))) {
 				add_pawn_capture_move(BLACK, pawn_sq, cap_sq, pce, mvl);
 			}
 
@@ -592,7 +601,7 @@ static inline void generate_black_pawn_moves(const struct board *brd, struct mov
 
 			enum piece pce = get_piece_at_square(brd, cap_sq);
 
-			if ((pce != NO_PIECE) && (GET_COLOUR(pce) == WHITE)) {
+			if ((pce != NO_PIECE) && (IS_WHITE(pce))) {
 				add_pawn_capture_move(BLACK, pawn_sq, cap_sq, pce, mvl);
 			}
 
@@ -737,10 +746,7 @@ static inline void generate_sliding_diagonal_moves(const struct board *brd, stru
 
 
 
-inline bool is_square_occupied(U64 board, enum square square)
-{
-	return check_bit(&board, square);
-}
+
 
 static const U8 BitTable[64] = {
     63, 30, 3, 32, 25, 41, 22, 33, 15, 50, 42, 13, 11, 53, 19, 34, 61, 29,
@@ -791,7 +797,7 @@ static inline U64 get_negative_diagonal_mask(enum square sq){
 
 
 /*
- * Prints out the algebraic notatio of a move (eg, a2a4)
+ * Prints out the algebraic notation of a move (eg, a2a4)
  * name: print_move
  * @param
  * @return

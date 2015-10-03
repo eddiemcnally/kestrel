@@ -21,7 +21,7 @@ This is a work-in-progress. Current state:
 * Can read in FEN
 * Can generate moves (currently un-scored, and pruning not implemented)
 * Currently (Oct 2015) completes the perft tests without errors to a depth of 6 (> 12x10^9 moves generated)
-* The code is unoptimised, in the sense that no explicit effort has been undertaken to profile and tune the code paths.
+* The code is unoptimised, in the sense that no explicit effort has been undertaken to profile and tune the code paths (other than some rudamentary moving of code to improve inlining).
 * The main code (./src) doesn't execute any meaningful operations. The main launch point is the test framework. To build and execute the test framework, run the following:
 	* cd ./test
 	* make

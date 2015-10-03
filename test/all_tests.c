@@ -15,6 +15,8 @@
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+#include "utils.h"
 #include "seatest.h"
 
 void all_tests(void);
@@ -37,8 +39,10 @@ int main_do_it_myself_really_simply(int argc, char **argv);
 
 void all_tests(void)
 {
-    // add new test fixtures here.
 
+	set_priority_and_affinity();
+
+    // add new test fixtures here.
     board_test_fixture();
     piece_test_fixture();
     occupancy_mask_test_fixture();
