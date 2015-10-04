@@ -35,6 +35,8 @@ struct move_list {
 };
 
 
+#define NO_MOVE	0
+
 //--- macros for setting the 'move' field in the MOVE struct
 #define FROMSQ(m) 		((m) & 0x7F)
 #define TOSQ(m) 		(((m)>>7) & 0x7F)
@@ -47,7 +49,6 @@ struct move_list {
 // ca -> captured
 // pro -> promoted
 //
-//#define MOVE(from,to,capture,promote,fl) ( (from) | ((to) << 7) | ( (capture) << 14 ) | ( (promote) << 20 ) | (fl))
 
 
 #define MFLAG_EN_PASSANT 	0x0040000

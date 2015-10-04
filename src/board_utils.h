@@ -28,6 +28,6 @@ char *print_square(enum square sq);
 void assert_boards_are_equal(const struct board * brd1, const struct board * brd2);
 struct board * clone_board(const struct board * board_to_clone);
 void print_compressed_board(const struct board * brd);
-
+mv_bitmap parse_move(char *ip_move, struct board * brd);
 
 #endif

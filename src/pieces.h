@@ -30,10 +30,14 @@
 #define	GET_COLOUR(piece)		(IS_WHITE(piece) ? WHITE : BLACK )
 
 #define IS_BISHOP(pce)			((pce == W_BISHOP) || (pce == B_BISHOP))
+#define IS_QUEEN(pce)			((pce == W_QUEEN) || (pce == B_QUEEN))
 #define IS_KNIGHT(pce)			((pce == W_KNIGHT) || (pce == B_KNIGHT))
 #define IS_ROOK(pce)			((pce == W_ROOK) || (pce == B_ROOK))
 #define IS_PAWN(pce)			((pce == W_PAWN) || (pce == B_PAWN))
 #define IS_KING(pce)			((pce == W_KING) || (pce == B_KING))
+
+#define IS_ROOK_OR_QUEEN(pce)	(IS_ROOK(pce) || IS_QUEEN(pce))
+#define IS_BISHOP_OR_QUEEN(pce)	(IS_BISHOP(pce) || IS_QUEEN(pce))
 
 
 char get_piece_label(enum piece piece);

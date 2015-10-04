@@ -95,6 +95,7 @@ void print_board(const struct board *the_board)
 
     printf("PosKey:\t0x%016llx\n", the_board->board_hash);
 
+/*
 	printf("Move history\n");
 	for(int i = 0; i < the_board->history_ply; i++){
 		printf("Move #%d\n", i);
@@ -106,10 +107,8 @@ void print_board(const struct board *the_board)
 			printf("\ten passant : -\n");
 		}
 	}
-
-
-
-    printf("\n\n");
+*/
+    printf("\n");
 
 }
 
@@ -288,6 +287,62 @@ struct board * clone_board(const struct board * board_to_clone){
 	memcpy(brd, board_to_clone, size);
 
 	return brd;
+}
+
+
+
+
+
+// parses and validates a user-entered move
+// ip_move -> "a3b4" or "d7d8r"
+mv_bitmap parse_move(char *ip_move, struct board * brd) {
+
+	if(ip_move[1] > '8' || ip_move[1] < '1') return NO_MOVE;
+    if(ip_move[3] > '8' || ip_move[3] < '1') return NO_MOVE;
+    if(ip_move[0] > 'h' || ip_move[0] < 'a') return NO_MOVE;
+    if(ip_move[2] > 'h' || ip_move[2] < 'a') return NO_MOVE;
+
+	U8 from_file = (U8)(ip_move[0] - 'a');
+	U8 from_rank = (U8)(ip_move[1] - '1');
+	U8 to_file = (U8)(ip_move[2] - 'a');
+	U8 to_rank = (U8)(ip_move[3] - '1');
+
+	enum square from = GET_SQUARE(from_rank, from_file);
+	enum square to = GET_SQUARE(to_rank, to_file);
+
+	// create ampty move list
+	struct move_list mv_list = {
+		.moves = {{0,0}},
+		.move_count = 0
+		};
+		
+	generate_all_moves(brd, &mv_list);
+  
+	mv_bitmap move = NO_MOVE;
+	enum piece promoted = NO_PIECE;
+
+	for(int move_num = 0; move_num < mv_list.move_count; move_num++) {	
+		move = mv_list.moves[move_num].move_bitmap;
+		
+		if((FROMSQ(move) == from) && (TOSQ(move) == to)) {
+			promoted = PROMOTED(move);
+			if(promoted != NO_PIECE) {
+				if(IS_ROOK(promoted) && ip_move[4]=='r') {
+					return move;
+				} else if(IS_BISHOP(promoted) && ip_move[4]=='b') {
+					return move;
+				} else if(IS_QUEEN(promoted) && ip_move[4]=='q') {
+					return move;
+				} else if(IS_KNIGHT(promoted) && ip_move[4]=='n') {
+					return move;
+				}
+				continue;
+			}
+			return move;
+		}
+    }
+	
+    return NO_MOVE;	
 }
 
 

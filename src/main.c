@@ -24,13 +24,19 @@
 #include "types.h"
 #include "move.h"
 #include "board.h"
+#include "makemove.h"
 #include "board_utils.h"
 #include "hashkeys.h"
 #include "init.h"
 #include "occupancy_mask.h"
 #include "fen.h"
+#include "utils.h"
 #include "move.h"
 
+
+
+// sample game position
+#define SAMPLE_POSITION 	"k7/8/2N5/1N6/8/8/8/K6n b - - 0 1"
 
 int main(int argc, char **argv)
 {
@@ -38,12 +44,35 @@ int main(int argc, char **argv)
 		printf("%d", **argv);
     }
 
+	// set process pri and cpu affinity for max performance
 	set_priority_and_affinity();
 
-    init_hash_keys();
+	struct board * brd = init_game(SAMPLE_POSITION);
+	print_board(brd);
 
-	generate_diagonal_occupancy_masks();
-
+	char input[6];
+	mv_bitmap move = NO_MOVE;
+	while(true) {
+		print_board(brd);
+		printf("Enter a move > ");
+		fgets(input, 6, stdin);
+		
+		if(input[0]=='q') {
+			// quit
+			break;
+		} else if(input[0]=='t') {
+			take_move(brd);			
+		} else {
+			move = parse_move(input, brd);
+			if(move != NO_MOVE) {
+				make_move(brd, move);
+			} else {
+				printf("Move Not Parsed:%s\n",input);
+			}
+		}	
+		
+		fflush(stdin);
+	}
 
     return 0;
 }
