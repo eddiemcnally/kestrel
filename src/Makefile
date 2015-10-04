@@ -13,11 +13,11 @@
 #		the binary isn't a concern
 	CFLAGS	=	-O3 -std=iso9899:2011 \
 				-mtune=native \
+				-march=native \
 				-lmcheck \
 				-fsanitize=undefined \
 				--param large-function-growth=20000 \
 				--param max-inline-insns-single=90000 \
-				-fomit-frame-pointer \
 				-Wpedantic \
 				-Wformat=2 \
 				-Wall \

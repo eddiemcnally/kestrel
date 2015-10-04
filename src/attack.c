@@ -61,7 +61,7 @@ bool is_sq_attacked(const struct board *brd, enum square sq, enum colour attacki
 	// trading code bloat for efficiency and duplicate the calls
 	// based on colour....
 	if (attacking_side == WHITE){
-		// get the pbitbard for rook and queen
+		// get the bitbard for rook and queen
 		U64 rq_bb = 0;
     	rq_bb = brd->bitboards[W_ROOK];
 		rq_bb |= brd->bitboards[W_QUEEN];		
@@ -402,6 +402,28 @@ void clear_MSB_to_inclusive_bit(U64 * bb, U8 bit){
 
 }
 
+
+
+/**
+ * int __builtin_ctz (unsigned int x)
+ *
+ * Returns the number of trailing 0-bits in x, starting at the least
+ * significant bit position. If x is 0, the result is undefined
+ */
+inline U8 get_LSB_index(U64 bb){
+	// gcc built-in function (see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html)
+	return (U8)__builtin_ctzll(bb);
+}
+
+
+inline U8 get_MSB_index(U64 bb){
+	// gcc built-in function (see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html)
+	U8 b = (U8)__builtin_clzll(bb);
+
+	// the above is number of leading zeros.
+	// the MSB index is (63-b)
+	return (U8)(63 - b);
+}
 
 
 /**

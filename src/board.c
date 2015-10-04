@@ -149,7 +149,7 @@ inline void set_bit(U64 * brd, enum square sq)
 }
 
 
-U64 square_to_bitboard(enum square sq){
+inline U64 square_to_bitboard(enum square sq){
 	U64 retval = 0;
 	set_bit(&retval, sq);
 	return retval;
@@ -169,23 +169,6 @@ inline void clear_bit(U64 * brd, enum square sq)
     *brd = *brd & (U64) (~(0x01ull << sq));
 }
 
-///*
- //*
- //* name: check_bit
- //* @param : board, square
- //* @return : bool false if unset, bool true otherwise
- //*
- //*/
-//inline bool check_bit(const U64 * brd, enum square sq)
-//{
-	//return ((*brd >> sq) & 0x01ull) != 0;
-	
-////    if (((*brd >> sq) & 0x01ull) != 0) {
-////		return true;
-////   }
-////    return false;
-//}
-
 /*
  * Counts set bits in a U64
  * name: count_bits
@@ -198,27 +181,5 @@ inline U8 count_bits(U64 bb)
 	return (U8)__builtin_popcountll(bb);
 }
 
-
-
-/**
- * int __builtin_ctz (unsigned int x)
- *
- * Returns the number of trailing 0-bits in x, starting at the least
- * significant bit position. If x is 0, the result is undefined
- */
-U8 get_LSB_index(U64 bb){
-	// gcc built-in function (see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html)
-	return (U8)__builtin_ctzll(bb);
-}
-
-
-U8 get_MSB_index(U64 bb){
-// gcc built-in function (see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html)
-	U8 b = (U8)__builtin_clzll(bb);
-
-	// the above is number of leading zeros.
-	// the MSB index is (63-b)
-	return (U8)(63 - b);
-}
 
 

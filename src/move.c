@@ -763,6 +763,8 @@ static const U8 BitTable[64] = {
  * name: pop_1st_bit
  * @param	ptr to U64
  * @return	index of bit cleared.
+ * 
+ * Note: Taken from https://chessprogramming.wikispaces.com/BitScan
  *
  */
 inline U8 pop_1st_bit(U64 * bb)

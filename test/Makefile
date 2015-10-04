@@ -12,12 +12,11 @@
 # NOTE: setting the inline limit values to be obscenely high since the size of
 #		the binary isn't a concern
 CFLAGS	=	-O3 -std=c11 \
-				-mtune=native \
+				-march=native \
 				-lmcheck \
 				-fsanitize=undefined \
 				--param large-function-growth=20000 \
 				--param max-inline-insns-single=90000 \
-				-fomit-frame-pointer \
 				-Wformat=2 \
 				-Wall \
 				-Werror \
@@ -32,7 +31,7 @@ CFLAGS	=	-O3 -std=c11 \
 				-Wpointer-arith \
 				-Winline \
 				-lubsan
-#
+
 # flags for profiling code
 #	CFLAGS	=	-O3 -pg -std=c11
 
