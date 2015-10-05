@@ -24,11 +24,10 @@ typedef unsigned int U32;
 typedef unsigned long long U64;
 
 enum colour {
-    BLACK = 0,
-    WHITE = 1,
-    NUM_COLOURS = 2
+	BLACK = 0,
+	WHITE = 1,
+	NUM_COLOURS = 2
 };
-
 
 /*
  *
@@ -42,39 +41,37 @@ enum colour {
  * 0000 1111 0000 0000 0000 0000 0000 -> Promoted Piece
  * 0001 0000 0000 0000 0000 0000 0000 -> Castle
  */
-typedef U32	mv_bitmap;
-
-
+typedef U32 mv_bitmap;
 
 enum square {
-    a1 = 0, b1, c1, d1, e1, f1, g1, h1,
-    a2, 	b2, c2, d2, e2, f2, g2, h2,
-    a3, 	b3, c3, d3, e3, f3, g3, h3,
-    a4, 	b4, c4, d4, e4, f4, g4, h4,
-    a5, 	b5, c5, d5, e5, f5, g5, h5,
-    a6, 	b6, c6, d6, e6, f6, g6, h6,
-    a7, 	b7, c7, d7, e7, f7, g7, h7,
-    a8, 	b8, c8, d8, e8, f8, g8, h8,
-    NUM_SQUARES
+	a1 = 0, b1, c1, d1, e1, f1, g1, h1,
+	a2, b2, c2, d2, e2, f2, g2, h2,
+	a3, b3, c3, d3, e3, f3, g3, h3,
+	a4, b4, c4, d4, e4, f4, g4, h4,
+	a5, b5, c5, d5, e5, f5, g5, h5,
+	a6, b6, c6, d6, e6, f6, g6, h6,
+	a7, b7, c7, d7, e7, f7, g7, h7,
+	a8, b8, c8, d8, e8, f8, g8, h8,
+	NUM_SQUARES
 };
 
 #define	NO_SQUARE	(100)
 
 enum piece {
-    W_PAWN 			= 0,
-    W_ROOK 			= 1,
-    W_KNIGHT 		= 2,
-    W_BISHOP 		= 3,
-    W_QUEEN 		= 4,
-    W_KING 			= 5,
-    B_PAWN 			= 6,
-    B_ROOK 			= 7,
-    B_KNIGHT 		= 8,
-    B_BISHOP 		= 9,
-    B_QUEEN 		= 10,
-    B_KING 			= 11,
-    NUM_PIECES 		= 12,
-    NO_PIECE 		= 13,
+	W_PAWN = 0,
+	W_ROOK = 1,
+	W_KNIGHT = 2,
+	W_BISHOP = 3,
+	W_QUEEN = 4,
+	W_KING = 5,
+	B_PAWN = 6,
+	B_ROOK = 7,
+	B_KNIGHT = 8,
+	B_BISHOP = 9,
+	B_QUEEN = 10,
+	B_KING = 11,
+	NUM_PIECES = 12,
+	NO_PIECE = 13,
 	PIECE_ENUM_SIZE = 14
 };
 
@@ -83,11 +80,11 @@ enum piece {
 // contains information before the current
 // move was made
 struct undo {
-    mv_bitmap move;
-    U8 fifty_move_counter;
-    U8 castle_perm;
-    U64 board_hash;
-    enum square en_passant;
+	mv_bitmap move;
+	U8 fifty_move_counter;
+	U8 castle_perm;
+	U64 board_hash;
+	enum square en_passant;
 };
 
 // half moves
@@ -98,40 +95,40 @@ struct undo {
  * A container for holding the bitboards
  */
 struct board {
-    // bitboard entry for each piece
-    U64 bitboards[NUM_PIECES];
+	// bitboard entry for each piece
+	U64 bitboards[NUM_PIECES];
 
-    // The above array piece arrays overlayed into a single bitboard.
-    // In effect, an OR of all elements in bitboards[]
-    U64 board;
+	// The above array piece arrays overlayed into a single bitboard.
+	// In effect, an OR of all elements in bitboards[]
+	U64 board;
 
-    // the next side to move
-    enum colour side_to_move;
+	// the next side to move
+	enum colour side_to_move;
 
-    // the square where en passent is active
-    enum square en_passant;
+	// the square where en passent is active
+	enum square en_passant;
 
-    // fifty move ounter
-    U8 fifty_move_counter;
+	// fifty move ounter
+	U8 fifty_move_counter;
 
-    // keeping track of ply
-    U8 ply;
-    U8 history_ply;
+	// keeping track of ply
+	U8 ply;
+	U8 history_ply;
 
-    // indexed by enum colour, contains sum of all piece values
-    U32 material[NUM_COLOURS];
+	// indexed by enum colour, contains sum of all piece values
+	U32 material[NUM_COLOURS];
 
-    // contains the pieces on each square
-    enum piece pieces[NUM_SQUARES];
+	// contains the pieces on each square
+	enum piece pieces[NUM_SQUARES];
 
-    // castling permissions
-    U8 castle_perm;
+	// castling permissions
+	U8 castle_perm;
 
-    // move history
-    struct undo history[MAX_GAME_MOVES];
+	// move history
+	struct undo history[MAX_GAME_MOVES];
 
-    // a hash of the current board
-    U64 board_hash;
+	// a hash of the current board
+	U64 board_hash;
 
 };
 

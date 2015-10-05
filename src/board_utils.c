@@ -27,8 +27,6 @@
 #include "pieces.h"
 #include "board_utils.h"
 
-
-
 // char arrays to suport printing
 static const char ranks[] = "12345678";
 static const char files[] = "abcdefgh";
@@ -46,12 +44,9 @@ static const char files[] = "abcdefgh";
  */
 void print_board(const struct board *the_board)
 {
+	printf("\nGame Board:\n\n");
 
-    //int sq,piece;
-
-    printf("\nGame Board:\n\n");
-
-    for (int rank = RANK_8; rank >= RANK_1; rank--) {
+	for (int rank = RANK_8; rank >= RANK_1; rank--) {
 		printf("%d  ", rank + 1);	// enum is zero-based
 		for (int file = FILE_A; file <= FILE_H; file++) {
 			enum square sq = GET_SQUARE(rank, file);
@@ -64,36 +59,36 @@ void print_board(const struct board *the_board)
 			}
 		}
 		printf("\n");
-    }
+	}
 
-    printf("\n   ");
-    for (int file = FILE_A; file <= FILE_H; file++) {
+	printf("\n   ");
+	for (int file = FILE_A; file <= FILE_H; file++) {
 		printf("%3c", 'a' + file);
-    }
-    printf("\n\n");
-    char side;
-    if (the_board->side_to_move == WHITE) {
+	}
+	printf("\n\n");
+	char side;
+	if (the_board->side_to_move == WHITE) {
 		side = 'w';
-    } else {
+	} else {
 		side = 'b';
-    }
-    printf("side:\t%c\n", side);
+	}
+	printf("side:\t%c\n", side);
 
-    if (the_board->en_passant == NO_SQUARE) {
+	if (the_board->en_passant == NO_SQUARE) {
 		printf("enPas:\t-\n");
-    } else {
+	} else {
 		U32 rank = GET_RANK(the_board->en_passant);
 		int file = GET_FILE(the_board->en_passant);
 		printf("enPas:\t%c%c\n", files[file], ranks[rank]);
-    }
+	}
 
-    printf("castle:\t%c%c%c%c\n",
-	   (the_board->castle_perm & WKCA) ? 'K' : '-',
-	   (the_board->castle_perm & WQCA) ? 'Q' : '-',
-	   (the_board->castle_perm & BKCA) ? 'k' : '-',
-	   (the_board->castle_perm & BQCA) ? 'q' : '-');
+	printf("castle:\t%c%c%c%c\n",
+	       (the_board->castle_perm & WKCA) ? 'K' : '-',
+	       (the_board->castle_perm & WQCA) ? 'Q' : '-',
+	       (the_board->castle_perm & BKCA) ? 'k' : '-',
+	       (the_board->castle_perm & BQCA) ? 'q' : '-');
 
-    printf("PosKey:\t0x%016llx\n", the_board->board_hash);
+	printf("PosKey:\t0x%016llx\n", the_board->board_hash);
 
 /*
 	printf("Move history\n");
@@ -108,7 +103,7 @@ void print_board(const struct board *the_board)
 		}
 	}
 */
-    printf("\n");
+	printf("\n");
 
 }
 
@@ -121,30 +116,27 @@ void print_board(const struct board *the_board)
  */
 char *print_square(enum square sq)
 {
-	char * square_text = (char *)malloc(3 * sizeof(char));
+	char *square_text = (char *)malloc(3 * sizeof(char));
 
-    int file = GET_FILE(sq);
-    int rank = GET_RANK(sq);
+	int file = GET_FILE(sq);
+	int rank = GET_RANK(sq);
 
-    sprintf(square_text, "%c%c", ('a' + file), ('1' + rank));
+	sprintf(square_text, "%c%c", ('a' + file), ('1' + rank));
 
-    return square_text;
+	return square_text;
 }
 
-
-
-void print_compressed_board(const struct board * brd){
-	for(enum square sq = a1; sq <= h8; sq++){
+void print_compressed_board(const struct board *brd)
+{
+	for (enum square sq = a1; sq <= h8; sq++) {
 		enum piece pce = get_piece_at_square(brd, sq);
-		if(pce == NO_PIECE){
+		if (pce == NO_PIECE) {
 			printf(".");
 		} else {
 			printf("%c", get_piece_label(pce));
 		}
 	}
 }
-
-
 
 /*
  * Validates the contents of a board struct.
@@ -155,17 +147,16 @@ void print_compressed_board(const struct board * brd){
  *
  */
 
-bool ASSERT_BOARD_OK(const struct board * brd)
+bool ASSERT_BOARD_OK(const struct board *brd)
 {
 
-    // check bit boards
-    U64 conflated = 0;
+	// check bit boards
+	U64 conflated = 0;
 
-    for (int i = 0; i < NUM_PIECES; i++) {
+	for (int i = 0; i < NUM_PIECES; i++) {
 		conflated |= brd->bitboards[i];
-    }
-    assert(conflated == brd->board);
-
+	}
+	assert(conflated == brd->board);
 
 	U64 wking_bb = brd->bitboards[W_KING];
 	assert(count_bits(wking_bb) == 1);
@@ -173,9 +164,8 @@ bool ASSERT_BOARD_OK(const struct board * brd)
 	U64 bking_bb = brd->bitboards[B_KING];
 	assert(count_bits(bking_bb) == 1);
 
-
-    // check where Kings are
-    for (enum square sq = a1; sq <= h8; sq++) {
+	// check where Kings are
+	for (enum square sq = a1; sq <= h8; sq++) {
 		enum piece pce = get_piece_at_square(brd, sq);
 		if (pce != NO_PIECE) {
 			if (pce == W_KING) {
@@ -192,35 +182,36 @@ bool ASSERT_BOARD_OK(const struct board * brd)
 				assert(sq == bk_sq);
 			}
 		}
-    }
+	}
 
-    // check verbose representation of board
-    for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
+	// check verbose representation of board
+	for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
 		enum piece pce = get_piece_at_square(brd, sq);
 		if (pce != NO_PIECE) {
 			assert(pce == brd->pieces[sq]);
 		}
-    }
+	}
 
-	assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
+	assert(IS_VALID_SQUARE(brd->en_passant)
+	       || (brd->en_passant == NO_SQUARE));
 
-    // calc and verify the material count
-    U32 local_material[NUM_COLOURS] = { 0 };
-    for (enum square sq = 0; sq <= h8; sq++) {
+	// calc and verify the material count
+	U32 local_material[NUM_COLOURS] = { 0 };
+	for (enum square sq = 0; sq <= h8; sq++) {
 		enum piece pce = get_piece_at_square(brd, sq);
 		if (pce != NO_PIECE) {
 			enum colour col = GET_COLOUR(pce);
 			local_material[col] += get_piece_value(pce);
 		}
-    }
+	}
 
-    assert(local_material[WHITE] == brd->material[WHITE]);
-    assert(local_material[BLACK] == brd->material[BLACK]);
+	assert(local_material[WHITE] == brd->material[WHITE]);
+	assert(local_material[BLACK] == brd->material[BLACK]);
 
-    // check on position key
-    assert(brd->board_hash == get_position_hash(brd));
+	// check on position key
+	assert(brd->board_hash == get_position_hash(brd));
 
-    return true;
+	return true;
 
 }
 
@@ -231,9 +222,10 @@ bool ASSERT_BOARD_OK(const struct board * brd)
  * @return
  *
  */
-void assert_boards_are_equal(const struct board * brd1, const struct board * brd2){
+void assert_boards_are_equal(const struct board *brd1, const struct board *brd2)
+{
 
-	for(int i = 0; i < NUM_PIECES; i++){
+	for (int i = 0; i < NUM_PIECES; i++) {
 		assert(brd1->bitboards[i] == brd2->bitboards[i]);
 	}
 
@@ -251,20 +243,23 @@ void assert_boards_are_equal(const struct board * brd1, const struct board * brd
 	assert(brd1->material[WHITE] == brd2->material[WHITE]);
 	assert(brd1->material[BLACK] == brd2->material[BLACK]);
 
-
-	for(int i = 0; i < NUM_SQUARES; i++){
+	for (int i = 0; i < NUM_SQUARES; i++) {
 		assert(brd1->pieces[i] == brd2->pieces[i]);
 	}
 
 	assert(brd1->castle_perm == brd2->castle_perm);
 
 	// already verified that brd1->history_ply == brd2_history_ply
-	for(int i = 0; i < brd1->history_ply; i++){
+	for (int i = 0; i < brd1->history_ply; i++) {
 		assert(brd1->history[i].move == brd2->history[i].move);
-		assert(brd1->history[i].fifty_move_counter == brd2->history[i].fifty_move_counter);
-		assert(brd1->history[i].castle_perm == brd2->history[i].castle_perm);
-		assert(brd1->history[i].board_hash == brd2->history[i].board_hash);
-		assert(brd1->history[i].en_passant == brd2->history[i].en_passant);
+		assert(brd1->history[i].fifty_move_counter ==
+		       brd2->history[i].fifty_move_counter);
+		assert(brd1->history[i].castle_perm ==
+		       brd2->history[i].castle_perm);
+		assert(brd1->history[i].board_hash ==
+		       brd2->history[i].board_hash);
+		assert(brd1->history[i].en_passant ==
+		       brd2->history[i].en_passant);
 	}
 
 	assert(brd1->board_hash == brd2->board_hash);
@@ -278,73 +273,68 @@ void assert_boards_are_equal(const struct board * brd1, const struct board * brd
  * @return
  *
  */
-struct board * clone_board(const struct board * board_to_clone){
-
+struct board *clone_board(const struct board *board_to_clone)
+{
 	U16 size = sizeof(struct board);
-
-    struct board *brd = malloc(size);
-
+	struct board *brd = malloc(size);
 	memcpy(brd, board_to_clone, size);
-
 	return brd;
 }
 
-
-
-
-
 // parses and validates a user-entered move
 // ip_move -> "a3b4" or "d7d8r"
-mv_bitmap parse_move(char *ip_move, struct board * brd) {
+mv_bitmap parse_move(char *ip_move, struct board * brd)
+{
+	if (ip_move[1] > '8' || ip_move[1] < '1')
+		return NO_MOVE;
+	if (ip_move[3] > '8' || ip_move[3] < '1')
+		return NO_MOVE;
+	if (ip_move[0] > 'h' || ip_move[0] < 'a')
+		return NO_MOVE;
+	if (ip_move[2] > 'h' || ip_move[2] < 'a')
+		return NO_MOVE;
 
-	if(ip_move[1] > '8' || ip_move[1] < '1') return NO_MOVE;
-    if(ip_move[3] > '8' || ip_move[3] < '1') return NO_MOVE;
-    if(ip_move[0] > 'h' || ip_move[0] < 'a') return NO_MOVE;
-    if(ip_move[2] > 'h' || ip_move[2] < 'a') return NO_MOVE;
-
-	U8 from_file = (U8)(ip_move[0] - 'a');
-	U8 from_rank = (U8)(ip_move[1] - '1');
-	U8 to_file = (U8)(ip_move[2] - 'a');
-	U8 to_rank = (U8)(ip_move[3] - '1');
+	U8 from_file = (U8) (ip_move[0] - 'a');
+	U8 from_rank = (U8) (ip_move[1] - '1');
+	U8 to_file = (U8) (ip_move[2] - 'a');
+	U8 to_rank = (U8) (ip_move[3] - '1');
 
 	enum square from = GET_SQUARE(from_rank, from_file);
 	enum square to = GET_SQUARE(to_rank, to_file);
 
 	// create ampty move list
 	struct move_list mv_list = {
-		.moves = {{0,0}},
+		.moves = {{0, 0}},
 		.move_count = 0
-		};
-		
+	};
+
 	generate_all_moves(brd, &mv_list);
-  
+
 	mv_bitmap move = NO_MOVE;
 	enum piece promoted = NO_PIECE;
 
-	for(int move_num = 0; move_num < mv_list.move_count; move_num++) {	
+	for (int move_num = 0; move_num < mv_list.move_count; move_num++) {
 		move = mv_list.moves[move_num].move_bitmap;
-		
-		if((FROMSQ(move) == from) && (TOSQ(move) == to)) {
+
+		if ((FROMSQ(move) == from) && (TOSQ(move) == to)) {
 			promoted = PROMOTED(move);
-			if(promoted != NO_PIECE) {
-				if(IS_ROOK(promoted) && ip_move[4]=='r') {
+			if (promoted != NO_PIECE) {
+				if (IS_ROOK(promoted) && ip_move[4] == 'r') {
 					return move;
-				} else if(IS_BISHOP(promoted) && ip_move[4]=='b') {
+				} else if (IS_BISHOP(promoted)
+					   && ip_move[4] == 'b') {
 					return move;
-				} else if(IS_QUEEN(promoted) && ip_move[4]=='q') {
+				} else if (IS_QUEEN(promoted)
+					   && ip_move[4] == 'q') {
 					return move;
-				} else if(IS_KNIGHT(promoted) && ip_move[4]=='n') {
+				} else if (IS_KNIGHT(promoted)
+					   && ip_move[4] == 'n') {
 					return move;
 				}
 				continue;
 			}
 			return move;
 		}
-    }
-	
-    return NO_MOVE;	
+	}
+	return NO_MOVE;
 }
-
-
-
-

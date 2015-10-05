@@ -29,20 +29,19 @@
 #define NUM_FILES	8
 
 enum {
-    RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8
+	RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8
 };
 
 enum {
-    FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H
+	FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H
 };
 
-
-#define GET_PIECE_MASK(square)	((U64)(0x01ull << (int)(square)))
+#define GET_PIECE_MASK(square)		((U64)(0x01ull << (int)(square)))
 
 // zero-based
 #define GET_RANK(square)		((U8)((square) / 8))
 #define GET_FILE(square)		((U8)((square) % 8))
-#define GET_SQUARE(RANK, FILE)	((U8)((RANK * 8) + FILE))
+#define GET_SQUARE(RANK, FILE)		((U8)((RANK * 8) + FILE))
 
 #define IS_VALID_RANK(rank)		((rank >= RANK_1) && (rank <= RANK_8))
 #define IS_VALID_FILE(file)		((file >= FILE_A) && (file <= FILE_H))
@@ -50,15 +49,13 @@ enum {
 
 // castling permissions
 enum {
-    WKCA = 0x01,		// white, king-side
-    WQCA = 0x02,		// white, queen-side
-    BKCA = 0x04,		// black, king-side
-    BQCA = 0x08			// black, queen-side
+	WKCA = 0x01,		// white, king-side
+	WQCA = 0x02,		// white, queen-side
+	BKCA = 0x04,		// black, king-side
+	BQCA = 0x08		// black, queen-side
 };
 
-
-
-struct board *init_board(char * fen);
+struct board *init_board(char *fen);
 void remove_piece_from_board(struct board *brd, enum square sq);
 void add_piece_to_board(struct board *brd, enum piece pce, enum square sq);
 void set_bit(U64 * brd, enum square sq);
@@ -68,7 +65,5 @@ U64 overlay_colours(const struct board *the_board, enum colour col);
 void overlay_boards(struct board *the_board);
 U8 count_bits(U64 bb);
 U64 square_to_bitboard(enum square sq);
-
-
 
 #endif

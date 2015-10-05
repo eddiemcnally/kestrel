@@ -26,59 +26,54 @@
 // offsets into this array are by type enum piece
 // additional at end needed to support NO_PIECE and NUM_PIECES
 static const char pieceToChar[PIECE_ENUM_SIZE] = {
-    'P', 'R', 'N', 'B', 'Q', 'K', 'p', 'r', 'n', 'b', 'q', 'k', '#', '-'
+	'P', 'R', 'N', 'B', 'Q', 'K', 'p', 'r', 'n', 'b', 'q', 'k', '#', '-'
 };
-
-
 
 // piece values, indexed into using the enum piece enum
 static const U32 piece_values[NUM_PIECES] = {
-    100,			// PAWN
-    550,			// ROOK
-    325,			// BISHOP
-    325,			// KNIGHT
-    1000,			// QUEEN
-    50000,			// KING
-    100,			// PAWN
-    325,			// BISHOP
-    325,			// KNIGHT
-    550,			// ROOK
-    1000,			// QUEEN
-    50000			// KING
+	100,			// PAWN
+	550,			// ROOK
+	325,			// BISHOP
+	325,			// KNIGHT
+	1000,			// QUEEN
+	50000,			// KING
+	100,			// PAWN
+	325,			// BISHOP
+	325,			// KNIGHT
+	550,			// ROOK
+	1000,			// QUEEN
+	50000			// KING
 };
-
-
 
 /**
  * Takes a typed piece and returns a human-readable representation
  */
 inline char get_piece_label(enum piece pce)
 {
-    return pieceToChar[pce];
+	return pieceToChar[pce];
 }
 
-
-inline U32 get_piece_value(const enum piece pce){
+inline U32 get_piece_value(const enum piece pce)
+{
 	return piece_values[pce];
 }
 
-
-bool is_valid_piece(enum piece pce){
+bool is_valid_piece(enum piece pce)
+{
 	return (pce >= 0 && pce <= NUM_PIECES) || (pce == NO_PIECE);
 }
 
-
-
-inline bool is_sliding_piece(enum piece pce){
-	switch(pce){
-		case W_BISHOP:
-		case W_QUEEN:
-		case W_ROOK:
-		case B_BISHOP:
-		case B_QUEEN:
-		case B_ROOK:
-			return true;
-		default:
-			return false;
+inline bool is_sliding_piece(enum piece pce)
+{
+	switch (pce) {
+	case W_BISHOP:
+	case W_QUEEN:
+	case W_ROOK:
+	case B_BISHOP:
+	case B_QUEEN:
+	case B_ROOK:
+		return true;
+	default:
+		return false;
 	}
 }

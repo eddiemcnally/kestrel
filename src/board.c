@@ -30,9 +30,6 @@
 #include "hashkeys.h"
 #include "pieces.h"
 
-
-
-
 static struct board *get_clean_board(void);
 
 /*
@@ -43,18 +40,15 @@ static struct board *get_clean_board(void);
  * @return	a new board
  *
  */
-struct board *init_board(char * fen)
+struct board *init_board(char *fen)
 {
-    struct board *brd = get_clean_board();
-
-    consume_fen_notation(fen, brd);
-
-    return brd;
+	struct board *brd = get_clean_board();
+	consume_fen_notation(fen, brd);
+	return brd;
 }
 
-
-void remove_piece_from_board(struct board *brd, enum square sq){
-
+void remove_piece_from_board(struct board *brd, enum square sq)
+{
 	enum piece pce = get_piece_at_square(brd, sq);
 	enum colour col = GET_COLOUR(pce);
 
@@ -69,23 +63,19 @@ void remove_piece_from_board(struct board *brd, enum square sq){
 	clear_bit(&brd->board, sq);
 }
 
-
-void add_piece_to_board(struct board *brd, enum piece pce, enum square sq){
+void add_piece_to_board(struct board *brd, enum piece pce, enum square sq)
+{
 
 	enum colour col = GET_COLOUR(pce);
-
 	update_piece_hash(brd, pce, sq);
 
 	brd->pieces[sq] = pce;
-
 	brd->material[col] += get_piece_value(pce);
 
 	// set piece on bitboards
 	set_bit(&brd->bitboards[pce], sq);
 	set_bit(&brd->board, sq);
 }
-
-
 
 /*
  * Creates an empty board struct
@@ -96,42 +86,38 @@ void add_piece_to_board(struct board *brd, enum piece pce, enum square sq){
  */
 static struct board *get_clean_board(void)
 {
-    struct board *brd = malloc(sizeof(struct board));
+	struct board *brd = malloc(sizeof(struct board));
+	memset(brd, 0, sizeof(struct board));
 
-    memset(brd, 0, sizeof(struct board));
-
-    for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
+	for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
 		brd->pieces[sq] = NO_PIECE;
-    }
+	}
 
-    return brd;
+	return brd;
 }
 
-
-
-U64 overlay_colours(const struct board *brd, enum colour col){
-	if (col == WHITE){
+U64 overlay_colours(const struct board * brd, enum colour col)
+{
+	if (col == WHITE) {
 		return brd->bitboards[W_PAWN] | brd->bitboards[W_BISHOP]
-				| brd->bitboards[W_KNIGHT] | brd->bitboards[W_ROOK]
-				| brd->bitboards[W_QUEEN] | brd->bitboards[W_KING];
-	} else{
+		    | brd->bitboards[W_KNIGHT] | brd->bitboards[W_ROOK]
+		    | brd->bitboards[W_QUEEN] | brd->bitboards[W_KING];
+	} else {
 		return brd->bitboards[B_PAWN] | brd->bitboards[B_BISHOP]
-				| brd->bitboards[B_KNIGHT] | brd->bitboards[B_ROOK]
-				| brd->bitboards[B_QUEEN] | brd->bitboards[B_KING];
+		    | brd->bitboards[B_KNIGHT] | brd->bitboards[B_ROOK]
+		    | brd->bitboards[B_QUEEN] | brd->bitboards[B_KING];
 	}
 }
 
-
 void overlay_boards(struct board *the_board)
 {
-    int i = 0;
-    U64 flat_board = BOARD_EMPTY;
-    for (i = 0; i < NUM_PIECES; i++) {
+	int i = 0;
+	U64 flat_board = BOARD_EMPTY;
+	for (i = 0; i < NUM_PIECES; i++) {
 		flat_board |= the_board->bitboards[i];
-    }
-    the_board->board = flat_board;
+	}
+	the_board->board = flat_board;
 }
-
 
 /*
  *
@@ -142,14 +128,11 @@ void overlay_boards(struct board *the_board)
  */
 inline void set_bit(U64 * brd, enum square sq)
 {
-
-    //assert((sq >= a1) && (sq <= h8));
-
-    *brd = *brd | (U64) (0x01ull << sq);
+	*brd = *brd | (U64) (0x01ull << sq);
 }
 
-
-inline U64 square_to_bitboard(enum square sq){
+inline U64 square_to_bitboard(enum square sq)
+{
 	U64 retval = 0;
 	set_bit(&retval, sq);
 	return retval;
@@ -164,9 +147,7 @@ inline U64 square_to_bitboard(enum square sq){
  */
 inline void clear_bit(U64 * brd, enum square sq)
 {
-    //assert((sq >= a1) && (sq <= h8));
-
-    *brd = *brd & (U64) (~(0x01ull << sq));
+	*brd = *brd & (U64) (~(0x01ull << sq));
 }
 
 /*
@@ -178,8 +159,5 @@ inline void clear_bit(U64 * brd, enum square sq)
  */
 inline U8 count_bits(U64 bb)
 {
-	return (U8)__builtin_popcountll(bb);
+	return (U8) __builtin_popcountll(bb);
 }
-
-
-

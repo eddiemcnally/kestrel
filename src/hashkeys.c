@@ -29,7 +29,6 @@
 #include "move.h"
 #include "hashkeys.h"
 
-
 //----- hashkeys for positions
 // extra size is needed to handle the NO_PIECE value
 static U64 piece_keys[PIECE_ENUM_SIZE][NUM_SQUARES] = { {0} };
@@ -48,18 +47,16 @@ static U64 castle_keys[16] = { 0 };	// 16 combinations because of 4 bits being u
  */
 void init_hash_keys()
 {
-
-    for (int pce = 0; pce < PIECE_ENUM_SIZE; pce++) {
+	for (int pce = 0; pce < PIECE_ENUM_SIZE; pce++) {
 		for (int sq = 0; sq < NUM_SQUARES; sq++) {
 			piece_keys[pce][sq] = generate_rand64();
 		}
-    }
+	}
 
-    side_to_move_key = generate_rand64();
-
-    for (int i = 0; i < 16; i++) {
+	side_to_move_key = generate_rand64();
+	for (int i = 0; i < 16; i++) {
 		castle_keys[i] = generate_rand64();
-    }
+	}
 }
 
 /* Returns the castle hashkey for a given castle permission map
@@ -71,9 +68,7 @@ void init_hash_keys()
  */
 inline U64 get_castle_hash(U8 castle_map)
 {
-    //assert(castle_map < 16);	// 4 bits, 0..F valid values
-
-    return castle_keys[castle_map];
+	return castle_keys[castle_map];
 }
 
 /* Returns the side hashkey
@@ -85,9 +80,8 @@ inline U64 get_castle_hash(U8 castle_map)
  */
 inline U64 get_side_hash(void)
 {
-    return side_to_move_key;
+	return side_to_move_key;
 }
-
 
 /* Returns the hashkey for a particular piece on a given square
  *
@@ -96,17 +90,16 @@ inline U64 get_side_hash(void)
  * @return:	the U64 hashkey
  *
  */
-inline U64 get_piece_hash(enum piece pce, enum square sq){
+inline U64 get_piece_hash(enum piece pce, enum square sq)
+{
 	return piece_keys[pce][sq];
 }
 
-
-inline U64 get_en_passant_hash(enum square sq){
+inline U64 get_en_passant_hash(enum square sq)
+{
 	//assert(sq != NO_SQUARE);
 	return piece_keys[NO_PIECE][sq];
 }
-
-
 
 /*Given a board, return a positon hashkey
  *
@@ -118,25 +111,24 @@ inline U64 get_en_passant_hash(enum square sq){
 
 U64 get_position_hash(const struct board * brd)
 {
-    U64 retval = 0;
+	U64 retval = 0;
 
-    for (enum square sq = a1; sq <= h8; sq++) {
+	for (enum square sq = a1; sq <= h8; sq++) {
 		enum piece pce = get_piece_at_square(brd, sq);
-
 		if (pce != NO_PIECE) {
 			retval ^= get_piece_hash(pce, sq);
 		}
-    }
+	}
 
-    if (brd->side_to_move == WHITE) {
+	if (brd->side_to_move == WHITE) {
 		retval ^= get_side_hash();
-    }
+	}
 
-    if (brd->en_passant != NO_SQUARE) {
+	if (brd->en_passant != NO_SQUARE) {
 		retval ^= get_piece_hash(NO_PIECE, brd->en_passant);
-    }
+	}
 
-    retval ^= get_castle_hash(brd->castle_perm);
+	retval ^= get_castle_hash(brd->castle_perm);
 
-    return retval;
+	return retval;
 }

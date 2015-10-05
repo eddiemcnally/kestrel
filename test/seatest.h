@@ -100,7 +100,7 @@ void fixture_filter(char *filter);
 int seatest_testrunner(int argc, char **argv, seatest_void_void tests,
 			seatest_void_void setup, seatest_void_void teardown);
 
-#endif /*  */
+#endif				/*  */
     
 #ifdef SEATEST_INTERNAL_TESTS 
 void seatest_simple_test_result_nolog(int passed, char *reason,
@@ -110,4 +110,4 @@ void seatest_simple_test_result_nolog(int passed, char *reason,
 void seatest_enable_logging();
 void seatest_disable_logging();
 
-#endif /*  */
+#endif				/*  */

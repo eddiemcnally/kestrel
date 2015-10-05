@@ -29,32 +29,26 @@
 #include "move.h"
 #include "hashkeys.h"
 
-
 //bit mask for castle permissions
 static const U8 castle_permission_mask[NUM_SQUARES] = {
-    13, 15, 15, 15, 12, 15, 15, 14,
-    15, 15, 15, 15, 15, 15, 15, 15,
-    15, 15, 15, 15, 15, 15, 15, 15,
-    15, 15, 15, 15, 15, 15, 15, 15,
-    15, 15, 15, 15, 15, 15, 15, 15,
-    15, 15, 15, 15, 15, 15, 15, 15,
-    15, 15, 15, 15, 15, 15, 15, 15,
-     7, 15, 15, 15,  3, 15, 15, 11
+	13, 15, 15, 15, 12, 15, 15, 14,
+	15, 15, 15, 15, 15, 15, 15, 15,
+	15, 15, 15, 15, 15, 15, 15, 15,
+	15, 15, 15, 15, 15, 15, 15, 15,
+	15, 15, 15, 15, 15, 15, 15, 15,
+	15, 15, 15, 15, 15, 15, 15, 15,
+	15, 15, 15, 15, 15, 15, 15, 15,
+	7, 15, 15, 15, 3, 15, 15, 11
 };
 
-
-
-
-
-
- void move_piece(struct board *brd, enum square from, enum square to){
+void move_piece(struct board *brd, enum square from, enum square to)
+{
 
 	//ASSERT_BOARD_OK(brd);
 
 	enum piece pce = get_piece_at_square(brd, from);
 
 	//assert(IS_VALID_PIECE(pce));
-
 
 	update_piece_hash(brd, pce, from);
 	brd->pieces[from] = NO_PIECE;
@@ -66,7 +60,7 @@ static const U8 castle_permission_mask[NUM_SQUARES] = {
 	clear_bit(&brd->board, from);
 
 	update_piece_hash(brd, pce, to);
-	
+
 	brd->pieces[to] = pce;
 	set_bit(&brd->bitboards[pce], to);
 	set_bit(&brd->board, to);
@@ -76,13 +70,11 @@ static const U8 castle_permission_mask[NUM_SQUARES] = {
 
 	//ASSERT_BOARD_OK(brd);
 
-
 }
 
-
-
 // return false if move is invalid, true otherwise
-bool make_move(struct board *brd, mv_bitmap mv){
+bool make_move(struct board *brd, mv_bitmap mv)
+{
 	//ASSERT_BOARD_OK(brd);
 
 	enum square from = FROMSQ(mv);
@@ -90,42 +82,43 @@ bool make_move(struct board *brd, mv_bitmap mv){
 
 	enum colour side = brd->side_to_move;
 
-	brd->history[brd->history_ply].board_hash  = brd->board_hash;
+	brd->history[brd->history_ply].board_hash = brd->board_hash;
 
-	if(mv & MFLAG_EN_PASSANT) {
-        if(side == WHITE) {
-            remove_piece_from_board(brd, to-8);
-        } else {
-            remove_piece_from_board(brd, to+8);
-        }
-    } else if (mv & MFLAG_CASTLE) {
-        switch(to) {
-            case c1:
-                move_piece(brd, a1, d1);
-				break;
-            case c8:
-				move_piece(brd, a8, d8);
-				break;
-            case g1:
-				move_piece(brd, h1, f1);
-				break;
-            case g8:
-				move_piece(brd, h8, f8);
-				break;
-            default:
-				assert(false);
-				break;
-        }
-    }
+	if (mv & MFLAG_EN_PASSANT) {
+		if (side == WHITE) {
+			remove_piece_from_board(brd, to - 8);
+		} else {
+			remove_piece_from_board(brd, to + 8);
+		}
+	} else if (mv & MFLAG_CASTLE) {
+		switch (to) {
+		case c1:
+			move_piece(brd, a1, d1);
+			break;
+		case c8:
+			move_piece(brd, a8, d8);
+			break;
+		case g1:
+			move_piece(brd, h1, f1);
+			break;
+		case g8:
+			move_piece(brd, h8, f8);
+			break;
+		default:
+			assert(false);
+			break;
+		}
+	}
 
-	if (brd->en_passant != NO_SQUARE){
+	if (brd->en_passant != NO_SQUARE) {
 		update_EP_hash(brd);
 	}
 	update_castle_hash(brd);
 
 	// set up history
 	brd->history[brd->history_ply].move = mv;
-	brd->history[brd->history_ply].fifty_move_counter = brd->fifty_move_counter;
+	brd->history[brd->history_ply].fifty_move_counter =
+	    brd->fifty_move_counter;
 	brd->history[brd->history_ply].en_passant = brd->en_passant;
 	brd->history[brd->history_ply].castle_perm = brd->castle_perm;
 
@@ -138,7 +131,7 @@ bool make_move(struct board *brd, mv_bitmap mv){
 	enum piece captured = CAPTURED(mv);
 	brd->fifty_move_counter++;
 
-	if (captured != NO_PIECE){
+	if (captured != NO_PIECE) {
 		remove_piece_from_board(brd, to);
 		brd->fifty_move_counter = 0;
 	}
@@ -148,14 +141,14 @@ bool make_move(struct board *brd, mv_bitmap mv){
 
 	enum piece pce_being_moved = brd->pieces[from];
 
-	if (IS_PAWN(pce_being_moved)){
+	if (IS_PAWN(pce_being_moved)) {
 		brd->fifty_move_counter = 0;
 
-		if (mv & MFLAG_PAWN_START){
-			if (side == WHITE){
-				brd->en_passant = from + 8;				
+		if (mv & MFLAG_PAWN_START) {
+			if (side == WHITE) {
+				brd->en_passant = from + 8;
 			} else {
-				brd->en_passant = from - 8;				
+				brd->en_passant = from - 8;
 			}
 			update_EP_hash(brd);
 		}
@@ -164,11 +157,10 @@ bool make_move(struct board *brd, mv_bitmap mv){
 	move_piece(brd, from, to);
 
 	enum piece promoted = PROMOTED(mv);
-	if (promoted != NO_PIECE){
+	if (promoted != NO_PIECE) {
 		remove_piece_from_board(brd, to);
 		add_piece_to_board(brd, promoted, to);
 	}
-
 	// check if move is valid (ie, king in check)
 	enum piece king = (side == BLACK) ? B_KING : W_KING;
 	U64 bb_king = brd->bitboards[king];
@@ -178,9 +170,8 @@ bool make_move(struct board *brd, mv_bitmap mv){
 	brd->side_to_move = FLIP_SIDE(brd->side_to_move);
 	update_side_hash(brd);
 
-
 	// side is already flipped above, so use that as the attacking side
-	if (is_sq_attacked(brd, king_sq, brd->side_to_move)){
+	if (is_sq_attacked(brd, king_sq, brd->side_to_move)) {
 		take_move(brd);
 		return false;
 	} else {
@@ -188,11 +179,8 @@ bool make_move(struct board *brd, mv_bitmap mv){
 	}
 }
 
-
-
-
-void take_move(struct board *brd){
-
+void take_move(struct board *brd)
+{
 	brd->history_ply--;
 	brd->ply--;
 
@@ -204,17 +192,18 @@ void take_move(struct board *brd){
 	enum square to = TOSQ(mv);
 
 	// hash out en passant and castle if set
-	if (brd->en_passant != NO_SQUARE){
+	if (brd->en_passant != NO_SQUARE) {
 		update_EP_hash(brd);
 	}
 	update_castle_hash(brd);
 
-    brd->castle_perm = brd->history[brd->history_ply].castle_perm;
-    brd->fifty_move_counter = brd->history[brd->history_ply].fifty_move_counter;
-    brd->en_passant = brd->history[brd->history_ply].en_passant;
+	brd->castle_perm = brd->history[brd->history_ply].castle_perm;
+	brd->fifty_move_counter =
+	    brd->history[brd->history_ply].fifty_move_counter;
+	brd->en_passant = brd->history[brd->history_ply].en_passant;
 
 	// now, hash back in
-	if (brd->en_passant != NO_SQUARE){
+	if (brd->en_passant != NO_SQUARE) {
 		update_EP_hash(brd);
 	}
 	update_castle_hash(brd);
@@ -223,42 +212,41 @@ void take_move(struct board *brd){
 	brd->side_to_move = FLIP_SIDE(brd->side_to_move);
 	update_side_hash(brd);
 
-	if (MFLAG_EN_PASSANT & mv){
-		if (brd->side_to_move == WHITE){
+	if (MFLAG_EN_PASSANT & mv) {
+		if (brd->side_to_move == WHITE) {
 			add_piece_to_board(brd, B_PAWN, to - 8);
-		} else{
+		} else {
 			add_piece_to_board(brd, W_PAWN, to + 8);
 		}
-	} else if (MFLAG_CASTLE & mv){
-		switch(to){
-			case c1:
-				move_piece(brd, d1, a1);
-				break;
-			case c8:
-				move_piece(brd, d8, a8);
-				break;
-			case g1:
-				move_piece(brd, f1, h1);
-				break;
-			case g8:
-				move_piece(brd, f8, h8);
-				break;
-			default:
-				assert(false);
-				break;
+	} else if (MFLAG_CASTLE & mv) {
+		switch (to) {
+		case c1:
+			move_piece(brd, d1, a1);
+			break;
+		case c8:
+			move_piece(brd, d8, a8);
+			break;
+		case g1:
+			move_piece(brd, f1, h1);
+			break;
+		case g8:
+			move_piece(brd, f8, h8);
+			break;
+		default:
+			assert(false);
+			break;
 		}
 	}
-
 	// note: to revert move, move piece from 'to' to 'from'
 	move_piece(brd, to, from);
 
 	enum piece captured = CAPTURED(mv);
-	if (captured != NO_PIECE){
+	if (captured != NO_PIECE) {
 		add_piece_to_board(brd, captured, to);
 	}
 
 	enum piece promoted = PROMOTED(mv);
-	if (promoted != NO_PIECE){
+	if (promoted != NO_PIECE) {
 		enum colour prom_col = GET_COLOUR(promoted);
 		remove_piece_from_board(brd, from);
 
@@ -267,23 +255,22 @@ void take_move(struct board *brd){
 	}
 }
 
-
-
-
-
-inline void update_piece_hash(struct board *brd, enum piece pce, enum square sq){
+inline void update_piece_hash(struct board *brd, enum piece pce, enum square sq)
+{
 	brd->board_hash ^= get_piece_hash(pce, sq);
 }
 
-inline void update_castle_hash(struct board *brd){
+inline void update_castle_hash(struct board *brd)
+{
 	brd->board_hash ^= get_castle_hash(brd->castle_perm);
 }
 
-
-inline void update_side_hash(struct board *brd){
+inline void update_side_hash(struct board *brd)
+{
 	brd->board_hash ^= get_side_hash();
 }
 
-inline void update_EP_hash(struct board *brd){
+inline void update_EP_hash(struct board *brd)
+{
 	brd->board_hash ^= get_en_passant_hash(brd->en_passant);
 }

@@ -23,7 +23,7 @@
 #include "types.h"
 #include "board.h"
 #include "pieces.h"
-#include "utils.h" 
+#include "utils.h"
 #include "occupancy_mask.h"
 
 void generate_king_occupancy_masks(U64 * occ_mask_array);
@@ -37,31 +37,29 @@ void print_out_masks(const U64 * masks);
 void set_dest_sq_if_valid(int rank, int file, U64 * brd);
 U64 get_occupancy_mask(enum piece pce, enum square sq);
 
-
-
-U64 get_occupancy_mask(enum piece pce, enum square sq){
-	switch(pce){
-		case W_BISHOP:
-		case B_BISHOP:
-			return GET_BISHOP_OCC_MASK(sq);
-		case W_ROOK:
-		case B_ROOK:
-			return GET_ROOK_OCC_MASK(sq);
-		case W_QUEEN:
-		case B_QUEEN:
-			return GET_QUEEN_OCC_MASK(sq);
-		case W_KNIGHT:
-		case B_KNIGHT:
-			return GET_KNIGHT_OCC_MASK(sq);
-		case W_KING:
-		case B_KING:
-			return GET_KING_OCC_MASK(sq);
-		default:
-			//assert(pce == NO_PIECE);
-			return 0;
+U64 get_occupancy_mask(enum piece pce, enum square sq)
+{
+	switch (pce) {
+	case W_BISHOP:
+	case B_BISHOP:
+		return GET_BISHOP_OCC_MASK(sq);
+	case W_ROOK:
+	case B_ROOK:
+		return GET_ROOK_OCC_MASK(sq);
+	case W_QUEEN:
+	case B_QUEEN:
+		return GET_QUEEN_OCC_MASK(sq);
+	case W_KNIGHT:
+	case B_KNIGHT:
+		return GET_KNIGHT_OCC_MASK(sq);
+	case W_KING:
+	case B_KING:
+		return GET_KING_OCC_MASK(sq);
+	default:
+		//assert(pce == NO_PIECE);
+		return 0;
 	}
 }
-
 
 /*
  * Generates the occupancy bit masks for a king on each square on the board
@@ -73,7 +71,7 @@ U64 get_occupancy_mask(enum piece pce, enum square sq){
 void generate_king_occupancy_masks(U64 * occ_mask_array)
 {
 
-    for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
+	for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
 		// valid king moves, and resulting distance vector
 		// +7, +8, +9
 		// -1,  K, +1
@@ -106,7 +104,7 @@ void generate_king_occupancy_masks(U64 * occ_mask_array)
 		dest_file = file + 1;
 		set_dest_sq_if_valid(dest_rank, dest_file, &b);
 
-	///////////////////////////////////
+		///////////////////////////////////
 
 		// left 1 file, no rank change
 		dest_rank = rank;
@@ -118,7 +116,7 @@ void generate_king_occupancy_masks(U64 * occ_mask_array)
 		dest_file = file + 1;
 		set_dest_sq_if_valid(dest_rank, dest_file, &b);
 
-	//////////////////////////////////////
+		//////////////////////////////////////
 
 		// right 1 file, down 1 rank
 		dest_rank = rank - 1;
@@ -136,7 +134,7 @@ void generate_king_occupancy_masks(U64 * occ_mask_array)
 		set_dest_sq_if_valid(dest_rank, dest_file, &b);
 
 		occ_mask_array[sq] = b;
-    }
+	}
 }
 
 /*
@@ -158,7 +156,7 @@ void generate_knight_occupancy_masks(U64 * occ_mask_array)
 //              08 09 10 11 12 13 14 15
 //              00 01 02 03 40 05 06 07
 
-    for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
+	for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
 		int dest_rank = 0;
 		int dest_file = 0;
 
@@ -235,7 +233,7 @@ void generate_knight_occupancy_masks(U64 * occ_mask_array)
 		occ_mask_array[sq] = b;
 
 		//printf("****** 0x%016llx\n", b);
-    }
+	}
 }
 
 /*
@@ -258,7 +256,7 @@ void generate_white_pawn_occupancy_masks(U64 * occ_mask_array)
 //              08 09 10 11 12 13 14 15
 //              00 01 02 03 40 05 06 07
 
-    for (enum square sq = a2; sq < a8; sq++) {
+	for (enum square sq = a2; sq < a8; sq++) {
 		// a2 n=> start at 2nd rank and ignore the 8th rank
 
 		int dest_rank = 0;
@@ -286,7 +284,7 @@ void generate_white_pawn_occupancy_masks(U64 * occ_mask_array)
 		set_dest_sq_if_valid(dest_rank, dest_file, &b);
 
 		occ_mask_array[sq] = b;
-    }
+	}
 }
 
 /*
@@ -308,7 +306,7 @@ void generate_black_pawn_occupancy_masks(U64 * occ_mask_array)
 //              16 17 18 19 20 21 22 23
 //              08 09 10 11 12 13 14 15
 //              00 01 02 03 40 05 06 07
-    for (enum square sq = h7; sq >= a2; sq--) {
+	for (enum square sq = h7; sq >= a2; sq--) {
 		// ignore top and bottom rank
 
 		int dest_rank = 0;
@@ -336,7 +334,7 @@ void generate_black_pawn_occupancy_masks(U64 * occ_mask_array)
 		set_dest_sq_if_valid(dest_rank, dest_file, &b);
 
 		occ_mask_array[sq] = b;
-    }
+	}
 }
 
 void generate_rook_occupancy_masks(U64 * occ_mask_array)
@@ -351,7 +349,7 @@ void generate_rook_occupancy_masks(U64 * occ_mask_array)
 //              08 09 10 11 12 13 14 15
 //              00 01 02 03 40 05 06 07
 
-    for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
+	for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
 
 		int rank = GET_RANK(sq);
 		int file = GET_FILE(sq);
@@ -372,22 +370,22 @@ void generate_rook_occupancy_masks(U64 * occ_mask_array)
 		clear_bit(&b, sq);
 
 		occ_mask_array[sq] = b;
-    }
+	}
 }
 
 void generate_queen_occupancy_masks(U64 * occ_mask_array)
 {
-    // a queen is a rook + bishop, so create a temp mask array
-    U64 temp_bishop_mask[NUM_SQUARES] = { 0 };
-    U64 temp_rook_mask[NUM_SQUARES] = { 0 };
+	// a queen is a rook + bishop, so create a temp mask array
+	U64 temp_bishop_mask[NUM_SQUARES] = { 0 };
+	U64 temp_rook_mask[NUM_SQUARES] = { 0 };
 
-    generate_bishop_occupancy_masks(temp_bishop_mask);
-    generate_rook_occupancy_masks(temp_rook_mask);
+	generate_bishop_occupancy_masks(temp_bishop_mask);
+	generate_rook_occupancy_masks(temp_rook_mask);
 
-    // combine masks
-    for (int i = 0; i < NUM_SQUARES; i++) {
+	// combine masks
+	for (int i = 0; i < NUM_SQUARES; i++) {
 		occ_mask_array[i] = temp_bishop_mask[i] | temp_rook_mask[i];
-    }
+	}
 }
 
 void generate_bishop_occupancy_masks(U64 * occ_mask_array)
@@ -402,7 +400,7 @@ void generate_bishop_occupancy_masks(U64 * occ_mask_array)
 //              08 09 10 11 12 13 14 15
 //              00 01 02 03 40 05 06 07
 
-    for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
+	for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
 
 		int rank = GET_RANK(sq);
 		int file = GET_FILE(sq);
@@ -453,23 +451,18 @@ void generate_bishop_occupancy_masks(U64 * occ_mask_array)
 		clear_bit(&b, sq);
 
 		occ_mask_array[sq] = b;
-    }
+	}
 }
-
-
-
-
-
 
 void set_dest_sq_if_valid(int rank, int file, U64 * brd)
 {
-    if (IS_VALID_FILE(file) && IS_VALID_RANK(rank)) {
+	if (IS_VALID_FILE(file) && IS_VALID_RANK(rank)) {
 		int dest_sq = GET_SQUARE(rank, file);
 		set_bit(brd, dest_sq);
 		//printf("---- OK  rank/file (sq=%d): %d/%d\n", dest_sq, rank, file);
-    } else {
+	} else {
 		//printf("XXXX bad rank/file: %d/%d\n", rank, file);
-    }
+	}
 }
 
 /*
@@ -482,59 +475,56 @@ void set_dest_sq_if_valid(int rank, int file, U64 * brd)
 void print_occupancy_masks(enum piece pce)
 {
 
-    U64 masks[NUM_SQUARES] = { 0 };
+	U64 masks[NUM_SQUARES] = { 0 };
 
-    switch (pce) {
-		case W_KNIGHT:
-		case B_KNIGHT:
-			generate_knight_occupancy_masks(masks);
-			break;
-		case W_BISHOP:
-		case B_BISHOP:
-			generate_bishop_occupancy_masks(masks);
-			break;
-		case W_QUEEN:
-		case B_QUEEN:
-			generate_queen_occupancy_masks(masks);
-			break;
+	switch (pce) {
+	case W_KNIGHT:
+	case B_KNIGHT:
+		generate_knight_occupancy_masks(masks);
+		break;
+	case W_BISHOP:
+	case B_BISHOP:
+		generate_bishop_occupancy_masks(masks);
+		break;
+	case W_QUEEN:
+	case B_QUEEN:
+		generate_queen_occupancy_masks(masks);
+		break;
 
-		case W_ROOK:
-		case B_ROOK:
-			generate_rook_occupancy_masks(masks);
-			break;
+	case W_ROOK:
+	case B_ROOK:
+		generate_rook_occupancy_masks(masks);
+		break;
 
-		case W_KING:
-		case B_KING:
-			generate_king_occupancy_masks(masks);
-			break;
+	case W_KING:
+	case B_KING:
+		generate_king_occupancy_masks(masks);
+		break;
 
-		case W_PAWN:
-			generate_white_pawn_occupancy_masks(masks);
-			break;
-		case B_PAWN:
-			generate_black_pawn_occupancy_masks(masks);
-			break;
+	case W_PAWN:
+		generate_white_pawn_occupancy_masks(masks);
+		break;
+	case B_PAWN:
+		generate_black_pawn_occupancy_masks(masks);
+		break;
 
-		default:
-			break;
-    }
+	default:
+		break;
+	}
 
-    print_out_masks(masks);
+	print_out_masks(masks);
 
 }
 
-
-
-
-
 // when checking to see if a queen or bishop can attack a
 // square, having a localised occupancy mask can be useful
-void generate_diagonal_occupancy_masks(void){
+void generate_diagonal_occupancy_masks(void)
+{
 
-    U64 diagonal[NUM_SQUARES] = { 0 }; // bottom left to upper right
-    U64 antidiagonal[NUM_SQUARES] = { 0 }; // top left to bottom right
+	U64 diagonal[NUM_SQUARES] = { 0 };	// bottom left to upper right
+	U64 antidiagonal[NUM_SQUARES] = { 0 };	// top left to bottom right
 
-    for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
+	for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
 
 		int rank = GET_RANK(sq);
 		int file = GET_FILE(sq);
@@ -557,7 +547,6 @@ void generate_diagonal_occupancy_masks(void){
 		clear_bit(&b, sq);
 		diagonal[sq] |= b;
 
-
 		// move NW
 		b = 0;
 		dest_rank = rank;
@@ -571,9 +560,6 @@ void generate_diagonal_occupancy_masks(void){
 		clear_bit(&b, sq);
 		antidiagonal[sq] |= b;
 
-
-
-
 		// move SE
 		b = 0;
 		dest_rank = rank;
@@ -586,8 +572,6 @@ void generate_diagonal_occupancy_masks(void){
 		// clear our square
 		clear_bit(&b, sq);
 		antidiagonal[sq] |= b;
-
-
 
 		// move NE
 		b = 0;
@@ -609,25 +593,15 @@ void generate_diagonal_occupancy_masks(void){
 	printf("ANTI_DIAGONAL\n");
 	print_out_masks(antidiagonal);
 
-
 }
-
-
-
-
-
-
-
-
 
 /**
  * Thanks again to Bluefever Software for this code
  */
-void
-print_mask_as_board(const U64 * mask)
+void print_mask_as_board(const U64 * mask)
 {
 	U64 m = *mask;
-    for (int rank = RANK_8; rank >= RANK_1; rank--) {
+	for (int rank = RANK_8; rank >= RANK_1; rank--) {
 		printf("%d  ", rank + 1);	// enum is zero-based
 		for (int file = FILE_A; file <= FILE_H; file++) {
 			enum square sq = GET_SQUARE(rank, file);
@@ -638,23 +612,23 @@ print_mask_as_board(const U64 * mask)
 				printf("  -");
 			}
 		}
-	printf("\n");
-    }
+		printf("\n");
+	}
 
-    printf("\n   ");
-    for (int file = FILE_A; file <= FILE_H; file++) {
+	printf("\n   ");
+	for (int file = FILE_A; file <= FILE_H; file++) {
 		printf("%3c", 'a' + file);
 	}
-    printf("\n\n");
+	printf("\n\n");
 
 }
 
 void print_out_masks(const U64 * masks)
 {
-    for (int i = 0; i < NUM_SQUARES; i++) {
+	for (int i = 0; i < NUM_SQUARES; i++) {
 		printf("0x%016llx\n", masks[i]);
 
 		//print_mask_as_board(&masks[i], W_QUEEN, i);
 
-    }
+	}
 }

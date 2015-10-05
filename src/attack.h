@@ -26,15 +26,25 @@ U8 get_LSB_index(U64 bb);
 U8 get_MSB_index(U64 bb);
 void clear_LSB_to_inclusive_bit(U64 * bb, U8 bit);
 void clear_MSB_to_inclusive_bit(U64 * bb, U8 bit);
-bool is_sq_attacked(const struct board *brd, enum square sq, enum colour attacking_side);
+bool is_sq_attacked(const struct board *brd, enum square sq,
+		    enum colour attacking_side);
 
-bool TEST_is_bishop_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side);
-bool TEST_is_knight_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side);
-bool TEST_is_pawn_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side);
-bool TEST_is_king_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side);
-bool TEST_is_rook_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side);
-bool TEST_is_queen_attacking_square(const struct board *brd, enum square sq, enum colour attacking_side);
-bool TEST_is_attacked_horizontally_or_vertically(const struct board *brd, enum square sq_one, enum square sq_two);
-bool TEST_is_attacked_diagonally(const struct board *brd, enum square sq_one, enum square sq_two);
+bool TEST_is_bishop_attacking_square(const struct board *brd, enum square sq,
+				     enum colour attacking_side);
+bool TEST_is_knight_attacking_square(const struct board *brd, enum square sq,
+				     enum colour attacking_side);
+bool TEST_is_pawn_attacking_square(const struct board *brd, enum square sq,
+				   enum colour attacking_side);
+bool TEST_is_king_attacking_square(const struct board *brd, enum square sq,
+				   enum colour attacking_side);
+bool TEST_is_rook_attacking_square(const struct board *brd, enum square sq,
+				   enum colour attacking_side);
+bool TEST_is_queen_attacking_square(const struct board *brd, enum square sq,
+				    enum colour attacking_side);
+bool TEST_is_attacked_horizontally_or_vertically(const struct board *brd,
+						 enum square sq_one,
+						 enum square sq_two);
+bool TEST_is_attacked_diagonally(const struct board *brd, enum square sq_one,
+				 enum square sq_two);
 
 #endif

@@ -39,7 +39,6 @@
 #define IS_ROOK_OR_QUEEN(pce)	(IS_ROOK(pce) || IS_QUEEN(pce))
 #define IS_BISHOP_OR_QUEEN(pce)	(IS_BISHOP(pce) || IS_QUEEN(pce))
 
-
 char get_piece_label(enum piece piece);
 
 bool is_sliding_piece(enum piece pce);

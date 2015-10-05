@@ -31,7 +31,8 @@ void test_bit_reversal(void);
 void utils_test_fixture(void);
 void test_clear_MSB(void);
 
-void test_bit_reversal(void){
+void test_bit_reversal(void)
+{
 
 	U64 test_word = 0xFA340A7314DA;
 	U64 reversed = reverse_bits(test_word);
@@ -46,7 +47,6 @@ void test_bit_reversal(void){
 	reversed = reverse_bits(test_word);
 	assert_true(reversed == 0x6F43DA3E2);
 
-
 	test_word = 0x3AD1FDE008934A;
 	reversed = reverse_bits(test_word);
 	assert_true(reversed == 0x52C91007BF8B5C00);
@@ -57,20 +57,19 @@ void test_bit_reversal(void){
 
 }
 
-
-void test_clear_MSB(void){
+void test_clear_MSB(void)
+{
 	U64 bb = 0x54673;
 	clear_MSB_to_inclusive_bit(&bb, 10);
 
 	assert_true(bb == 0x273);
 }
 
-
-void test_find_LSB(){
+void test_find_LSB()
+{
 	U64 test_val = 0x526200817;
 	U8 b = get_LSB_index(test_val);
 	assert_true(b == 0);
-
 
 	test_val = 0x29310040;
 	b = get_LSB_index(test_val);
@@ -82,13 +81,11 @@ void test_find_LSB(){
 
 }
 
-
-
-void test_find_MSB(){
+void test_find_MSB()
+{
 	U64 test_val = 0x526200817;
 	U8 b = get_MSB_index(test_val);
 	assert_true(b == 34);
-
 
 	test_val = 0x29310040;
 	b = get_MSB_index(test_val);
@@ -104,23 +101,21 @@ void test_find_MSB(){
 
 }
 
-
-
-void test_clear_LSB(void){
+void test_clear_LSB(void)
+{
 	U64 bb = 0x54673;
 	clear_LSB_to_inclusive_bit(&bb, 5);
 	assert_true(bb == 0x54640);
 }
 
-
-void test_flip_side(){
+void test_flip_side()
+{
 
 	enum colour fs = FLIP_SIDE(WHITE);
 	assert_true(fs == BLACK);
 
 	fs = FLIP_SIDE(fs);
 	assert_true(fs == WHITE);
-
 
 	fs = FLIP_SIDE(fs);
 	assert_true(fs == BLACK);
@@ -140,5 +135,3 @@ void utils_test_fixture(void)
 
 	test_fixture_end();
 }
-
-

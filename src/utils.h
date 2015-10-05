@@ -29,5 +29,4 @@ void set_priority_and_affinity(void);
 #define IS_SQUARE_OCCUPIED(BB, SQ)	( ( (BB >> SQ) & 0x01ull) != 0)
 #define CHECK_BIT(BB, SQ)				(IS_SQUARE_OCCUPIED(BB, SQ))
 
-
 #endif

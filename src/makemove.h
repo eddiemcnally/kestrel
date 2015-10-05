@@ -28,5 +28,4 @@ void update_castle_hash(struct board *brd);
 void update_side_hash(struct board *brd);
 void update_EP_hash(struct board *brd);
 
-
 #endif
