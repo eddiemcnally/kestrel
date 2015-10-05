@@ -30,6 +30,7 @@
 #include "occupancy_mask.h"
 #include "fen.h"
 #include "utils.h"
+#include "search.h"
 #include "move.h"
 
 // sample game position
@@ -43,7 +44,7 @@ int main(int argc, char **argv)
 	// set process pri and cpu affinity for max performance
 	set_priority_and_affinity();
 
-	struct board *brd = init_game(SAMPLE_POSITION);
+	struct board *brd = init_game(STARTING_FEN);
 	print_board(brd);
 
 	char input[6];
@@ -62,6 +63,9 @@ int main(int argc, char **argv)
 			move = parse_move(input, brd);
 			if (move != NO_MOVE) {
 				make_move(brd, move);
+				if (is_repetition(brd)) {
+					printf("*** repetition ***\n");
+				}
 			} else {
 				printf("Move Not Parsed:%s\n", input);
 			}

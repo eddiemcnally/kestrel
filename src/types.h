@@ -108,7 +108,6 @@ struct board {
 	// the square where en passent is active
 	enum square en_passant;
 
-	// fifty move ounter
 	U8 fifty_move_counter;
 
 	// keeping track of ply

@@ -60,6 +60,7 @@ CFLAGS	=	-O3 -std=c11 \
 				../src/init.c \
 				../src/hashkeys.c \
 				../src/fen.c \
+				../src/search.c \
 				../src/utils.c \
 				../src/attack.c \
 				../src/occupancy_mask.c \
