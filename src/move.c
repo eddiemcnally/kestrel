@@ -65,6 +65,8 @@ static void generate_queen_moves(const struct board *brd,
 				 struct move_list *mvl, enum piece pce);
 static bool is_move_in_list(struct move_list *mvl, mv_bitmap mv);
 
+
+
 /* indexed using enum square
  * Represents the horizontal squares that a rook can move to, when
  * on a specific square
@@ -273,8 +275,7 @@ void validate_move_list(struct move_list *mvl)
 	}
 }
 
-inline mv_bitmap
-MOVE(enum square from, enum square to, enum piece capture,
+inline mv_bitmap MOVE(enum square from, enum square to, enum piece capture,
      enum piece promote, U32 fl)
 {
 	return ((from) | ((to) << 7) | ((capture) << 14) | ((promote) << 20) |
@@ -290,8 +291,8 @@ MOVE(enum square from, enum square to, enum piece capture,
  *
  */
 
-inline enum piece
-get_piece_at_square(const struct board *the_board, enum square sq)
+inline enum piece get_piece_at_square(const struct board *the_board, 
+													enum square sq)
 {
 	return the_board->pieces[sq];
 }
@@ -342,36 +343,26 @@ add_capture_move(mv_bitmap move_bitmap, struct move_list *mvlist)
 	mvlist->move_count++;
 }
 
-static inline void
-add_pawn_capture_move(enum colour col, enum square from, enum square to,
-		      enum piece capture, struct move_list *mvl)
+static inline void add_pawn_capture_move(enum colour col, enum square from, 
+				enum square to, enum piece capture, struct move_list *mvl)
 {
 	if (col == WHITE) {
 		if (GET_RANK(from) == RANK_7) {
 			// pawn can promote to 4 pieces
-			add_capture_move(MOVE(from, to, capture, W_QUEEN, 0),
-					 mvl);
-			add_capture_move(MOVE(from, to, capture, W_ROOK, 0),
-					 mvl);
-			add_capture_move(MOVE(from, to, capture, W_BISHOP, 0),
-					 mvl);
-			add_capture_move(MOVE(from, to, capture, W_KNIGHT, 0),
-					 mvl);
+			add_capture_move(MOVE(from, to, capture, W_QUEEN, 0), mvl);
+			add_capture_move(MOVE(from, to, capture, W_ROOK, 0), mvl);
+			add_capture_move(MOVE(from, to, capture, W_BISHOP, 0), mvl);
+			add_capture_move(MOVE(from, to, capture, W_KNIGHT, 0), mvl);
 		} else {
-			add_capture_move(MOVE(from, to, capture, NO_PIECE, 0),
-					 mvl);
+			add_capture_move(MOVE(from, to, capture, NO_PIECE, 0), mvl);
 		}
 	} else {
 		if (GET_RANK(from) == RANK_2) {
 			// pawn can promote to 4 pieces
-			add_capture_move(MOVE(from, to, capture, B_QUEEN, 0),
-					 mvl);
-			add_capture_move(MOVE(from, to, capture, B_ROOK, 0),
-					 mvl);
-			add_capture_move(MOVE(from, to, capture, B_BISHOP, 0),
-					 mvl);
-			add_capture_move(MOVE(from, to, capture, B_KNIGHT, 0),
-					 mvl);
+			add_capture_move(MOVE(from, to, capture, B_QUEEN, 0), mvl);
+			add_capture_move(MOVE(from, to, capture, B_ROOK, 0), mvl);
+			add_capture_move(MOVE(from, to, capture, B_BISHOP, 0), mvl);
+			add_capture_move(MOVE(from, to, capture, B_KNIGHT, 0), mvl);
 		} else {
 			add_capture_move(MOVE(from, to, capture, NO_PIECE, 0),
 					 mvl);
@@ -379,39 +370,28 @@ add_pawn_capture_move(enum colour col, enum square from, enum square to,
 	}
 }
 
-static inline void
-add_pawn_move(enum colour col, enum square from,
+static inline void add_pawn_move(enum colour col, enum square from,
 	      enum square to, struct move_list *mvl)
 {
 	if (col == WHITE) {
 		if (GET_RANK(from) == RANK_7) {
 			// pawn can promote to 4 pieces
-			add_quiet_move(MOVE(from, to, NO_PIECE, W_QUEEN, 0),
-				       mvl);
-			add_quiet_move(MOVE(from, to, NO_PIECE, W_ROOK, 0),
-				       mvl);
-			add_quiet_move(MOVE(from, to, NO_PIECE, W_BISHOP, 0),
-				       mvl);
-			add_quiet_move(MOVE(from, to, NO_PIECE, W_KNIGHT, 0),
-				       mvl);
+			add_quiet_move(MOVE(from, to, NO_PIECE, W_QUEEN, 0), mvl);
+			add_quiet_move(MOVE(from, to, NO_PIECE, W_ROOK, 0), mvl);
+			add_quiet_move(MOVE(from, to, NO_PIECE, W_BISHOP, 0), mvl);
+			add_quiet_move(MOVE(from, to, NO_PIECE, W_KNIGHT, 0), mvl);
 		} else {
-			add_quiet_move(MOVE(from, to, NO_PIECE, NO_PIECE, 0),
-				       mvl);
+			add_quiet_move(MOVE(from, to, NO_PIECE, NO_PIECE, 0), mvl);
 		}
 	} else {
 		if (GET_RANK(from) == RANK_2) {
 			// pawn can promote to 4 pieces
-			add_quiet_move(MOVE(from, to, NO_PIECE, B_QUEEN, 0),
-				       mvl);
-			add_quiet_move(MOVE(from, to, NO_PIECE, B_ROOK, 0),
-				       mvl);
-			add_quiet_move(MOVE(from, to, NO_PIECE, B_BISHOP, 0),
-				       mvl);
-			add_quiet_move(MOVE(from, to, NO_PIECE, B_KNIGHT, 0),
-				       mvl);
+			add_quiet_move(MOVE(from, to, NO_PIECE, B_QUEEN, 0), mvl);
+			add_quiet_move(MOVE(from, to, NO_PIECE, B_ROOK, 0), mvl);
+			add_quiet_move(MOVE(from, to, NO_PIECE, B_BISHOP, 0), mvl);
+			add_quiet_move(MOVE(from, to, NO_PIECE, B_KNIGHT, 0), mvl);
 		} else {
-			add_quiet_move(MOVE(from, to, NO_PIECE, NO_PIECE, 0),
-				       mvl);
+			add_quiet_move(MOVE(from, to, NO_PIECE, NO_PIECE, 0), mvl);
 		}
 	}
 }
@@ -424,18 +404,18 @@ add_pawn_move(enum colour col, enum square from,
  * @return
  *
  */
-static inline void
-generate_knight_piece_moves(const struct board *brd, struct move_list *mvl,
-			    enum colour col)
+static inline void generate_knight_piece_moves(const struct board *brd, 
+				struct move_list *mvl, enum colour col)
 {
 
 	enum piece pce = (col == WHITE) ? W_KNIGHT : B_KNIGHT;
-	enum colour pce_col = GET_COLOUR(pce);
 
 	// get the bitboard representing all of the piece types
 	// on the board
 	U64 bbKnight = brd->bitboards[pce];
-
+	enum colour pce_col = GET_COLOUR(pce);
+	enum colour opposite_col = FLIP_SIDE(pce_col);
+	
 	// iterate over all knights of this colour on the board
 	while (bbKnight != 0) {
 
@@ -444,36 +424,39 @@ generate_knight_piece_moves(const struct board *brd, struct move_list *mvl,
 		// get occupancy mask for this piece and square
 		U64 mask = GET_KNIGHT_OCC_MASK(knight_sq);
 
-		while (mask != 0) {
-			// iterate over all the possible destination squares
-			// for this knight
-			enum square knight_dest_sq = pop_1st_bit(&mask);
 
-			//assert(knight_dest_sq != knight_sq);
-
-			enum piece p = get_piece_at_square(brd, knight_dest_sq);
-			if (p != NO_PIECE) {
-				// square has a piece
-				enum colour pcol = GET_COLOUR(p);
-				if (pcol == pce_col) {
-					// dest square has piece with same colour...keep looking for a move
-					continue;
-				} else {
-					// dest square has opposing piece
-					add_capture_move(MOVE
-							 (knight_sq,
-							  knight_dest_sq, p,
-							  NO_PIECE, 0), mvl);
-				}
-			} else {
-				// empty square
-				add_quiet_move(MOVE
-					       (knight_sq, knight_dest_sq,
-						NO_PIECE, NO_PIECE, 0), mvl);
-			}
+		// AND'ing with opposite colour pieces, will give all
+		// pieces that can be captured
+		U64 opp_pieces = 0;
+		if (opposite_col == WHITE)
+			opp_pieces = brd->colour_bb[WHITE];
+		else
+			opp_pieces = brd->colour_bb[BLACK];
+	
+		
+		U64 capture_squares = mask & opp_pieces;
+		while (capture_squares != 0){
+			// loop creating capture moves
+			enum square cap_sq = pop_1st_bit(&capture_squares);
+			enum piece p = get_piece_at_square(brd, cap_sq);
+			
+			add_capture_move(MOVE(knight_sq, cap_sq, p, NO_PIECE, 0), mvl);
 		}
-	}
+		
+		// find all quiet moves
+		U64 all_pieces = brd->board;
+		U64 empty_squares = ~all_pieces & mask;
+		while (empty_squares != 0){
+			// loop creating quiet moves
+			enum square empty_sq = pop_1st_bit(&empty_squares);
+			add_quiet_move(MOVE(knight_sq, empty_sq, NO_PIECE, NO_PIECE, 0), mvl);
+		}
+	}	
 }
+
+
+
+
 
 /*
  * Generates moves for king of a given colour
@@ -797,8 +780,12 @@ generate_sliding_horizontal_vertical_moves(const struct board *brd,
 		enum colour col = (IS_BLACK(pce)) ? BLACK : WHITE;
 
 		// get all same colour as piece being considered
-		U64 col_occupied = overlay_colours(brd, col);
-
+		U64 col_occupied = 0;
+		if (col == WHITE)
+			col_occupied = brd->colour_bb[WHITE];
+		else
+			col_occupied = brd->colour_bb[BLACK];
+		
 		U64 excl_same_col = all_moves & ~col_occupied;
 		//printf("Mask Same Colour\n");
 		//print_mask_as_board(&excl_same_col, pce, pce_sq);
@@ -873,7 +860,12 @@ generate_sliding_diagonal_moves(const struct board *brd,
 		enum colour col = (IS_BLACK(pce)) ? BLACK : WHITE;
 
 		// get all same colour as piece being considered
-		U64 col_occupied = overlay_colours(brd, col);
+		U64 col_occupied = 0;
+		if (col == WHITE)
+			col_occupied = brd->colour_bb[WHITE];
+		else
+			col_occupied = brd->colour_bb[BLACK];
+		
 
 		U64 excl_same_col = all_moves & ~col_occupied;
 		//printf("Mask Same Colour\n");

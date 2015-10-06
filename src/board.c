@@ -61,6 +61,12 @@ void remove_piece_from_board(struct board *brd, enum square sq)
 	// remove piece from bitboards
 	clear_bit(&brd->bitboards[pce], sq);
 	clear_bit(&brd->board, sq);
+	
+	if (col == WHITE)
+		clear_bit(&brd->colour_bb[WHITE], sq);
+	else
+		clear_bit(&brd->colour_bb[BLACK], sq);
+	
 }
 
 void add_piece_to_board(struct board *brd, enum piece pce, enum square sq)
@@ -75,6 +81,12 @@ void add_piece_to_board(struct board *brd, enum piece pce, enum square sq)
 	// set piece on bitboards
 	set_bit(&brd->bitboards[pce], sq);
 	set_bit(&brd->board, sq);
+		
+	if (col == WHITE)
+		set_bit(&brd->colour_bb[WHITE], sq);
+	else
+		set_bit(&brd->colour_bb[BLACK], sq);
+	
 }
 
 /*
@@ -96,28 +108,20 @@ static struct board *get_clean_board(void)
 	return brd;
 }
 
-U64 overlay_colours(const struct board * brd, enum colour col)
+inline U64 overlay_white_pieces(const struct board * brd)
 {
-	if (col == WHITE) {
-		return brd->bitboards[W_PAWN] | brd->bitboards[W_BISHOP]
-		    | brd->bitboards[W_KNIGHT] | brd->bitboards[W_ROOK]
-		    | brd->bitboards[W_QUEEN] | brd->bitboards[W_KING];
-	} else {
-		return brd->bitboards[B_PAWN] | brd->bitboards[B_BISHOP]
-		    | brd->bitboards[B_KNIGHT] | brd->bitboards[B_ROOK]
-		    | brd->bitboards[B_QUEEN] | brd->bitboards[B_KING];
-	}
+	return brd->bitboards[W_PAWN] | brd->bitboards[W_BISHOP]
+		| brd->bitboards[W_KNIGHT] | brd->bitboards[W_ROOK]
+		| brd->bitboards[W_QUEEN] | brd->bitboards[W_KING];
 }
 
-void overlay_boards(struct board *the_board)
+inline U64 overlay_black_pieces(const struct board * brd)
 {
-	int i = 0;
-	U64 flat_board = BOARD_EMPTY;
-	for (i = 0; i < NUM_PIECES; i++) {
-		flat_board |= the_board->bitboards[i];
-	}
-	the_board->board = flat_board;
+	return brd->bitboards[B_PAWN] | brd->bitboards[B_BISHOP]
+		| brd->bitboards[B_KNIGHT] | brd->bitboards[B_ROOK]
+		| brd->bitboards[B_QUEEN] | brd->bitboards[B_KING];
 }
+
 
 /*
  *

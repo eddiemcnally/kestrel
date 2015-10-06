@@ -102,6 +102,11 @@ struct board {
 	// In effect, an OR of all elements in bitboards[]
 	U64 board;
 
+	// a bitboard for each colour, representing where all the pieces
+	// of each colour are on the board
+	U64 colour_bb[NUM_COLOURS];
+
+
 	// the next side to move
 	enum colour side_to_move;
 
