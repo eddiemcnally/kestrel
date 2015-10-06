@@ -30,6 +30,7 @@
 #include "pieces.h"
 #include "board_utils.h"
 #include "makemove.h"
+#include "utils.h"
 #include "move.h"
 
 void perf_test(int depth, struct board *brd);
@@ -235,11 +236,10 @@ U64 leafNodes = 0;
 void test_move_gen_depth()
 {
 
-	clock_t start, end;
-	double cpu_time_used;
+	U64 start_time, elapsed;
 
-	start = clock();
-
+	start_time = get_time_in_millis();
+	
 	int depth = 4;
 	U64 total_nodes = 0;
 
@@ -257,10 +257,9 @@ void test_move_gen_depth()
 		free(brd);
 	}
 
-	end = clock();
-	cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+	elapsed = get_elapsed_time_in_millis(start_time);
 
-	double moves_per_sec = ((double)total_nodes / (double)cpu_time_used);
+	double moves_per_sec = ((double)total_nodes / ((double)elapsed / 1000));
 	printf("Total node count : %llu\n", total_nodes);
 	printf("#moves/sec : %f\n", moves_per_sec);
 

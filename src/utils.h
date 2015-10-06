@@ -24,6 +24,9 @@
 U64 reverse_bits(U64 word);
 U64 generate_rand64(void);
 void set_priority_and_affinity(void);
+U64 get_time_in_millis(void);
+U64 get_elapsed_time_in_millis(U64 start_time);
+
 
 // These are the same, but use different name to aid reading if code
 #define IS_SQUARE_OCCUPIED(BB, SQ)	( ( (BB >> SQ) & 0x01ull) != 0)

@@ -21,6 +21,7 @@
 #include <ctype.h>
 #include <sched.h>
 #include <sys/times.h>
+#include <sys/time.h>
 #include <sys/resource.h>
 #include "types.h"
 #include "utils.h"
@@ -80,6 +81,26 @@ U64 reverse_bits(U64 word)
 	}
 
 	return __builtin_bswap64(retval);
+}
+
+U64 get_time_in_millis(void)
+{
+	struct timeval tp;
+
+	int errno = gettimeofday(&tp, NULL);
+
+	if (errno == 0) {
+		return (U64) (tp.tv_sec * 1000 + tp.tv_usec / 1000);
+	}
+
+	return 0;
+}
+
+U64 get_elapsed_time_in_millis(U64 start_time)
+{
+
+	U64 now_in_millis = get_time_in_millis();
+	return (now_in_millis - start_time);
 }
 
 /* Reverses the bits in a byte
