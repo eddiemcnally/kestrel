@@ -27,6 +27,7 @@ void print_mask_as_board(const U64 * mask);
 void print_out_masks(const U64 * masks);
 void generate_diagonal_occupancy_masks(void);
 U64 get_occupancy_mask(enum piece pce, enum square sq);
+void generate_rank_and_file_masks(void);
 
 // elem [0] is a1, [63] is h8
 static const U64 black_pawn_occupancy_masks[NUM_SQUARES] = {
@@ -636,6 +637,31 @@ static const U64 anti_diagonal_occupancy_masks[NUM_SQUARES] = {
 	0x0000000000000000
 };
 
+
+static const U64 rank_masks[8] = {
+	0x00000000000000ff,
+	0x000000000000ff00,
+	0x0000000000ff0000,
+	0x00000000ff000000,
+	0x000000ff00000000,
+	0x0000ff0000000000,
+	0x00ff000000000000,
+	0xff00000000000000
+};
+
+
+static const U64 file_masks[8] = {
+	0x0101010101010101,
+	0x0202020202020202,
+	0x0404040404040404,
+	0x0808080808080808,
+	0x1010101010101010,
+	0x2020202020202020,
+	0x4040404040404040,
+	0x8080808080808080
+};
+
+
 #define GET_KNIGHT_OCC_MASK(square)			(knight_occupancy_masks[(square)])
 #define GET_BISHOP_OCC_MASK(square)			(bishop_occupancy_masks[(square)])
 #define GET_KING_OCC_MASK(square)			(king_occupancy_masks[(square)])
@@ -646,5 +672,10 @@ static const U64 anti_diagonal_occupancy_masks[NUM_SQUARES] = {
 
 #define GET_DIAGONAL_OCC_MASK(square)		(diagonal_occupancy_masks[(square)])
 #define GET_ANTI_DIAGONAL_OCC_MASK(square)	(anti_diagonal_occupancy_masks[(square)])
+
+
+#define GET_RANK_MASK(rank)					(rank_masks[(rank)])
+#define GET_FILE_MASK(file)					(file_masks[(file)])
+
 
 #endif

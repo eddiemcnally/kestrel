@@ -38,6 +38,7 @@ static void add_quiet_move(mv_bitmap move_bitmap, struct move_list *mvlist);
 static void add_capture_move(mv_bitmap move_bitmap, struct move_list *mvlist);
 static void generate_white_pawn_moves(const struct board *brd,
 				      struct move_list *mvl);
+
 static void generate_black_pawn_moves(const struct board *brd,
 				      struct move_list *mvl);
 static U64 get_horizontal_mask(enum square sq);
@@ -64,6 +65,7 @@ static void generate_sliding_diagonal_moves(const struct board *brd,
 static void generate_queen_moves(const struct board *brd,
 				 struct move_list *mvl, enum piece pce);
 static bool is_move_in_list(struct move_list *mvl, mv_bitmap mv);
+
 
 /* indexed using enum square
  * Represents the horizontal squares that a rook can move to, when
@@ -273,6 +275,7 @@ void validate_move_list(struct move_list *mvl)
 	}
 }
 
+// function to map move attributes to a bitmapped attribute
 inline mv_bitmap MOVE(enum square from, enum square to, enum piece capture,
 		      enum piece promote, U32 fl)
 {
@@ -593,6 +596,7 @@ static inline void generate_castle_moves(const struct board *brd,
 
 }
 
+
 static inline void
 generate_white_pawn_moves(const struct board *brd, struct move_list *mvl)
 {
@@ -667,6 +671,8 @@ generate_white_pawn_moves(const struct board *brd, struct move_list *mvl)
 	}
 
 }
+
+
 
 static inline void
 generate_black_pawn_moves(const struct board *brd, struct move_list *mvl)

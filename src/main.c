@@ -41,6 +41,7 @@ int main(int argc, char **argv)
 	if (argc > 0) {
 		printf("%d", **argv);
 	}
+	
 	// set process pri and cpu affinity for max performance
 	set_priority_and_affinity();
 

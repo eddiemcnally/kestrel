@@ -47,6 +47,7 @@ enum {
 #define IS_VALID_FILE(file)		((file >= FILE_A) && (file <= FILE_H))
 #define IS_VALID_SQUARE(sq)		((sq >= a1) && (sq <= h8))
 
+
 // castling permissions
 enum {
 	WKCA = 0x01,		// white, king-side
