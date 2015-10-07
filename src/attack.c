@@ -276,7 +276,7 @@ is_blocked_horizontally(const struct board *brd,
 		end = start_sq;
 	}
 	// TODO : replace this loop with a lookup mask for all
-	// possible horizontal intervening squares (could then so a simple
+	// possible horizontal intervening squares (could then do a simple
 	// bit mask check instead of a loop) 
 	for (enum square s = start + 1; s < end; s++) {
 		if (IS_SQUARE_OCCUPIED(brd->board, s)) {
