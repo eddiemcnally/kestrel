@@ -26,6 +26,7 @@
 #include "board.h"
 #include "move.h"
 #include "board_utils.h"
+#include "pv_table.h"
 #include "makemove.h"
 #include "hashkeys.h"
 #include "pieces.h"
@@ -66,6 +67,8 @@ void remove_piece_from_board(struct board *brd, enum square sq)
 		clear_bit(&brd->colour_bb[WHITE], sq);
 	else
 		clear_bit(&brd->colour_bb[BLACK], sq);
+		
+	
 	
 }
 
@@ -104,6 +107,8 @@ static struct board *get_clean_board(void)
 	for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
 		brd->pieces[sq] = NO_PIECE;
 	}
+
+	init_pv_table(brd->pvtable);
 
 	return brd;
 }

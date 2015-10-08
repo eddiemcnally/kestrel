@@ -435,8 +435,7 @@ static inline void generate_knight_piece_moves(const struct board *brd,
 	// get the bitboard representing all of the piece types
 	// on the board
 	U64 bbKnight = brd->bitboards[pce];
-	enum colour pce_col = GET_COLOUR(pce);
-	enum colour opposite_col = FLIP_SIDE(pce_col);
+	enum colour opposite_col = FLIP_SIDE(col);
 
 	// iterate over all knights of this colour on the board
 	while (bbKnight != 0) {
@@ -491,7 +490,7 @@ static inline void generate_king_moves(const struct board *brd,
 {
 	enum piece pce = (col == WHITE) ? W_KING : B_KING;
 	enum colour pce_col = GET_COLOUR(pce);
-	enum colour opposite_col = FLIP_SIDE(pce_col);
+	enum colour opposite_col = FLIP_SIDE(col);
 
 	// get the bitboard representing the king
 	U64 bbKing = brd->bitboards[pce];
@@ -528,15 +527,15 @@ static inline void generate_king_moves(const struct board *brd,
 			       mvl);
 	}
 
-	// check for castling
-	generate_castle_moves(brd, mvl, pce_col);
-
+	if (brd->castle_perm != 0){
+		// check for castling
+		generate_castle_moves(brd, mvl, pce_col);
+	}
 }
 
 static inline void generate_castle_moves(const struct board *brd,
 					 struct move_list *mvl, enum colour col)
 {
-
 	// check for castling
 	if (col == WHITE) {
 		if (brd->castle_perm & WKCA) {

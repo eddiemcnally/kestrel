@@ -91,6 +91,24 @@ struct undo {
 #define MAX_GAME_MOVES 		2048
 #define MAX_POSITION_MOVES	256
 
+
+// principle variation table structs
+struct pv_entry {
+	U64 hashkey;
+	mv_bitmap move;
+};
+
+struct pv_table {
+	struct pv_entry *table;
+	U32 num_entries;
+};
+
+
+
+
+
+
+
 /**
  * A container for holding the bitboards
  */
@@ -124,6 +142,9 @@ struct board {
 
 	// contains the pieces on each square
 	enum piece pieces[NUM_SQUARES];
+
+	// principle variation table
+	struct pv_table pvtable[1];
 
 	// castling permissions
 	U8 castle_perm;
