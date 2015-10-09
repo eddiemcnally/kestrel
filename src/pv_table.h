@@ -1,5 +1,5 @@
 /*
- * search.c
+ * pv_table.h
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
  * kestrel is free software: you can redistribute it and/or modify it
@@ -15,24 +15,15 @@
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdbool.h>
-#include "types.h"
-#include "search.h"
-#include "board.h"
-#include "board_utils.h"
-#include "utils.h"
+#ifndef _PV_TABLE_H_
+#define _PV_TABLE_H_
 
-// checks to see if most recent move is a repetition
-bool is_repetition(const struct board *brd)
-{
-	// only have to look since last fifty move counter was reset
-	U8 start = (U8) (brd->history_ply - brd->fifty_move_counter);
-	for (U8 i = start; i < brd->history_ply - 1; i++) {
-		if (brd->board_hash == brd->history[i].board_hash) {
-			return true;
-		}
-	}
-	return false;
-}
+#include "types.h"
+
+
+void init_pv_table(struct pv_table * tab);
+void add_move(const struct board *brd, const mv_bitmap move);
+mv_bitmap find_move(const struct board *brd);
+
+
+#endif
