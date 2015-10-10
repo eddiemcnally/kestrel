@@ -55,6 +55,9 @@
 #   option, something like (this will link in libmylib.so and libm.so:
 #LIBS = -lmylib -lm
 
+# GLib 
+LDLIBS = `pkg-config --libs glib-2.0`
+
 # define the C source files
 	SRCS		=	main.c board.c pieces.c board_utils.c \
 				move.c init.c hashkeys.c fen.c utils.c \

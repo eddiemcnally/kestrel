@@ -41,12 +41,12 @@ void all_tests(void)
 	set_priority_and_affinity();
 
 	// add new test fixtures here.
-	//board_test_fixture();
-	//piece_test_fixture();
-	//occupancy_mask_test_fixture();
-	//move_test_fixture();
-	//attack_test_fixture();
-	//utils_test_fixture();
+	board_test_fixture();
+	piece_test_fixture();
+	occupancy_mask_test_fixture();
+	move_test_fixture();
+	attack_test_fixture();
+	utils_test_fixture();
 	perf_test_fixture();
 }
 

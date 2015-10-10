@@ -1,5 +1,10 @@
 /*
  * pv_table.c
+ * 
+ * DESCRIPTION: Maintains a hashtable of principle variation moves.
+ * The hashtable is implemented as an array of linked lists.
+ * 
+ * 
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
  * kestrel is free software: you can redistribute it and/or modify it
@@ -22,51 +27,133 @@
 #include "move.h"
 #include "pv_table.h"
 
-#define MAX_TABLE_RAM 	1024 * 1024 * 2
+static void init_table(struct pv_table *tab);
+static struct pv_entry *get_empty_entry(void);
+static void init_pv_entry(struct pv_entry *entry);
+static U64 get_index(const U64 board_hash);
 
-static void clear_table(const struct pv_table *tab);
-static U64 get_index(const struct board *brd);
-
-
-void init_pv_table(struct pv_table *tab)
+//////////////////////////////////
+struct pv_table *create_pv_table(void)
 {
-	U32 num_entries = MAX_TABLE_RAM / sizeof(struct pv_entry);
 
-	tab->num_entries = num_entries;
-	tab->table = (struct pv_entry *)malloc(MAX_TABLE_RAM);
+	struct pv_table *retval = malloc(sizeof(struct pv_table));
 
-	clear_table(tab);
+	struct pv_entry *entries =
+	    malloc(NUM_PV_ENTRIES * sizeof(struct pv_entry));
+
+	retval->entries = entries;
+
+	init_table(retval);
+
+	return retval;
 }
 
-static void clear_table(const struct pv_table *tab)
+void add_move(const struct pv_table *table, const U64 board_hash,
+	      const mv_bitmap move)
 {
-	struct pv_entry *elem = tab->table;
+	U64 index = get_index(board_hash);
 
-	for (U32 i = 0; i < tab->num_entries; i++) {
-		elem->move = NO_MOVE;
-		elem->hashkey = 0ull;
+	struct pv_entry *entry = &table->entries[index];
+
+	if (entry->move == NO_MOVE) {
+		// empty slot
+		entry->move = move;
+		entry->hashkey = board_hash;
+	} else {
+		// key collision
+		// create new pv_entry and add to list
+		struct pv_entry *new = get_empty_entry();
+		// set it up
+		new->move = move;
+		new->hashkey = board_hash;
+
+		// append to end of linked list
+		while (entry->next != NULL) {
+			entry = entry->next;
+		}
+		entry->next = new;
+	}
+}
+
+mv_bitmap find_move(const struct pv_table *table, const U64 board_hash)
+{
+	U64 index = get_index(board_hash);
+
+	struct pv_entry *entry = &table->entries[index];
+
+	if (entry->move == NO_MOVE) {
+		// slot empty
+		return NO_MOVE;
+	}
+
+	if (entry->hashkey == board_hash) {
+		// found entry
+		return entry->move;
+	}
+	// see if there is a key collision and traverse any list
+	while (entry->next != NULL) {
+		entry = entry->next;
+		if (entry->hashkey == board_hash) {
+			// found entry
+			return entry->move;
+		}
+	}
+
+	return NO_MOVE;
+}
+
+void dispose_table(struct pv_table *table)
+{
+
+	// dispose of linked lists
+	for (U32 i = 0; i < NUM_PV_ENTRIES; i++) {
+
+		struct pv_entry *entry = &table->entries[i];
+		if (entry->next != NULL) {
+			// scan down lined list and free up each entry's memory
+			struct pv_entry *pve = entry->next;
+			while (pve != NULL) {
+				entry = pve;
+
+				pve = pve->next;
+				free(entry);
+			}
+		}
+	}
+
+	// now dispose of array
+	free(table->entries);
+
+	// dispose table
+	free(table);
+}
+
+static void init_table(struct pv_table *tab)
+{
+	struct pv_entry *elem = &tab->entries[0];
+	for (int i = 0; i < NUM_PV_ENTRIES; i++) {
+
+		init_pv_entry(elem);
 		elem++;
 	}
 }
 
+static inline struct pv_entry *get_empty_entry()
+{
 
-void add_move(const struct board *brd, const mv_bitmap move){
-	U64 index = get_index(brd);
-	
-	brd->pvtable->table[index].move = move;
-	brd->pvtable->table[index].hashkey = brd->board_hash;
+	struct pv_entry *retval = malloc(sizeof(struct pv_entry));
+	init_pv_entry(retval);
+	return retval;
 }
 
-
-mv_bitmap find_move(const struct board *brd){
-	U64 index = get_index(brd);
-	
-	if(brd->pvtable->table[index].hashkey == brd->board_hash) {
-		return brd->pvtable->table[index].move;
-	}
-	return NO_MOVE;
+static inline void init_pv_entry(struct pv_entry *entry)
+{
+	entry->move = NO_MOVE;
+	entry->hashkey = 0;
+	entry->next = NULL;
 }
 
-static inline U64 get_index(const struct board *brd){
-	return brd->board_hash % brd->pvtable->num_entries;
+static inline U64 get_index(const U64 board_hash)
+{
+	return board_hash % NUM_PV_ENTRIES;
 }

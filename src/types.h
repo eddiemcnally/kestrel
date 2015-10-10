@@ -18,10 +18,16 @@
 #ifndef _TYPES_H_
 #define _TYPES_H_
 
+
 typedef unsigned char U8;
 typedef unsigned short U16;
 typedef unsigned int U32;
 typedef unsigned long long U64;
+
+
+
+
+
 
 enum colour {
 	BLACK = 0,
@@ -90,20 +96,25 @@ struct undo {
 // half moves
 #define MAX_GAME_MOVES 		2048
 #define MAX_POSITION_MOVES	256
+#define MAX_SEARCH_DEPTH	64
 
 
-// principle variation table structs
+
+
+
+
+// principle variation table structs form a linked list
 struct pv_entry {
 	U64 hashkey;
 	mv_bitmap move;
+	struct pv_entry *next;
 };
+
 
 struct pv_table {
-	struct pv_entry *table;
+	struct pv_entry *entries;
 	U32 num_entries;
 };
-
-
 
 
 
@@ -144,7 +155,9 @@ struct board {
 	enum piece pieces[NUM_SQUARES];
 
 	// principle variation table
-	struct pv_table pvtable[1];
+	struct pv_table * pvtable;
+	
+	int pv_array[MAX_SEARCH_DEPTH];
 
 	// castling permissions
 	U8 castle_perm;

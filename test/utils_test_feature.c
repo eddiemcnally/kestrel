@@ -24,6 +24,7 @@
 #include "board.h"
 #include "pieces.h"
 #include "attack.h"
+#include "pv_table.h"
 #include "board_utils.h"
 #include "utils.h"
 
@@ -121,6 +122,67 @@ void test_flip_side()
 	assert_true(fs == BLACK);
 }
 
+
+
+void test_pv_table(){
+
+	struct pv_table *table = create_pv_table();
+	
+	// add 5 entries with a hash
+	add_move(table, 1, 11);
+	add_move(table, 2, 22);
+	add_move(table, 3, 33);
+	add_move(table, 4, 44);
+	add_move(table, 5, 55);
+	
+	mv_bitmap mv = find_move(table, 1);
+	assert_true(mv == 11);
+	
+	mv = find_move(table, 2);
+	assert_true(mv == 22);
+	mv = find_move(table, 3);
+	assert_true(mv == 33);
+	mv = find_move(table, 4);
+	assert_true(mv == 44);
+	mv = find_move(table, 5);
+	assert_true(mv == 55);
+	
+	
+	// force a key collision 
+	add_move(table, (1 + NUM_PV_ENTRIES), 11111);
+	add_move(table, (2 + NUM_PV_ENTRIES), 22222);
+	add_move(table, (3 + NUM_PV_ENTRIES), 33333);
+	add_move(table, (4 + NUM_PV_ENTRIES), 44444);
+	add_move(table, (5 + NUM_PV_ENTRIES), 55555);
+	
+	mv = find_move(table, 1 + NUM_PV_ENTRIES);
+	assert_true(mv == 11111);
+	mv = find_move(table, 2 + NUM_PV_ENTRIES);
+	assert_true(mv == 22222);
+	mv = find_move(table, 3 + NUM_PV_ENTRIES);
+	assert_true(mv == 33333);
+	mv = find_move(table, 4 + NUM_PV_ENTRIES);
+	assert_true(mv == 44444);
+	mv = find_move(table, 5 + NUM_PV_ENTRIES);
+	assert_true(mv == 55555);
+	
+	
+	
+	dispose_table(table);
+	
+	
+	
+	
+	
+
+
+
+
+}
+
+
+
+
 void utils_test_fixture(void)
 {
 
@@ -132,6 +194,12 @@ void utils_test_fixture(void)
 	run_test(test_clear_MSB);
 	run_test(test_clear_LSB);
 	run_test(test_flip_side);
+	run_test(test_pv_table);
 
 	test_fixture_end();
 }
+
+
+
+
+

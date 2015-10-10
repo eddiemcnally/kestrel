@@ -11,7 +11,7 @@
 # define any compile-time flags
 # NOTE: setting the inline limit values to be obscenely high since the size of
 #		the binary isn't a concern
-CFLAGS	=	-O3 -std=c11 \
+CFLAGS	=		-O3 -std=c11 \
 				-march=native \
 				-lmcheck \
 				-fsanitize=undefined \
@@ -51,6 +51,9 @@ CFLAGS	=	-O3 -std=c11 \
 #   if I want to link in libraries (libx.so or libx.a) I use the -llibname
 #   option, something like (this will link in libmylib.so and libm.so:
 #LIBS = -lmylib -lm
+
+# GLib 
+LDLIBS = `pkg-config --libs glib-2.0`
 
 # define the C source files
 	SRCS	=	../src/board.c \

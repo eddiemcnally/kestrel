@@ -21,9 +21,13 @@
 #include "types.h"
 
 
-void init_pv_table(struct pv_table * tab);
-void add_move(const struct board *brd, const mv_bitmap move);
-mv_bitmap find_move(const struct board *brd);
+#define		NUM_PV_ENTRIES	(1024 * 1024)
+
+struct pv_table *create_pv_table(void);
+void add_move(const struct pv_table *table, const U64 board_hash, const mv_bitmap move);
+mv_bitmap find_move(const struct pv_table *table, const U64 board_hash);
+void dispose_table(struct pv_table * table);
+
 
 
 #endif

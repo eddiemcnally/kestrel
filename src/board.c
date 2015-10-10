@@ -108,7 +108,7 @@ static struct board *get_clean_board(void)
 		brd->pieces[sq] = NO_PIECE;
 	}
 
-	init_pv_table(brd->pvtable);
+	brd->pvtable = create_pv_table();
 
 	return brd;
 }
