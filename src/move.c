@@ -1,5 +1,13 @@
 /*
  * move.c
+ * 
+ * ---------------------------------------------------------------------
+ * DESCRIPTION: code to generate valid moves from a given board
+ * position.
+ * ---------------------------------------------------------------------
+ * 
+ * 
+ * 
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
  * kestrel is free software: you can redistribute it and/or modify it
@@ -65,7 +73,6 @@ static void generate_sliding_diagonal_moves(const struct board *brd,
 static void generate_queen_moves(const struct board *brd,
 				 struct move_list *mvl, enum piece pce);
 static bool is_move_in_list(struct move_list *mvl, mv_bitmap mv);
-
 
 /* indexed using enum square
  * Represents the horizontal squares that a rook can move to, when
@@ -527,7 +534,7 @@ static inline void generate_king_moves(const struct board *brd,
 			       mvl);
 	}
 
-	if (brd->castle_perm != 0){
+	if (brd->castle_perm != 0) {
 		// check for castling
 		generate_castle_moves(brd, mvl, pce_col);
 	}
@@ -594,7 +601,6 @@ static inline void generate_castle_moves(const struct board *brd,
 	}
 
 }
-
 
 static inline void
 generate_white_pawn_moves(const struct board *brd, struct move_list *mvl)
@@ -670,8 +676,6 @@ generate_white_pawn_moves(const struct board *brd, struct move_list *mvl)
 	}
 
 }
-
-
 
 static inline void
 generate_black_pawn_moves(const struct board *brd, struct move_list *mvl)

@@ -1,5 +1,13 @@
 /*
  * board.c
+ * 
+ * ---------------------------------------------------------------------
+ * DESCRIPTION : Contains code for manipulating the chess board
+ * --------------------------------------------------------------------- 
+ * 
+ * 
+ * 
+ * 
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
  * kestrel is free software: you can redistribute it and/or modify it
@@ -62,19 +70,16 @@ void remove_piece_from_board(struct board *brd, enum square sq)
 	// remove piece from bitboards
 	clear_bit(&brd->bitboards[pce], sq);
 	clear_bit(&brd->board, sq);
-	
+
 	if (col == WHITE)
 		clear_bit(&brd->colour_bb[WHITE], sq);
 	else
 		clear_bit(&brd->colour_bb[BLACK], sq);
-		
-	
-	
+
 }
 
 void add_piece_to_board(struct board *brd, enum piece pce, enum square sq)
 {
-
 	enum colour col = GET_COLOUR(pce);
 	update_piece_hash(brd, pce, sq);
 
@@ -84,12 +89,12 @@ void add_piece_to_board(struct board *brd, enum piece pce, enum square sq)
 	// set piece on bitboards
 	set_bit(&brd->bitboards[pce], sq);
 	set_bit(&brd->board, sq);
-		
+
 	if (col == WHITE)
 		set_bit(&brd->colour_bb[WHITE], sq);
 	else
 		set_bit(&brd->colour_bb[BLACK], sq);
-	
+
 }
 
 /*
@@ -116,17 +121,16 @@ static struct board *get_clean_board(void)
 inline U64 overlay_white_pieces(const struct board * brd)
 {
 	return brd->bitboards[W_PAWN] | brd->bitboards[W_BISHOP]
-		| brd->bitboards[W_KNIGHT] | brd->bitboards[W_ROOK]
-		| brd->bitboards[W_QUEEN] | brd->bitboards[W_KING];
+	    | brd->bitboards[W_KNIGHT] | brd->bitboards[W_ROOK]
+	    | brd->bitboards[W_QUEEN] | brd->bitboards[W_KING];
 }
 
 inline U64 overlay_black_pieces(const struct board * brd)
 {
 	return brd->bitboards[B_PAWN] | brd->bitboards[B_BISHOP]
-		| brd->bitboards[B_KNIGHT] | brd->bitboards[B_ROOK]
-		| brd->bitboards[B_QUEEN] | brd->bitboards[B_KING];
+	    | brd->bitboards[B_KNIGHT] | brd->bitboards[B_ROOK]
+	    | brd->bitboards[B_QUEEN] | brd->bitboards[B_KING];
 }
-
 
 /*
  *

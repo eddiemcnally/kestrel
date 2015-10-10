@@ -1,5 +1,13 @@
 /*
  * hashkeys.c
+ * 
+ * ---------------------------------------------------------------------
+ * Description : code associated with generating hash codes based on
+ * the attributes of the 'struct board'/
+ * --------------------------------------------------------------------- 
+ * 
+ *  
+ * 
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
  * kestrel is free software: you can redistribute it and/or modify it
@@ -34,7 +42,8 @@
 static U64 piece_keys[PIECE_ENUM_SIZE][NUM_SQUARES] = { {0} };
 
 static U64 side_to_move_key = 0;
-static U64 castle_keys[16] = { 0 };	// 16 combinations because of 4 bits being used for castle enum
+// 16 combinations because of 4 bits being used for castle enum
+static U64 castle_keys[16] = { 0 };
 
 //-----
 

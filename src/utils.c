@@ -1,5 +1,11 @@
 /*
  * utils.c
+ * 
+ * ---------------------------------------------------------------------
+ * DESCRIPTION: misc utilities for the application
+ * ---------------------------------------------------------------------
+ * 
+ * 
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
  * kestrel is free software: you can redistribute it and/or modify it
@@ -68,7 +74,6 @@ void set_priority_and_affinity(void)
  */
 U64 reverse_bits(U64 word)
 {
-
 	U64 retval = 0;
 
 	U8 *p_in = (U8 *) & word;

@@ -1,8 +1,11 @@
 /*
  * attack.c
  * 
- * DESCRIPTION: All code associated with checking if a square is 
- * being attacked
+ * ---------------------------------------------------------------------
+ * DESCRIPTION: Contains code associated with checking if a square is 
+ * being attacked.
+ * ---------------------------------------------------------------------
+ * 
  * 
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
@@ -67,9 +70,8 @@ static bool is_BLACK_pawn_attacking_square(const struct board *brd, U64 sqBB);
  *
  */
 
-bool
-is_sq_attacked(const struct board *brd, enum square sq,
-	       enum colour attacking_side)
+bool is_sq_attacked(const struct board *brd, enum square sq,
+		    enum colour attacking_side)
 {
 	// create a bitboard for the square being considered
 	U64 sq_bb = 0;
@@ -156,7 +158,8 @@ static inline bool is_rook_or_queen_attacking_square(const struct board
 
 // checks diagonal and anti-diagonal for quuen and bishop
 static inline bool is_bishop_or_queen_attacking_square(const struct board
-						       *brd, enum square sq,
+						       *brd,
+						       enum square sq,
 						       U64 bq_bb)
 {
 	while (bq_bb != 0) {
@@ -171,9 +174,9 @@ static inline bool is_bishop_or_queen_attacking_square(const struct board
 	return false;
 }
 
-static inline bool
-is_knight_attacking_square(const struct board *brd,
-			   U64 sqBB, enum piece attacking_piece)
+static inline bool is_knight_attacking_square(const struct board *brd,
+					      U64 sqBB,
+					      enum piece attacking_piece)
 {
 	// get the bitboard representing all knights on the board of
 	// this colour
@@ -193,8 +196,8 @@ is_knight_attacking_square(const struct board *brd,
 	return false;
 }
 
-static inline bool
-is_BLACK_pawn_attacking_square(const struct board *brd, U64 sqBB)
+static inline bool is_BLACK_pawn_attacking_square(const struct board *brd,
+						  U64 sqBB)
 {
 	U64 bbPawn = brd->bitboards[B_PAWN];
 	U64 mask = 0;
@@ -207,8 +210,8 @@ is_BLACK_pawn_attacking_square(const struct board *brd, U64 sqBB)
 	return ((mask & sqBB) != 0);
 }
 
-static inline bool
-is_WHITE_pawn_attacking_square(const struct board *brd, U64 sqBB)
+static inline bool is_WHITE_pawn_attacking_square(const struct board *brd,
+						  U64 sqBB)
 {
 	U64 bbPawn = brd->bitboards[W_PAWN];
 	U64 mask = 0;
@@ -221,9 +224,9 @@ is_WHITE_pawn_attacking_square(const struct board *brd, U64 sqBB)
 	return ((mask & sqBB) != 0);
 }
 
-static inline bool
-is_king_attacking_square(const struct board *brd,
-			 U64 sqBB, enum piece attacking_piece)
+static inline bool is_king_attacking_square(const struct board *brd,
+					    U64 sqBB,
+					    enum piece attacking_piece)
 {
 	// get the bitboard representing the king on the board of
 	// this colour
@@ -235,13 +238,12 @@ is_king_attacking_square(const struct board *brd,
 	return ((mask & sqBB) != 0);
 }
 
-static inline bool is_attacked_horizontally_or_vertically(const struct board
-							  *brd,
+static inline bool is_attacked_horizontally_or_vertically(const struct
+							  board *brd,
 							  enum square
 							  sq_one,
 							  enum square sq_two)
 {
-
 	int sq_one_rank = GET_RANK(sq_one);
 	int sq_two_rank = GET_RANK(sq_two);
 
@@ -268,9 +270,9 @@ static inline bool is_attacked_horizontally_or_vertically(const struct board
  * @return : true if blocking piece between start_sq and end_sq, false otherwise
  *
  */
-static inline bool
-is_blocked_horizontally(const struct board *brd,
-			enum square start_sq, enum square end_sq)
+static inline bool is_blocked_horizontally(const struct board *brd,
+					   enum square start_sq,
+					   enum square end_sq)
 {
 	enum square start = start_sq;
 	enum square end = end_sq;
@@ -298,9 +300,9 @@ is_blocked_horizontally(const struct board *brd,
  * @return : true if blocking piece between start_sq and end_sq, false otherwise
  *
  */
-static inline bool
-is_blocked_vertically(const struct board *brd,
-		      enum square start_sq, enum square end_sq)
+static inline bool is_blocked_vertically(const struct board *brd,
+					 enum square start_sq,
+					 enum square end_sq)
 {
 	enum square start = start_sq;
 	enum square end = end_sq;
@@ -329,9 +331,9 @@ is_blocked_vertically(const struct board *brd,
  * @return : true if attack is possible, false otherwise
  *
  */
-static inline bool
-is_attacked_diagonally(const struct board *brd,
-		       enum square attacking_sq, enum square target_sq)
+static inline bool is_attacked_diagonally(const struct board *brd,
+					  enum square attacking_sq,
+					  enum square target_sq)
 {
 	U64 diag_occ_mask = GET_DIAGONAL_OCC_MASK(attacking_sq);
 	if (CHECK_BIT(diag_occ_mask, target_sq)) {
@@ -351,10 +353,10 @@ is_attacked_diagonally(const struct board *brd,
 	return false;
 }
 
-static inline bool
-are_intervening_squares_empty(const struct board *brd,
-			      U64 occ_mask,
-			      enum square attacking_sq, enum square target_sq)
+static inline bool are_intervening_squares_empty(const struct board *brd,
+						 U64 occ_mask,
+						 enum square attacking_sq,
+						 enum square target_sq)
 {
 	//// clear all bits outside the range between the 2 squares.
 	if (attacking_sq < target_sq) {
@@ -426,9 +428,8 @@ inline U8 get_MSB_index(U64 bb)
  * These wrapper functions provide access for the unit test framework while
  * allowing the functions themselves to be static to this file and inline-able
  */
-bool
-TEST_is_knight_attacking_square(const struct board * brd,
-				enum square sq, enum colour attacking_side)
+bool TEST_is_knight_attacking_square(const struct board * brd,
+				     enum square sq, enum colour attacking_side)
 {
 	enum piece pce;
 	if (attacking_side == WHITE) {
@@ -439,9 +440,8 @@ TEST_is_knight_attacking_square(const struct board * brd,
 	return is_knight_attacking_square(brd, square_to_bitboard(sq), pce);
 }
 
-bool
-TEST_is_pawn_attacking_square(const struct board * brd,
-			      enum square sq, enum colour attacking_side)
+bool TEST_is_pawn_attacking_square(const struct board * brd,
+				   enum square sq, enum colour attacking_side)
 {
 	if (attacking_side == WHITE) {
 		return is_WHITE_pawn_attacking_square(brd,
@@ -452,9 +452,8 @@ TEST_is_pawn_attacking_square(const struct board * brd,
 	}
 }
 
-bool
-TEST_is_king_attacking_square(const struct board * brd,
-			      enum square sq, enum colour attacking_side)
+bool TEST_is_king_attacking_square(const struct board * brd,
+				   enum square sq, enum colour attacking_side)
 {
 	enum piece pce;
 	if (attacking_side == WHITE) {
@@ -465,17 +464,15 @@ TEST_is_king_attacking_square(const struct board * brd,
 	return is_king_attacking_square(brd, square_to_bitboard(sq), pce);
 }
 
-bool
-TEST_is_attacked_horizontally_or_vertically(const struct board * brd,
-					    enum square sq_one,
-					    enum square sq_two)
+bool TEST_is_attacked_horizontally_or_vertically(const struct board * brd,
+						 enum square sq_one,
+						 enum square sq_two)
 {
 	return is_attacked_horizontally_or_vertically(brd, sq_one, sq_two);
 }
 
-bool
-TEST_is_attacked_diagonally(const struct board * brd,
-			    enum square sq_one, enum square sq_two)
+bool TEST_is_attacked_diagonally(const struct board * brd,
+				 enum square sq_one, enum square sq_two)
 {
 	return is_attacked_diagonally(brd, sq_one, sq_two);
 }

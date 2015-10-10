@@ -1,5 +1,11 @@
 /*
  * pieces.c
+ * 
+ * ---------------------------------------------------------------------
+ * DESCRIPTION: code associated with pieces on the board
+ * ---------------------------------------------------------------------
+ * 
+ * 
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
  * kestrel is free software: you can redistribute it and/or modify it

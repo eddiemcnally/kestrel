@@ -1,5 +1,12 @@
 /*
  * occupancy_mask.c
+ * 
+ * ---------------------------------------------------------------------
+ * DESCRIPTION: code for generating bitbard ccupancy masks
+ * ---------------------------------------------------------------------
+ * 
+ * 
+ * 
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
  * kestrel is free software: you can redistribute it and/or modify it
@@ -61,52 +68,43 @@ U64 get_occupancy_mask(enum piece pce, enum square sq)
 	}
 }
 
+void generate_rank_and_file_masks(void)
+{
 
+	U64 r_masks[8] = { 0 };
+	U64 f_masks[8] = { 0 };
 
-void generate_rank_and_file_masks(void){
-
-
-	U64 r_masks[8] = {0};
-	U64 f_masks[8] = {0};
-	
-	for (int i = RANK_1; i <= RANK_8; i++){
+	for (int i = RANK_1; i <= RANK_8; i++) {
 		U64 mask = 0;
-		for (int j = FILE_A; j <= FILE_H; j++){
-		
+		for (int j = FILE_A; j <= FILE_H; j++) {
+
 			enum square sq = GET_SQUARE(i, j);
-			set_bit(&mask, sq);		
+			set_bit(&mask, sq);
 		}
-		r_masks[i] = mask;	
+		r_masks[i] = mask;
 	}
-	
-	for (int i = FILE_A; i <= FILE_H; i++){
-		U64 mask = 0;
-		for (int j = RANK_1; j <= RANK_8; j++){
-		
-			enum square sq = GET_SQUARE(j, i);
-			set_bit(&mask, sq);		
-		}
-		f_masks[i] = mask;	
-	}	
 
+	for (int i = FILE_A; i <= FILE_H; i++) {
+		U64 mask = 0;
+		for (int j = RANK_1; j <= RANK_8; j++) {
+
+			enum square sq = GET_SQUARE(j, i);
+			set_bit(&mask, sq);
+		}
+		f_masks[i] = mask;
+	}
 
 	printf("RANK_MASKS\n");
-	for(int i = 0; i < 8; i++){
+	for (int i = 0; i < 8; i++) {
 		printf("0x%016llx\n", r_masks[i]);
 	}
-	
+
 	printf("FILE_MASKS\n");
-	for(int i = 0; i < 8; i++){
+	for (int i = 0; i < 8; i++) {
 		printf("0x%016llx\n", f_masks[i]);
 	}
 
-
-
-
 }
-
-
-
 
 /*
  * Generates the occupancy bit masks for a king on each square on the board

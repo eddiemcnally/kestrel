@@ -1,5 +1,13 @@
 /*
  * makemove.c
+ * 
+ * ---------------------------------------------------------------------
+ * DESCRIPTION: code associated with making and retracting moves
+ * on the board.
+ * ---------------------------------------------------------------------
+ * 
+ * 
+ * 
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
  * kestrel is free software: you can redistribute it and/or modify it
@@ -48,7 +56,7 @@ void move_piece(struct board *brd, enum square from, enum square to)
 
 	enum piece pce = get_piece_at_square(brd, from);
 	enum colour pce_col = GET_COLOUR(pce);
-	
+
 	//assert(IS_VALID_PIECE(pce));
 
 	update_piece_hash(brd, pce, from);
@@ -66,15 +74,14 @@ void move_piece(struct board *brd, enum square from, enum square to)
 	set_bit(&brd->bitboards[pce], to);
 	set_bit(&brd->board, to);
 
-
 	// only need to update whichever colour has moved
 	if (pce_col == WHITE)
 		brd->colour_bb[WHITE] = overlay_white_pieces(brd);
 	else
 		brd->colour_bb[BLACK] = overlay_black_pieces(brd);
-	
+
 	brd->board = brd->colour_bb[WHITE] | brd->colour_bb[BLACK];
-	
+
 	//ASSERT_BOARD_OK(brd);
 
 }

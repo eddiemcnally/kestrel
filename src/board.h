@@ -39,8 +39,8 @@ enum {
 #define GET_PIECE_MASK(square)		((U64)(0x01ull << (int)(square)))
 
 // zero-based
-#define GET_RANK(square)		((U8)((square) / 8))
-#define GET_FILE(square)		((U8)((square) % 8))
+#define GET_RANK(square)			((U8)((square) / 8))
+#define GET_FILE(square)			((U8)((square) % 8))
 #define GET_SQUARE(RANK, FILE)		((U8)((RANK * 8) + FILE))
 
 #define IS_VALID_RANK(rank)		((rank >= RANK_1) && (rank <= RANK_8))
@@ -53,7 +53,7 @@ enum {
 	WKCA = 0x01,		// white, king-side
 	WQCA = 0x02,		// white, queen-side
 	BKCA = 0x04,		// black, king-side
-	BQCA = 0x08		// black, queen-side
+	BQCA = 0x08			// black, queen-side
 };
 
 struct board *init_board(char *fen);
