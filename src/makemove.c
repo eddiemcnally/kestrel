@@ -49,7 +49,7 @@ static const U8 castle_permission_mask[NUM_SQUARES] = {
 	7, 15, 15, 15, 3, 15, 15, 11
 };
 
-void move_piece(struct board *brd, enum square from, enum square to)
+inline void move_piece(struct board *brd, enum square from, enum square to)
 {
 
 	//ASSERT_BOARD_OK(brd);
@@ -59,27 +59,26 @@ void move_piece(struct board *brd, enum square from, enum square to)
 
 	//assert(IS_VALID_PIECE(pce));
 
+	// clear up the "from" resources
 	update_piece_hash(brd, pce, from);
 	brd->pieces[from] = NO_PIECE;
-
-	//assert(IS_VALID_PIECE(pce));
-	//assert(IS_VALID_SQUARE(from));
-
 	clear_bit(&brd->bitboards[pce], from);
-	clear_bit(&brd->board, from);
-
+	
+	// set up the "to" resources
 	update_piece_hash(brd, pce, to);
-
 	brd->pieces[to] = pce;
 	set_bit(&brd->bitboards[pce], to);
-	set_bit(&brd->board, to);
-
+	
 	// only need to update whichever colour has moved
-	if (pce_col == WHITE)
-		brd->colour_bb[WHITE] = overlay_white_pieces(brd);
-	else
-		brd->colour_bb[BLACK] = overlay_black_pieces(brd);
-
+	if (pce_col == WHITE){
+		// only need to update individual bits
+		clear_bit(&brd->colour_bb[WHITE], from);
+		set_bit(&brd->colour_bb[WHITE], to);
+	} else {
+		clear_bit(&brd->colour_bb[BLACK], from);
+		set_bit(&brd->colour_bb[BLACK], to);
+	}
+	
 	brd->board = brd->colour_bb[WHITE] | brd->colour_bb[BLACK];
 
 	//ASSERT_BOARD_OK(brd);
@@ -193,7 +192,7 @@ bool make_move(struct board *brd, mv_bitmap mv)
 	}
 }
 
-void take_move(struct board *brd)
+inline void take_move(struct board *brd)
 {
 	brd->history_ply--;
 	brd->ply--;
@@ -267,6 +266,52 @@ void take_move(struct board *brd)
 		enum piece pce_to_add = (prom_col == WHITE) ? W_PAWN : B_PAWN;
 		add_piece_to_board(brd, pce_to_add, from);
 	}
+}
+
+
+
+
+void add_piece_to_board(struct board *brd, enum piece pce, enum square sq)
+{
+	enum colour col = GET_COLOUR(pce);
+	update_piece_hash(brd, pce, sq);
+
+	brd->pieces[sq] = pce;
+	brd->material[col] += get_piece_value(pce);
+
+	// set piece on bitboards
+	set_bit(&brd->bitboards[pce], sq);
+	set_bit(&brd->board, sq);
+
+	if (col == WHITE)
+		set_bit(&brd->colour_bb[WHITE], sq);
+	else
+		set_bit(&brd->colour_bb[BLACK], sq);
+
+}
+
+
+
+inline void remove_piece_from_board(struct board *brd, enum square sq)
+{
+	enum piece pce = get_piece_at_square(brd, sq);
+	enum colour col = GET_COLOUR(pce);
+
+	update_piece_hash(brd, pce, sq);
+
+	brd->pieces[sq] = NO_PIECE;
+
+	brd->material[col] -= get_piece_value(pce);
+
+	// remove piece from bitboards
+	clear_bit(&brd->bitboards[pce], sq);
+	clear_bit(&brd->board, sq);
+
+	if (col == WHITE)
+		clear_bit(&brd->colour_bb[WHITE], sq);
+	else
+		clear_bit(&brd->colour_bb[BLACK], sq);
+
 }
 
 inline void update_piece_hash(struct board *brd, enum piece pce, enum square sq)

@@ -32,8 +32,6 @@
 #include "types.h"
 #include "utils.h"
 
-static U8 reverse_bits_in_byte(U8 bits);
-
 U64 generate_rand64(void)
 {
 	U64 retval = 0;
@@ -65,28 +63,6 @@ void set_priority_and_affinity(void)
 
 }
 
-/* Reverse the bits in a word
- *
- * name: reverse_bits
- * @param
- * @return
- *
- */
-U64 reverse_bits(U64 word)
-{
-	U64 retval = 0;
-
-	U8 *p_in = (U8 *) & word;
-	U8 *p_out = (U8 *) & retval;
-
-	for (int i = 0; i < 8; i++) {
-		*p_out = reverse_bits_in_byte(*p_in);
-		p_out++;
-		p_in++;
-	}
-
-	return __builtin_bswap64(retval);
-}
 
 U64 get_time_in_millis(void)
 {
@@ -103,19 +79,6 @@ U64 get_time_in_millis(void)
 
 U64 get_elapsed_time_in_millis(U64 start_time)
 {
-
 	U64 now_in_millis = get_time_in_millis();
 	return (now_in_millis - start_time);
-}
-
-/* Reverses the bits in a byte
- * Taken from https://graphics.stanford.edu/~seander/bithacks.html
- * name: reverse_bits_in_byte
- * @param
- * @return
- *
- */
-static inline U8 reverse_bits_in_byte(U8 bits)
-{
-	return (U8) ((bits * 0x0202020202ULL & 0x010884422010ULL) % 1023);
 }

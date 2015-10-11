@@ -56,47 +56,6 @@ struct board *init_board(char *fen)
 	return brd;
 }
 
-void remove_piece_from_board(struct board *brd, enum square sq)
-{
-	enum piece pce = get_piece_at_square(brd, sq);
-	enum colour col = GET_COLOUR(pce);
-
-	update_piece_hash(brd, pce, sq);
-
-	brd->pieces[sq] = NO_PIECE;
-
-	brd->material[col] -= get_piece_value(pce);
-
-	// remove piece from bitboards
-	clear_bit(&brd->bitboards[pce], sq);
-	clear_bit(&brd->board, sq);
-
-	if (col == WHITE)
-		clear_bit(&brd->colour_bb[WHITE], sq);
-	else
-		clear_bit(&brd->colour_bb[BLACK], sq);
-
-}
-
-void add_piece_to_board(struct board *brd, enum piece pce, enum square sq)
-{
-	enum colour col = GET_COLOUR(pce);
-	update_piece_hash(brd, pce, sq);
-
-	brd->pieces[sq] = pce;
-	brd->material[col] += get_piece_value(pce);
-
-	// set piece on bitboards
-	set_bit(&brd->bitboards[pce], sq);
-	set_bit(&brd->board, sq);
-
-	if (col == WHITE)
-		set_bit(&brd->colour_bb[WHITE], sq);
-	else
-		set_bit(&brd->colour_bb[BLACK], sq);
-
-}
-
 /*
  * Creates an empty board struct
  * name: get_clean_board

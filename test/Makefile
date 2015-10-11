@@ -11,6 +11,7 @@
 #		the binary isn't a concern
 CFLAGS	=		-O3 -std=c11 \
 				-march=native \
+				-mtune=native \
 				-lmcheck \
 				-fsanitize=undefined \
 				--param large-function-growth=20000 \

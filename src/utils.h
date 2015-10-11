@@ -21,7 +21,6 @@
 
 #include "types.h"
 
-U64 reverse_bits(U64 word);
 U64 generate_rand64(void);
 void set_priority_and_affinity(void);
 U64 get_time_in_millis(void);

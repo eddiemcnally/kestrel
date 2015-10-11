@@ -27,5 +27,7 @@ void update_piece_hash(struct board *brd, enum piece pce, enum square sq);
 void update_castle_hash(struct board *brd);
 void update_side_hash(struct board *brd);
 void update_EP_hash(struct board *brd);
+void remove_piece_from_board(struct board *brd, enum square sq);
+void add_piece_to_board(struct board *brd, enum piece pce, enum square sq);
 
 #endif

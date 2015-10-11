@@ -24,6 +24,7 @@
 #include "board.h"
 #include "pieces.h"
 #include "attack.h"
+#include "move.h"
 #include "pv_table.h"
 #include "board_utils.h"
 #include "utils.h"

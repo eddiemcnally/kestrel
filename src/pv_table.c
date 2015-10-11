@@ -1,9 +1,10 @@
 /*
  * pv_table.c
  * 
+ * ---------------------------------------------------------------------
  * DESCRIPTION: Maintains a hashtable of principle variation moves.
  * The hashtable is implemented as an array of linked lists.
- * 
+ * --------------------------------------------------------------------- 
  * 
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
@@ -32,7 +33,15 @@ static struct pv_entry *get_empty_entry(void);
 static void init_pv_entry(struct pv_entry *entry);
 static U64 get_index(const U64 board_hash);
 
-//////////////////////////////////
+
+/* Create and initialise a PV Table
+ * 
+ * name: create_pv_table
+ * @param
+ * @return
+ * 
+ */
+
 struct pv_table *create_pv_table(void)
 {
 
@@ -128,11 +137,10 @@ void dispose_table(struct pv_table *table)
 	free(table);
 }
 
-static void init_table(struct pv_table *tab)
+static inline void init_table(struct pv_table *tab)
 {
 	struct pv_entry *elem = &tab->entries[0];
 	for (int i = 0; i < NUM_PV_ENTRIES; i++) {
-
 		init_pv_entry(elem);
 		elem++;
 	}

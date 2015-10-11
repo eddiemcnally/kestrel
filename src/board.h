@@ -57,8 +57,6 @@ enum {
 };
 
 struct board *init_board(char *fen);
-void remove_piece_from_board(struct board *brd, enum square sq);
-void add_piece_to_board(struct board *brd, enum piece pce, enum square sq);
 void set_bit(U64 * brd, enum square sq);
 void clear_bit(U64 * brd, enum square sq);
 void set_piece_material(struct board *brd);
