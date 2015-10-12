@@ -22,6 +22,7 @@
  *
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -49,10 +50,10 @@ static void generate_white_pawn_moves(const struct board *brd,
 
 static void generate_black_pawn_moves(const struct board *brd,
 				      struct move_list *mvl);
-static U64 get_horizontal_mask(enum square sq);
-static U64 get_vertical_mask(enum square sq);
-static U64 get_positive_diagonal_mask(enum square sq);
-static U64 get_negative_diagonal_mask(enum square sq);
+static U64 get_horizontal_mask(const enum square sq);
+static U64 get_vertical_mask(const enum square sq);
+static U64 get_positive_diagonal_mask(const enum square sq);
+static U64 get_negative_diagonal_mask(const enum square sq);
 static struct move_list *get_empty_move_list(void);
 static void generate_white_pawn_moves(const struct board *brd,
 				      struct move_list *mvl);
@@ -78,7 +79,10 @@ static void generate_sliding_diagonal_moves(const struct board *brd,
 static void generate_queen_moves(const struct board *brd,
 				 struct move_list *mvl, enum piece pce);
 static bool is_move_in_list(struct move_list *mvl, mv_bitmap mv);
-static U8 reverse_bits_in_byte(U8 bits);
+
+
+
+
 
 /* indexed using enum square
  * Represents the horizontal squares that a rook can move to, when
@@ -235,6 +239,20 @@ static const U64 negative_diagonal_masks[] = {
 	0x0020408000000000, 0x0040800000000000, 0x0080000000000000,
 	0x0000000000000000
 };
+
+#define R2(n)     n,     n + 2*64,     n + 1*64,     n + 3*64
+#define R4(n) R2(n), R2(n + 2*16), R2(n + 1*16), R2(n + 3*16)
+#define R6(n) R4(n), R4(n + 2*4 ), R4(n + 1*4 ), R4(n + 3*4 )
+
+static const unsigned char BitReverseTable256[256] =
+{
+    R6(0), R6(2), R6(1), R6(3)
+};
+
+
+
+
+
 
 /* man function for taking a board and returning a populated
  * move list for all pieces
@@ -937,7 +955,7 @@ inline U64 reverse_bits(U64 word)
 	U8 *p_out = (U8 *) & retval;
 
 	for (int i = 0; i < 8; i++) {
-		*p_out = reverse_bits_in_byte(*p_in);
+		*p_out = (U8)BitReverseTable256[*p_in];
 		p_out++;
 		p_in++;
 	}
@@ -947,35 +965,22 @@ inline U64 reverse_bits(U64 word)
 
 
 
-/* Reverses the bits in a byte
- * Taken from https://graphics.stanford.edu/~seander/bithacks.html
- * name: reverse_bits_in_byte
- * @param
- * @return
- *
- */
-static inline U8 reverse_bits_in_byte(U8 bits)
-{
-	return (U8) ((bits * 0x0202020202ULL & 0x010884422010ULL) % 1023);
-}
-
-
-static inline U64 get_vertical_mask(enum square sq)
+static inline U64 get_vertical_mask(const enum square sq)
 {
 	return vertical_move_mask[sq];
 }
 
-static inline U64 get_horizontal_mask(enum square sq)
+static inline U64 get_horizontal_mask(const enum square sq)
 {
 	return horizontal_move_mask[sq];
 }
 
-static inline U64 get_positive_diagonal_mask(enum square sq)
+static inline U64 get_positive_diagonal_mask(const enum square sq)
 {
 	return positive_diagonal_masks[sq];
 }
 
-static inline U64 get_negative_diagonal_mask(enum square sq)
+static inline U64 get_negative_diagonal_mask(const enum square sq)
 {
 	return negative_diagonal_masks[sq];
 }

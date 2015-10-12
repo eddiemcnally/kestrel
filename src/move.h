@@ -93,4 +93,5 @@ void TEST_add_en_passent_move(mv_bitmap move_bitmap, struct move_list *mvlist);
 void TEST_add_capture_move(mv_bitmap move_bitmap, struct move_list *mvlist);
 struct move_list *TEST_get_empty_move_list(void);
 
+
 #endif
