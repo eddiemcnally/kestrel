@@ -31,6 +31,7 @@
 #include "board.h"
 #include "board_utils.h"
 #include "move.h"
+#include "makemove.h"
 #include "attack.h"
 #include "pieces.h"
 #include "utils.h"
@@ -388,7 +389,7 @@ inline void clear_LSB_to_inclusive_bit(U64 * bb, U8 bit)
 	}
 }
 
-void clear_MSB_to_inclusive_bit(U64 * bb, U8 bit)
+inline void clear_MSB_to_inclusive_bit(U64 * bb, U8 bit)
 {
 	if (*bb == 0) {
 		return;

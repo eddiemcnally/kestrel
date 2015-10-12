@@ -31,6 +31,7 @@
 #include "board.h"
 #include "pieces.h"
 #include "utils.h"
+#include "makemove.h"
 #include "occupancy_mask.h"
 
 void generate_king_occupancy_masks(U64 * occ_mask_array);

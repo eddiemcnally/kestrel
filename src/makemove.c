@@ -314,6 +314,31 @@ inline void remove_piece_from_board(struct board *brd, enum square sq)
 
 }
 
+
+/*
+ *
+ * name: clear_bit
+ * @param : board, square
+ * @return : void
+ *
+ */
+inline void clear_bit(U64 * brd, enum square sq)
+{
+	*brd = *brd & (U64) (~(0x01ull << sq));
+}
+
+/*
+ *
+ * name: set_bit
+ * @param : board, square
+ * @return : void
+ *
+ */
+inline void set_bit(U64 * brd, enum square sq)
+{
+	*brd = *brd | (U64) (0x01ull << sq);
+}
+
 inline void update_piece_hash(struct board *brd, enum piece pce, enum square sq)
 {
 	brd->board_hash ^= get_piece_hash(pce, sq);

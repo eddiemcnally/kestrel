@@ -91,17 +91,7 @@ inline U64 overlay_black_pieces(const struct board * brd)
 	    | brd->bitboards[B_QUEEN] | brd->bitboards[B_KING];
 }
 
-/*
- *
- * name: set_bit
- * @param : board, square
- * @return : void
- *
- */
-inline void set_bit(U64 * brd, enum square sq)
-{
-	*brd = *brd | (U64) (0x01ull << sq);
-}
+
 
 inline U64 square_to_bitboard(enum square sq)
 {
@@ -110,17 +100,6 @@ inline U64 square_to_bitboard(enum square sq)
 	return retval;
 }
 
-/*
- *
- * name: clear_bit
- * @param : board, square
- * @return : void
- *
- */
-inline void clear_bit(U64 * brd, enum square sq)
-{
-	*brd = *brd & (U64) (~(0x01ull << sq));
-}
 
 /*
  * Counts set bits in a U64

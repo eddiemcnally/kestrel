@@ -26,7 +26,7 @@ This is a work-in-progress. Current state:
 	* cd ./test
 	* make
 	* ./test_kestrel
-* In terms of performance, does about 2.8x10^6 moves/sec. Spec of host:
+* In terms of performance, does about 4x10^6 moves/sec. Spec of host:
 	- Intel® Core™ i5-3337U CPU @ 1.80GHz × 4 
 	- Debian GNU/Linux stretch/sid 64-bit
 	

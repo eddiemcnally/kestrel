@@ -57,8 +57,6 @@ enum {
 };
 
 struct board *init_board(char *fen);
-void set_bit(U64 * brd, enum square sq);
-void clear_bit(U64 * brd, enum square sq);
 void set_piece_material(struct board *brd);
 U64 overlay_white_pieces(const struct board * brd);
 U64 overlay_black_pieces(const struct board * brd);

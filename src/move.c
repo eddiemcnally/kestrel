@@ -900,15 +900,6 @@ generate_sliding_diagonal_moves(const struct board *brd,
 	}
 }
 
-static const U8 BitTable[64] = {
-	63, 30, 3, 32, 25, 41, 22, 33, 15, 50, 42, 13, 11, 53, 19, 34, 61, 29,
-	2,
-	51, 21, 43, 45, 10, 18, 47, 1, 54, 9, 57, 0, 35, 62, 31, 40, 4, 49, 5,
-	52,
-	26, 60, 6, 23, 44, 46, 27, 56, 16, 7, 39, 48, 24, 59, 14, 12, 55, 38,
-	28,
-	58, 20, 37, 17, 36, 8
-};
 
 /*
  * Clears the LSB of the board, and returns the bit # that was cleared.
@@ -916,16 +907,19 @@ static const U8 BitTable[64] = {
  * @param	ptr to U64
  * @return	index of bit cleared.
  * 
- * Note: Taken from https://chessprogramming.wikispaces.com/BitScan
+ * 	// gcc built-in function (see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html)
  *
  */
 inline U8 pop_1st_bit(U64 * bb)
 {
-	U64 b = *bb ^ (*bb - 1);
-	unsigned int fold = (unsigned)((b & 0xffffffff) ^ (b >> 32));
-	*bb &= (*bb - 1);
-	return BitTable[(fold * 0x783a9b23) >> 26];
+	U8 bit = (U8) __builtin_ctzll(*bb);
+
+	// clear the bit
+	*bb = *bb & (U64) (~(0x01ull << bit));
+	
+	return bit;
 }
+
 
 
 /* Reverse the bits in a word
