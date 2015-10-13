@@ -19,17 +19,18 @@
 #include "utils.h"
 #include "seatest.h"
 
+#include "attack_test_fixture.h"
+#include "board_test_fixture.h"
+#include "move_test_fixture.h"
+#include "occupancy_mask_test_fixture.h"
+#include "performance_tests.h"
+#include "piece_test_fixture.h"
+#include "utils_test_feature.h"
+
+
 void all_tests(void);
 
-void board_test_fixture(void);
-void piece_test_fixture(void);
-void move_test_fixture(void);
-void utils_test_fixture(void);
-void attack_test_fixture(void);
-void perf_test_fixture(void);
-
 void my_suite_setup(void);
-void occupancy_mask_test_fixture(void);
 void my_suite_teardown(void);
 int main_no_setup_or_teardown(int argc, char **argv);
 int main_do_it_myself(int argc, char **argv);

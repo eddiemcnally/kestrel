@@ -1,5 +1,6 @@
+
 /*
- * pv_table.h
+ * move_test_fixture.c
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
  * kestrel is free software: you can redistribute it and/or modify it
@@ -15,19 +16,25 @@
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef _PV_TABLE_H_
-#define _PV_TABLE_H_
 
-#include "types.h"
 
-#define		NUM_PV_ENTRIES	(1024 * 1024)
+#ifndef _MOVE_TEST_FIXTURE_H
+#define _MOVE_TEST_FIXTURE_H
 
-struct pv_table *create_pv_table(void);
-mv_bitmap get_pv_line(const struct pv_table *table, struct board *brd,
-		      const U8 depth);
-void add_move(const struct pv_table *table, const U64 board_hash,
-	      const mv_bitmap move);
-mv_bitmap find_move(const struct pv_table *table, const U64 board_hash);
-void dispose_table(struct pv_table *table);
+
+void test_generation_white_pawn_moves(void);
+void test_generation_black_pawn_moves(void);
+void test_generation_white_knight_pawn_moves(void);
+void test_generation_black_knight_pawn_moves(void);
+void test_generation_sliding_horizontal_and_vertical_moves(void);
+void test_generation_sliding_diagonal_moves(void);
+void test_generation_queen_moves(void);
+void test_generation_king_moves(void);
+void test_king_castling_moves(void);
+void test_sample_board_position(void);
+void test_clear_piece(void);
+void test_add_piece(void);
+void test_move_piece(void);
+
 
 #endif

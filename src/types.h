@@ -160,7 +160,7 @@ struct board {
 	// principle variation table
 	struct pv_table * pvtable;
 	
-	int pv_array[MAX_SEARCH_DEPTH];
+	mv_bitmap pv_array[MAX_SEARCH_DEPTH];
 
 	// castling permissions
 	U8 castle_perm;

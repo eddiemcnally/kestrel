@@ -1,5 +1,6 @@
+
 /*
- * pv_table.h
+ * attack_test_fixture.h
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
  * kestrel is free software: you can redistribute it and/or modify it
@@ -15,19 +16,22 @@
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef _PV_TABLE_H_
-#define _PV_TABLE_H_
 
-#include "types.h"
+#ifndef _ATTACK_TEST_FIXTURE_H
+#define _ATTACK_TEST_FIXTURE_H
 
-#define		NUM_PV_ENTRIES	(1024 * 1024)
 
-struct pv_table *create_pv_table(void);
-mv_bitmap get_pv_line(const struct pv_table *table, struct board *brd,
-		      const U8 depth);
-void add_move(const struct pv_table *table, const U64 board_hash,
-	      const mv_bitmap move);
-mv_bitmap find_move(const struct pv_table *table, const U64 board_hash);
-void dispose_table(struct pv_table *table);
+void attack_test_fixture(void);
+void test_is_square_being_attacked_by_knight(void);
+void test_is_square_being_attacked_by_pawn(void);
+void test_is_square_being_attacked_by_king(void);
+void test_is_square_being_attacked_by_rook_or_queen(void);
+void test_is_square_being_attacked_by_rook(void);
+void test_is_square_being_attacked_by_bishop(void);
+void test_is_square_attacked_by_queen(void);
+void test_is_square_under_attack(void);
+void test_is_blocked_up_or_down(void);
+void test_is_blocked_diagonally(void);
+
 
 #endif

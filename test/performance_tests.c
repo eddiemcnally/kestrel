@@ -240,7 +240,7 @@ void test_move_gen_depth()
 	U64 total_move_time = 0;
 	U64 start_time, elapsed;
 	
-	int depth = 4;
+	int depth = 5;
 	U64 total_nodes = 0;
 
 	for (int i = 0; i < NUM_EPD; i++) {
@@ -255,7 +255,7 @@ void test_move_gen_depth()
 		leafNodes = 0;
 		perf_test(depth, brd);
 
-		assert_true(leafNodes == e.depth4);
+		assert_true(leafNodes == e.depth5);
 		total_nodes += leafNodes;
 		free(brd);
 		//////////
@@ -267,6 +267,7 @@ void test_move_gen_depth()
 	double moves_per_sec = ((double)total_nodes / ((double)total_move_time / 1000));
 	printf("Total node count : %llu\n", total_nodes);
 	printf("#moves/sec : %f\n", moves_per_sec);
+	printf("Total elapsed time (ms) %d\n", total_move_time);
 
 }
 

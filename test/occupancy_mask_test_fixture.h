@@ -1,5 +1,5 @@
 /*
- * pv_table.h
+ * occupancy_mask_test_fixture.h
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
  * kestrel is free software: you can redistribute it and/or modify it
@@ -15,19 +15,18 @@
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef _PV_TABLE_H_
-#define _PV_TABLE_H_
+#ifndef _OCCUPANCY_MASK_TEST_FIXTURE_H
+#define _OCCUPANCY_MASK_TEST_FIXTURE_H
 
-#include "types.h"
 
-#define		NUM_PV_ENTRIES	(1024 * 1024)
+void test_king_occupancy_mask(void);
+void test_rook_occupancy_mask(void);
+void test_knight_occupancy_mask(void);
+void test_bishop_occupancy_mask(void);
+void test_queen_occupancy_mask(void);
+void test_white_pawn_occupancy_mask(void);
+void test_black_pawn_occupancy_mask(void);
+void occupancy_mask_test_fixture(void);
 
-struct pv_table *create_pv_table(void);
-mv_bitmap get_pv_line(const struct pv_table *table, struct board *brd,
-		      const U8 depth);
-void add_move(const struct pv_table *table, const U64 board_hash,
-	      const mv_bitmap move);
-mv_bitmap find_move(const struct pv_table *table, const U64 board_hash);
-void dispose_table(struct pv_table *table);
 
 #endif

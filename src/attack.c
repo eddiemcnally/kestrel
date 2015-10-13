@@ -245,6 +245,13 @@ static inline bool is_attacked_horizontally_or_vertically(const struct
 							  sq_one,
 							  enum square sq_two)
 {
+	U64 rook_mask = GET_ROOK_OCC_MASK(sq_one);
+	if (CHECK_BIT(rook_mask, sq_two) == false){
+		// sq_one and sq_two don't share
+		// a file or a rank
+		return false;
+	}
+		
 	int sq_one_rank = GET_RANK(sq_one);
 	int sq_two_rank = GET_RANK(sq_two);
 

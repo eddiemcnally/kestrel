@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "types.h"
+#include "makemove.h"
 #include "move.h"
 #include "pv_table.h"
 
@@ -32,7 +33,6 @@ static void init_table(struct pv_table *tab);
 static struct pv_entry *get_empty_entry(void);
 static void init_pv_entry(struct pv_entry *entry);
 static U64 get_index(const U64 board_hash);
-
 
 /* Create and initialise a PV Table
  * 
@@ -44,7 +44,6 @@ static U64 get_index(const U64 board_hash);
 
 struct pv_table *create_pv_table(void)
 {
-
 	struct pv_table *retval = malloc(sizeof(struct pv_table));
 
 	struct pv_entry *entries =
@@ -135,6 +134,26 @@ void dispose_table(struct pv_table *table)
 
 	// dispose table
 	free(table);
+}
+
+mv_bitmap get_pv_line(const struct pv_table *table, struct board *brd,
+		      const U8 depth)
+{
+	mv_bitmap move = find_move(table, brd->board_hash);
+
+	U32 count = 0;
+	while (move != NO_MOVE && count < depth && count < MAX_SEARCH_DEPTH) {
+		make_move(brd, move);
+		brd->pv_array[count++] = move;
+
+		move = find_move(table, brd->board_hash);
+	}
+
+	while (brd->ply > 0) {
+		take_move(brd);
+	}
+	
+	return count;
 }
 
 static inline void init_table(struct pv_table *tab)

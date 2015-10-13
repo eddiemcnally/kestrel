@@ -13,6 +13,7 @@ CFLAGS	=		-O3 -std=c11 \
 				-march=native \
 				-mtune=native \
 				-lmcheck \
+				-flto
 				-fsanitize=undefined \
 				--param large-function-growth=20000 \
 				--param max-inline-insns-single=90000 \

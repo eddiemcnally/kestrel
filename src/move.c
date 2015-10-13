@@ -913,7 +913,7 @@ generate_sliding_diagonal_moves(const struct board *brd,
  * @param	ptr to U64
  * @return	index of bit cleared.
  * 
- * 	// gcc built-in function (see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html)
+ * uses gcc built-in function (see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html)
  *
  */
 inline U8 pop_1st_bit(U64 * bb)
