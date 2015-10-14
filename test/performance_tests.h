@@ -25,5 +25,6 @@ U32 divide(int depth, struct board *brd);
 void test_move_gen_depth(void);
 void perft(int depth, struct board *brd);
 void bug_check(void);
+void perf_test_fixture(void);
 
 #endif

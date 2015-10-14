@@ -10,6 +10,7 @@
 # NOTE: setting the inline limit values to be obscenely high since the size of
 #		the binary isn't a concern
 	CFLAGS	=	-O3 -std=iso9899:2011 \
+				-flto \
 				-march=native \
 				-mtune=native \
 				-lmcheck \

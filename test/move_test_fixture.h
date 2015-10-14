@@ -35,6 +35,7 @@ void test_sample_board_position(void);
 void test_clear_piece(void);
 void test_add_piece(void);
 void test_move_piece(void);
+void move_test_fixture(void);
 
 
 #endif
