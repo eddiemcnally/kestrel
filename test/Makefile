@@ -12,6 +12,7 @@
 CFLAGS	=		-O3 -flto -std=c11 \
 				-march=native \
 				-mtune=native \
+				-fomit-frame-pointer \
 				-lmcheck \
 				--param large-function-growth=9000000 \
 				--param max-inline-insns-single=900000 \

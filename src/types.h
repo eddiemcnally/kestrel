@@ -18,6 +18,8 @@
 #ifndef _TYPES_H_
 #define _TYPES_H_
 
+#include <stdbool.h>
+
 
 typedef unsigned char U8;
 typedef unsigned short U16;
@@ -124,7 +126,7 @@ struct pv_table {
 
 
 /**
- * A container for holding the bitboards
+ * A container for holding a specific position
  */
 struct board {
 	// bitboard entry for each piece
@@ -172,5 +174,36 @@ struct board {
 	U64 board_hash;
 
 };
+
+
+// holds info associated with searching
+struct search_info {
+	// start time of search
+	U64 start_time;
+	// stop time of search
+	U64 stop_time;
+	// depth to search to
+	U8 depth;
+	// count of moved remaining
+	U32 moves_remaining;
+	// count of nodes
+	U64 node_count;
+	
+	// quit command has been issued
+	bool quit_set;
+	// indicates infinite search is activated
+	bool infinite;
+	// flag indicating depth is set
+	bool depth_set;
+	// flag indicating time is set
+	bool time_set;
+	// search is stopped
+	bool stopped;
+};
+
+
+
+
+
 
 #endif

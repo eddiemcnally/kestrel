@@ -34,6 +34,7 @@
 #include "attack.h"
 #include "board_utils.h"
 #include "pieces.h"
+#include "makemove.h"
 #include "occupancy_mask.h"
 #include "move.h"
 #include "utils.h"
@@ -921,8 +922,7 @@ inline U8 pop_1st_bit(U64 * bb)
 	U8 bit = (U8) __builtin_ctzll(*bb);
 
 	// clear the bit
-	*bb = *bb & (U64) (~(0x01ull << bit));
-	
+	clear_bit(bb, bit);
 	return bit;
 }
 
