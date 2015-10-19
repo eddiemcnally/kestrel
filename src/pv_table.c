@@ -83,7 +83,7 @@ void add_move(const struct pv_table *table, const U64 board_hash,
 	}
 }
 
-mv_bitmap find_move(const struct pv_table *table, const U64 board_hash)
+inline mv_bitmap find_move(const struct pv_table *table, const U64 board_hash)
 {
 	U64 index = get_index(board_hash);
 
@@ -135,7 +135,7 @@ void dispose_table(struct pv_table *table)
 	free(table);
 }
 
-I32 get_pv_line(const struct pv_table *table, struct board *brd,
+inline I32 get_pv_line(const struct pv_table *table, struct board *brd,
 		      const U8 depth)
 {	
 	mv_bitmap move = find_move(table, brd->board_hash);
@@ -166,7 +166,6 @@ static inline void init_table(struct pv_table *tab)
 
 static inline struct pv_entry *get_empty_entry()
 {
-
 	struct pv_entry *retval = malloc(sizeof(struct pv_entry));
 	init_pv_entry(retval);
 	return retval;

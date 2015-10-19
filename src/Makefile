@@ -33,7 +33,6 @@
 				-Wcast-align \
 				-Wmissing-include-dirs \
 				-Wpointer-arith \
-				-Winline \
 				-lubsan
 
 # flags for profiling code

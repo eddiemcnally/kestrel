@@ -1,6 +1,11 @@
 /*
  * evaluate.c
  * 
+ * ---------------------------------------------------------------------
+ * DESCRIPTION : Contains code for evaluating a position and 
+ * generating a score
+ * --------------------------------------------------------------------- 
+ *
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
  * kestrel is free software: you can redistribute it and/or modify it
@@ -33,6 +38,9 @@ static I32 eval_piece(const struct board *brd, enum piece pce, const I8 *pt);
  * Piece tables 
  * 
  * These tables are from White's POV and [0] is a1
+ * 
+ * Values taken from BlueFever Software
+ * 
  */
 
 static const I8 PAWN_PT[NUM_SQUARES] = {
@@ -109,10 +117,10 @@ static const I8 MIRROR_PT[NUM_SQUARES] ={
  */
 I32 evaluate_position(const struct board *brd)
 {
-
 	// initially based on material
-	I32 score = (I32)(brd->material[WHITE] - brd->material[BLACK]);
+	I32 score = (I32) (brd->material[WHITE] - brd->material[BLACK]);
 
+	// now adjust for piece position
 	score += eval_piece(brd, W_PAWN, PAWN_PT);
 	score += eval_piece(brd, B_PAWN, PAWN_PT);
 
@@ -132,16 +140,14 @@ I32 evaluate_position(const struct board *brd)
 	}
 }
 
-inline static I32 eval_piece(const struct board *brd, enum piece pce, const I8 * pt)
+inline static I32 eval_piece(const struct board *brd, enum piece pce,
+			     const I8 * pt)
 {
-	bool is_black = IS_BLACK(pce);
 	I32 score = 0;
 
-
-	// NOTE:
-	// black material is -ve, white is +ve
+	// NOTE: black material is -ve, white is +ve
 	U64 bb = brd->bitboards[pce];
-	if (is_black) {
+	if (IS_BLACK(pce)) {
 		while (bb != 0) {
 			enum square sq = pop_1st_bit(&bb);
 			score -= pt[MIRROR_SQUARE(sq)];
