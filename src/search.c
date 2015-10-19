@@ -57,8 +57,9 @@ void search_positions(struct board *brd, struct search_info *si)
 	
 	reset_search_history(brd, si);
 	
-	for(current_depth = 0; current_depth < si->depth; current_depth++){
+	for(current_depth = 1; current_depth <= si->depth; ++current_depth){
 		best_score = alpha_beta(-INFINITE, INFINITE, current_depth, brd, si);
+		
 		pv_moves = get_pv_line(brd->pvtable, brd, current_depth);
 		
 		best_move = brd->pv_array[0];
@@ -66,6 +67,7 @@ void search_positions(struct board *brd, struct search_info *si)
 		printf("depth %d score %d, move %s, nodes %d\n", (int)current_depth, (int)best_score, print_move(best_move), (int)si->node_count);
 		
 		pv_moves = get_pv_line(brd->pvtable, brd, current_depth); 
+		
 		printf("pv:");
 		for(int pv_num = 0; pv_num < pv_moves; pv_num++){
 			printf(" %s", print_move(brd->pv_array[pv_num]));
@@ -75,16 +77,6 @@ void search_positions(struct board *brd, struct search_info *si)
 		printf("ordering : %.2f\n", (si->fail_high_first / si->fail_high));
 	
 	}
-	
-	
-	
-	
-
-
-
-
-
-
 }
 
 
@@ -122,6 +114,8 @@ static I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 		      struct search_info *si)
 {
 		
+	ASSERT_BOARD_OK(brd);
+	
 	if (depth == 0){
 		si->node_count++;
 		return evaluate_position(brd);
@@ -137,17 +131,24 @@ static I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 		return evaluate_position(brd);
 	}
 	
-	struct move_list list[1];
-	generate_all_moves(brd, list);
-	
+	struct move_list mv_list = {
+		.moves = {{0, 0}},
+		.move_count = 0
+	};
+
+	generate_all_moves(brd, &mv_list);
+
+
 	U32 num_legal_moves = 0;
 	I32 old_alpha = alpha;
 	mv_bitmap best_move = NO_MOVE;
 	I32 score = -INFINITE;
 	
 	
-	for (int move_num = 0; move_num < list->move_count; move_num++){
-		if (make_move(brd, list->moves[move_num].move_bitmap) == false){
+	mv_bitmap mv;
+	for (U32 mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
+		mv = mv_list.moves[mv_num].move_bitmap;
+		if (!make_move(brd, mv)) {
 			continue;
 		}
 		
@@ -166,7 +167,7 @@ static I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 			}
 			alpha = score;
 			
-			best_move = list->moves[move_num].move_bitmap;
+			best_move = mv_list.moves[mv_num].move_bitmap;
 		}		
 	}
 		
