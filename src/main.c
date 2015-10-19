@@ -34,7 +34,7 @@
 #include "move.h"
 
 // sample game position
-#define SAMPLE_POSITION 	"k7/8/2N5/1N6/8/8/8/K6n b - - 0 1"
+#define SAMPLE_POSITION 	"2rr3k/pp3pp1/1nnqbN1p/3pN3/2pP4/2P3Q1/PPB4P/R4RK1 w - -"
 
 int main(int argc, char **argv)
 {

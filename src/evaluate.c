@@ -32,9 +32,6 @@ static I32 eval_piece(const struct board *brd, enum piece pce, const I8 *pt);
 /*****************************************************
  * Piece tables 
  * 
- * Initial values selected from the following link:
- * 		http://chessprogramming.wikispaces.com/Simplified+evaluation+function#Piece-Square%20Tables
- * 
  * These tables are from White's POV and [0] is a1
  */
 
@@ -140,11 +137,14 @@ inline static I32 eval_piece(const struct board *brd, enum piece pce, const I8 *
 	bool is_black = IS_BLACK(pce);
 	I32 score = 0;
 
+
+	// NOTE:
+	// black material is -ve, white is +ve
 	U64 bb = brd->bitboards[pce];
 	if (is_black) {
 		while (bb != 0) {
 			enum square sq = pop_1st_bit(&bb);
-			score += pt[MIRROR_SQUARE(sq)];
+			score -= pt[MIRROR_SQUARE(sq)];
 		}
 	} else {
 		while (bb != 0) {
