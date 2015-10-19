@@ -19,7 +19,7 @@ Some implementation notes:
 
 This is a work-in-progress. Current state:
 * Can read in FEN
-* Can generate moves (currently un-scored, and searching/pruning not implemented yet)
+* Can generate moves with an initial implementation of an AlphaBeta search/evaluate functionality.
 * Currently (Oct 2015) completes the perft tests without errors to a depth of 6 (> 12x10^9 moves generated)
 * The code is unoptimised, in the sense that no explicit effort has been undertaken to profile and tune the code paths (other than some rudamentary moving of code to improve inlining, removal of debug code and assert's and tweaking the gcc compile options).
 * The main code (./src) doesn't execute any meaningful operations. The main launch point is the test framework. To build and execute the test framework, run the following:
@@ -31,10 +31,6 @@ This is a work-in-progress. Current state:
 	- Debian GNU/Linux Testing (Stretch) 64-bit
 	
 
-Next steps:
-- implement move scoring
-- implement search (plus move pruning)
-- look into what parts of the move gen code can be multi-threaded.
 
 
 
