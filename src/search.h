@@ -18,9 +18,11 @@
 
 #ifndef _SEARCH_H_
 #define _SEARCH_H_
+
 #include <stdbool.h>
 #include "types.h"
 
 bool is_repetition(const struct board *brd);
+void search_positions(struct board *brd, struct search_info *si);
 
 #endif

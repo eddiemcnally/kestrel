@@ -15,6 +15,7 @@
 				-mtune=native \
 				-lmcheck \
 				-fsanitize=undefined \
+				-fomit-frame-pointer \
 				--param large-function-growth=20000 \
 				--param max-inline-insns-single=90000 \
 				-Wpedantic \
@@ -49,7 +50,7 @@
 	SRCS		=	main.c board.c pieces.c board_utils.c \
 				move.c init.c hashkeys.c fen.c utils.c \
 				attack.c occupancy_mask.c makemove.c \
-				search.c pv_table.c
+				search.c pv_table.c evaluate.c
 
 # define the C object files
 #

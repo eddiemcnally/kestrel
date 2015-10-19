@@ -54,6 +54,7 @@ CFLAGS	=		-O3 -flto -std=c11 \
 				../src/attack.c \
 				../src/occupancy_mask.c \
 				../src/makemove.c \
+				../src/evaluate.c \
 				all_tests.c \
 				board_test_fixture.c \
 				piece_test_fixture.c \

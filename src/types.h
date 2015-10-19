@@ -25,6 +25,11 @@ typedef unsigned char U8;
 typedef unsigned short U16;
 typedef unsigned int U32;
 typedef unsigned long long U64;
+typedef signed char I8;
+typedef signed short I16;
+typedef signed int I32;
+typedef signed long long I64;
+
 
 
 
@@ -172,6 +177,9 @@ struct board {
 
 	// a hash of the current board
 	U64 board_hash;
+	
+	mv_bitmap search_history[NUM_PIECES][NUM_SQUARES];
+	mv_bitmap search_killers[NUM_COLOURS][MAX_SEARCH_DEPTH];
 
 };
 
@@ -199,6 +207,10 @@ struct search_info {
 	bool time_set;
 	// search is stopped
 	bool stopped;
+	
+	
+	float fail_high;
+	float fail_high_first;
 };
 
 

@@ -48,6 +48,8 @@ int main(int argc, char **argv)
 	struct board *brd = init_game(STARTING_FEN);
 	print_board(brd);
 
+	struct search_info si[1];
+
 	char input[6];
 	mv_bitmap move = NO_MOVE;
 	while (true) {
@@ -60,6 +62,10 @@ int main(int argc, char **argv)
 			break;
 		} else if (input[0] == 't') {
 			take_move(brd);
+		} else if (input[0] == 's'){
+			si->depth = 4;
+			search_positions(brd, si);
+				
 		} else {
 			move = parse_move(input, brd);
 			if (move != NO_MOVE) {

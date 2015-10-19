@@ -112,7 +112,6 @@ mv_bitmap find_move(const struct pv_table *table, const U64 board_hash)
 
 void dispose_table(struct pv_table *table)
 {
-
 	// dispose of linked lists
 	for (U32 i = 0; i < NUM_PV_ENTRIES; i++) {
 
@@ -136,12 +135,12 @@ void dispose_table(struct pv_table *table)
 	free(table);
 }
 
-mv_bitmap get_pv_line(const struct pv_table *table, struct board *brd,
+I32 get_pv_line(const struct pv_table *table, struct board *brd,
 		      const U8 depth)
 {
 	mv_bitmap move = find_move(table, brd->board_hash);
 
-	U32 count = 0;
+	I32 count = 0;
 	while (move != NO_MOVE && count < depth && count < MAX_SEARCH_DEPTH) {
 		make_move(brd, move);
 		brd->pv_array[count++] = move;

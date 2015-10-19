@@ -35,21 +35,6 @@ static const char pieceToChar[PIECE_ENUM_SIZE] = {
 	'P', 'R', 'N', 'B', 'Q', 'K', 'p', 'r', 'n', 'b', 'q', 'k', '#', '-'
 };
 
-// piece values, indexed into using the enum piece enum
-static const U32 piece_values[NUM_PIECES] = {
-	100,			// PAWN
-	550,			// ROOK
-	325,			// BISHOP
-	325,			// KNIGHT
-	1000,			// QUEEN
-	50000,			// KING
-	100,			// PAWN
-	325,			// BISHOP
-	325,			// KNIGHT
-	550,			// ROOK
-	1000,			// QUEEN
-	50000			// KING
-};
 
 /**
  * Takes a typed piece and returns a human-readable representation
