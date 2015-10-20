@@ -62,10 +62,8 @@ static const U32 piece_values[NUM_PIECES] = {
 
 
 char get_piece_label(enum piece piece);
-
-bool is_sliding_piece(enum piece pce);
-
 bool is_valid_piece(enum piece pce);
-
 U32 get_piece_value(const enum piece pce);
+
+
 #endif

@@ -45,11 +45,15 @@ int main(int argc, char **argv)
 	// set process pri and cpu affinity for max performance
 	set_priority_and_affinity();
 
-	struct board *brd = init_game(STARTING_FEN);
+	struct board *brd = init_game(SAMPLE_POSITION);
 	print_board(brd);
 
 	struct search_info si[1];
 
+	si->depth = 4;
+	search_positions(brd, si);
+
+/*
 	char input[6];
 	mv_bitmap move = NO_MOVE;
 	while (true) {
@@ -82,4 +86,5 @@ int main(int argc, char **argv)
 	}
 
 	return 0;
+	* */
 }

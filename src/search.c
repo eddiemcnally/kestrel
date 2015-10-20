@@ -40,13 +40,17 @@
 static void reset_search_history(struct board *brd, struct search_info *si);
 static I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 		      struct search_info *si);
+bool is_repetition(const struct board *brd);
+
+
+
 
 // checks to see if most recent move is a repetition
-bool is_repetition(const struct board *brd)
+inline bool is_repetition(const struct board *brd)
 {
 	// only have to look since last fifty move counter was reset
 	U8 start = (U8) (brd->history_ply - brd->fifty_move_counter);
-	for (U8 i = start; i < brd->history_ply - 1; i++) {
+	for (U8 i = start; i < brd->history_ply - 1; ++i) {
 		if (brd->board_hash == brd->history[i].board_hash) {
 			return true;
 		}
@@ -79,7 +83,7 @@ void search_positions(struct board *brd, struct search_info *si)
 		pv_moves = get_pv_line(brd->pvtable, brd, current_depth);
 
 		printf("pv:");
-		for (int pv_num = 0; pv_num < pv_moves; pv_num++) {
+		for (int pv_num = 0; pv_num < pv_moves; ++pv_num) {
 			printf(" %s", print_move(brd->pv_array[pv_num]));
 		}
 		printf("\n");
@@ -150,9 +154,9 @@ static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 	mv_bitmap best_move = NO_MOVE;
 	I32 score = -INFINITE;
 
-	mv_bitmap mv;
-	for (U32 mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
-		mv = mv_list.moves[mv_num].move_bitmap;
+
+	for (U32 mv_num = 0; mv_num < mv_list.move_count; mv_num++) {
+		mv_bitmap mv = mv_list.moves[mv_num].move_bitmap;
 		if (!make_move(brd, mv)) {
 			continue;
 		}

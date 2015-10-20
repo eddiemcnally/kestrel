@@ -53,18 +53,3 @@ bool is_valid_piece(enum piece pce)
 {
 	return (pce >= 0 && pce <= NUM_PIECES) || (pce == NO_PIECE);
 }
-
-inline bool is_sliding_piece(enum piece pce)
-{
-	switch (pce) {
-	case W_BISHOP:
-	case W_QUEEN:
-	case W_ROOK:
-	case B_BISHOP:
-	case B_QUEEN:
-	case B_ROOK:
-		return true;
-	default:
-		return false;
-	}
-}

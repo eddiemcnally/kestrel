@@ -1,7 +1,7 @@
 
 First attempt at a C-based chess engine.
 
-The code is developed on Debian Testing (gcc 5.2.x). Currently requires GNU C libraries to compile (I may remove this dependancy later). 
+The code is developed on Debian Testing (gcc 5.2.x). Currently dependant on gcc built-in functions.
 
 The ./test directory contains test fixtures for running unit tests (uses the 'seatest' test framework - see https://github.com/keithn/seatest). 
 
@@ -14,7 +14,7 @@ The ./debug directory contains some Python 3 code that was developed to help par
 Some implementation notes:
 * At a very high level, I am using BlueFever Software as a guide to the implementation steps. There are video tutorials on YouTube.
 * The engine makes heavy use of bitboards (64bit 'unsigned long long int' to represent the board). Using bitboards allows for using pre-generated lookup (occupancy) bitmasks to identify potential attacking squares for any piece on the board.
-* As mentioned above, there is an dependency on GNU C library (glibc). The engine makes use of an inbuilt functions for determing LSB and MSB in a word.
+* As mentioned above, there is an dependency on gcc. The engine makes use of an inbuilt functions for determing LSB and MSB in a word, and to count bits in a word.
 
 
 This is a work-in-progress. Current state:

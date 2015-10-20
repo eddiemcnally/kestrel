@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include "types.h"
+#include "board_utils.h"
 #include "evaluate.h"
 #include "pieces.h"
 #include "move.h"
@@ -117,25 +118,32 @@ static const I8 MIRROR_PT[NUM_SQUARES] ={
  */
 I32 evaluate_position(const struct board *brd)
 {
-	// initially based on material
+	// initially based on material value
 	I32 score = (I32) (brd->material[WHITE] - brd->material[BLACK]);
 
+	// NOTE: black material is -ve, white is +ve
 	// now adjust for piece position
 	score += eval_piece(brd, W_PAWN, PAWN_PT);
-	score += eval_piece(brd, B_PAWN, PAWN_PT);
+	score -= eval_piece(brd, B_PAWN, PAWN_PT);
 
 	score += eval_piece(brd, W_BISHOP, BISHOP_PT);
-	score += eval_piece(brd, B_BISHOP, BISHOP_PT);
+	score -= eval_piece(brd, B_BISHOP, BISHOP_PT);
 
 	score += eval_piece(brd, W_KNIGHT, KNIGHT_PT);
-	score += eval_piece(brd, B_KNIGHT, KNIGHT_PT);
+	score -= eval_piece(brd, B_KNIGHT, KNIGHT_PT);
 
 	score += eval_piece(brd, W_ROOK, ROOK_PT);
-	score += eval_piece(brd, B_ROOK, ROOK_PT);
+	score -= eval_piece(brd, B_ROOK, ROOK_PT);
+
+	print_board(brd);
 
 	if (brd->side_to_move == WHITE) {
+		printf("score : %d\n", score);
+
 		return score;
 	} else {
+		printf("score : %d\n", -score);
+
 		return -score;
 	}
 }
@@ -145,12 +153,11 @@ inline static I32 eval_piece(const struct board *brd, enum piece pce,
 {
 	I32 score = 0;
 
-	// NOTE: black material is -ve, white is +ve
 	U64 bb = brd->bitboards[pce];
 	if (IS_BLACK(pce)) {
 		while (bb != 0) {
 			enum square sq = pop_1st_bit(&bb);
-			score -= pt[MIRROR_SQUARE(sq)];
+			score += pt[MIRROR_SQUARE(sq)];
 		}
 	} else {
 		while (bb != 0) {
