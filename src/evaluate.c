@@ -121,6 +121,10 @@ I32 evaluate_position(const struct board *brd)
 	// initially based on material value
 	I32 score = (I32) (brd->material[WHITE] - brd->material[BLACK]);
 
+	//printf("WHITE material %d, BLACK material %d\n", brd->material[WHITE], brd->material[BLACK] );
+
+
+
 	// NOTE: black material is -ve, white is +ve
 	// now adjust for piece position
 	score += eval_piece(brd, W_PAWN, PAWN_PT);
@@ -135,14 +139,12 @@ I32 evaluate_position(const struct board *brd)
 	score += eval_piece(brd, W_ROOK, ROOK_PT);
 	score -= eval_piece(brd, B_ROOK, ROOK_PT);
 
-	print_board(brd);
-
 	if (brd->side_to_move == WHITE) {
-		printf("score : %d\n", score);
+		//printf("score : %d\n", score);
 
 		return score;
 	} else {
-		printf("score : %d\n", -score);
+		//printf("score : %d\n", -score);
 
 		return -score;
 	}

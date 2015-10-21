@@ -68,7 +68,7 @@ void search_positions(struct board *brd, struct search_info *si)
 
 	reset_search_history(brd, si);
 
-	for (current_depth = 1; current_depth <= si->depth; ++current_depth) {
+	for (current_depth = 1; current_depth <= si->depth; current_depth++) {
 		best_score =
 		    alpha_beta(-INFINITE, INFINITE, current_depth, brd, si);
 
@@ -76,7 +76,7 @@ void search_positions(struct board *brd, struct search_info *si)
 
 		best_move = brd->pv_array[0];
 
-		printf("depth %d score %d, move %s, nodes %d\n",
+		printf("depth %d score %d, move %s, nodes %d ",
 		       (int)current_depth, (int)best_score,
 		       print_move(best_move), (int)si->node_count);
 
@@ -96,7 +96,7 @@ void search_positions(struct board *brd, struct search_info *si)
 
 static void reset_search_history(struct board *brd, struct search_info *si)
 {
-	for (int i = 0; i < NUM_COLOURS; i++) {
+	for (int i = 0; i < NUM_PIECES; i++) {
 		for (int j = 0; j < NUM_SQUARES; j++) {
 			brd->search_history[i][j] = 0;
 		}
@@ -118,7 +118,6 @@ static void reset_search_history(struct board *brd, struct search_info *si)
 	si->start_time = get_time_in_millis();
 	si->stopped = true;
 	si->node_count = 0;
-
 	si->fail_high = 0;
 	si->fail_high_first = 0;
 

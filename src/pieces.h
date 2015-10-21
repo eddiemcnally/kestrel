@@ -39,21 +39,20 @@
 #define IS_ROOK_OR_QUEEN(pce)	(IS_ROOK(pce) || IS_QUEEN(pce))
 #define IS_BISHOP_OR_QUEEN(pce)	(IS_BISHOP(pce) || IS_QUEEN(pce))
 
-
 // piece values, indexed into using the enum piece enum
 static const U32 piece_values[NUM_PIECES] = {
-	100,			// PAWN
-	550,			// ROOK
-	325,			// BISHOP
-	325,			// KNIGHT
-	1000,			// QUEEN
-	50000,			// KING
-	100,			// PAWN
-	325,			// BISHOP
-	325,			// KNIGHT
-	550,			// ROOK
-	1000,			// QUEEN
-	50000			// KING
+	100,			// W_PAWN
+	550,			// W_ROOK
+	325,			// W_BISHOP
+	325,			// W_KNIGHT
+	1000,			// W_QUEEN
+	50000,			// W_KING
+	100,			// B_PAWN
+	550,			// B_ROOK
+	325,			// B_BISHOP
+	325,			// B_KNIGHT
+	1000,			// B_QUEEN
+	50000			// B_KING
 };
 #define INFINITE 	((I32)(30000))
 #define MATE 		29000

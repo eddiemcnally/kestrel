@@ -278,6 +278,12 @@ void add_piece_to_board(struct board *brd, enum piece pce, enum square sq)
 
 	brd->pieces[sq] = pce;
 	brd->material[col] += get_piece_value(pce);
+/*
+	printf("added piece to board %c, value %d, total %d\n", 
+				get_piece_label(pce),
+				get_piece_value(pce),
+				brd->material[col]);
+*/
 
 	// set piece on bitboards
 	set_bit(&brd->bitboards[pce], sq);
@@ -302,6 +308,13 @@ inline void remove_piece_from_board(struct board *brd, enum square sq)
 	brd->pieces[sq] = NO_PIECE;
 
 	brd->material[col] -= get_piece_value(pce);
+/*
+	printf("removed piece from board %c, value %d, total %d\n", 
+				get_piece_label(pce),
+				get_piece_value(pce),
+				brd->material[col]);
+*/
+
 
 	// remove piece from bitboards
 	clear_bit(&brd->bitboards[pce], sq);
