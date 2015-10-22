@@ -23,7 +23,7 @@
 #define		NUM_PV_ENTRIES	(1024 * 1024)
 
 struct pv_table *create_pv_table(void);
-I32 get_pv_line(const struct pv_table *table, struct board *brd,
+U8 get_pv_line(const struct pv_table *table, struct board *brd,
 		      const U8 depth);
 void add_move(const struct pv_table *table, const U64 board_hash,
 	      const mv_bitmap move);

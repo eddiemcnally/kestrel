@@ -135,12 +135,12 @@ void dispose_table(struct pv_table *table)
 	free(table);
 }
 
-inline I32 get_pv_line(const struct pv_table *table, struct board *brd,
+inline U8 get_pv_line(const struct pv_table *table, struct board *brd,
 		      const U8 depth)
 {	
 	mv_bitmap move = find_move(table, brd->board_hash);
 
-	I32 count = 0;
+	U8 count = 0;
 	while (move != NO_MOVE && count < depth) {
 		make_move(brd, move);
 		brd->pv_array[count++] = move;

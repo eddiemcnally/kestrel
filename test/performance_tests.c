@@ -240,7 +240,7 @@ void test_move_gen_depth()
 	U64 total_move_time = 0;
 	U64 start_time, elapsed;
 	
-	int depth = 4;
+	int depth = 5;
 	U64 total_nodes = 0;
 
 	for (int i = 0; i < NUM_EPD; i++) {
@@ -255,7 +255,7 @@ void test_move_gen_depth()
 		leafNodes = 0;
 		perf_test(depth, brd);
 
-		assert_true(leafNodes == e.depth4);
+		assert_true(leafNodes == e.depth5);
 		total_nodes += leafNodes;
 		free(brd);
 		//////////

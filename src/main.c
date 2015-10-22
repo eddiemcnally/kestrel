@@ -50,6 +50,11 @@ int main(int argc, char **argv)
 
 	struct search_info si[1];
 
+			si->depth = 2;
+			search_positions(brd, si);
+				
+
+/*
 	char input[6];
 	mv_bitmap move = NO_MOVE;
 	while (true) {
@@ -80,6 +85,6 @@ int main(int argc, char **argv)
 
 		fflush(stdin);
 	}
-
+*/
 	return 0;
 }

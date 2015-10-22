@@ -64,7 +64,7 @@ void search_positions(struct board *brd, struct search_info *si)
 	mv_bitmap best_move = NO_MOVE;
 	I32 best_score = -INFINITE;
 	U8 current_depth = 0;
-	I32 pv_moves = 0;
+	U8 num_pv_moves = 0;
 
 	reset_search_history(brd, si);
 
@@ -72,7 +72,7 @@ void search_positions(struct board *brd, struct search_info *si)
 		best_score =
 		    alpha_beta(-INFINITE, INFINITE, current_depth, brd, si);
 
-		pv_moves = get_pv_line(brd->pvtable, brd, current_depth);
+		num_pv_moves = get_pv_line(brd->pvtable, brd, current_depth);
 
 		best_move = brd->pv_array[0];
 
@@ -80,10 +80,10 @@ void search_positions(struct board *brd, struct search_info *si)
 		       (int)current_depth, (int)best_score,
 		       print_move(best_move), (int)si->node_count);
 
-		pv_moves = get_pv_line(brd->pvtable, brd, current_depth);
+		num_pv_moves = get_pv_line(brd->pvtable, brd, current_depth);
 
 		printf("pv:");
-		for (int pv_num = 0; pv_num < pv_moves; ++pv_num) {
+		for (int pv_num = 0; pv_num < num_pv_moves; ++pv_num) {
 			printf(" %s", print_move(brd->pv_array[pv_num]));
 		}
 		printf("\n");
@@ -98,13 +98,13 @@ static void reset_search_history(struct board *brd, struct search_info *si)
 {
 	for (int i = 0; i < NUM_PIECES; i++) {
 		for (int j = 0; j < NUM_SQUARES; j++) {
-			brd->search_history[i][j] = 0;
+			brd->search_history[i][j] = NO_MOVE;
 		}
 	}
 
 	for (int i = 0; i < NUM_COLOURS; i++) {
 		for (int j = 0; j < MAX_SEARCH_DEPTH; j++) {
-			brd->search_killers[i][j] = 0;
+			brd->search_killers[i][j] = NO_MOVE;
 		}
 	}
 
@@ -148,20 +148,23 @@ static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 
 	generate_all_moves(brd, &mv_list);
 
-	U32 num_legal_moves = 0;
+	U16 num_legal_moves = 0;
 	I32 old_alpha = alpha;
 	mv_bitmap best_move = NO_MOVE;
 	I32 score = -INFINITE;
 
 
-	for (U32 mv_num = 0; mv_num < mv_list.move_count; mv_num++) {
+	for (U16 mv_num = 0; mv_num < mv_list.move_count; mv_num++) {
 		mv_bitmap mv = mv_list.moves[mv_num].move_bitmap;
 		if (!make_move(brd, mv)) {
 			continue;
 		}
 
-		num_legal_moves++;;
-		score = -alpha_beta(-beta, -alpha, (U8) (depth - 1), brd, si);
+		num_legal_moves++;
+				
+		score = -alpha_beta(-beta, -alpha, (U8)(depth - 1), brd, si);
+
+		printf("depth %d, move %s, score %d\n", depth, print_move(mv), score); 
 
 		take_move(brd);
 
