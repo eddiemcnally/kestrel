@@ -39,7 +39,7 @@
 
 static void reset_search_history(struct board *brd, struct search_info *si);
 static I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
-		      struct search_info *si);
+		      struct search_info *si, mv_bitmap mv);
 bool is_repetition(const struct board *brd);
 
 
@@ -68,17 +68,17 @@ void search_positions(struct board *brd, struct search_info *si)
 
 	reset_search_history(brd, si);
 
-	for (current_depth = 1; current_depth <= si->depth; current_depth++) {
+	for (current_depth = 1; current_depth <= si->depth; ++current_depth) {
 		best_score =
-		    alpha_beta(-INFINITE, INFINITE, current_depth, brd, si);
+		    alpha_beta(-INFINITE, INFINITE, current_depth, brd, si, NO_MOVE);
 
 		num_pv_moves = get_pv_line(brd->pvtable, brd, current_depth);
 
 		best_move = brd->pv_array[0];
 
-		printf("depth %d score %d, move %s, nodes %d ",
+		printf("depth %d score %d, move %s, nodes %d, pvMoves %d ",
 		       (int)current_depth, (int)best_score,
-		       print_move(best_move), (int)si->node_count);
+		       print_move(best_move), (int)si->node_count,num_pv_moves );
 
 		num_pv_moves = get_pv_line(brd->pvtable, brd, current_depth);
 
@@ -124,20 +124,37 @@ static void reset_search_history(struct board *brd, struct search_info *si)
 }
 
 static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
-			     struct search_info *si)
+			     struct search_info *si, mv_bitmap a_move)
 {
+	/*printf("alpha %d, beta %d, depth %d, :: ", alpha, beta, depth);
+	print_compressed_board(brd);
+	printf("\n");
+	*/
+	
 	if (depth == 0) {
 		si->node_count++;
-		return evaluate_position(brd);
+		I32 s = evaluate_position(brd);
+		printf("depth = 0, move %s alpha %d, beta %d, evalPos %d\n",
+			print_move(a_move), alpha, beta, s);
+		
+		return s;
+		
 	}
 
 	si->node_count++;
 
 	if (is_repetition(brd) || brd->fifty_move_counter >= 100) {
+		printf("repetition....");
+		print_compressed_board(brd);
+		printf("\n");	
 		return 0;
 	}
 
 	if (brd->ply > MAX_SEARCH_DEPTH - 1) {
+		printf("MAX_DEPTH....");
+		print_compressed_board(brd);
+		printf("\n");	
+
 		return evaluate_position(brd);
 	}
 
@@ -148,24 +165,32 @@ static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 
 	generate_all_moves(brd, &mv_list);
 
+	//printf("AB - #moves generated %d :: ", mv_list.move_count);
+	//print_compressed_board(brd);
+	//printf("\n");
+	 
+	
+
 	U16 num_legal_moves = 0;
 	I32 old_alpha = alpha;
 	mv_bitmap best_move = NO_MOVE;
 	I32 score = -INFINITE;
 
 
-	for (U16 mv_num = 0; mv_num < mv_list.move_count; mv_num++) {
+	for (U16 mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
 		mv_bitmap mv = mv_list.moves[mv_num].move_bitmap;
 		if (!make_move(brd, mv)) {
+			printf("Move illegal....%s\n", print_move(mv));
 			continue;
 		}
 
 		num_legal_moves++;
 				
-		score = -alpha_beta(-beta, -alpha, (U8)(depth - 1), brd, si);
+		score = -alpha_beta(-beta, -alpha, (U8)(depth - 1), brd, si, mv);
 
-		printf("depth %d, move %s, score %d\n", depth, print_move(mv), score); 
-
+		/*printf("depth %d, move %s, score %d, alpha %d beta %d\n", depth, 
+							print_move(mv), score, alpha, beta); 
+*/
 		take_move(brd);
 
 		if (score > alpha) {
@@ -174,6 +199,9 @@ static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 					si->fail_high_first++;
 				}
 				si->fail_high++;
+
+				printf("Returning BETA for move %s, score %d depth %d alpha %d beta %d\n", 
+							print_move(mv), score, depth, alpha, beta);
 				return beta;
 			}
 			alpha = score;
@@ -194,11 +222,14 @@ static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 		if (is_sq_attacked(brd, king_sq, FLIP_SIDE(brd->side_to_move))) {
 			return (-MATE + brd->ply);
 		} else {
+			printf("Returning 0...no legal moves depth %d\n", depth);
+
 			return 0;
 		}
 	}
 
 	if (alpha != old_alpha) {
+		printf("Adding move %s to PVTable, alpha %d, old_alpha %d\n", print_move(best_move), alpha, old_alpha);
 		add_move(brd->pvtable, brd->board_hash, best_move);
 	}
 
