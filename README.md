@@ -1,7 +1,7 @@
 
 First attempt at a C-based chess engine.
 
-The code is developed on Debian Testing (gcc 5.2.x). Currently dependant on gcc built-in functions.
+The code is developed on Debian Jessie (bunsenlabs.org), and is compiled with gcc 4.9.2. Currently there is a dependancy on gcc built-in functions.
 
 The ./test directory contains test fixtures for running unit tests (uses the 'seatest' test framework - see https://github.com/keithn/seatest). 
 
@@ -26,9 +26,9 @@ This is a work-in-progress. Current state:
 	* cd ./test
 	* make
 	* ./test_kestrel
-* In terms of performance, does about 13x10^6 moves/sec. Spec of host:
+* In terms of performance, does about 13x10^6 moves/sec during the perft testing. Spec of host:
 	- Intel® Core™ i5-3337U CPU @ 1.80GHz × 4 
-	- Debian GNU/Linux Testing (Stretch) 64-bit
+	- Debian Jessie (bunsenlabs.org)
 	
 
 
