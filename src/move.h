@@ -31,7 +31,6 @@ struct move_list {
 	U16 move_count;
 };
 
-#define NO_MOVE	0
 
 //--- macros for setting the 'move' field in the MOVE struct
 #define FROMSQ(m) 		((m) & 0x7F)
@@ -51,6 +50,9 @@ struct move_list {
 #define MFLAG_CASTLE 		0x1000000
 
 #define	IS_EN_PASS_MOVE(mv)	((mv & MFLAG_EN_PASSANT) != 0)
+
+
+#define NO_MOVE				0
 
 //#define MFLAG_CAPTURED                0x007C000       // En Passant | Captures
 //#define MFLAG_PROMOTED                0x0F00000

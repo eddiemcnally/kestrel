@@ -1,12 +1,12 @@
 /*
  * search.c
- * 
+ *
  * ---------------------------------------------------------------------
  * DESCRIPTION : Contains code for searching for moves and determining
  * the best ones
- * --------------------------------------------------------------------- 
+ * ---------------------------------------------------------------------
  *
- * 
+ *
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
  * kestrel is free software: you can redistribute it and/or modify it
@@ -39,18 +39,19 @@
 
 static void reset_search_history(struct board *brd, struct search_info *si);
 static I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
-		      struct search_info *si, mv_bitmap mv);
+		      struct search_info *si);
 bool is_repetition(const struct board *brd);
-
-
-
 
 // checks to see if most recent move is a repetition
 inline bool is_repetition(const struct board *brd)
 {
-	// only have to look since last fifty move counter was reset
-	U8 start = (U8) (brd->history_ply - brd->fifty_move_counter);
-	for (U8 i = start; i < brd->history_ply - 1; ++i) {
+	// the 50move counter is reset when a pawn moves or piece taken
+	// (these are moves that can't be repeated), so we only need to
+	// search the history from the last time the counter was reset
+
+	int start = brd->history_ply - brd->fifty_move_counter;
+
+	for (int i = start; i < brd->history_ply; i++) {
 		if (brd->board_hash == brd->history[i].board_hash) {
 			return true;
 		}
@@ -66,21 +67,22 @@ void search_positions(struct board *brd, struct search_info *si)
 	U8 current_depth = 0;
 	U8 num_pv_moves = 0;
 
+	// initialise for search
 	reset_search_history(brd, si);
 
-	for (current_depth = 1; current_depth <= si->depth; ++current_depth) {
+	for (current_depth = 1; current_depth <= si->depth; current_depth++) {
 		best_score =
-		    alpha_beta(-INFINITE, INFINITE, current_depth, brd, si, NO_MOVE);
+		    alpha_beta(-INFINITE, INFINITE, current_depth, brd, si);
 
-		num_pv_moves = get_pv_line(brd->pvtable, brd, current_depth);
-
+		num_pv_moves = populate_pv_line(brd->pvtable, brd, current_depth);
 		best_move = brd->pv_array[0];
 
+
+		// debug //////////////////////////
 		printf("depth %d score %d, move %s, nodes %d, pvMoves %d ",
 		       (int)current_depth, (int)best_score,
-		       print_move(best_move), (int)si->node_count,num_pv_moves );
-
-		num_pv_moves = get_pv_line(brd->pvtable, brd, current_depth);
+		       print_move(best_move), (int)si->node_count,
+		       num_pv_moves);
 
 		printf("pv:");
 		for (int pv_num = 0; pv_num < num_pv_moves; ++pv_num) {
@@ -90,8 +92,11 @@ void search_positions(struct board *brd, struct search_info *si)
 
 		printf("ordering : %.2f\n",
 		       (si->fail_high_first / si->fail_high));
-
+		/////////////////////////////////////
 	}
+
+	dump_pv_table_stats(brd->pvtable);
+
 }
 
 static void reset_search_history(struct board *brd, struct search_info *si)
@@ -124,37 +129,26 @@ static void reset_search_history(struct board *brd, struct search_info *si)
 }
 
 static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
-			     struct search_info *si, mv_bitmap a_move)
+			     struct search_info *si)
 {
 	/*printf("alpha %d, beta %d, depth %d, :: ", alpha, beta, depth);
-	print_compressed_board(brd);
-	printf("\n");
-	*/
-	
+	   print_compressed_board(brd);
+	   printf("\n");
+	 */
+
 	if (depth == 0) {
 		si->node_count++;
-		I32 s = evaluate_position(brd);
-		printf("depth = 0, move %s alpha %d, beta %d, evalPos %d\n",
-			print_move(a_move), alpha, beta, s);
-		
-		return s;
-		
+		return evaluate_position(brd);
 	}
 
 	si->node_count++;
 
-	if (is_repetition(brd) || brd->fifty_move_counter >= 100) {
-		printf("repetition....");
-		print_compressed_board(brd);
-		printf("\n");	
+	if ((is_repetition(brd) || brd->fifty_move_counter >= 100)
+				&& brd->ply ==0){
 		return 0;
 	}
 
 	if (brd->ply > MAX_SEARCH_DEPTH - 1) {
-		printf("MAX_DEPTH....");
-		print_compressed_board(brd);
-		printf("\n");	
-
 		return evaluate_position(brd);
 	}
 
@@ -165,72 +159,70 @@ static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 
 	generate_all_moves(brd, &mv_list);
 
-	//printf("AB - #moves generated %d :: ", mv_list.move_count);
-	//print_compressed_board(brd);
-	//printf("\n");
-	 
-	
-
 	U16 num_legal_moves = 0;
-	I32 old_alpha = alpha;
+	I32 orig_alpha = alpha;
 	mv_bitmap best_move = NO_MOVE;
 	I32 score = -INFINITE;
 
+	for (U16 i = 0; i < mv_list.move_count; i++) {
 
-	for (U16 mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
-		mv_bitmap mv = mv_list.moves[mv_num].move_bitmap;
+		mv_bitmap mv = mv_list.moves[i].move_bitmap;
+
 		if (!make_move(brd, mv)) {
-			printf("Move illegal....%s\n", print_move(mv));
+			// invalid move
 			continue;
 		}
 
 		num_legal_moves++;
-				
-		score = -alpha_beta(-beta, -alpha, (U8)(depth - 1), brd, si, mv);
 
-		/*printf("depth %d, move %s, score %d, alpha %d beta %d\n", depth, 
-							print_move(mv), score, alpha, beta); 
-*/
+		// swap alpha/beta
+		score =
+		    -alpha_beta(-beta, -alpha, (U8)(depth - 1), brd, si);
+
+		// revert move
 		take_move(brd);
 
 		if (score > alpha) {
 			if (score >= beta) {
+				// a beta cut-off
 				if (num_legal_moves == 1) {
 					si->fail_high_first++;
 				}
 				si->fail_high++;
-
-				printf("Returning BETA for move %s, score %d depth %d alpha %d beta %d\n", 
-							print_move(mv), score, depth, alpha, beta);
 				return beta;
 			}
-			alpha = score;
 
-			best_move = mv_list.moves[mv_num].move_bitmap;
+			alpha = score;
+			best_move = mv;
 		}
 	}
 
 	if (num_legal_moves == 0) {
-		enum piece king = B_KING;
+		// no legal moves, so find out where king is, and see if it's being attacked
+		enum piece king;
 		if (brd->side_to_move == WHITE) {
 			king = W_KING;
+		} else {
+			king = B_KING;
 		}
 
 		U64 bb_king = brd->bitboards[king];
-
 		enum square king_sq = pop_1st_bit(&bb_king);
-		if (is_sq_attacked(brd, king_sq, FLIP_SIDE(brd->side_to_move))) {
+
+		enum colour opp_side = GET_OPPOSITE_SIDE(brd->side_to_move);
+
+		if (is_sq_attacked(brd, king_sq, opp_side)) {
+			// no legal moves AND we're in mate, implied checkmate
 			return (-MATE + brd->ply);
 		} else {
-			printf("Returning 0...no legal moves depth %d\n", depth);
-
+			// stalemate and draw
 			return 0;
 		}
 	}
 
-	if (alpha != old_alpha) {
-		printf("Adding move %s to PVTable, alpha %d, old_alpha %d\n", print_move(best_move), alpha, old_alpha);
-		add_move(brd->pvtable, brd->board_hash, best_move);
+	if (alpha != orig_alpha) {
+		// alpha is improved....better move
+		add_move_to_pv_table(brd->pvtable, brd->board_hash, best_move);
 	}
 
 	return alpha;

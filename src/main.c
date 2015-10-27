@@ -41,20 +41,15 @@ int main(int argc, char **argv)
 	if (argc > 0) {
 		printf("%d", **argv);
 	}
-	
+
 	// set process pri and cpu affinity for max performance
 	set_priority_and_affinity();
 
-	struct board *brd = init_game(SAMPLE_POSITION);
+	struct board *brd = init_game(STARTING_FEN);
 	print_board(brd);
 
 	struct search_info si[1];
 
-			si->depth = 2;
-			search_positions(brd, si);
-				
-
-/*
 	char input[6];
 	mv_bitmap move = NO_MOVE;
 	while (true) {
@@ -68,9 +63,9 @@ int main(int argc, char **argv)
 		} else if (input[0] == 't') {
 			take_move(brd);
 		} else if (input[0] == 's'){
-			si->depth = 4;
+			si->depth = 6;
 			search_positions(brd, si);
-				
+
 		} else {
 			move = parse_move(input, brd);
 			if (move != NO_MOVE) {
@@ -85,6 +80,6 @@ int main(int argc, char **argv)
 
 		fflush(stdin);
 	}
-*/
+
 	return 0;
 }

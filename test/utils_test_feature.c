@@ -112,14 +112,13 @@ void test_clear_LSB(void)
 
 void test_flip_side()
 {
-
-	enum colour fs = FLIP_SIDE(WHITE);
+	enum colour fs = GET_OPPOSITE_SIDE(WHITE);
 	assert_true(fs == BLACK);
 
-	fs = FLIP_SIDE(fs);
+	fs = GET_OPPOSITE_SIDE(fs);
 	assert_true(fs == WHITE);
 
-	fs = FLIP_SIDE(fs);
+	fs = GET_OPPOSITE_SIDE(fs);
 	assert_true(fs == BLACK);
 }
 
@@ -128,21 +127,25 @@ void test_flip_side()
 void test_pv_table(){
 
 	struct pv_table *table = create_pv_table();
-	
+
+	U64 start = (NUM_PV_ENTRIES / 2);
+
 	// add a multiple of the table size to force key collisions
-	for (U64 i = 0; i < (4 * NUM_PV_ENTRIES); i++){
-		add_move(table, i, (U32)((i + 1)));
+	for (U64 i = start; i < (3 * NUM_PV_ENTRIES); i++){
+		add_move_to_pv_table(table, i, (U32)((i + 12345)));
 	}
-	
+
 	// now verify all additions
-	for (U64 i = 0; i < (4 * NUM_PV_ENTRIES); i++){
+	for (U64 i = start; i < (3 * NUM_PV_ENTRIES); i++){
 		mv_bitmap mv = find_move(table, i);
-		
-		assert_true(mv == (i + 1));
+
+		assert_true(mv == (i + 12345));
 	}
-	
+
+	dump_pv_table_stats(table);
+
 	dispose_table(table);
-	
+
 }
 
 
@@ -163,8 +166,3 @@ void utils_test_fixture(void)
 
 	test_fixture_end();
 }
-
-
-
-
-

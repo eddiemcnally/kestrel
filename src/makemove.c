@@ -1,13 +1,13 @@
 /*
  * makemove.c
- * 
+ *
  * ---------------------------------------------------------------------
  * DESCRIPTION: code associated with making and retracting moves
  * on the board.
  * ---------------------------------------------------------------------
- * 
- * 
- * 
+ *
+ *
+ *
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
  * kestrel is free software: you can redistribute it and/or modify it
@@ -63,12 +63,12 @@ inline void move_piece(struct board *brd, enum square from, enum square to)
 	update_piece_hash(brd, pce, from);
 	brd->pieces[from] = NO_PIECE;
 	clear_bit(&brd->bitboards[pce], from);
-	
+
 	// set up the "to" resources
 	update_piece_hash(brd, pce, to);
 	brd->pieces[to] = pce;
 	set_bit(&brd->bitboards[pce], to);
-	
+
 	// only need to update whichever colour has moved
 	if (pce_col == WHITE){
 		// only need to update individual bits
@@ -78,7 +78,7 @@ inline void move_piece(struct board *brd, enum square from, enum square to)
 		clear_bit(&brd->colour_bb[BLACK], from);
 		set_bit(&brd->colour_bb[BLACK], to);
 	}
-	
+
 	brd->board = brd->colour_bb[WHITE] | brd->colour_bb[BLACK];
 
 	//ASSERT_BOARD_OK(brd);
@@ -180,7 +180,7 @@ bool make_move(struct board *brd, mv_bitmap mv)
 	enum square king_sq = pop_1st_bit(&bb_king);
 
 	// flip side
-	brd->side_to_move = FLIP_SIDE(brd->side_to_move);
+	brd->side_to_move = GET_OPPOSITE_SIDE(brd->side_to_move);
 	update_side_hash(brd);
 
 	// side is already flipped above, so use that as the attacking side
@@ -222,7 +222,7 @@ inline void take_move(struct board *brd)
 	update_castle_hash(brd);
 
 	// flip side
-	brd->side_to_move = FLIP_SIDE(brd->side_to_move);
+	brd->side_to_move = GET_OPPOSITE_SIDE(brd->side_to_move);
 	update_side_hash(brd);
 
 	if (MFLAG_EN_PASSANT & mv) {
@@ -279,7 +279,7 @@ void add_piece_to_board(struct board *brd, enum piece pce, enum square sq)
 	brd->pieces[sq] = pce;
 	brd->material[col] += get_piece_value(pce);
 /*
-	printf("added piece to board %c, value %d, total %d\n", 
+	printf("added piece to board %c, value %d, total %d\n",
 				get_piece_label(pce),
 				get_piece_value(pce),
 				brd->material[col]);
@@ -309,7 +309,7 @@ inline void remove_piece_from_board(struct board *brd, enum square sq)
 
 	brd->material[col] -= get_piece_value(pce);
 /*
-	printf("removed piece from board %c, value %d, total %d\n", 
+	printf("removed piece from board %c, value %d, total %d\n",
 				get_piece_label(pce),
 				get_piece_value(pce),
 				brd->material[col]);

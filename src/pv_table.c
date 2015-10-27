@@ -1,11 +1,11 @@
 /*
  * pv_table.c
- * 
+ *
  * ---------------------------------------------------------------------
  * DESCRIPTION: Maintains a hashtable of principle variation moves.
  * The hashtable is implemented as an array of linked lists.
- * --------------------------------------------------------------------- 
- * 
+ * ---------------------------------------------------------------------
+ *
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
  * kestrel is free software: you can redistribute it and/or modify it
@@ -35,11 +35,11 @@ static void init_pv_entry(struct pv_entry *entry);
 static U64 get_index(const U64 board_hash);
 
 /* Create and initialise a PV Table
- * 
+ *
  * name: create_pv_table
  * @param
  * @return
- * 
+ *
  */
 
 struct pv_table *create_pv_table(void)
@@ -56,7 +56,43 @@ struct pv_table *create_pv_table(void)
 	return retval;
 }
 
-void add_move(const struct pv_table *table, const U64 board_hash,
+// dumps stats for the pv_table
+void dump_pv_table_stats(const struct pv_table *table){
+	printf("pv_table stats : \n");
+
+	int num_empty = 0;
+	int num_non_empty = 0;
+	int num_items = 0;
+
+	for(int i = 0; i < NUM_PV_ENTRIES; i++){
+
+		struct pv_entry *entry = &table->entries[i];
+		if (entry->move != NO_MOVE){
+			num_non_empty++;
+			num_items++;
+
+			// count keys at this offset
+			int num_keys = 1;
+
+			while (entry->next != NULL) {
+				entry = entry->next;
+				num_keys++;
+				num_items++;
+			}
+			//printf("\tindex %d \t : %d\n", i, num_keys);
+		} else {
+			num_empty++;
+		}
+	}
+	printf("\tnum_empty = %d\n", num_empty);
+	printf("\tnum_non_empty = %d\n", num_non_empty);
+	printf("\tnum_items = %d\n", num_items);
+
+}
+
+
+
+void add_move_to_pv_table(const struct pv_table *table, const U64 board_hash,
 	      const mv_bitmap move)
 {
 	U64 index = get_index(board_hash);
@@ -68,6 +104,7 @@ void add_move(const struct pv_table *table, const U64 board_hash,
 		entry->move = move;
 		entry->hashkey = board_hash;
 	} else {
+		//printf("pv_table key collision..board_hash 0x%016llx....index 0x%016llx\n", board_hash, index);
 		// key collision
 		// create new pv_entry and add to list
 		struct pv_entry *new = get_empty_entry();
@@ -75,10 +112,8 @@ void add_move(const struct pv_table *table, const U64 board_hash,
 		new->move = move;
 		new->hashkey = board_hash;
 
-		// append to end of linked list
-		while (entry->next != NULL) {
-			entry = entry->next;
-		}
+		// add to start of list
+		new->next = entry->next;
 		entry->next = new;
 	}
 }
@@ -135,9 +170,9 @@ void dispose_table(struct pv_table *table)
 	free(table);
 }
 
-inline U8 get_pv_line(const struct pv_table *table, struct board *brd,
+inline U8 populate_pv_line(const struct pv_table *table, struct board *brd,
 		      const U8 depth)
-{	
+{
 	mv_bitmap move = find_move(table, brd->board_hash);
 
 	U8 count = 0;
@@ -148,10 +183,11 @@ inline U8 get_pv_line(const struct pv_table *table, struct board *brd,
 		move = find_move(table, brd->board_hash);
 	}
 
+	// revert the moves
 	while (brd->ply > 0) {
 		take_move(brd);
 	}
-	
+
 	return count;
 }
 

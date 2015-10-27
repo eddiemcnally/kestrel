@@ -239,8 +239,8 @@ void test_move_gen_depth()
 
 	U64 total_move_time = 0;
 	U64 start_time, elapsed;
-	
-	int depth = 5;
+
+	int depth = 4;
 	U64 total_nodes = 0;
 
 	for (int i = 0; i < NUM_EPD; i++) {
@@ -248,14 +248,14 @@ void test_move_gen_depth()
 
 		printf("Analysing FEN : '%s'\n", e.fen);
 		struct board *brd = init_game(e.fen);
-	
+
 		start_time = get_time_in_millis();
 
 		////////////
 		leafNodes = 0;
 		perf_test(depth, brd);
 
-		assert_true(leafNodes == e.depth5);
+		assert_true(leafNodes == e.depth4);
 		total_nodes += leafNodes;
 		free(brd);
 		//////////
@@ -263,7 +263,7 @@ void test_move_gen_depth()
 		elapsed = get_elapsed_time_in_millis(start_time);
 		total_move_time += elapsed;
 	}
-	
+
 	double moves_per_sec = ((double)total_nodes / ((double)total_move_time / 1000));
 	printf("Total node count : %llu\n", total_nodes);
 	printf("#moves/sec : %f\n", moves_per_sec);

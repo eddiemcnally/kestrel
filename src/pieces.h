@@ -25,7 +25,7 @@
 #define IS_WHITE(piece)			(piece <= W_KING)
 #define IS_BLACK(piece)			(IS_WHITE(piece) == false)
 
-#define FLIP_SIDE(side)			(side ^ 1)
+#define GET_OPPOSITE_SIDE(side)	(side ^ 1)
 
 #define	GET_COLOUR(piece)		(IS_WHITE(piece) ? WHITE : BLACK )
 
