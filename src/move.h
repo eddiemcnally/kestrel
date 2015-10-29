@@ -69,6 +69,8 @@ mv_bitmap MOVE(enum square from, enum square to, enum piece capture,
 U8 pop_1st_bit(U64 * bb);
 U64 reverse_bits(U64 word);
 enum piece get_piece_at_square(const struct board *the_board, enum square sq);
+void init_mvv_lva_scores(void);
+
 
 void TEST_generate_white_pawn_moves(const struct board *brd,
 				    struct move_list *mvl);

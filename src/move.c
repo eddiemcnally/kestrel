@@ -1,13 +1,13 @@
 /*
  * move.c
- * 
+ *
  * ---------------------------------------------------------------------
  * DESCRIPTION: code to generate valid moves from a given board
  * position.
  * ---------------------------------------------------------------------
- * 
- * 
- * 
+ *
+ *
+ *
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
  * kestrel is free software: you can redistribute it and/or modify it
@@ -22,7 +22,7 @@
  *
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -64,7 +64,7 @@ static void generate_knight_piece_moves(const struct board *brd,
 					       enum piece knight,
 					       enum colour opposite_col);
 static inline void generate_king_moves(const struct board *brd,
-				       struct move_list *mvl, enum piece pce, 
+				       struct move_list *mvl, enum piece pce,
 				       enum colour col, enum colour opposite_col);
 static void generate_black_castle_moves(const struct board *brd,
 					struct move_list *mvl);
@@ -250,6 +250,42 @@ static const unsigned char BitReverseTable256[256] =
 };
 
 
+// -------------------------------
+// define lookup array for MMM LVA
+//
+// indexed by "enum piece"
+static const U16 victim_score[NUM_PIECES] = {
+	100,	// W_PAWN
+	400,	// W_ROOK
+	200,	// W_KNIGHT
+	300,	// W_BISHOP
+	500,	// W_QUEEN
+	600,	// W_KING
+	100,	// B_PAWN
+	400,	// B_ROOK
+	200,	// B_KNIGHT
+	300,	// B_BISHOP
+	500,	// B_QUEEN
+	600		// B_KING
+};
+
+//                      [victim]    [attacker]
+static U32 mvv_lva_score[NUM_PIECES][NUM_PIECES];
+
+////////////////////////////////////////////////
+
+
+
+void init_mvv_lva_scores(void){
+	for(U8 attacker = W_PAWN; attacker <= B_KING; attacker++) {
+		for(U8 victim = W_PAWN; victim <= B_KING; victim++) {
+			mvv_lva_score[victim][attacker] = (U32)(victim_score[victim]
+								+ 6 - ( victim_score[attacker] / 100));
+		}
+	}
+}
+
+
 
 
 
@@ -363,6 +399,10 @@ add_move(mv_bitmap move_bitmap, struct move_list *mvlist)
 	mvlist->moves[mvlist->move_count].move_bitmap = move_bitmap;
 	mvlist->moves[mvlist->move_count].score = 0;
 	mvlist->move_count++;
+
+
+
+
 }
 
 static inline void add_pawn_capture_move(enum colour col, enum square from,
@@ -484,7 +524,7 @@ static inline void generate_knight_piece_moves(const struct board *brd,
  *
  */
 static inline void generate_king_moves(const struct board *brd,
-				       struct move_list *mvl, enum piece pce, 
+				       struct move_list *mvl, enum piece pce,
 				       enum colour col, enum colour opposite_col)
 {
 	// get the bitboard representing the king
@@ -913,7 +953,7 @@ generate_sliding_diagonal_moves(const struct board *brd,
  * name: pop_1st_bit
  * @param	ptr to U64
  * @return	index of bit cleared.
- * 
+ *
  * uses gcc built-in function (see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html)
  *
  */
@@ -1100,7 +1140,7 @@ TEST_generate_knight_piece_moves(const struct board *brd,
 		generate_knight_piece_moves(brd, mvl, W_KNIGHT, BLACK);
 	else
 		generate_knight_piece_moves(brd, mvl, B_KNIGHT, WHITE);
-	
+
 }
 
 void
@@ -1108,16 +1148,16 @@ TEST_generate_king_moves(const struct board *brd, struct move_list *mvl,
 			 enum colour col)
 {
 	enum piece pce;
-	enum colour opposite_col; 
+	enum colour opposite_col;
 	if (col == WHITE){
 		pce = W_KING;
 		opposite_col = BLACK;
 	} else {
-	
+
 		pce = B_KING;
 		opposite_col = WHITE;
 	}
-	
+
 	generate_king_moves(brd, mvl, pce, col, opposite_col);
 }
 

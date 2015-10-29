@@ -176,15 +176,14 @@ static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 		num_legal_moves++;
 
 		// swap alpha/beta
-		score =
-		    -alpha_beta(-beta, -alpha, (U8)(depth - 1), brd, si);
+		score = -alpha_beta(-beta, -alpha, (U8)(depth - 1), brd, si);
 
 		// revert move
 		take_move(brd);
 
 		if (score > alpha) {
 			if (score >= beta) {
-				// a beta cut-off
+				// a beta cut-off, so can stop searching
 				if (num_legal_moves == 1) {
 					si->fail_high_first++;
 				}
@@ -192,6 +191,7 @@ static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 				return beta;
 			}
 
+			// improved alpha, so save move
 			alpha = score;
 			best_move = mv;
 		}
@@ -212,7 +212,7 @@ static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 		enum colour opp_side = GET_OPPOSITE_SIDE(brd->side_to_move);
 
 		if (is_sq_attacked(brd, king_sq, opp_side)) {
-			// no legal moves AND we're in mate, implied checkmate
+			// no legal moves AND we're in mate, implies checkmate
 			return (-MATE + brd->ply);
 		} else {
 			// stalemate and draw

@@ -1,12 +1,12 @@
 /*
  * init.c
- * 
+ *
  * ---------------------------------------------------------------------
  * DESCRIPTION: code to init a board from a FEN string
  * ---------------------------------------------------------------------
- * 
- * 
- * 
+ *
+ *
+ *
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
  * kestrel is free software: you can redistribute it and/or modify it
@@ -27,6 +27,7 @@
 #include <stdbool.h>
 #include "types.h"
 #include "board.h"
+#include "move.h"
 #include "hashkeys.h"
 #include "init.h"
 #include "board_utils.h"
@@ -34,6 +35,8 @@
 struct board *init_game(char *fen)
 {
 	init_hash_keys();
+	init_mvv_lva_scores();
+
 	struct board *brd = init_board(fen);
 
 	ASSERT_BOARD_OK(brd);
