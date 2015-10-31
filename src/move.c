@@ -251,7 +251,7 @@ static const unsigned char BitReverseTable256[256] =
 
 
 // -------------------------------
-// define lookup array for MMM LVA
+// define lookup array for MVV LVA
 //
 // indexed by "enum piece"
 static const U16 victim_score[NUM_PIECES] = {
@@ -675,9 +675,8 @@ generate_white_pawn_moves(const struct board *brd, struct move_list *mvl)
 				bool sq_2_occupied =
 				    IS_SQUARE_OCCUPIED(brd->board, next_sq_2);
 				if (sq_2_occupied == false) {
-					mv_bitmap mv = MOVE(pawn_sq, next_sq_2,
-							NO_PIECE, NO_PIECE,
-							MFLAG_PAWN_START);
+					mv_bitmap mv = MOVE(pawn_sq, next_sq_2, NO_PIECE,
+								NO_PIECE, MFLAG_PAWN_START);
 
 					add_move(mv, mvl, 0);
 				}
@@ -691,13 +690,12 @@ generate_white_pawn_moves(const struct board *brd, struct move_list *mvl)
 			enum piece pce = get_piece_at_square(brd, cap_sq);
 
 			if ((pce != NO_PIECE) && (IS_BLACK(pce))) {
-				add_pawn_capture_move(WHITE, pawn_sq, cap_sq,
-						      pce, mvl);
+				add_pawn_capture_move(WHITE, pawn_sq, cap_sq, pce, mvl);
 			}
 
 			if (cap_sq == brd->en_passant) {
-				mv_bitmap mv = MOVE(pawn_sq, cap_sq, pce,
-						  NO_PIECE, MFLAG_EN_PASSANT);
+				mv_bitmap mv = MOVE(pawn_sq, cap_sq, pce, NO_PIECE,
+													MFLAG_EN_PASSANT);
 				// the score is the same regardless of pxP or Pxp
 				add_move(mv, mvl, mvv_lva_score[W_PAWN][B_PAWN]);
 			}

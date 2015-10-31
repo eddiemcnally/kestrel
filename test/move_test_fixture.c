@@ -1040,22 +1040,21 @@ void move_test_fixture(void)
 {
 	test_fixture_start();	// starts a fixture
 
-	//run_test(test_generation_white_pawn_moves);
-	//run_test(test_generation_black_pawn_moves);
-	//run_test(test_generation_white_knight_pawn_moves);
-	//run_test(test_generation_black_knight_pawn_moves);
-	//run_test(test_generation_king_moves);
-	//run_test(test_king_castling_moves);
-	//run_test(test_en_passant);
-	//run_test(test_generation_sliding_horizontal_and_vertical_moves);
-	//run_test(test_generation_sliding_diagonal_moves);
-	//run_test(test_generation_queen_moves);
-	//run_test(test_sample_board_position);
-	//run_test(test_clear_piece);
-	//run_test(test_add_piece);
-	//run_test(test_move_piece);
-	//run_test(test_make_move_take_move);
-
+	run_test(test_generation_white_pawn_moves);
+	run_test(test_generation_black_pawn_moves);
+	run_test(test_generation_white_knight_pawn_moves);
+	run_test(test_generation_black_knight_pawn_moves);
+	run_test(test_generation_king_moves);
+	run_test(test_king_castling_moves);
+	run_test(test_en_passant);
+	run_test(test_generation_sliding_horizontal_and_vertical_moves);
+	run_test(test_generation_sliding_diagonal_moves);
+	run_test(test_generation_queen_moves);
+	run_test(test_sample_board_position);
+	run_test(test_clear_piece);
+	run_test(test_add_piece);
+	run_test(test_move_piece);
+	run_test(test_make_move_take_move);
 	run_test(test_move_scores);
 
 	test_fixture_end();	// ends a fixture
