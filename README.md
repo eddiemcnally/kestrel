@@ -10,7 +10,6 @@ The ./src directory contains the main source code for the engine.
 The ./debug directory contains some Python 3 code that was developed to help parse and analyse log files when debugging move generation.
 
 
-
 Some implementation notes:
 * At a very high level, I am using BlueFever Software as a guide to the implementation steps. There are video tutorials on YouTube.
 * The engine makes heavy use of bitboards (64bit 'unsigned long long int' to represent the board). Using bitboards allows for using pre-generated lookup bitmasks ("occupancy masks") to identify potential attacking squares for any piece on the board.
