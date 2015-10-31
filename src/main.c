@@ -34,7 +34,7 @@
 #include "move.h"
 
 // sample game position
-#define SAMPLE_POSITION 	"2rr3k/pp3pp1/1nnqbN1p/3pN3/2pP4/2P3Q1/PPB4P/R4RK1 w - -"
+#define SAMPLE_POSITION 	"r1b1k2r/ppppnppp/2n2q2/2b5/3NP3/2P1B3/PP3PPP/RN1QKB1R w KQkq - 0 1"
 
 int main(int argc, char **argv)
 {
@@ -45,7 +45,7 @@ int main(int argc, char **argv)
 	// set process pri and cpu affinity for max performance
 	set_priority_and_affinity();
 
-	struct board *brd = init_game(STARTING_FEN);
+	struct board *brd = init_game(SAMPLE_POSITION);
 	print_board(brd);
 
 	struct search_info si[1];
