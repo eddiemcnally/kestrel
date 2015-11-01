@@ -1,6 +1,3 @@
-- parse EPD file and add perft.epd to unit tests
-- look at changing unit test framework for 'check' or something more extensive
-- set up #define's to exclude some debug code from a release build
 - rename 'struct board' to 'struct position' (to reflect better on its function
 - move to using CMake instead of make
 - 
