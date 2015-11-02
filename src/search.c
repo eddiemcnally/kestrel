@@ -41,7 +41,7 @@ static void reset_search_history(struct board *brd, struct search_info *si);
 static I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 		      struct search_info *si);
 bool is_repetition(const struct board *brd);
-static void find_best_move(U64 current_move_index, struct move_list *mvlist);
+//static void find_best_move(U64 current_move_index, struct move_list *mvlist);
 
 // checks to see if most recent move is a repetition
 inline bool is_repetition(const struct board *brd)
@@ -129,7 +129,7 @@ static void reset_search_history(struct board *brd, struct search_info *si)
 
 }
 
-
+/*
 static void find_best_move(U64 current_move_index, struct move_list *mvl){
 	U32 best_score = 0;
 	U64 best_index = 0;
@@ -149,7 +149,7 @@ static void find_best_move(U64 current_move_index, struct move_list *mvl){
 	mvl->moves[best_index] = temp;
 
 }
-
+*/
 
 static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 			     struct search_info *si)
@@ -189,7 +189,8 @@ static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 
 	for (U16 i = 0; i < mv_list.move_count; i++) {
 
-		find_best_move(i, &mv_list);
+		// EDDIE - debug remove for now
+		//find_best_move(i, &mv_list);
 
 		mv_bitmap mv = mv_list.moves[i].move_bitmap;
 
@@ -205,6 +206,9 @@ static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 
 		// revert move
 		take_move(brd);
+
+		printf("depth %d move %s AB_score %d\n", depth, print_move(mv), score);
+
 
 		if (score > alpha) {
 			if (score >= beta) {

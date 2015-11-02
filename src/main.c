@@ -50,6 +50,26 @@ int main(int argc, char **argv)
 
 	struct search_info si[1];
 
+////////////// debug /////////////////
+//	struct move_list mv_list = {
+//		.moves = {{0, 0}},
+//		.move_count = 0
+//	};
+
+//	generate_all_moves(brd, &mv_list);
+
+//	for (U16 i = 0; i < mv_list.move_count; i++) {
+//		printf("move %s\n", print_move(mv_list.moves[i].move_bitmap));
+//	}
+//	return 0;
+
+
+	si->depth = 4;
+	search_positions(brd, si);
+	if (si->depth >= 4)
+		return 0;
+/////////////////////////////////////////////
+
 	char input[6];
 	mv_bitmap move = NO_MOVE;
 	while (true) {
@@ -63,7 +83,7 @@ int main(int argc, char **argv)
 		} else if (input[0] == 't') {
 			take_move(brd);
 		} else if (input[0] == 's'){
-			si->depth = 6;
+			si->depth = 3;
 			search_positions(brd, si);
 
 		} else {
