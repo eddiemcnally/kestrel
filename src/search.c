@@ -24,6 +24,7 @@
  */
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <stdbool.h>
 #include "types.h"
 #include "search.h"
@@ -158,6 +159,7 @@ static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 	   print_compressed_board(brd);
 	   printf("\n");
 	 */
+	 enum square tosq;
 
 	if (depth == 0) {
 		si->node_count++;
@@ -168,6 +170,21 @@ static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 
 	if ((is_repetition(brd) || brd->fifty_move_counter >= 100)
 				&& brd->ply ==0){
+		
+		
+		// eddie debug
+		if ((depth == 1) && is_repetition(brd)){
+			printf("depth 1 repetition\n");
+		}
+		if ((depth == 1) && (brd->fifty_move_counter >= 100)){
+			printf("depth 1 100 move\n");
+		}
+		if ((depth == 1) && (brd->ply==0)){
+			printf("depth 1 ply=0\n");
+		}
+					
+					
+					
 		return 0;
 	}
 
@@ -175,26 +192,34 @@ static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 		return evaluate_position(brd);
 	}
 
-	struct move_list mv_list = {
-		.moves = {{0, 0}},
-		.move_count = 0
-	};
+	struct move_list mv_list[1];
+	memset(&mv_list[0], 0, sizeof(struct move_list));
 
-	generate_all_moves(brd, &mv_list);
+
+	generate_all_moves(brd, mv_list);
 
 	U16 num_legal_moves = 0;
 	I32 orig_alpha = alpha;
 	mv_bitmap best_move = NO_MOVE;
 	I32 score = -INFINITE;
 
-	for (U16 i = 0; i < mv_list.move_count; i++) {
+	for (U16 i = 0; i < mv_list->move_count; i++) {
 
 		// EDDIE - debug remove for now
 		//find_best_move(i, &mv_list);
 
-		mv_bitmap mv = mv_list.moves[i].move_bitmap;
+		mv_bitmap mv = mv_list->moves[i].move_bitmap;
 
 		if (!make_move(brd, mv)) {
+			// eddie debug
+			tosq = TOSQ(mv);
+			if ((tosq == a3) && (FROMSQ(mv) == a1) && (depth ==1)){
+				printf("depth 1 a1a3 invalid move....move = %s\n", print_move(mv));
+				print_board(brd);
+			}
+
+
+
 			// invalid move
 			continue;
 		}
@@ -211,7 +236,25 @@ static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 
 
 		if (score > alpha) {
+			// eddie debug
+			tosq = TOSQ(mv);
+			if ((tosq == a3) && (FROMSQ(mv) == a1) && (depth ==1)){
+				printf("depth 1 a1a3 score %d > alpha %d\n", score, alpha);
+		
+			}
+
+
 			if (score >= beta) {
+				// eddie debug
+				tosq = TOSQ(mv);
+				if ((tosq == a3) && (FROMSQ(mv) == a1) && (depth ==1)){
+					printf("depth 1 a1a3 score %d >= beta %d\n", score, beta);
+		
+				}
+
+
+
+
 				// a beta cut-off, so can stop searching
 				if (num_legal_moves == 1) {
 					si->fail_high_first++;
@@ -227,6 +270,7 @@ static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 	}
 
 	if (num_legal_moves == 0) {
+		
 		// no legal moves, so find out where king is, and see if it's being attacked
 		enum piece king;
 		if (brd->side_to_move == WHITE) {
@@ -245,6 +289,10 @@ static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 			return (-MATE + brd->ply);
 		} else {
 			// stalemate and draw
+			
+			printf("stalemate!!!!!!\n");
+		
+			
 			return 0;
 		}
 	}
