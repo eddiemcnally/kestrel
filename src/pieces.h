@@ -22,8 +22,8 @@
 #include <stdbool.h>
 #include "types.h"
 
-#define IS_WHITE(piece)			(piece <= W_KING)
-#define IS_BLACK(piece)			(IS_WHITE(piece) == false)
+#define IS_WHITE(piece)			((piece <= W_KING) && (piece >= W_PAWN))
+#define IS_BLACK(piece)			((piece <= B_KING) && (piece >= B_PAWN))
 
 #define GET_OPPOSITE_SIDE(side)	(side ^ 1)
 

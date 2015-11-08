@@ -412,6 +412,8 @@ static inline void add_pawn_capture_move(enum colour col, enum square from,
 					 enum square to, enum piece capture,
 					 struct move_list *mvl)
 {
+	assert(capture != NO_PIECE);
+	
 	if (col == WHITE) {
 		U32 score = mvv_lva_score[capture][W_PAWN];
 		if (GET_RANK(from) == RANK_7) {
@@ -423,8 +425,8 @@ static inline void add_pawn_capture_move(enum colour col, enum square from,
 		} else {
 			add_move(MOVE(from, to, capture, NO_PIECE, 0), mvl, score);
 		}
-	} else {
-		U32 score = mvv_lva_score[capture][W_PAWN];
+	} else if (col == BLACK){
+		U32 score = mvv_lva_score[capture][B_PAWN];
 		if (GET_RANK(from) == RANK_2) {
 			// pawn can promote to 4 pieces
 			add_move(MOVE(from, to, capture, B_QUEEN, 0), mvl, score);
@@ -434,6 +436,8 @@ static inline void add_pawn_capture_move(enum colour col, enum square from,
 		} else {
 			add_move(MOVE(from, to, capture, NO_PIECE, 0), mvl, score);
 		}
+	} else {
+		assert(false);
 	}
 }
 
@@ -450,7 +454,7 @@ static inline void add_pawn_move(enum colour col, enum square from,
 		} else {
 			add_move(MOVE(from, to, NO_PIECE, NO_PIECE, 0), mvl, 0);
 		}
-	} else {
+	} else if (col == BLACK){
 		if (GET_RANK(from) == RANK_2) {
 			// pawn can promote to 4 pieces
 			add_move(MOVE(from, to, NO_PIECE, B_QUEEN, 0), mvl, 0);
@@ -460,6 +464,8 @@ static inline void add_pawn_move(enum colour col, enum square from,
 		} else {
 			add_move(MOVE(from, to, NO_PIECE, NO_PIECE, 0), mvl, 0);
 		}
+	} else {
+		assert(false);
 	}
 }
 

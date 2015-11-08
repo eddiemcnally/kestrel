@@ -142,7 +142,7 @@ void test_pv_table(){
 		assert_true(mv == (i + 12345));
 	}
 
-	dump_pv_table_stats(table);
+	//dump_pv_table_stats(table);
 
 	dispose_table(table);
 

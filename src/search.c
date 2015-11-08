@@ -97,7 +97,7 @@ void search_positions(struct board *brd, struct search_info *si)
 		/////////////////////////////////////
 	}
 
-	dump_pv_table_stats(brd->pvtable);
+	//dump_pv_table_stats(brd->pvtable);
 
 }
 

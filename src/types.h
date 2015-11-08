@@ -85,11 +85,11 @@ enum piece {
 	B_KNIGHT = 8,
 	B_BISHOP = 9,
 	B_QUEEN = 10,
-	B_KING = 11,
-	NUM_PIECES = 12,
-	NO_PIECE = 13,
-	PIECE_ENUM_SIZE = 14
+	B_KING = 11
 };
+#define NO_PIECE	0x0F
+#define NUM_PIECES	12
+
 
 #define IS_VALID_PIECE(pce)		((pce >= W_PAWN) && (pce <= B_KING))
 

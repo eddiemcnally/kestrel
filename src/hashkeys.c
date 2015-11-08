@@ -38,13 +38,13 @@
 #include "hashkeys.h"
 
 //----- hashkeys for positions
-// extra size is needed to handle the NO_PIECE value
-static U64 piece_keys[PIECE_ENUM_SIZE][NUM_SQUARES] = { {0} };
+static U64 piece_keys[NUM_PIECES][NUM_SQUARES] = { {0} };
 
 static U64 side_to_move_key = 0;
 // 16 combinations because of 4 bits being used for castle enum
 static U64 castle_keys[16] = { 0 };
 
+static U64 en_passant_keys[NUM_SQUARES] = { 0 };
 //-----
 
 /*
@@ -56,7 +56,7 @@ static U64 castle_keys[16] = { 0 };
  */
 void init_hash_keys()
 {
-	for (int pce = 0; pce < PIECE_ENUM_SIZE; pce++) {
+	for (int pce = 0; pce < NUM_PIECES; pce++) {
 		for (int sq = 0; sq < NUM_SQUARES; sq++) {
 			piece_keys[pce][sq] = generate_rand64();
 		}
@@ -66,6 +66,12 @@ void init_hash_keys()
 	for (int i = 0; i < 16; i++) {
 		castle_keys[i] = generate_rand64();
 	}
+	
+	for (int i = 0; i < NUM_SQUARES; i++) {
+		en_passant_keys[i] = generate_rand64();
+	}
+	
+	
 }
 
 /* Returns the castle hashkey for a given castle permission map
@@ -107,7 +113,7 @@ inline U64 get_piece_hash(enum piece pce, enum square sq)
 inline U64 get_en_passant_hash(enum square sq)
 {
 	//assert(sq != NO_SQUARE);
-	return piece_keys[NO_PIECE][sq];
+	return en_passant_keys[sq];
 }
 
 /*Given a board, return a positon hashkey
@@ -134,7 +140,7 @@ U64 get_position_hash(const struct board * brd)
 	}
 
 	if (brd->en_passant != NO_SQUARE) {
-		retval ^= get_piece_hash(NO_PIECE, brd->en_passant);
+		retval ^= get_en_passant_hash(brd->en_passant);
 	}
 
 	retval ^= get_castle_hash(brd->castle_perm);
