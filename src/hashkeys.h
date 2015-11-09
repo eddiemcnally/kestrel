@@ -17,7 +17,7 @@
  */
 #ifndef _HASHKEYS_H_
 #define _HASHKEYS_H_
-
+ 
 void init_hash_keys(void);
 U64 get_position_hash(const struct board *brd);
 U64 get_castle_hash(U8 castle_map);
