@@ -87,7 +87,6 @@ MoveList Total 26 Moves:
 	struct move_list *mvl = TEST_get_empty_move_list();
 	TEST_generate_white_pawn_moves(brd, mvl);
 
-	// test
 	assert_true(mvl->move_count == 26);
 
 	mv_bitmap mv = MOVE(a2, a3, NO_PIECE, NO_PIECE, 0);

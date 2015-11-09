@@ -29,12 +29,12 @@ CFLAGS	=		-O3 -flto -std=c11 \
 				-Wmissing-include-dirs \
 				-Wpointer-arith \
 				-lubsan
-
+#
 # flags for profiling code
 #	CFLAGS	=	-O3 -pg -std=c11
 
 # more lax compiler options
-#	CFLAGS	=	-Wall -g -std=c11 -lubsan
+#	CFLAGS	=	-Wall -g -std=c11 -lubsan 
 
 # define any directories containing header files other than /usr/include
 #

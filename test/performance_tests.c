@@ -342,7 +342,7 @@ void divide_perft(int depth, struct board *brd)
 
 	//generate_all_moves(brd, &mv_list);
 
-	TEST_add_move(MOVE(b4, a3, NO_PIECE, NO_PIECE, MFLAG_PAWN_START),
+	TEST_add_quiet_move(MOVE(b4, a3, NO_PIECE, NO_PIECE, MFLAG_PAWN_START),
 			    &mv_list);
 
 	mv_bitmap mv;

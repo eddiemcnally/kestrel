@@ -57,6 +57,29 @@ enum colour {
  */
 typedef U32 mv_bitmap;
 
+//--- macros for setting the 'move' field in the MOVE struct
+#define FROMSQ(m) 		((m) & 0x7F)
+#define TOSQ(m) 		((m>>7) & 0x7F)
+#define CAPTURED(m) 	(((m)>>14) & 0xF)
+#define PROMOTED(m) 	(((m)>>20) & 0xF)
+
+// creates a bitmapped int for the move attributes
+// f -> from
+// t -> to
+// ca -> captured
+// pro -> promoted
+//
+
+#define MFLAG_EN_PASSANT 	0x0040000
+#define MFLAG_PAWN_START 	0x0080000
+#define MFLAG_CASTLE 		0x1000000
+#define MFLAG_NONE			0x0
+
+#define	IS_EN_PASS_MOVE(mv)	((mv & MFLAG_EN_PASSANT) != 0)
+
+
+#define NO_MOVE				0
+
 
 
 enum square {

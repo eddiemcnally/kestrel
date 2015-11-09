@@ -32,28 +32,6 @@ struct move_list {
 };
 
 
-//--- macros for setting the 'move' field in the MOVE struct
-#define FROMSQ(m) 		((m) & 0x7F)
-#define TOSQ(m) 		((m>>7) & 0x7F)
-#define CAPTURED(m) 	(((m)>>14) & 0xF)
-#define PROMOTED(m) 	(((m)>>20) & 0xF)
-
-// creates a bitmapped int for the move attributes
-// f -> from
-// t -> to
-// ca -> captured
-// pro -> promoted
-//
-
-#define MFLAG_EN_PASSANT 	0x0040000
-#define MFLAG_PAWN_START 	0x0080000
-#define MFLAG_CASTLE 		0x1000000
-
-#define	IS_EN_PASS_MOVE(mv)	((mv & MFLAG_EN_PASSANT) != 0)
-
-
-#define NO_MOVE				0
-
 //#define MFLAG_CAPTURED                0x007C000       // En Passant | Captures
 //#define MFLAG_PROMOTED                0x0F00000
 //---
@@ -93,7 +71,7 @@ void TEST_generate_queen_moves(const struct board *brd,
 			       struct move_list *mvl, enum piece pce);
 bool TEST_is_move_in_list(struct move_list *mvl, mv_bitmap mv);
 void TEST_add_en_passent_move(mv_bitmap move_bitmap, struct move_list *mvlist);
-void TEST_add_move(mv_bitmap move_bitmap, struct move_list *mvlist);
+void TEST_add_quiet_move(mv_bitmap move_bitmap, struct move_list *mvlist);
 U32 TEST_get_move_score(enum piece victim, enum piece attacker);
 struct move_list *TEST_get_empty_move_list(void);
 
