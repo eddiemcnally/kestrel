@@ -49,30 +49,31 @@ enum colour {
  * 0000 0000 0000 0000 0000 0000 0111 1111 -> From Square
  * 0000 0000 0000 0000 0011 1111 1000 0000 -> To Square
  * 0000 0000 0000 0011 1100 0000 0000 0000 -> Captured piece
- * 0000 0000 0000 0100 0000 0000 0000 0000 -> En passant move
- * 0000 0000 0000 1000 0000 0000 0000 0000 -> Pawn Start
- * 0000 0000 1111 0000 0000 0000 0000 0000 -> Promoted Piece
- * 0000 0001 0000 0000 0000 0000 0000 0000 -> Castle
+ * 0000 0000 0011 1100 0000 0000 0000 0000 -> Promoted Piece
+ * 0000 0000 0100 0000 0000 0000 0000 0000 -> Is En passant move
+ * 0000 0000 1000 0000 0000 0000 0000 0000 -> Is Pawn Start (1st pawn move)
+ * 0000 0001 0000 0000 0000 0000 0000 0000 -> Is Castle Move
  * XXXX XXX0 0000 0000 0000 0000 0000 0000 -> spare/unused
  */
 typedef U32 mv_bitmap;
 
+// bit mask offsets for the above bitmap
+#define MV_MASK_OFF_FROM_SQ			0
+#define MV_MASK_OFF_TO_SQ			7
+#define MV_MASK_OFF_CAPTURED_PCE	14
+#define MV_MASK_OFF_PROMOTED_PCE	18
+
+
 //--- macros for setting the 'move' field in the MOVE struct
-#define FROMSQ(m) 			((m) & 0x7F)
-#define TOSQ(m) 			((m>>7) & 0x7F)
-#define CAPTURED_PCE(m) 	(((m)>>14) & 0xF)
-#define PROMOTED_PCE(m) 		(((m)>>20) & 0xF)
+#define FROMSQ(m) 			(((m) >> MV_MASK_OFF_FROM_SQ) & 0x7F)
+#define TOSQ(m) 			(((m) >> MV_MASK_OFF_TO_SQ) & 0x7F)
+#define CAPTURED_PCE(m) 	(((m) >> MV_MASK_OFF_CAPTURED_PCE) & 0xF)
+#define PROMOTED_PCE(m) 	(((m) >> MV_MASK_OFF_PROMOTED_PCE) & 0xF)
 
-// creates a bitmapped int for the move attributes
-// f -> from
-// t -> to
-// ca -> captured
-// pro -> promoted
-//
 
-#define MFLAG_EN_PASSANT 	0x0040000
-#define MFLAG_PAWN_START 	0x0080000
-#define MFLAG_CASTLE 		0x1000000
+#define MFLAG_EN_PASSANT 	0x00400000
+#define MFLAG_PAWN_START 	0x00800000
+#define MFLAG_CASTLE 		0x01000000
 #define MFLAG_NONE			0x0
 
 #define	IS_EN_PASS_MOVE(mv)	((mv & MFLAG_EN_PASSANT) != 0)

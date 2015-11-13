@@ -348,8 +348,12 @@ void validate_move_list(struct move_list *mvl)
 inline mv_bitmap MOVE(enum square from, enum square to, enum piece capture,
 		      enum piece promote, U32 flags)
 {
-	return ((from) | ((to) << 7) | ((capture) << 14) | ((promote) << 20) |
-		(flags));
+	return (  (from 	<< MV_MASK_OFF_FROM_SQ) 
+			| (to 		<< MV_MASK_OFF_TO_SQ) 	 
+			| (capture 	<< MV_MASK_OFF_CAPTURED_PCE)  
+			| (promote 	<< MV_MASK_OFF_PROMOTED_PCE) 
+			| flags
+	  );
 }
 
 /*
