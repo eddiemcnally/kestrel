@@ -41,8 +41,7 @@
 static void reset_search_history(struct board *brd, struct search_info *si);
 static I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 		      struct search_info *si);
-bool is_repetition(const struct board *brd);
-//static void find_best_move(U64 current_move_index, struct move_list *mvlist);
+static void find_best_move(U64 current_move_index, struct move_list *mvlist);
 
 // checks to see if most recent move is a repetition
 inline bool is_repetition(const struct board *brd)
@@ -130,7 +129,7 @@ static void reset_search_history(struct board *brd, struct search_info *si)
 
 }
 
-/*
+
 static void find_best_move(U64 current_move_index, struct move_list *mvl){
 	U32 best_score = 0;
 	U64 best_index = 0;
@@ -143,24 +142,16 @@ static void find_best_move(U64 current_move_index, struct move_list *mvl){
 		}
 	}
 
-
 	// swap move to be next one in list
 	struct move temp = mvl->moves[current_move_index];
 	mvl->moves[current_move_index] = mvl->moves[best_index];
 	mvl->moves[best_index] = temp;
-
 }
-*/
+
 
 static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 			     struct search_info *si)
 {
-	/*printf("alpha %d, beta %d, depth %d, :: ", alpha, beta, depth);
-	   print_compressed_board(brd);
-	   printf("\n");
-	 */
-	 enum square tosq;
-
 	if (depth == 0) {
 		si->node_count++;
 		return evaluate_position(brd);
@@ -170,21 +161,6 @@ static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 
 	if ((is_repetition(brd) || brd->fifty_move_counter >= 100)
 				&& brd->ply ==0){
-		
-		
-		// eddie debug
-		if ((depth == 1) && is_repetition(brd)){
-			printf("depth 1 repetition\n");
-		}
-		if ((depth == 1) && (brd->fifty_move_counter >= 100)){
-			printf("depth 1 100 move\n");
-		}
-		if ((depth == 1) && (brd->ply==0)){
-			printf("depth 1 ply=0\n");
-		}
-					
-					
-					
 		return 0;
 	}
 
@@ -193,8 +169,7 @@ static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 	}
 
 	struct move_list mv_list[1];
-	memset(&mv_list[0], 0, sizeof(struct move_list));
-
+	memset(mv_list, 0, sizeof(struct move_list));
 
 	generate_all_moves(brd, mv_list);
 
@@ -205,21 +180,11 @@ static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 
 	for (U16 i = 0; i < mv_list->move_count; i++) {
 
-		// EDDIE - debug remove for now
-		//find_best_move(i, &mv_list);
+		find_best_move(i, mv_list);
 
 		mv_bitmap mv = mv_list->moves[i].move_bitmap;
 
 		if (!make_move(brd, mv)) {
-			// eddie debug
-			tosq = TOSQ(mv);
-			if ((tosq == a3) && (FROMSQ(mv) == a1) && (depth ==1)){
-				printf("depth 1 a1a3 invalid move....move = %s\n", print_move(mv));
-				print_board(brd);
-			}
-
-
-
 			// invalid move
 			continue;
 		}
@@ -229,32 +194,10 @@ static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 		// swap alpha/beta
 		score = -alpha_beta(-beta, -alpha, (U8)(depth - 1), brd, si);
 
-		// revert move
 		take_move(brd);
 
-		printf("depth %d move %s AB_score %d\n", depth, print_move(mv), score);
-
-
 		if (score > alpha) {
-			// eddie debug
-			tosq = TOSQ(mv);
-			if ((tosq == a3) && (FROMSQ(mv) == a1) && (depth ==1)){
-				printf("depth 1 a1a3 score %d > alpha %d\n", score, alpha);
-		
-			}
-
-
 			if (score >= beta) {
-				// eddie debug
-				tosq = TOSQ(mv);
-				if ((tosq == a3) && (FROMSQ(mv) == a1) && (depth ==1)){
-					printf("depth 1 a1a3 score %d >= beta %d\n", score, beta);
-		
-				}
-
-
-
-
 				// a beta cut-off, so can stop searching
 				if (num_legal_moves == 1) {
 					si->fail_high_first++;
@@ -289,10 +232,6 @@ static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 			return (-MATE + brd->ply);
 		} else {
 			// stalemate and draw
-			
-			printf("stalemate!!!!!!\n");
-		
-			
 			return 0;
 		}
 	}

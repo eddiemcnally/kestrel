@@ -1015,8 +1015,8 @@ void test_move_scores(void){
 
 		//printf("move %s\n", print_move(mv));
 
-		if (CAPTURED(mv) != NO_PIECE){
-			enum piece pce = CAPTURED(mv);
+		if (CAPTURED_PCE(mv) != NO_PIECE){
+			enum piece pce = CAPTURED_PCE(mv);
 			enum square from_sq = FROMSQ(mv);
 
 			enum piece attacker = get_piece_at_square(brd, from_sq);

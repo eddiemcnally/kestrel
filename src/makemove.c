@@ -141,7 +141,7 @@ bool make_move(struct board *brd, mv_bitmap mv)
 
 	update_castle_hash(brd);
 
-	enum piece captured = CAPTURED(mv);
+	enum piece captured = CAPTURED_PCE(mv);
 	brd->fifty_move_counter++;
 
 	if (captured != NO_PIECE) {
@@ -169,7 +169,7 @@ bool make_move(struct board *brd, mv_bitmap mv)
 
 	move_piece(brd, from, to);
 
-	enum piece promoted = PROMOTED(mv);
+	enum piece promoted = PROMOTED_PCE(mv);
 	if (promoted != NO_PIECE) {
 		remove_piece_from_board(brd, to);
 		add_piece_to_board(brd, promoted, to);
@@ -253,12 +253,12 @@ inline void take_move(struct board *brd)
 	// note: to revert move, move piece from 'to' to 'from'
 	move_piece(brd, to, from);
 
-	enum piece captured = CAPTURED(mv);
+	enum piece captured = CAPTURED_PCE(mv);
 	if (captured != NO_PIECE) {
 		add_piece_to_board(brd, captured, to);
 	}
 
-	enum piece promoted = PROMOTED(mv);
+	enum piece promoted = PROMOTED_PCE(mv);
 	if (promoted != NO_PIECE) {
 		enum colour prom_col = GET_COLOUR(promoted);
 		remove_piece_from_board(brd, from);

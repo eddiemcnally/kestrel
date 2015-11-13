@@ -330,8 +330,8 @@ void validate_move_list(struct move_list *mvl)
 
 		enum square from = FROMSQ(m.move_bitmap);
 		enum square to = TOSQ(m.move_bitmap);
-		enum piece capt = CAPTURED(m.move_bitmap);
-		enum piece promote = PROMOTED(m.move_bitmap);
+		enum piece capt = CAPTURED_PCE(m.move_bitmap);
+		enum piece promote = PROMOTED_PCE(m.move_bitmap);
 
 		assert(is_valid_piece(capt));
 		assert(is_valid_piece(promote));
@@ -398,7 +398,7 @@ static inline void
 add_capture_move(mv_bitmap move_bitmap, struct move_list *mvlist, U32 score)
 {
 	if (IS_EN_PASS_MOVE(move_bitmap) == false){
-		assert(CAPTURED(move_bitmap) != NO_PIECE);
+		assert(CAPTURED_PCE(move_bitmap) != NO_PIECE);
 	}
 	
 	mvlist->moves[mvlist->move_count].move_bitmap = move_bitmap;
@@ -410,7 +410,7 @@ add_capture_move(mv_bitmap move_bitmap, struct move_list *mvlist, U32 score)
 static inline void
 add_quiet_move(mv_bitmap move_bitmap, struct move_list *mvlist)
 {
-	assert(CAPTURED(move_bitmap) == NO_PIECE);
+	assert(CAPTURED_PCE(move_bitmap) == NO_PIECE);
 
 	mvlist->moves[mvlist->move_count].move_bitmap = move_bitmap;
 	mvlist->moves[mvlist->move_count].score = 0;
@@ -1105,7 +1105,7 @@ char *print_move(U32 move_bitmap)
 	int to_file = GET_FILE(TOSQ(move_bitmap));
 	int to_rank = GET_RANK(TOSQ(move_bitmap));
 
-	enum piece promoted_pce = PROMOTED(move_bitmap);
+	enum piece promoted_pce = PROMOTED_PCE(move_bitmap);
 
 	if (promoted_pce != NO_PIECE) {
 		char pchar = 'q';
@@ -1135,8 +1135,8 @@ void print_move_details(U32 move_bitmap, U32 score)
 	int to_file = GET_FILE(TOSQ(move_bitmap));
 	int to_rank = GET_RANK(TOSQ(move_bitmap));
 
-	enum piece captured = CAPTURED(move_bitmap);
-	enum piece promoted = PROMOTED(move_bitmap);
+	enum piece captured = CAPTURED_PCE(move_bitmap);
+	enum piece promoted = PROMOTED_PCE(move_bitmap);
 
 	char c_capt = get_piece_label(captured);
 	char c_promoted = get_piece_label(promoted);

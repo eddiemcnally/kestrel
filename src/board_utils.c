@@ -324,7 +324,7 @@ mv_bitmap parse_move(char *ip_move, struct board * brd)
 		move = mv_list.moves[move_num].move_bitmap;
 
 		if ((FROMSQ(move) == from) && (TOSQ(move) == to)) {
-			promoted = PROMOTED(move);
+			promoted = PROMOTED_PCE(move);
 			if (promoted != NO_PIECE) {
 				if (IS_ROOK(promoted) && ip_move[4] == 'r') {
 					return move;
