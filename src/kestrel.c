@@ -69,10 +69,10 @@ int main(int argc, char **argv)
 //	return 0;
 
 
-	si->depth = 4;
-	search_positions(brd, si);
-	if (si->depth >= 4)
-		return 0;
+//	si->depth = 4;
+//	search_positions(brd, si);
+//	if (si->depth >= 4)
+//		return 0;
 /////////////////////////////////////////////
 
 	char input[6];

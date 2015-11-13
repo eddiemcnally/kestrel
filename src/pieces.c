@@ -31,7 +31,7 @@
 
 // offsets into this array are by type enum piece
 static const char pieceToChar[NUM_PIECES] = {
-	'P', 'R', 'N', 'B', 'Q', 'K', 'p', 'r', 'n', 'b', 'q', 'k'
+	'P', 'p', 'B', 'b', 'N', 'n', 'R', 'r', 'Q', 'q', 'K', 'k'
 };
 
 
@@ -48,7 +48,3 @@ inline U32 get_piece_value(const enum piece pce)
 	return piece_values[pce];
 }
 
-bool is_valid_piece(enum piece pce)
-{
-	return (pce >= 0 && pce <= NUM_PIECES) || (pce == NO_PIECE);
-}

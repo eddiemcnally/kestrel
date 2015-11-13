@@ -22,8 +22,11 @@
 #include <stdbool.h>
 #include "types.h"
 
-#define IS_WHITE(piece)			((piece <= W_KING) && (piece >= W_PAWN))
-#define IS_BLACK(piece)			((piece <= B_KING) && (piece >= B_PAWN))
+// white is even, black is odd
+#define IS_WHITE(piece)			((piece & 0x1) == 0)
+#define IS_BLACK(piece)			((piece & 0x1) == 1)
+
+#define IS_VALID_PIECE(pce)		((pce != NO_PIECE) && (pce >= W_PAWN) && (pce <= B_KING))
 
 #define GET_OPPOSITE_SIDE(side)	(side ^ 1)
 
@@ -42,16 +45,16 @@
 // piece values, indexed into using the enum piece enum
 static const U32 piece_values[NUM_PIECES] = {
 	100,			// W_PAWN
-	550,			// W_ROOK
-	325,			// W_BISHOP
-	325,			// W_KNIGHT
-	1000,			// W_QUEEN
-	50000,			// W_KING
 	100,			// B_PAWN
-	550,			// B_ROOK
+	325,			// W_BISHOP
 	325,			// B_BISHOP
+	325,			// W_KNIGHT
 	325,			// B_KNIGHT
+	550,			// W_ROOK
+	550,			// B_ROOK
+	1000,			// W_QUEEN
 	1000,			// B_QUEEN
+	50000,			// W_KING
 	50000			// B_KING
 };
 #define INFINITE 	((I32)(30000))

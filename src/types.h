@@ -31,11 +31,6 @@ typedef signed int I32;
 typedef signed long long int I64;
 
 
-
-
-
-
-
 enum colour {
 	BLACK = 0,
 	WHITE = 1,
@@ -97,25 +92,25 @@ enum square {
 
 #define	NO_SQUARE	(100)
 
+// white is even, black is odd
 enum piece {
-	W_PAWN = 0,
-	W_ROOK = 1,
-	W_KNIGHT = 2,
-	W_BISHOP = 3,
-	W_QUEEN = 4,
-	W_KING = 5,
-	B_PAWN = 6,
-	B_ROOK = 7,
-	B_KNIGHT = 8,
-	B_BISHOP = 9,
-	B_QUEEN = 10,
-	B_KING = 11
+	W_PAWN 		= 0,
+	B_PAWN 		= 1,
+	W_BISHOP	= 2,
+	B_BISHOP	= 3,
+	W_KNIGHT	= 4,
+	B_KNIGHT	= 5,
+	W_ROOK 		= 6,
+	B_ROOK		= 7,
+	W_QUEEN 	= 8,
+	B_QUEEN		= 9,
+	W_KING		= 10,
+	B_KING		= 11
 };
+
 #define NO_PIECE	0x0F
 #define NUM_PIECES	12
 
-
-#define IS_VALID_PIECE(pce)		((pce >= W_PAWN) && (pce <= B_KING))
 
 // contains information before the current
 // move was made
@@ -131,9 +126,6 @@ struct undo {
 #define MAX_GAME_MOVES 		2048
 #define MAX_POSITION_MOVES	256
 #define MAX_SEARCH_DEPTH	64
-
-
-
 
 
 
