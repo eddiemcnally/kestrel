@@ -340,10 +340,7 @@ void divide_perft(int depth, struct board *brd)
 		.move_count = 0
 	};
 
-	//generate_all_moves(brd, &mv_list);
-
-	TEST_add_quiet_move(MOVE(b4, a3, NO_PIECE, NO_PIECE, MFLAG_PAWN_START),
-			    &mv_list);
+	generate_all_moves(brd, &mv_list);
 
 	mv_bitmap mv;
 	for (U32 mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {

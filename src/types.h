@@ -71,7 +71,9 @@ typedef U32 mv_bitmap;
 #define MFLAG_CASTLE 		0x01000000
 #define MFLAG_NONE			0x0
 
-#define	IS_EN_PASS_MOVE(mv)	((mv & MFLAG_EN_PASSANT) != 0)
+#define	IS_EN_PASS_MOVE(mv)		((mv & MFLAG_EN_PASSANT) != 0)
+#define IS_CAPTURE_MOVE(mv)		((CAPTURED_PCE(mv) != NO_PIECE))
+
 
 
 #define NO_MOVE				0
@@ -195,7 +197,11 @@ struct board {
 	U64 board_hash;
 
 	mv_bitmap search_history[NUM_PIECES][NUM_SQUARES];
-	mv_bitmap search_killers[NUM_COLOURS][MAX_SEARCH_DEPTH];
+	
+	// killer moves : moves that aren't captures, but lead to a 
+	// beta cut-off in the alpha-beta search
+	// NOTE: maintain 2 only
+	mv_bitmap search_killers[2][MAX_SEARCH_DEPTH];
 
 };
 

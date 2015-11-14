@@ -107,7 +107,7 @@ bool is_sq_attacked(const struct board *brd, enum square sq,
 			return true;
 		}
 
-	} else {
+	} else if (attacking_side == BLACK) {
 		// get the bitboard for rook and queen
 		U64 rq_bb = 0;
 		rq_bb = brd->bitboards[B_ROOK];
@@ -133,7 +133,10 @@ bool is_sq_attacked(const struct board *brd, enum square sq,
 		if (is_king_attacking_square(brd, sq_bb, B_KING)) {
 			return true;
 		}
+	} else {
+		assert(false);
 	}
+	
 	return false;
 }
 

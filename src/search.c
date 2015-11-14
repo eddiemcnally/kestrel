@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+#include <assert.h>
 #include "types.h"
 #include "search.h"
 #include "attack.h"
@@ -42,6 +43,7 @@ static void reset_search_history(struct board *brd, struct search_info *si);
 static I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 		      struct search_info *si);
 static void find_best_move(U64 current_move_index, struct move_list *mvlist);
+
 
 // checks to see if most recent move is a repetition
 inline bool is_repetition(const struct board *brd)
@@ -178,6 +180,19 @@ static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 	mv_bitmap best_move = NO_MOVE;
 	I32 score = -INFINITE;
 
+	// check our PV moves....if we have one, then mod score, and exit
+	mv_bitmap pv_move = find_move(brd->pvtable, brd->board_hash);
+	if (pv_move != NO_MOVE){
+		for (U16 i = 0; i < mv_list->move_count; i++) {
+			mv_bitmap mv = mv_list->moves[i].move_bitmap;
+			if (mv == pv_move){
+				mv_list->moves[i].score = SCORE_ADJ_PV_MOVE;
+				break;
+			}
+		}
+	}
+
+
 	for (U16 i = 0; i < mv_list->move_count; i++) {
 
 		find_best_move(i, mv_list);
@@ -203,12 +218,32 @@ static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 					si->fail_high_first++;
 				}
 				si->fail_high++;
+				
+				// see if "killer" move
+				if (IS_CAPTURE_MOVE(mv) == false){
+					// shuffle down the 1st one and add new one to top
+					brd->search_killers[1][brd->ply] = brd->search_killers[0][brd->ply];
+					brd->search_killers[0][brd->ply] = mv;
+				}				
+				
 				return beta;
 			}
 
 			// improved alpha, so save move
 			alpha = score;
 			best_move = mv;
+			if (IS_CAPTURE_MOVE(mv) == false){
+				enum square fromsq = FROMSQ(best_move);
+				enum piece pce = get_piece_at_square(brd, fromsq);
+				
+				assert(pce != NO_PIECE);
+				
+				enum square tosq = TOSQ(best_move);
+				
+				// incr score by depth to prioritise moves closer to top
+				// of search
+				brd->search_history[pce][tosq] += depth;
+			}
 		}
 	}
 

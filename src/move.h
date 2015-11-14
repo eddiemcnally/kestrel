@@ -32,15 +32,21 @@ struct move_list {
 };
 
 
-//#define MFLAG_CAPTURED                0x007C000       // En Passant | Captures
-//#define MFLAG_PROMOTED                0x0F00000
-//---
+
+enum score_adj {
+	SCORE_ADJ_PV_MOVE = 2000000,
+	SCORE_ADJ_CAPTURE = 1000000,
+	SCORE_ADJ_KILLER_SEARCH_0 = 900000,
+	SCORE_ADJ_KILLER_SEARCH_1 = 800000
+};
+
+
 
 char *print_move(mv_bitmap move_bitmap);
 void print_move_details(U32 move_bitmap, U32 score);
 void print_move_list(const struct move_list *list);
 void print_move_list_details(const struct move_list *list);
-void generate_all_moves(const struct board *brd, struct move_list *mvl);
+void generate_all_moves(struct board *brd, struct move_list *mvl);
 void validate_move_list(struct move_list *mvl);
 mv_bitmap MOVE(enum square from, enum square to, enum piece capture,
 	       enum piece promote, U32 fl);
@@ -50,28 +56,29 @@ enum piece get_piece_at_square(const struct board *the_board, enum square sq);
 void init_mvv_lva_scores(void);
 
 
-void TEST_generate_white_pawn_moves(const struct board *brd,
+void TEST_generate_white_pawn_moves(struct board *brd,
 				    struct move_list *mvl);
-void TEST_generate_black_pawn_moves(const struct board *brd,
+void TEST_generate_black_pawn_moves(struct board *brd,
 				    struct move_list *mvl);
-void TEST_generate_knight_piece_moves(const struct board *brd,
+void TEST_generate_knight_piece_moves(struct board *brd,
 				      struct move_list *mvl, enum colour col);
-void TEST_generate_king_moves(const struct board *brd,
+void TEST_generate_king_moves(struct board *brd,
 			      struct move_list *mvl, enum colour col);
-void TEST_generate_castle_moves(const struct board *brd,
+void TEST_generate_castle_moves(struct board *brd,
 				struct move_list *mvl, enum colour col);
-void TEST_generate_sliding_horizontal_vertical_moves(const struct board
+void TEST_generate_sliding_horizontal_vertical_moves(struct board
 						     *brd,
 						     struct move_list *mvl,
 						     enum piece pce);
-void TEST_generate_sliding_diagonal_moves(const struct board *brd,
+void TEST_generate_sliding_diagonal_moves(struct board *brd,
 					  struct move_list *mvl,
 					  enum piece pce);
-void TEST_generate_queen_moves(const struct board *brd,
+void TEST_generate_queen_moves(struct board *brd,
 			       struct move_list *mvl, enum piece pce);
 bool TEST_is_move_in_list(struct move_list *mvl, mv_bitmap mv);
 void TEST_add_en_passent_move(mv_bitmap move_bitmap, struct move_list *mvlist);
-void TEST_add_quiet_move(mv_bitmap move_bitmap, struct move_list *mvlist);
+void TEST_add_quiet_move(struct board *brd, mv_bitmap move_bitmap, 
+			struct move_list *mvlist, enum piece pce);
 U32 TEST_get_move_score(enum piece victim, enum piece attacker);
 struct move_list *TEST_get_empty_move_list(void);
 

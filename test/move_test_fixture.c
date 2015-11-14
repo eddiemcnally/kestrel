@@ -44,7 +44,6 @@ void test_sample_board_position(void);
 void test_clear_piece(void);
 void test_add_piece(void);
 void test_move_piece(void);
-void test_move_scores(void);
 
 void test_generation_white_pawn_moves(void)
 {
@@ -995,44 +994,6 @@ void test_make_move_take_move(void)
 }
 
 
-void test_move_scores(void){
-
-
-	char *sample_position =
-	    "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1";
-	struct board *brd = init_game(sample_position);
-
-	struct move_list *list = malloc(sizeof(struct move_list));
-	memset(list, 0, sizeof(struct move_list));
-
-	generate_all_moves(brd, list);
-
-//	print_board(brd);
-
-	for (int i = 0; i < list->move_count; i++) {
-		mv_bitmap mv = list->moves[i].move_bitmap;
-		U32 score = list->moves[i].score;
-
-		//printf("move %s\n", print_move(mv));
-
-		if (CAPTURED_PCE(mv) != NO_PIECE){
-			enum piece pce = CAPTURED_PCE(mv);
-			enum square from_sq = FROMSQ(mv);
-
-			enum piece attacker = get_piece_at_square(brd, from_sq);
-
-			U32 calc_score = TEST_get_move_score(pce, attacker);
-
-			assert_true(calc_score == score);
-		} else {
-			assert_true(score == 0);
-		}
-	}
-
-	free(list);
-}
-
-
 
 
 void move_test_fixture(void)
@@ -1054,7 +1015,6 @@ void move_test_fixture(void)
 	run_test(test_add_piece);
 	run_test(test_move_piece);
 	run_test(test_make_move_take_move);
-	run_test(test_move_scores);
 
 	test_fixture_end();	// ends a fixture
 }
