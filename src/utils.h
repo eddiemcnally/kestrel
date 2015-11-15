@@ -21,10 +21,10 @@
 
 #include "types.h"
 
-U64 generate_rand64(void);
+uint64_t generate_rand64(void);
 void set_priority_and_affinity(void);
-U64 get_time_in_millis(void);
-U64 get_elapsed_time_in_millis(U64 start_time);
+uint64_t get_time_in_millis(void);
+uint64_t get_elapsed_time_in_millis(uint64_t start_time);
 
 
 // These are the same, but use different name to aid reading of code

@@ -22,10 +22,10 @@
 #include <stdbool.h>
 #include "types.h"
 
-U8 get_LSB_index(U64 bb);
-U8 get_MSB_index(U64 bb);
-void clear_LSB_to_inclusive_bit(U64 * bb, U8 bit);
-void clear_MSB_to_inclusive_bit(U64 * bb, U8 bit);
+uint8_t get_LSB_index(uint64_t bb);
+uint8_t get_MSB_index(uint64_t bb);
+void clear_LSB_to_inclusive_bit(uint64_t * bb, uint8_t bit);
+void clear_MSB_to_inclusive_bit(uint64_t * bb, uint8_t bit);
 bool is_sq_attacked(const struct board *brd, enum square sq,
 		    enum colour attacking_side);
 

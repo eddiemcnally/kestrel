@@ -17,6 +17,7 @@
  */
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include "seatest.h"
 #include "types.h"
@@ -244,7 +245,7 @@ void test_fen_parsing_general_layout_2()
 void test_setting_bits_in_a_board()
 {
 
-	U64 test_brd = 0;
+	uint64_t test_brd = 0;
 
 	//
 	// Test setting bits
@@ -282,7 +283,7 @@ void test_setting_bits_in_a_board()
 void test_clearing_bits_in_a_board()
 {
 
-	U64 test_brd = 0;
+	uint64_t test_brd = 0;
 
 	//
 	// Test clearing bits
@@ -320,7 +321,7 @@ void test_clearing_bits_in_a_board()
 void test_checking_bits_in_a_board(void)
 {
 
-	U64 test_brd = 0;
+	uint64_t test_brd = 0;
 
 	for (int i = 0; i < NUM_SQUARES; i++) {
 		set_bit(&test_brd, i);
@@ -334,7 +335,7 @@ void test_checking_bits_in_a_board(void)
 
 void test_bit_counting(void)
 {
-	U64 brd = 0;
+	uint64_t brd = 0;
 
 	set_bit(&brd, d3);
 	set_bit(&brd, a7);
@@ -348,7 +349,7 @@ void test_bit_counting(void)
 
 void test_LSB_clear(void)
 {
-	U64 brd = 0;
+	uint64_t brd = 0;
 
 	set_bit(&brd, d3);
 	set_bit(&brd, a7);
@@ -356,7 +357,7 @@ void test_LSB_clear(void)
 	set_bit(&brd, g6);
 	set_bit(&brd, a1);
 
-	U8 cleared_bit = pop_1st_bit(&brd);
+	uint8_t cleared_bit = pop_1st_bit(&brd);
 
 	assert_true(cleared_bit == a1);
 	assert_false(CHECK_BIT(brd, a1));

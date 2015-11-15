@@ -26,6 +26,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <stdbool.h>
 #include <assert.h>
@@ -45,17 +46,17 @@ static void add_pawn_capture_move(enum colour col,
 static void add_pawn_move(struct board *brd, enum colour col, 
 					enum square from, enum square to, struct move_list *mvl);
 static void add_capture_move(mv_bitmap move_bitmap,
-							struct move_list *mvlist, U32 score);
+							struct move_list *mvlist, uint32_t score);
 static void add_quiet_move(struct board *brd, mv_bitmap mv, 
 								struct move_list *mvlist, enum piece pce);
 static void generate_white_pawn_moves(struct board *brd,
 				      struct move_list *mvl, const bool only_capture_moves);
 static void generate_black_pawn_moves(struct board *brd,
 				      struct move_list *mvl, const bool only_capture_moves);
-static U64 get_horizontal_mask(const enum square sq);
-static U64 get_vertical_mask(const enum square sq);
-static U64 get_positive_diagonal_mask(const enum square sq);
-static U64 get_negative_diagonal_mask(const enum square sq);
+static uint64_t get_horizontal_mask(const enum square sq);
+static uint64_t get_vertical_mask(const enum square sq);
+static uint64_t get_positive_diagonal_mask(const enum square sq);
+static uint64_t get_negative_diagonal_mask(const enum square sq);
 static struct move_list *get_empty_move_list(void);
 static void generate_knight_piece_moves(struct board *brd,
 					       struct move_list *mvl,
@@ -90,7 +91,7 @@ static bool is_move_in_list(struct move_list *mvl, mv_bitmap mv);
  * Represents the horizontal squares that a rook can move to, when
  * on a specific square
  */
-static const U64 horizontal_move_mask[] = {
+static const uint64_t horizontal_move_mask[] = {
 	0x00000000000000ff, 0x00000000000000ff, 0x00000000000000ff,
 	0x00000000000000ff,
 	0x00000000000000ff, 0x00000000000000ff, 0x00000000000000ff,
@@ -129,7 +130,7 @@ static const U64 horizontal_move_mask[] = {
  * Represents the vertical squares that a rook can move to, when
  * on a specific square
  */
-static const U64 vertical_move_mask[] = {
+static const uint64_t vertical_move_mask[] = {
 	0x0101010101010101, 0x0202020202020202, 0x0404040404040404,
 	0x0808080808080808,
 	0x1010101010101010, 0x2020202020202020, 0x4040404040404040,
@@ -168,7 +169,7 @@ static const U64 vertical_move_mask[] = {
  * Represents the bottom-left to top-right diagonals that a bishop can move to, when
  * on a specific square
  */
-static const U64 positive_diagonal_masks[] = {
+static const uint64_t positive_diagonal_masks[] = {
 	0x8040201008040200, 0x0080402010080400, 0x0000804020100800,
 	0x0000008040201000,
 	0x0000000080402000, 0x0000000000804000, 0x0000000000008000,
@@ -207,7 +208,7 @@ static const U64 positive_diagonal_masks[] = {
  * Represents the top-left to bottom-right diagonals that a bishop can move to, when
  * on a specific square
  */
-static const U64 negative_diagonal_masks[] = {
+static const uint64_t negative_diagonal_masks[] = {
 	0x0000000000000000, 0x0000000000000100, 0x0000000000010200,
 	0x0000000001020400,
 	0x0000000102040800, 0x0000010204081000, 0x0001020408102000,
@@ -257,7 +258,7 @@ static const unsigned char BitReverseTable256[256] =
 // define lookup array for MVV LVA
 //
 // indexed by "enum piece"
-static const U16 victim_score[NUM_PIECES] = {
+static const uint16_t victim_score[NUM_PIECES] = {
 	100,	// W_PAWN
 	400,	// W_ROOK
 	200,	// W_KNIGHT
@@ -273,20 +274,20 @@ static const U16 victim_score[NUM_PIECES] = {
 };
 
 //                      [victim]    [attacker]
-static U32 mvv_lva_score[NUM_PIECES][NUM_PIECES];
+static uint32_t mvv_lva_score[NUM_PIECES][NUM_PIECES];
 
 // pawn capture score is symmetrical (ie, same regardless of 
 // white or black attacker/victim. Save the score since we use it a 
 // lot (saves array lookup at runtime)
-static U32 pawn_v_pawn_score = 0;
+static uint32_t pawn_v_pawn_score = 0;
 ////////////////////////////////////////////////
 
 
 
 void init_mvv_lva_scores(void){
-	for(U8 attacker = W_PAWN; attacker <= B_KING; attacker++) {
-		for(U8 victim = W_PAWN; victim <= B_KING; victim++) {
-			mvv_lva_score[victim][attacker] = (U32)(victim_score[victim]
+	for(uint8_t attacker = W_PAWN; attacker <= B_KING; attacker++) {
+		for(uint8_t victim = W_PAWN; victim <= B_KING; victim++) {
+			mvv_lva_score[victim][attacker] = (uint32_t)(victim_score[victim]
 								+ 6 - ( victim_score[attacker] / 100));
 		}
 	}
@@ -388,7 +389,7 @@ void validate_move_list(struct move_list *mvl)
 // function to map move attributes to a bitmapped field
 // see typdef for mv_bitmap for a description
 inline mv_bitmap MOVE(enum square from, enum square to, enum piece capture,
-		      enum piece promote, U32 flags)
+		      enum piece promote, uint32_t flags)
 {
 	return (  (from 	<< MV_MASK_OFF_FROM_SQ) 
 			| (to 		<< MV_MASK_OFF_TO_SQ) 	 
@@ -441,7 +442,7 @@ static inline bool is_move_in_list(struct move_list *mvl, mv_bitmap mv)
 
 
 static inline void
-add_capture_move(mv_bitmap move_bitmap, struct move_list *mvlist, U32 score)
+add_capture_move(mv_bitmap move_bitmap, struct move_list *mvlist, uint32_t score)
 {
 	if (IS_EN_PASS_MOVE(move_bitmap) == false){
 		assert(CAPTURED_PCE(move_bitmap) != NO_PIECE);
@@ -487,7 +488,7 @@ static inline void add_pawn_capture_move(enum colour col, enum square from,
 	mv_bitmap mv = 0;
 	
 	if (col == WHITE) {
-		U32 score = mvv_lva_score[capture][W_PAWN];
+		uint32_t score = mvv_lva_score[capture][W_PAWN];
 		
 		if (GET_RANK(from) == RANK_7) {
 			// pawn can promote to 4 pieces
@@ -507,7 +508,7 @@ static inline void add_pawn_capture_move(enum colour col, enum square from,
 			add_capture_move(mv, mvl, score);
 		}
 	} else if (col == BLACK){
-		U32 score = mvv_lva_score[capture][B_PAWN];
+		uint32_t score = mvv_lva_score[capture][B_PAWN];
 		
 		if (GET_RANK(from) == RANK_2) {
 			// pawn can promote to 4 pieces
@@ -592,7 +593,7 @@ static inline void generate_knight_piece_moves(struct board *brd,
 {
 	// get the bitboard representing all of the piece types
 	// on the board
-	U64 bbKnight = brd->bitboards[knight];
+	uint64_t bbKnight = brd->bitboards[knight];
 
 	// iterate over all knights of this colour on the board
 	while (bbKnight != 0) {
@@ -600,35 +601,35 @@ static inline void generate_knight_piece_moves(struct board *brd,
 		enum square knight_sq = pop_1st_bit(&bbKnight);
 
 		// get occupancy mask for this piece and square
-		U64 mask = GET_KNIGHT_OCC_MASK(knight_sq);
+		uint64_t mask = GET_KNIGHT_OCC_MASK(knight_sq);
 
 
 		// AND'ing with opposite colour pieces, will give all
 		// pieces that can be captured
-		U64 opp_pieces = 0;
+		uint64_t opp_pieces = 0;
 		if (opposite_col == WHITE)
 			opp_pieces = brd->colour_bb[WHITE];
 		else
 			opp_pieces = brd->colour_bb[BLACK];
 
-		U64 capture_squares = mask & opp_pieces;
+		uint64_t capture_squares = mask & opp_pieces;
 		while (capture_squares != 0) {
 			// loop creating capture moves
 			enum square cap_sq = pop_1st_bit(&capture_squares);
 			enum piece p = get_piece_at_square(brd, cap_sq);
 
-			assert(p != NO_PIECE);
+			//assert(p != NO_PIECE);
 			
 			mv_bitmap mv = MOVE(knight_sq, cap_sq, p, NO_PIECE, MFLAG_NONE);
 
-			U32 score = mvv_lva_score[p][knight];
+			uint32_t score = mvv_lva_score[p][knight];
 			add_capture_move(mv, mvl, score);
 		}
 
 		if (only_capture_moves == false){
 			// find all quiet moves
-			U64 all_pieces = brd->board;
-			U64 empty_squares = ~all_pieces & mask;
+			uint64_t all_pieces = brd->board;
+			uint64_t empty_squares = ~all_pieces & mask;
 			while (empty_squares != 0) {
 				// loop creating quiet moves
 				enum square empty_sq = pop_1st_bit(&empty_squares);
@@ -654,18 +655,18 @@ static inline void generate_king_moves(struct board *brd,
 				       const bool only_capture_moves)
 {
 	// get the bitboard representing the king
-	U64 bbKing = brd->bitboards[pce];
+	uint64_t bbKing = brd->bitboards[pce];
 
 	enum square king_sq = pop_1st_bit(&bbKing);
 
 	// get occupancy mask for this piece and square
-	U64 mask = GET_KING_OCC_MASK(king_sq);
+	uint64_t mask = GET_KING_OCC_MASK(king_sq);
 
 	// AND'ing with opposite colour pieces, will give all
 	// pieces that can be captured
-	U64 opp_pieces = brd->colour_bb[opposite_col];
+	uint64_t opp_pieces = brd->colour_bb[opposite_col];
 
-	U64 capture_squares = mask & opp_pieces;
+	uint64_t capture_squares = mask & opp_pieces;
 	while (capture_squares != 0) {
 		// loop creating capture moves
 		enum square cap_sq = pop_1st_bit(&capture_squares);
@@ -673,14 +674,14 @@ static inline void generate_king_moves(struct board *brd,
 		assert(p != NO_PIECE);
 
 		mv_bitmap mv = MOVE(king_sq, cap_sq, p, NO_PIECE, MFLAG_NONE);
-		U32 score = mvv_lva_score[p][pce];
+		uint32_t score = mvv_lva_score[p][pce];
 		add_capture_move(mv, mvl, score);
 	}
 
 	if (only_capture_moves == false){
 		// find all quiet moves
-		U64 all_pieces = brd->board;
-		U64 empty_squares = ~all_pieces & mask;
+		uint64_t all_pieces = brd->board;
+		uint64_t empty_squares = ~all_pieces & mask;
 		while (empty_squares != 0) {
 			// loop creating quiet moves
 			enum square empty_sq = pop_1st_bit(&empty_squares);
@@ -778,16 +779,16 @@ generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
 {
 	// get the bitboard representing all WHITE pawns
 	// on the board
-	U64 bbPawn = brd->bitboards[W_PAWN];
+	uint64_t bbPawn = brd->bitboards[W_PAWN];
 
-	U64 bb_black_pieces = brd->colour_bb[BLACK];
+	uint64_t bb_black_pieces = brd->colour_bb[BLACK];
 
 	while (bbPawn != 0) {
 
 		enum square pawn_sq = pop_1st_bit(&bbPawn);
 
-		U8 pawn_file = GET_FILE(pawn_sq);
-		U8 pawn_rank = GET_RANK(pawn_sq);
+		uint8_t pawn_file = GET_FILE(pawn_sq);
+		uint8_t pawn_rank = GET_RANK(pawn_sq);
 		enum square next_sq_1 = pawn_sq + 8;
 
 		//assert(next_sq_1 <= h8);
@@ -851,9 +852,9 @@ generate_black_pawn_moves(struct board *brd, struct move_list *mvl,
 {
 	// get the bitboard representing all BLACK pawns
 	// on the board
-	U64 bbPawn = brd->bitboards[B_PAWN];
+	uint64_t bbPawn = brd->bitboards[B_PAWN];
 
-	U64 bb_white_pieces = brd->colour_bb[WHITE];
+	uint64_t bb_white_pieces = brd->colour_bb[WHITE];
 
 	while (bbPawn != 0) {
 
@@ -934,45 +935,45 @@ static inline void generate_sliding_horizontal_vertical_moves (struct board *brd
 					   enum piece pce, const bool only_capture_moves)
 {
 
-	U64 bb = brd->bitboards[pce];
+	uint64_t bb = brd->bitboards[pce];
 
 	while (bb != 0) {
 
 		enum square pce_sq = pop_1st_bit(&bb);
 
-		U64 hmask = get_horizontal_mask(pce_sq);
-		U64 vmask = get_vertical_mask(pce_sq);
+		uint64_t hmask = get_horizontal_mask(pce_sq);
+		uint64_t vmask = get_vertical_mask(pce_sq);
 
 		// create slider bb for this square
-		U64 bb_slider = GET_PIECE_MASK(pce_sq);
+		uint64_t bb_slider = GET_PIECE_MASK(pce_sq);
 
 		// all occupied squares (both colours)
-		U64 occupied = brd->board;
+		uint64_t occupied = brd->board;
 
-		U64 horiz1 = occupied - (2 * bb_slider);
-		U64 horiz2 =
+		uint64_t horiz1 = occupied - (2 * bb_slider);
+		uint64_t horiz2 =
 		    reverse_bits(reverse_bits(occupied) -
 				 2 * reverse_bits(bb_slider));
-		U64 horizontal = horiz1 ^ horiz2;
+		uint64_t horizontal = horiz1 ^ horiz2;
 
-		U64 vert1 = (occupied & vmask) - (2 * bb_slider);
-		U64 vert2 =
+		uint64_t vert1 = (occupied & vmask) - (2 * bb_slider);
+		uint64_t vert2 =
 		    reverse_bits(reverse_bits(occupied & vmask) -
 				 2 * reverse_bits(bb_slider));
-		U64 vertical = vert1 ^ vert2;
+		uint64_t vertical = vert1 ^ vert2;
 
-		U64 all_moves = (horizontal & hmask) | (vertical & vmask);
+		uint64_t all_moves = (horizontal & hmask) | (vertical & vmask);
 
 		enum colour col = (IS_BLACK(pce)) ? BLACK : WHITE;
 
 		// get all same colour as piece being considered
-		U64 col_occupied = 0;
+		uint64_t col_occupied = 0;
 		if (col == WHITE)
 			col_occupied = brd->colour_bb[WHITE];
 		else
 			col_occupied = brd->colour_bb[BLACK];
 
-		U64 excl_same_col = all_moves & ~col_occupied;
+		uint64_t excl_same_col = all_moves & ~col_occupied;
 		//printf("Mask Same Colour\n");
 		//print_mask_as_board(&excl_same_col, pce, pce_sq);
 
@@ -984,7 +985,7 @@ static inline void generate_sliding_horizontal_vertical_moves (struct board *brd
 
 			if (mv_pce != NO_PIECE) {
 				mv_bitmap mv = MOVE(pce_sq, sq, mv_pce, NO_PIECE, MFLAG_NONE);
-				U32 score = mvv_lva_score[mv_pce][pce];
+				uint32_t score = mvv_lva_score[mv_pce][pce];
 				add_capture_move(mv, mvl, score);
 			} else {
 				if (only_capture_moves == false){
@@ -1014,45 +1015,45 @@ static inline void generate_sliding_diagonal_moves(struct board *brd,
 				struct move_list *mvl, enum piece pce, const bool only_capture_moves)
 {
 
-	U64 bb = brd->bitboards[pce];
+	uint64_t bb = brd->bitboards[pce];
 
 	while (bb != 0) {
 
 		enum square pce_sq = pop_1st_bit(&bb);
 
-		U64 posmask = get_positive_diagonal_mask(pce_sq);
-		U64 negmask = get_negative_diagonal_mask(pce_sq);
+		uint64_t posmask = get_positive_diagonal_mask(pce_sq);
+		uint64_t negmask = get_negative_diagonal_mask(pce_sq);
 
 		// create slider bb for this square
-		U64 bb_slider = GET_PIECE_MASK(pce_sq);
+		uint64_t bb_slider = GET_PIECE_MASK(pce_sq);
 
 		// all occupied squares (both colours)
-		U64 occupied = brd->board;
+		uint64_t occupied = brd->board;
 
-		U64 diag1 = (occupied & posmask) - (2 * bb_slider);
-		U64 diag2 =
+		uint64_t diag1 = (occupied & posmask) - (2 * bb_slider);
+		uint64_t diag2 =
 		    reverse_bits(reverse_bits(occupied & posmask) -
 				 (2 * reverse_bits(bb_slider)));
-		U64 diagpos = diag1 ^ diag2;
+		uint64_t diagpos = diag1 ^ diag2;
 
 		diag1 = (occupied & negmask) - (2 * bb_slider);
 		diag2 =
 		    reverse_bits(reverse_bits(occupied & negmask) -
 				 (2 * reverse_bits(bb_slider)));
-		U64 diagneg = diag1 ^ diag2;
+		uint64_t diagneg = diag1 ^ diag2;
 
-		U64 all_moves = (diagpos & posmask) | (diagneg & negmask);
+		uint64_t all_moves = (diagpos & posmask) | (diagneg & negmask);
 
 		enum colour col = (IS_BLACK(pce)) ? BLACK : WHITE;
 
 		// get all same colour as piece being considered
-		U64 col_occupied = 0;
+		uint64_t col_occupied = 0;
 		if (col == WHITE)
 			col_occupied = brd->colour_bb[WHITE];
 		else
 			col_occupied = brd->colour_bb[BLACK];
 
-		U64 excl_same_col = all_moves & ~col_occupied;
+		uint64_t excl_same_col = all_moves & ~col_occupied;
 		//printf("Mask Same Colour\n");
 		//print_mask_as_board(&excl_same_col, pce, pce_sq);
 
@@ -1064,7 +1065,7 @@ static inline void generate_sliding_diagonal_moves(struct board *brd,
 
 			if (mv_pce != NO_PIECE) {
 				mv_bitmap mv = MOVE(pce_sq, sq, mv_pce, NO_PIECE, MFLAG_NONE);
-				U32 score = mvv_lva_score[mv_pce][pce];
+				uint32_t score = mvv_lva_score[mv_pce][pce];
 				add_capture_move(mv, mvl, score);
 			} else {
 				if (only_capture_moves == false){
@@ -1080,15 +1081,15 @@ static inline void generate_sliding_diagonal_moves(struct board *brd,
 /*
  * Clears the LSB of the board, and returns the bit # that was cleared.
  * name: pop_1st_bit
- * @param	ptr to U64
+ * @param	ptr to uint64_t
  * @return	index of bit cleared.
  *
  * uses gcc built-in function (see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html)
  *
  */
-inline U8 pop_1st_bit(U64 * bb)
+inline uint8_t pop_1st_bit(uint64_t * bb)
 {
-	U8 bit = (U8) __builtin_ctzll(*bb);
+	uint8_t bit = (uint8_t) __builtin_ctzll(*bb);
 
 	// clear the bit
 	clear_bit(bb, bit);
@@ -1104,15 +1105,15 @@ inline U8 pop_1st_bit(U64 * bb)
  * @return
  *
  */
-inline U64 reverse_bits(U64 word)
+inline uint64_t reverse_bits(uint64_t word)
 {
-	U64 retval = 0;
+	uint64_t retval = 0;
 
-	U8 *p_in = (U8 *) & word;
-	U8 *p_out = (U8 *) & retval;
+	uint8_t *p_in = (uint8_t *) & word;
+	uint8_t *p_out = (uint8_t *) & retval;
 	// reverse the bits in each byte
 	for (int i = 0; i < 8; i++) {
-		*p_out = (U8)BitReverseTable256[*p_in];
+		*p_out = (uint8_t)BitReverseTable256[*p_in];
 		p_out++;
 		p_in++;
 	}
@@ -1123,22 +1124,22 @@ inline U64 reverse_bits(U64 word)
 
 
 
-static inline U64 get_vertical_mask(const enum square sq)
+static inline uint64_t get_vertical_mask(const enum square sq)
 {
 	return vertical_move_mask[sq];
 }
 
-static inline U64 get_horizontal_mask(const enum square sq)
+static inline uint64_t get_horizontal_mask(const enum square sq)
 {
 	return horizontal_move_mask[sq];
 }
 
-static inline U64 get_positive_diagonal_mask(const enum square sq)
+static inline uint64_t get_positive_diagonal_mask(const enum square sq)
 {
 	return positive_diagonal_masks[sq];
 }
 
-static inline U64 get_negative_diagonal_mask(const enum square sq)
+static inline uint64_t get_negative_diagonal_mask(const enum square sq)
 {
 	return negative_diagonal_masks[sq];
 }
@@ -1150,7 +1151,7 @@ static inline U64 get_negative_diagonal_mask(const enum square sq)
  * @return
  *
  */
-char *print_move(U32 move_bitmap)
+char *print_move(uint32_t move_bitmap)
 {
 
 	static char move_string[6];
@@ -1183,7 +1184,7 @@ char *print_move(U32 move_bitmap)
 	return move_string;
 }
 
-void print_move_details(U32 move_bitmap, U32 score)
+void print_move_details(uint32_t move_bitmap, uint32_t score)
 {
 	int from_file = GET_FILE(FROMSQ(move_bitmap));
 	int from_rank = GET_RANK(FROMSQ(move_bitmap));
@@ -1216,8 +1217,8 @@ void print_move_list_details(const struct move_list *list)
 	printf("MoveList Details:\n");
 
 	for (int i = 0; i < list->move_count; i++) {
-		U32 move = list->moves[i].move_bitmap;
-		U32 score = list->moves[i].score;
+		uint32_t move = list->moves[i].move_bitmap;
+		uint32_t score = list->moves[i].score;
 
 		print_move_details(move, score);
 	}
@@ -1237,8 +1238,8 @@ void print_move_list(const struct move_list *list)
 	printf("MoveList:\n");
 
 	for (int i = 0; i < list->move_count; i++) {
-		U32 move = list->moves[i].move_bitmap;
-		//U32 score = list->moves[i].score;
+		uint32_t move = list->moves[i].move_bitmap;
+		//uint32_t score = list->moves[i].score;
 
 		printf("%s\n", print_move(move));
 	}
@@ -1328,7 +1329,7 @@ bool TEST_is_move_in_list(struct move_list *mvl, mv_bitmap mv)
 	return is_move_in_list(mvl, mv);
 }
 
-U32 TEST_get_move_score(enum piece victim, enum piece attacker)
+uint32_t TEST_get_move_score(enum piece victim, enum piece attacker)
 {
 	return mvv_lva_score[victim][attacker];
 }

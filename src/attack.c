@@ -24,6 +24,7 @@
  */
 
 #include <stdlib.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include <assert.h>
@@ -38,7 +39,7 @@
 #include "occupancy_mask.h"
 
 static bool are_intervening_squares_empty(const struct board *brd,
-					  U64 occ_mask,
+					  uint64_t occ_mask,
 					  enum square attacking_sq,
 					  enum square target_sq);
 static bool is_blocked_horizontally(const struct board *brd,
@@ -51,16 +52,16 @@ static bool is_attacked_horizontally_or_vertically(const struct board *brd,
 static bool is_attacked_diagonally(const struct board *brd,
 				   enum square attacking_sq,
 				   enum square target_sq);
-static bool is_knight_attacking_square(const struct board *brd, U64 sqBB,
+static bool is_knight_attacking_square(const struct board *brd, uint64_t sqBB,
 				       enum piece attacking_piece);
-static bool is_king_attacking_square(const struct board *brd, U64 sqBB,
+static bool is_king_attacking_square(const struct board *brd, uint64_t sqBB,
 				     enum piece attacking_piece);
 static bool is_rook_or_queen_attacking_square(const struct board *brd,
-					      enum square sq, U64 rq_bb);
+					      enum square sq, uint64_t rq_bb);
 static bool is_bishop_or_queen_attacking_square(const struct board *brd,
-						enum square sq, U64 bq_bb);
-static bool is_WHITE_pawn_attacking_square(const struct board *brd, U64 sqBB);
-static bool is_BLACK_pawn_attacking_square(const struct board *brd, U64 sqBB);
+						enum square sq, uint64_t bq_bb);
+static bool is_WHITE_pawn_attacking_square(const struct board *brd, uint64_t sqBB);
+static bool is_BLACK_pawn_attacking_square(const struct board *brd, uint64_t sqBB);
 
 /*
  * Checks to see if a given square is being attacked by
@@ -75,21 +76,21 @@ bool is_sq_attacked(const struct board *brd, enum square sq,
 		    enum colour attacking_side)
 {
 	// create a bitboard for the square being considered
-	U64 sq_bb = 0;
+	uint64_t sq_bb = 0;
 	set_bit(&sq_bb, sq);
 
 	// trading code bloat for efficiency and duplicate the calls
 	// based on colour....
 	if (attacking_side == WHITE) {
 		// get the bitbard for rook and queen
-		U64 rq_bb = 0;
+		uint64_t rq_bb = 0;
 		rq_bb = brd->bitboards[W_ROOK];
 		rq_bb |= brd->bitboards[W_QUEEN];
 		if (is_rook_or_queen_attacking_square(brd, sq, rq_bb)) {
 			return true;
 		}
 		// get the bitboard for bishop and queen
-		U64 rq_bq = 0;
+		uint64_t rq_bq = 0;
 		rq_bq = brd->bitboards[W_BISHOP];
 		rq_bq |= brd->bitboards[W_QUEEN];
 		if (is_bishop_or_queen_attacking_square(brd, sq, rq_bq)) {
@@ -109,14 +110,14 @@ bool is_sq_attacked(const struct board *brd, enum square sq,
 
 	} else if (attacking_side == BLACK) {
 		// get the bitboard for rook and queen
-		U64 rq_bb = 0;
+		uint64_t rq_bb = 0;
 		rq_bb = brd->bitboards[B_ROOK];
 		rq_bb |= brd->bitboards[B_QUEEN];
 		if (is_rook_or_queen_attacking_square(brd, sq, rq_bb)) {
 			return true;
 		}
 		// get the bitboard for bishop and queen
-		U64 rq_bq = 0;
+		uint64_t rq_bq = 0;
 		rq_bq = brd->bitboards[B_BISHOP];
 		rq_bq |= brd->bitboards[B_QUEEN];
 		if (is_bishop_or_queen_attacking_square(brd, sq, rq_bq)) {
@@ -143,7 +144,7 @@ bool is_sq_attacked(const struct board *brd, enum square sq,
 // checks vertical and horizontal for both rook and queen
 static inline bool is_rook_or_queen_attacking_square(const struct board
 						     *brd, enum square sq,
-						     U64 rq_bb)
+						     uint64_t rq_bb)
 {
 	while (rq_bb != 0) {
 		enum square att_pce_sq = pop_1st_bit(&rq_bb);
@@ -164,7 +165,7 @@ static inline bool is_rook_or_queen_attacking_square(const struct board
 static inline bool is_bishop_or_queen_attacking_square(const struct board
 						       *brd,
 						       enum square sq,
-						       U64 bq_bb)
+						       uint64_t bq_bb)
 {
 	while (bq_bb != 0) {
 		enum square att_pce_sq = pop_1st_bit(&bq_bb);
@@ -179,18 +180,18 @@ static inline bool is_bishop_or_queen_attacking_square(const struct board
 }
 
 static inline bool is_knight_attacking_square(const struct board *brd,
-					      U64 sqBB,
+					      uint64_t sqBB,
 					      enum piece attacking_piece)
 {
 	// get the bitboard representing all knights on the board of
 	// this colour
-	U64 bbKnight = brd->bitboards[attacking_piece];
+	uint64_t bbKnight = brd->bitboards[attacking_piece];
 
 	while (bbKnight != 0) {
 		enum square att_pce_sq = pop_1st_bit(&bbKnight);
 
 		// get occupancy mask for this piece and square
-		U64 mask = GET_KNIGHT_OCC_MASK(att_pce_sq);
+		uint64_t mask = GET_KNIGHT_OCC_MASK(att_pce_sq);
 
 		if ((mask & sqBB) != 0) {
 			// a Knight is attacking this square
@@ -201,10 +202,12 @@ static inline bool is_knight_attacking_square(const struct board *brd,
 }
 
 static inline bool is_BLACK_pawn_attacking_square(const struct board *brd,
-						  U64 sqBB)
+						  uint64_t sqBB)
 {
-	U64 bbPawn = brd->bitboards[B_PAWN];
-	U64 mask = 0;
+	uint64_t bbPawn = brd->bitboards[B_PAWN];
+	uint64_t mask = 0;
+
+	//TOFIX: this approach won't work for en-passant
 
 	// overlay all masks for all the pieces
 	while (bbPawn != 0) {
@@ -215,10 +218,12 @@ static inline bool is_BLACK_pawn_attacking_square(const struct board *brd,
 }
 
 static inline bool is_WHITE_pawn_attacking_square(const struct board *brd,
-						  U64 sqBB)
+						  uint64_t sqBB)
 {
-	U64 bbPawn = brd->bitboards[W_PAWN];
-	U64 mask = 0;
+	uint64_t bbPawn = brd->bitboards[W_PAWN];
+	uint64_t mask = 0;
+
+	//TOFIX: this approach won't work for en-passant
 
 	// overlay all masks for all the pieces
 	while (bbPawn != 0) {
@@ -229,16 +234,16 @@ static inline bool is_WHITE_pawn_attacking_square(const struct board *brd,
 }
 
 static inline bool is_king_attacking_square(const struct board *brd,
-					    U64 sqBB,
+					    uint64_t sqBB,
 					    enum piece attacking_piece)
 {
 	// get the bitboard representing the king on the board of
 	// this colour
-	U64 bbKing = brd->bitboards[attacking_piece];
+	uint64_t bbKing = brd->bitboards[attacking_piece];
 	enum square att_pce_sq = pop_1st_bit(&bbKing);
 
 	// get occupancy mask for this square
-	U64 mask = GET_KING_OCC_MASK(att_pce_sq);
+	uint64_t mask = GET_KING_OCC_MASK(att_pce_sq);
 	return ((mask & sqBB) != 0);
 }
 
@@ -248,7 +253,7 @@ static inline bool is_attacked_horizontally_or_vertically(const struct
 							  sq_one,
 							  enum square sq_two)
 {
-	U64 rook_mask = GET_ROOK_OCC_MASK(sq_one);
+	uint64_t rook_mask = GET_ROOK_OCC_MASK(sq_one);
 	if (CHECK_BIT(rook_mask, sq_two) == false){
 		// sq_one and sq_two don't share
 		// a file or a rank
@@ -346,7 +351,7 @@ static inline bool is_attacked_diagonally(const struct board *brd,
 					  enum square attacking_sq,
 					  enum square target_sq)
 {
-	U64 diag_occ_mask = GET_DIAGONAL_OCC_MASK(attacking_sq);
+	uint64_t diag_occ_mask = GET_DIAGONAL_OCC_MASK(attacking_sq);
 	if (CHECK_BIT(diag_occ_mask, target_sq)) {
 		// target sq is on diagonal....check to see if vector between
 		// attacking square and target is blocked
@@ -354,7 +359,7 @@ static inline bool is_attacked_diagonally(const struct board *brd,
 						     attacking_sq, target_sq);
 	}
 
-	U64 anti_diag_occ_mask = GET_ANTI_DIAGONAL_OCC_MASK(attacking_sq);
+	uint64_t anti_diag_occ_mask = GET_ANTI_DIAGONAL_OCC_MASK(attacking_sq);
 	if (CHECK_BIT(anti_diag_occ_mask, target_sq)) {
 		// target sq is on diagonal....check to see if vector between
 		// attacking square and target is blocked
@@ -365,7 +370,7 @@ static inline bool is_attacked_diagonally(const struct board *brd,
 }
 
 static inline bool are_intervening_squares_empty(const struct board *brd,
-						 U64 occ_mask,
+						 uint64_t occ_mask,
 						 enum square attacking_sq,
 						 enum square target_sq)
 {
@@ -385,13 +390,13 @@ static inline bool are_intervening_squares_empty(const struct board *brd,
 	return true;
 }
 
-inline void clear_LSB_to_inclusive_bit(U64 * bb, U8 bit)
+inline void clear_LSB_to_inclusive_bit(uint64_t * bb, uint8_t bit)
 {
 	if (*bb == 0) {
 		return;
 	}
 
-	U8 lsb = get_LSB_index(*bb);
+	uint8_t lsb = get_LSB_index(*bb);
 
 	while ((lsb <= bit) && (*bb != 0)) {
 		clear_bit(bb, lsb);
@@ -399,13 +404,13 @@ inline void clear_LSB_to_inclusive_bit(U64 * bb, U8 bit)
 	}
 }
 
-inline void clear_MSB_to_inclusive_bit(U64 * bb, U8 bit)
+inline void clear_MSB_to_inclusive_bit(uint64_t * bb, uint8_t bit)
 {
 	if (*bb == 0) {
 		return;
 	}
 
-	U8 msb = get_MSB_index(*bb);
+	uint8_t msb = get_MSB_index(*bb);
 	while ((msb >= bit) && (*bb != 0)) {
 		clear_bit(bb, msb);
 		msb = get_MSB_index(*bb);
@@ -418,20 +423,20 @@ inline void clear_MSB_to_inclusive_bit(U64 * bb, U8 bit)
  * Returns the number of trailing 0-bits in x, starting at the least
  * significant bit position. If x is 0, the result is undefined
  */
-inline U8 get_LSB_index(U64 bb)
+inline uint8_t get_LSB_index(uint64_t bb)
 {
 	// gcc built-in function (see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html)
-	return (U8) __builtin_ctzll(bb);
+	return (uint8_t) __builtin_ctzll(bb);
 }
 
-inline U8 get_MSB_index(U64 bb)
+inline uint8_t get_MSB_index(uint64_t bb)
 {
 	// gcc built-in function (see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html)
-	U8 b = (U8) __builtin_clzll(bb);
+	uint8_t b = (uint8_t) __builtin_clzll(bb);
 
 	// the above is number of leading zeros.
 	// the MSB index is (63-b)
-	return (U8) (63 - b);
+	return (uint8_t) (63 - b);
 }
 
 /**

@@ -20,8 +20,8 @@
 
 bool make_move(struct board *brd, mv_bitmap mv);
 void take_move(struct board *brd);
-void set_bit(U64 * brd, enum square sq);
-void clear_bit(U64 * brd, enum square sq);
+void set_bit(uint64_t * brd, enum square sq);
+void clear_bit(uint64_t * brd, enum square sq);
 void move_piece(struct board *brd, enum square from, enum square to);
 
 void update_piece_hash(struct board *brd, enum piece pce, enum square sq);

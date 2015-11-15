@@ -43,7 +43,7 @@
 #define IS_BISHOP_OR_QUEEN(pce)	(IS_BISHOP(pce) || IS_QUEEN(pce))
 
 // piece values, indexed into using the enum piece enum
-static const U32 piece_values[NUM_PIECES] = {
+static const uint32_t piece_values[NUM_PIECES] = {
 	100,			// W_PAWN
 	100,			// B_PAWN
 	325,			// W_BISHOP
@@ -57,7 +57,7 @@ static const U32 piece_values[NUM_PIECES] = {
 	50000,			// W_KING
 	50000			// B_KING
 };
-#define INFINITE 	((I32)(30000))
+#define INFINITE 	((int32_t)(30000))
 #define MATE 		29000
 
 
@@ -65,7 +65,7 @@ static const U32 piece_values[NUM_PIECES] = {
 
 char get_piece_label(enum piece piece);
 bool is_valid_piece(enum piece pce);
-U32 get_piece_value(const enum piece pce);
+uint32_t get_piece_value(const enum piece pce);
 
 
 #endif

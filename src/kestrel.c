@@ -23,6 +23,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <assert.h>
 #include <string.h>
 #include "types.h"
@@ -63,7 +64,7 @@ int main(int argc, char **argv)
 
 //	generate_all_moves(brd, &mv_list);
 
-//	for (U16 i = 0; i < mv_list.move_count; i++) {
+//	for (uint16_t i = 0; i < mv_list.move_count; i++) {
 //		printf("move %s\n", print_move(mv_list.moves[i].move_bitmap));
 //	}
 //	return 0;

@@ -19,16 +19,8 @@
 #define _TYPES_H_
 
 #include <stdbool.h>
+#include <stdint.h>
 
-
-typedef unsigned char U8;
-typedef unsigned short U16;
-typedef unsigned int U32;
-typedef unsigned long long int U64;
-typedef signed char I8;
-typedef signed short I16;
-typedef signed int I32;
-typedef signed long long int I64;
 
 
 enum colour {
@@ -50,7 +42,7 @@ enum colour {
  * 0000 0001 0000 0000 0000 0000 0000 0000 -> Is Castle Move
  * XXXX XXX0 0000 0000 0000 0000 0000 0000 -> spare/unused
  */
-typedef U32 mv_bitmap;
+typedef uint32_t mv_bitmap;
 
 // bit mask offsets for the above bitmap
 #define MV_MASK_OFF_FROM_SQ			0
@@ -118,9 +110,9 @@ enum piece {
 // move was made
 struct undo {
 	mv_bitmap move;
-	U8 fifty_move_counter;
-	U8 castle_perm;
-	U64 board_hash;
+	uint8_t fifty_move_counter;
+	uint8_t castle_perm;
+	uint64_t board_hash;
 	enum square en_passant;
 };
 
@@ -133,7 +125,7 @@ struct undo {
 
 // principle variation table structs form a linked list
 struct pv_entry {
-	U64 hashkey;
+	uint64_t hashkey;
 	mv_bitmap move;
 	struct pv_entry *next;
 };
@@ -141,7 +133,7 @@ struct pv_entry {
 
 struct pv_table {
 	struct pv_entry *entries;
-	U32 num_entries;
+	uint32_t num_entries;
 };
 
 
@@ -153,15 +145,15 @@ struct pv_table {
  */
 struct board {
 	// bitboard entry for each piece
-	U64 bitboards[NUM_PIECES];
+	uint64_t bitboards[NUM_PIECES];
 
 	// The above array piece arrays overlayed into a single bitboard.
 	// In effect, an OR of all elements in bitboards[]
-	U64 board;
+	uint64_t board;
 
 	// a bitboard for each colour, representing where all the pieces
 	// of each colour are on the board
-	U64 colour_bb[NUM_COLOURS];
+	uint64_t colour_bb[NUM_COLOURS];
 
 
 	// the next side to move
@@ -170,14 +162,14 @@ struct board {
 	// the square where en passent is active
 	enum square en_passant;
 
-	U8 fifty_move_counter;
+	uint8_t fifty_move_counter;
 
 	// keeping track of ply
-	U8 ply;
-	U8 history_ply;
+	uint8_t ply;
+	uint8_t history_ply;
 
 	// indexed by enum colour, contains sum of all piece values
-	U32 material[NUM_COLOURS];
+	uint32_t material[NUM_COLOURS];
 
 	// contains the pieces on each square
 	enum piece pieces[NUM_SQUARES];
@@ -188,13 +180,13 @@ struct board {
 	mv_bitmap pv_array[MAX_SEARCH_DEPTH];
 
 	// castling permissions
-	U8 castle_perm;
+	uint8_t castle_perm;
 
 	// move history
 	struct undo history[MAX_GAME_MOVES];
 
 	// a hash of the current board
-	U64 board_hash;
+	uint64_t board_hash;
 
 	mv_bitmap search_history[NUM_PIECES][NUM_SQUARES];
 	
@@ -209,15 +201,15 @@ struct board {
 // holds info associated with searching
 struct search_info {
 	// start time of search
-	U64 start_time;
+	uint64_t start_time;
 	// stop time of search
-	U64 stop_time;
+	uint64_t stop_time;
 	// depth to search to
-	U8 depth;
+	uint8_t depth;
 	// count of moved remaining
-	U32 moves_remaining;
+	uint32_t moves_remaining;
 	// count of nodes
-	U64 node_count;
+	uint64_t node_count;
 
 	// quit command has been issued
 	bool quit_set;

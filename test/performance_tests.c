@@ -17,6 +17,7 @@
  */
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
@@ -35,7 +36,7 @@
 
 void perf_test(int depth, struct board *brd);
 void divide_perft(int depth, struct board *brd);
-U32 divide(int depth, struct board *brd);
+uint32_t divide(int depth, struct board *brd);
 void test_move_gen_depth(void);
 void perft(int depth, struct board *brd);
 void bug_check(void);
@@ -43,14 +44,22 @@ void bug_check(void);
 // struct representing a line in the perftsuite.epd file
 typedef struct EPD {
 	char *fen;
-	U64 depth1;
-	U64 depth2;
-	U64 depth3;
-	U64 depth4;
-	U64 depth5;
-	U64 depth6;
+	uint64_t depth1;
+	uint64_t depth2;
+	uint64_t depth3;
+	uint64_t depth4;
+	uint64_t depth5;
+	uint64_t depth6;
 } epd;
 
+
+
+//=================================================================
+//
+// This array is generated from perftsuite.epd, which can be found
+// on the net. It gives the number of legal moves at each depth for a 
+// given position
+// 
 #define NUM_EPD	126
 struct EPD test_positions[NUM_EPD] = {
 	{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 20, 400,
@@ -231,17 +240,17 @@ struct EPD test_positions[NUM_EPD] = {
 	 3605103, 71179139},
 };
 
-U64 leafNodes = 0;
+uint64_t leafNodes = 0;
 
 void test_move_gen_depth()
 {
 
 
-	U64 total_move_time = 0;
-	U64 start_time, elapsed;
+	uint64_t total_move_time = 0;
+	uint64_t start_time, elapsed;
 
 	int depth = 5;
-	U64 total_nodes = 0;
+	uint64_t total_nodes = 0;
 
 	for (int i = 0; i < NUM_EPD; i++) {
 		struct EPD e = test_positions[i];
@@ -265,9 +274,9 @@ void test_move_gen_depth()
 	}
 
 	double moves_per_sec = ((double)total_nodes / ((double)total_move_time / 1000));
-	printf("Total node count : %llu\n", total_nodes);
+	printf("Total node count : %ju\n", total_nodes);
 	printf("#moves/sec : %f\n", moves_per_sec);
-	printf("Total elapsed time (ms) %llu\n", total_move_time);
+	printf("Total elapsed time (ms) %ju\n", total_move_time);
 
 }
 
@@ -284,7 +293,7 @@ void perf_test(int depth, struct board *brd)
 	generate_all_moves(brd, &mv_list);
 
 	mv_bitmap mv;
-	for (U32 mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
+	for (uint32_t mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
 		mv = mv_list.moves[mv_num].move_bitmap;
 		if (!make_move(brd, mv)) {
 			continue;
@@ -293,7 +302,7 @@ void perf_test(int depth, struct board *brd)
 		take_move(brd);
 	}
 
-	printf("Test Complete : %llu nodes visited\n\n\n", leafNodes);
+	printf("Test Complete : %ju nodes visited\n\n\n", leafNodes);
 
 	return;
 }
@@ -314,7 +323,7 @@ void perft(int depth, struct board *brd)
 	generate_all_moves(brd, &mv_list);
 
 	mv_bitmap mv;
-	for (U32 mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
+	for (uint32_t mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
 		mv = mv_list.moves[mv_num].move_bitmap;
 
 		if (make_move(brd, mv)) {
@@ -333,7 +342,7 @@ void divide_perft(int depth, struct board *brd)
 
 	//ASSERT_BOARD_OK(brd);
 
-	//U32 move_cnt = 0;
+	//uint32_t move_cnt = 0;
 
 	struct move_list mv_list = {
 		.moves = {{0, 0}},
@@ -343,7 +352,7 @@ void divide_perft(int depth, struct board *brd)
 	generate_all_moves(brd, &mv_list);
 
 	mv_bitmap mv;
-	for (U32 mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
+	for (uint32_t mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
 		mv = mv_list.moves[mv_num].move_bitmap;
 
 		if (make_move(brd, mv)) {
@@ -358,17 +367,17 @@ void divide_perft(int depth, struct board *brd)
 
 	}
 
-	printf("\nTest Complete :%llu nodes visited\n", leafNodes);
+	printf("\nTest Complete :%ju nodes visited\n", leafNodes);
 
 	return;
 }
 
-U32 divide(int depth, struct board * brd)
+uint32_t divide(int depth, struct board * brd)
 {
 
 	//ASSERT_BOARD_OK(brd);
 
-	U32 nodes = 0;
+	uint32_t nodes = 0;
 
 	if (depth <= 0) {
 		return 1;
@@ -382,7 +391,7 @@ U32 divide(int depth, struct board * brd)
 	generate_all_moves(brd, &mv_list);
 
 	mv_bitmap mv;
-	for (U32 mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
+	for (uint32_t mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
 		mv = mv_list.moves[mv_num].move_bitmap;
 		if (make_move(brd, mv)) {
 			nodes += divide((depth - 1), brd);
@@ -399,7 +408,7 @@ void bug_check(void)
 	    ("r3k2r/p1ppqpb1/bn2pnp1/3PN3/Pp2P3/2N2Q1p/1PPBBPPP/R3K2R b KQkq a3 0 1");
 
 	leafNodes = 0;
-	divide_perft((U8) 3, brd);
+	divide_perft((uint8_t) 3, brd);
 
 	assert_true(leafNodes == 193690690);
 }

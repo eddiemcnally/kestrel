@@ -25,6 +25,7 @@
  */
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
@@ -38,13 +39,13 @@
 #include "hashkeys.h"
 
 //----- hashkeys for positions
-static U64 piece_keys[NUM_PIECES][NUM_SQUARES] = { {0} };
+static uint64_t piece_keys[NUM_PIECES][NUM_SQUARES] = { {0} };
 
-static U64 side_to_move_key = 0;
+static uint64_t side_to_move_key = 0;
 // 16 combinations because of 4 bits being used for castle enum
-static U64 castle_keys[16] = { 0 };
+static uint64_t castle_keys[16] = { 0 };
 
-static U64 en_passant_keys[NUM_SQUARES] = { 0 };
+static uint64_t en_passant_keys[NUM_SQUARES] = { 0 };
 //-----
 
 /*
@@ -78,10 +79,10 @@ void init_hash_keys()
  *
  * name: 	get_castle_hash
  * @param: 	castle_map - the map of castle options
- * @return:	the U64 hashkey
+ * @return:	the uint64_t hashkey
  *
  */
-inline U64 get_castle_hash(U8 castle_map)
+inline uint64_t get_castle_hash(uint8_t castle_map)
 {
 	return castle_keys[castle_map];
 }
@@ -90,10 +91,10 @@ inline U64 get_castle_hash(U8 castle_map)
  *
  * name: 	get_side_hash
  * @param:
- * @return:	the U64 hashkey
+ * @return:	the uint64_t hashkey
  *
  */
-inline U64 get_side_hash(void)
+inline uint64_t get_side_hash(void)
 {
 	return side_to_move_key;
 }
@@ -102,15 +103,15 @@ inline U64 get_side_hash(void)
  *
  * name: 	get_piece_hash
  * @param: 	piece and square
- * @return:	the U64 hashkey
+ * @return:	the uint64_t hashkey
  *
  */
-inline U64 get_piece_hash(enum piece pce, enum square sq)
+inline uint64_t get_piece_hash(enum piece pce, enum square sq)
 {
 	return piece_keys[pce][sq];
 }
 
-inline U64 get_en_passant_hash(enum square sq)
+inline uint64_t get_en_passant_hash(enum square sq)
 {
 	//assert(sq != NO_SQUARE);
 	return en_passant_keys[sq];
@@ -124,9 +125,9 @@ inline U64 get_en_passant_hash(enum square sq)
  *
  */
 
-U64 get_position_hash(const struct board * brd)
+uint64_t get_position_hash(const struct board * brd)
 {
-	U64 retval = 0;
+	uint64_t retval = 0;
 
 	for (enum square sq = a1; sq <= h8; sq++) {
 		enum piece pce = get_piece_at_square(brd, sq);

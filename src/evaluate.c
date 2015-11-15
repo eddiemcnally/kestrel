@@ -23,6 +23,7 @@
  */
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <stdbool.h>
 #include "types.h"
 #include "board_utils.h"
@@ -31,7 +32,7 @@
 #include "move.h"
 
 
-static I32 eval_piece(const struct board *brd, enum piece pce, const I8 *pt);
+static int32_t eval_piece(const struct board *brd, enum piece pce, const int8_t *pt);
 
 
 
@@ -44,7 +45,7 @@ static I32 eval_piece(const struct board *brd, enum piece pce, const I8 *pt);
  * 
  */
 
-static const I8 PAWN_PT[NUM_SQUARES] = {
+static const int8_t PAWN_PT[NUM_SQUARES] = {
 0	,	0	,	0	,	0	,	0	,	0	,	0	,	0	,
 10	,	10	,	0	,	-10	,	-10	,	0	,	10	,	10	,
 5	,	0	,	0	,	5	,	5	,	0	,	0	,	5	,
@@ -56,7 +57,7 @@ static const I8 PAWN_PT[NUM_SQUARES] = {
 };
 
 
-static const I8 KNIGHT_PT[NUM_SQUARES] ={
+static const int8_t KNIGHT_PT[NUM_SQUARES] ={
 0	,	-10	,	0	,	0	,	0	,	0	,	-10	,	0	,
 0	,	0	,	0	,	5	,	5	,	0	,	0	,	0	,
 0	,	0	,	10	,	10	,	10	,	10	,	0	,	0	,
@@ -68,7 +69,7 @@ static const I8 KNIGHT_PT[NUM_SQUARES] ={
 };
 
 
-static const I8 BISHOP_PT[NUM_SQUARES] ={
+static const int8_t BISHOP_PT[NUM_SQUARES] ={
 0	,	0	,	-10	,	0	,	0	,	-10	,	0	,	0	,
 0	,	0	,	0	,	10	,	10	,	0	,	0	,	0	,
 0	,	0	,	10	,	15	,	15	,	10	,	0	,	0	,
@@ -80,7 +81,7 @@ static const I8 BISHOP_PT[NUM_SQUARES] ={
 };
 
 
-static const I8 ROOK_PT[NUM_SQUARES] ={
+static const int8_t ROOK_PT[NUM_SQUARES] ={
 0	,	0	,	5	,	10	,	10	,	5	,	0	,	0	,
 0	,	0	,	5	,	10	,	10	,	5	,	0	,	0	,
 0	,	0	,	5	,	10	,	10	,	5	,	0	,	0	,
@@ -96,7 +97,7 @@ static const I8 ROOK_PT[NUM_SQUARES] ={
 // a mirror array to allow for looking up the 
 // piece tables for BLACK
 
-static const I8 MIRROR_PT[NUM_SQUARES] ={
+static const int8_t MIRROR_PT[NUM_SQUARES] ={
 	56,	57,	58,	59,	60,	61,	62,	63,
 	48,	49,	50,	51,	52,	53,	54,	55,
 	40,	41,	42,	43,	44,	45,	46,	47,
@@ -116,10 +117,10 @@ static const I8 MIRROR_PT[NUM_SQUARES] ={
  * @return >0 for white, <0 for black
  * 
  */
-I32 evaluate_position(const struct board *brd)
+int32_t evaluate_position(const struct board *brd)
 {
 	// initially based on material value
-	I32 score = (I32) (brd->material[WHITE] - brd->material[BLACK]);
+	int32_t score = (int32_t) (brd->material[WHITE] - brd->material[BLACK]);
 
 	//printf("WHITE material %d, BLACK material %d\n", brd->material[WHITE], brd->material[BLACK] );
 
@@ -150,12 +151,12 @@ I32 evaluate_position(const struct board *brd)
 	}
 }
 
-inline static I32 eval_piece(const struct board *brd, enum piece pce,
-			     const I8 * pt)
+inline static int32_t eval_piece(const struct board *brd, enum piece pce,
+			     const int8_t * pt)
 {
-	I32 score = 0;
+	int32_t score = 0;
 
-	U64 bb = brd->bitboards[pce];
+	uint64_t bb = brd->bitboards[pce];
 	if (IS_BLACK(pce)) {
 		while (bb != 0) {
 			enum square sq = pop_1st_bit(&bb);

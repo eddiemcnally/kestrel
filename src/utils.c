@@ -24,6 +24,7 @@
 #define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <ctype.h>
 #include <sched.h>
 #include <sys/times.h>
@@ -32,15 +33,15 @@
 #include "types.h"
 #include "utils.h"
 
-U64 generate_rand64(void)
+uint64_t generate_rand64(void)
 {
-	U64 retval = 0;
+	uint64_t retval = 0;
 
-	retval = (U64) rand();
-	retval |= (U64) rand() << 15;
-	retval |= (U64) rand() << 30;
-	retval |= (U64) rand() << 45;
-	retval |= ((U64) rand() & 0xf) << 60;
+	retval = (uint64_t) rand();
+	retval |= (uint64_t) rand() << 15;
+	retval |= (uint64_t) rand() << 30;
+	retval |= (uint64_t) rand() << 45;
+	retval |= ((uint64_t) rand() & 0xf) << 60;
 
 	return retval;
 }
@@ -64,21 +65,21 @@ void set_priority_and_affinity(void)
 }
 
 
-U64 get_time_in_millis(void)
+uint64_t get_time_in_millis(void)
 {
 	struct timeval tp;
 
 	int errno = gettimeofday(&tp, NULL);
 
 	if (errno == 0) {
-		return (U64) (tp.tv_sec * 1000 + tp.tv_usec / 1000);
+		return (uint64_t) (tp.tv_sec * 1000 + tp.tv_usec / 1000);
 	}
 
 	return 0;
 }
 
-U64 get_elapsed_time_in_millis(U64 start_time)
+uint64_t get_elapsed_time_in_millis(uint64_t start_time)
 {
-	U64 now_in_millis = get_time_in_millis();
+	uint64_t now_in_millis = get_time_in_millis();
 	return (now_in_millis - start_time);
 }

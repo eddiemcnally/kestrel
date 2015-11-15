@@ -23,6 +23,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <stdbool.h>
 #include "types.h"
 #include "makemove.h"
@@ -32,7 +33,7 @@
 static void init_table(struct pv_table *tab);
 static struct pv_entry *get_empty_entry(void);
 static void init_pv_entry(struct pv_entry *entry);
-static U64 get_index(const U64 board_hash);
+static uint64_t get_index(const uint64_t board_hash);
 
 /* Create and initialise a PV Table
  *
@@ -92,10 +93,10 @@ void dump_pv_table_stats(const struct pv_table *table){
 
 
 
-void add_move_to_pv_table(const struct pv_table *table, const U64 board_hash,
+void add_move_to_pv_table(const struct pv_table *table, const uint64_t board_hash,
 	      const mv_bitmap move)
 {
-	U64 index = get_index(board_hash);
+	uint64_t index = get_index(board_hash);
 
 	struct pv_entry *entry = &table->entries[index];
 
@@ -118,9 +119,9 @@ void add_move_to_pv_table(const struct pv_table *table, const U64 board_hash,
 	}
 }
 
-inline mv_bitmap find_move(const struct pv_table *table, const U64 board_hash)
+inline mv_bitmap find_move(const struct pv_table *table, const uint64_t board_hash)
 {
-	U64 index = get_index(board_hash);
+	uint64_t index = get_index(board_hash);
 
 	struct pv_entry *entry = &table->entries[index];
 
@@ -148,7 +149,7 @@ inline mv_bitmap find_move(const struct pv_table *table, const U64 board_hash)
 void dispose_table(struct pv_table *table)
 {
 	// dispose of linked lists
-	for (U32 i = 0; i < NUM_PV_ENTRIES; i++) {
+	for (uint32_t i = 0; i < NUM_PV_ENTRIES; i++) {
 
 		struct pv_entry *entry = &table->entries[i];
 		if (entry->next != NULL) {
@@ -170,12 +171,12 @@ void dispose_table(struct pv_table *table)
 	free(table);
 }
 
-inline U8 populate_pv_line(const struct pv_table *table, struct board *brd,
-		      const U8 depth)
+inline uint8_t populate_pv_line(const struct pv_table *table, struct board *brd,
+		      const uint8_t depth)
 {
 	mv_bitmap move = find_move(table, brd->board_hash);
 
-	U8 count = 0;
+	uint8_t count = 0;
 	while (move != NO_MOVE && count < depth) {
 		make_move(brd, move);
 		brd->pv_array[count++] = move;
@@ -214,7 +215,7 @@ static inline void init_pv_entry(struct pv_entry *entry)
 	entry->next = NULL;
 }
 
-static inline U64 get_index(const U64 board_hash)
+static inline uint64_t get_index(const uint64_t board_hash)
 {
 	return board_hash % NUM_PV_ENTRIES;
 }

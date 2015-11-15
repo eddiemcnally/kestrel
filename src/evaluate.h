@@ -19,6 +19,6 @@
 #ifndef _EVALUATE_H_
 #define _EVALUATE_H_
 
-I32 evaluate_position(const struct board * brd);
+int32_t evaluate_position(const struct board * brd);
 
 #endif

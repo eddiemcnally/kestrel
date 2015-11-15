@@ -16,6 +16,7 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <stdio.h>
+#include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
@@ -36,8 +37,8 @@ void test_clear_MSB(void);
 void test_bit_reversal(void)
 {
 
-	U64 test_word = 0xFA340A7314DA;
-	U64 reversed = reverse_bits(test_word);
+	uint64_t test_word = 0xFA340A7314DA;
+	uint64_t reversed = reverse_bits(test_word);
 	assert_true(reversed == 0x5B28CE502C5F0000);
 
 	test_word = 0x6F43DA3E2;
@@ -61,7 +62,7 @@ void test_bit_reversal(void)
 
 void test_clear_MSB(void)
 {
-	U64 bb = 0x54673;
+	uint64_t bb = 0x54673;
 	clear_MSB_to_inclusive_bit(&bb, 10);
 
 	assert_true(bb == 0x273);
@@ -69,8 +70,8 @@ void test_clear_MSB(void)
 
 void test_find_LSB()
 {
-	U64 test_val = 0x526200817;
-	U8 b = get_LSB_index(test_val);
+	uint64_t test_val = 0x526200817;
+	uint8_t b = get_LSB_index(test_val);
 	assert_true(b == 0);
 
 	test_val = 0x29310040;
@@ -85,8 +86,8 @@ void test_find_LSB()
 
 void test_find_MSB()
 {
-	U64 test_val = 0x526200817;
-	U8 b = get_MSB_index(test_val);
+	uint64_t test_val = 0x526200817;
+	uint8_t b = get_MSB_index(test_val);
 	assert_true(b == 34);
 
 	test_val = 0x29310040;
@@ -105,7 +106,7 @@ void test_find_MSB()
 
 void test_clear_LSB(void)
 {
-	U64 bb = 0x54673;
+	uint64_t bb = 0x54673;
 	clear_LSB_to_inclusive_bit(&bb, 5);
 	assert_true(bb == 0x54640);
 }
@@ -128,15 +129,15 @@ void test_pv_table(){
 
 	struct pv_table *table = create_pv_table();
 
-	U64 start = (NUM_PV_ENTRIES / 2);
+	uint64_t start = (NUM_PV_ENTRIES / 2);
 
 	// add a multiple of the table size to force key collisions
-	for (U64 i = start; i < (3 * NUM_PV_ENTRIES); i++){
-		add_move_to_pv_table(table, i, (U32)((i + 12345)));
+	for (uint64_t i = start; i < (3 * NUM_PV_ENTRIES); i++){
+		add_move_to_pv_table(table, i, (uint32_t)((i + 12345)));
 	}
 
 	// now verify all additions
-	for (U64 i = start; i < (3 * NUM_PV_ENTRIES); i++){
+	for (uint64_t i = start; i < (3 * NUM_PV_ENTRIES); i++){
 		mv_bitmap mv = find_move(table, i);
 
 		assert_true(mv == (i + 12345));

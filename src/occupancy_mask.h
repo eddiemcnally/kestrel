@@ -21,16 +21,16 @@
 
 #include "types.h"
 
-//U64 get_occ_mask(enum piece pce, enum square sq);
+//uint64_t get_occ_mask(enum piece pce, enum square sq);
 void print_occupancy_masks(enum piece pce);
-void print_mask_as_board(const U64 * mask);
-void print_out_masks(const U64 * masks);
+void print_mask_as_board(const uint64_t * mask);
+void print_out_masks(const uint64_t * masks);
 void generate_diagonal_occupancy_masks(void);
-U64 get_occupancy_mask(enum piece pce, enum square sq);
+uint64_t get_occupancy_mask(enum piece pce, enum square sq);
 void generate_rank_and_file_masks(void);
 
 // elem [0] is a1, [63] is h8
-static const U64 black_pawn_occupancy_masks[NUM_SQUARES] = {
+static const uint64_t black_pawn_occupancy_masks[NUM_SQUARES] = {
 	0x0000000000000000,
 	0x0000000000000000,
 	0x0000000000000000,
@@ -98,7 +98,7 @@ static const U64 black_pawn_occupancy_masks[NUM_SQUARES] = {
 };
 
 // elem [0] is a1, [63] is h8
-static const U64 white_pawn_occupancy_masks[NUM_SQUARES] = {
+static const uint64_t white_pawn_occupancy_masks[NUM_SQUARES] = {
 	0x0000000000000000,
 	0x0000000000000000,
 	0x0000000000000000,
@@ -166,7 +166,7 @@ static const U64 white_pawn_occupancy_masks[NUM_SQUARES] = {
 };
 
 // elem [0] is a1, [63] is h8
-static const U64 knight_occupancy_masks[NUM_SQUARES] = {
+static const uint64_t knight_occupancy_masks[NUM_SQUARES] = {
 	0x0000000000020400,
 	0x0000000000050800,
 	0x00000000000a1100,
@@ -233,7 +233,7 @@ static const U64 knight_occupancy_masks[NUM_SQUARES] = {
 	0x0020400000000000
 };
 
-static const U64 bishop_occupancy_masks[NUM_SQUARES] = {
+static const uint64_t bishop_occupancy_masks[NUM_SQUARES] = {
 	0x8040201008040200,
 	0x0080402010080500,
 	0x0000804020110a00,
@@ -300,7 +300,7 @@ static const U64 bishop_occupancy_masks[NUM_SQUARES] = {
 	0x0040201008040201
 };
 
-static const U64 queen_occupancy_masks[NUM_SQUARES] = {
+static const uint64_t queen_occupancy_masks[NUM_SQUARES] = {
 	0x81412111090503fe,
 	0x02824222120a07fd,
 	0x0404844424150efb,
@@ -368,7 +368,7 @@ static const U64 queen_occupancy_masks[NUM_SQUARES] = {
 };
 
 // elem [0] is a1, [63] is h8
-static const U64 king_occupancy_masks[NUM_SQUARES] = {
+static const uint64_t king_occupancy_masks[NUM_SQUARES] = {
 
 	0x0000000000000302,
 	0x0000000000000705,
@@ -436,7 +436,7 @@ static const U64 king_occupancy_masks[NUM_SQUARES] = {
 	0x40c0000000000000
 };
 
-static const U64 rook_occupancy_masks[NUM_SQUARES] = {
+static const uint64_t rook_occupancy_masks[NUM_SQUARES] = {
 	0x01010101010101fe,
 	0x02020202020202fd,
 	0x04040404040404fb,
@@ -503,7 +503,7 @@ static const U64 rook_occupancy_masks[NUM_SQUARES] = {
 	0x7f80808080808080
 };
 
-static const U64 diagonal_occupancy_masks[NUM_SQUARES] = {
+static const uint64_t diagonal_occupancy_masks[NUM_SQUARES] = {
 	0x8040201008040200,
 	0x0080402010080400,
 	0x0000804020100800,
@@ -570,7 +570,7 @@ static const U64 diagonal_occupancy_masks[NUM_SQUARES] = {
 	0x0040201008040201
 };
 
-static const U64 anti_diagonal_occupancy_masks[NUM_SQUARES] = {
+static const uint64_t anti_diagonal_occupancy_masks[NUM_SQUARES] = {
 	0x0000000000000000,
 	0x0000000000000100,
 	0x0000000000010200,
@@ -638,7 +638,7 @@ static const U64 anti_diagonal_occupancy_masks[NUM_SQUARES] = {
 };
 
 
-static const U64 rank_masks[8] = {
+static const uint64_t rank_masks[8] = {
 	0x00000000000000ff,
 	0x000000000000ff00,
 	0x0000000000ff0000,
@@ -650,7 +650,7 @@ static const U64 rank_masks[8] = {
 };
 
 
-static const U64 file_masks[8] = {
+static const uint64_t file_masks[8] = {
 	0x0101010101010101,
 	0x0202020202020202,
 	0x0404040404040404,

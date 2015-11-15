@@ -23,12 +23,12 @@
 
 struct move {
 	mv_bitmap move_bitmap;
-	U32 score;
+	uint32_t score;
 };
 
 struct move_list {
 	struct move moves[MAX_POSITION_MOVES];
-	U16 move_count;
+	uint16_t move_count;
 };
 
 
@@ -43,16 +43,16 @@ enum score_adj {
 
 
 char *print_move(mv_bitmap move_bitmap);
-void print_move_details(U32 move_bitmap, U32 score);
+void print_move_details(uint32_t move_bitmap, uint32_t score);
 void print_move_list(const struct move_list *list);
 void print_move_list_details(const struct move_list *list);
 void generate_all_moves(struct board *brd, struct move_list *mvl);
 void generate_all_capture_moves(struct board *brd, struct move_list *mvl);
 void validate_move_list(struct move_list *mvl);
 mv_bitmap MOVE(enum square from, enum square to, enum piece capture,
-	       enum piece promote, U32 fl);
-U8 pop_1st_bit(U64 * bb);
-U64 reverse_bits(U64 word);
+	       enum piece promote, uint32_t fl);
+uint8_t pop_1st_bit(uint64_t * bb);
+uint64_t reverse_bits(uint64_t word);
 enum piece get_piece_at_square(const struct board *the_board, enum square sq);
 void init_mvv_lva_scores(void);
 
@@ -80,7 +80,7 @@ bool TEST_is_move_in_list(struct move_list *mvl, mv_bitmap mv);
 void TEST_add_en_passent_move(mv_bitmap move_bitmap, struct move_list *mvlist);
 void TEST_add_quiet_move(struct board *brd, mv_bitmap move_bitmap, 
 			struct move_list *mvlist, enum piece pce);
-U32 TEST_get_move_score(enum piece victim, enum piece attacker);
+uint32_t TEST_get_move_score(enum piece victim, enum piece attacker);
 struct move_list *TEST_get_empty_move_list(void);
 
 

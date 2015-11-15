@@ -23,7 +23,7 @@
 #include "types.h"
 #include "board.h"
 
-#define	BOARD_EMPTY	((U64)0x0ull)
+#define	BOARD_EMPTY	((uint64_t)0x0ull)
 
 #define NUM_RANKS 	8
 #define NUM_FILES	8
@@ -36,12 +36,12 @@ enum {
 	FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H
 };
 
-#define GET_PIECE_MASK(square)		((U64)(0x01ull << (int)(square)))
+#define GET_PIECE_MASK(square)		((uint64_t)(0x01ull << (int)(square)))
 
 // zero-based
-#define GET_RANK(square)			((U8)((square) >> 3))
-#define GET_FILE(square)			((U8)((square) % 8))
-#define GET_SQUARE(RANK, FILE)		((U8)((RANK << 3) + FILE))
+#define GET_RANK(square)			((uint8_t)((square) >> 3))
+#define GET_FILE(square)			((uint8_t)((square) % 8))
+#define GET_SQUARE(RANK, FILE)		((uint8_t)((RANK << 3) + FILE))
 
 #define IS_VALID_RANK(rank)		((rank >= RANK_1) && (rank <= RANK_8))
 #define IS_VALID_FILE(file)		((file >= FILE_A) && (file <= FILE_H))
@@ -58,10 +58,10 @@ enum {
 
 struct board *init_board(char *fen);
 void set_piece_material(struct board *brd);
-U64 overlay_white_pieces(const struct board * brd);
-U64 overlay_black_pieces(const struct board * brd);
+uint64_t overlay_white_pieces(const struct board * brd);
+uint64_t overlay_black_pieces(const struct board * brd);
 void overlay_boards(struct board *the_board);
-U8 count_bits(U64 bb);
-U64 square_to_bitboard(enum square sq);
+uint8_t count_bits(uint64_t bb);
+uint64_t square_to_bitboard(enum square sq);
 
 #endif

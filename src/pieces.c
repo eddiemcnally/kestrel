@@ -23,6 +23,7 @@
  */
 
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include "types.h"
@@ -43,7 +44,7 @@ inline char get_piece_label(enum piece pce)
 	return pieceToChar[pce];
 }
 
-inline U32 get_piece_value(const enum piece pce)
+inline uint32_t get_piece_value(const enum piece pce)
 {
 	return piece_values[pce];
 }

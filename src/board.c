@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <assert.h>
 #include "types.h"
@@ -77,14 +78,14 @@ static struct board *get_clean_board(void)
 	return brd;
 }
 
-inline U64 overlay_white_pieces(const struct board * brd)
+inline uint64_t overlay_white_pieces(const struct board * brd)
 {
 	return brd->bitboards[W_PAWN] | brd->bitboards[W_BISHOP]
 	    | brd->bitboards[W_KNIGHT] | brd->bitboards[W_ROOK]
 	    | brd->bitboards[W_QUEEN] | brd->bitboards[W_KING];
 }
 
-inline U64 overlay_black_pieces(const struct board * brd)
+inline uint64_t overlay_black_pieces(const struct board * brd)
 {
 	return brd->bitboards[B_PAWN] | brd->bitboards[B_BISHOP]
 	    | brd->bitboards[B_KNIGHT] | brd->bitboards[B_ROOK]
@@ -93,22 +94,22 @@ inline U64 overlay_black_pieces(const struct board * brd)
 
 
 
-inline U64 square_to_bitboard(enum square sq)
+inline uint64_t square_to_bitboard(enum square sq)
 {
-	U64 retval = 0;
+	uint64_t retval = 0;
 	set_bit(&retval, sq);
 	return retval;
 }
 
 
 /*
- * Counts set bits in a U64
+ * Counts set bits in a uint64_t
  * name: count_bits
  * @param 	the board
  * @return	the number of set bits
  *
  */
-inline U8 count_bits(U64 bb)
+inline uint8_t count_bits(uint64_t bb)
 {
-	return (U8) __builtin_popcountll(bb);
+	return (uint8_t) __builtin_popcountll(bb);
 }

@@ -24,9 +24,11 @@
  */
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <inttypes.h>
 #include "types.h"
 #include "move.h"
 #include "hashkeys.h"
@@ -84,7 +86,7 @@ void print_board(const struct board *the_board)
 	if (the_board->en_passant == NO_SQUARE) {
 		printf("enPas:\t-\n");
 	} else {
-		U32 rank = GET_RANK(the_board->en_passant);
+		uint32_t rank = GET_RANK(the_board->en_passant);
 		int file = GET_FILE(the_board->en_passant);
 		printf("enPas:\t%c%c\n", files[file], ranks[rank]);
 	}
@@ -95,7 +97,7 @@ void print_board(const struct board *the_board)
 	       (the_board->castle_perm & BKCA) ? 'k' : '-',
 	       (the_board->castle_perm & BQCA) ? 'q' : '-');
 
-	printf("PosKey:\t0x%016llx\n", the_board->board_hash);
+	printf("PosKey:\t%jx\n", the_board->board_hash);
 
 /*
 	printf("Move history\n");
@@ -158,17 +160,17 @@ bool ASSERT_BOARD_OK(const struct board *brd)
 {
 
 	// check bit boards
-	U64 conflated = 0;
+	uint64_t conflated = 0;
 
 	for (int i = 0; i < NUM_PIECES; i++) {
 		conflated |= brd->bitboards[i];
 	}
 	assert(conflated == brd->board);
 
-	U64 wking_bb = brd->bitboards[W_KING];
+	uint64_t wking_bb = brd->bitboards[W_KING];
 	assert(count_bits(wking_bb) == 1);
 
-	U64 bking_bb = brd->bitboards[B_KING];
+	uint64_t bking_bb = brd->bitboards[B_KING];
 	assert(count_bits(bking_bb) == 1);
 
 	// check where Kings are
@@ -177,13 +179,13 @@ bool ASSERT_BOARD_OK(const struct board *brd)
 		if (pce != NO_PIECE) {
 			if (pce == W_KING) {
 
-				U64 bb_wk = brd->bitboards[W_KING];
+				uint64_t bb_wk = brd->bitboards[W_KING];
 				enum square wk_sq = pop_1st_bit(&bb_wk);
 
 				assert(sq == wk_sq);
 			} else if (pce == B_KING) {
 
-				U64 bb_bk = brd->bitboards[B_KING];
+				uint64_t bb_bk = brd->bitboards[B_KING];
 				enum square bk_sq = pop_1st_bit(&bb_bk);
 
 				assert(sq == bk_sq);
@@ -203,7 +205,7 @@ bool ASSERT_BOARD_OK(const struct board *brd)
 	       || (brd->en_passant == NO_SQUARE));
 
 	// calc and verify the material count
-	U32 local_material[NUM_COLOURS] = { 0 };
+	uint32_t local_material[NUM_COLOURS] = { 0 };
 	for (enum square sq = 0; sq <= h8; sq++) {
 		enum piece pce = get_piece_at_square(brd, sq);
 		if (pce != NO_PIECE) {
@@ -282,7 +284,7 @@ void assert_boards_are_equal(const struct board *brd1, const struct board *brd2)
  */
 struct board *clone_board(const struct board *board_to_clone)
 {
-	U16 size = sizeof(struct board);
+	uint16_t size = sizeof(struct board);
 	struct board *brd = malloc(size);
 	memcpy(brd, board_to_clone, size);
 	return brd;
@@ -301,10 +303,10 @@ mv_bitmap parse_move(char *ip_move, struct board * brd)
 	if (ip_move[2] > 'h' || ip_move[2] < 'a')
 		return NO_MOVE;
 
-	U8 from_file = (U8) (ip_move[0] - 'a');
-	U8 from_rank = (U8) (ip_move[1] - '1');
-	U8 to_file = (U8) (ip_move[2] - 'a');
-	U8 to_rank = (U8) (ip_move[3] - '1');
+	uint8_t from_file = (uint8_t) (ip_move[0] - 'a');
+	uint8_t from_rank = (uint8_t) (ip_move[1] - '1');
+	uint8_t to_file = (uint8_t) (ip_move[2] - 'a');
+	uint8_t to_rank = (uint8_t) (ip_move[3] - '1');
 
 	enum square from = GET_SQUARE(from_rank, from_file);
 	enum square to = GET_SQUARE(to_rank, to_file);

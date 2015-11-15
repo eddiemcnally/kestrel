@@ -25,6 +25,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <stdbool.h>
 #include <assert.h>
@@ -38,7 +39,7 @@
 #include "hashkeys.h"
 
 //bit mask for castle permissions
-static const U8 castle_permission_mask[NUM_SQUARES] = {
+static const uint8_t castle_permission_mask[NUM_SQUARES] = {
 	13, 15, 15, 15, 12, 15, 15, 14,
 	15, 15, 15, 15, 15, 15, 15, 15,
 	15, 15, 15, 15, 15, 15, 15, 15,
@@ -176,7 +177,7 @@ bool make_move(struct board *brd, mv_bitmap mv)
 	}
 	// check if move is valid (ie, king in check)
 	enum piece king = (side == BLACK) ? B_KING : W_KING;
-	U64 bb_king = brd->bitboards[king];
+	uint64_t bb_king = brd->bitboards[king];
 	enum square king_sq = pop_1st_bit(&bb_king);
 
 	// flip side
@@ -335,9 +336,9 @@ inline void remove_piece_from_board(struct board *brd, enum square sq)
  * @return : void
  *
  */
-inline void clear_bit(U64 * brd, enum square sq)
+inline void clear_bit(uint64_t * brd, enum square sq)
 {
-	*brd = *brd & (U64) (~(0x01ull << sq));
+	*brd = *brd & (uint64_t) (~(0x01ull << sq));
 }
 
 /*
@@ -347,9 +348,9 @@ inline void clear_bit(U64 * brd, enum square sq)
  * @return : void
  *
  */
-inline void set_bit(U64 * brd, enum square sq)
+inline void set_bit(uint64_t * brd, enum square sq)
 {
-	*brd = *brd | (U64) (0x01ull << sq);
+	*brd = *brd | (uint64_t) (0x01ull << sq);
 }
 
 inline void update_piece_hash(struct board *brd, enum piece pce, enum square sq)

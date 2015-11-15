@@ -17,6 +17,7 @@
  */
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include "seatest.h"
@@ -46,7 +47,7 @@ void test_add_piece(void);
 void test_move_piece(void);
 void test_capture_move_gen_1(void);
 void test_capture_move_gen_2(void);
-
+void test_capture_move_gen_3(void);
 
 
 
@@ -834,8 +835,8 @@ void test_clear_piece()
 	assert_true(CHECK_BIT(brd->bitboards[W_KNIGHT], c3) == true);
 
 	// save some info before the move for comparison
-	U64 old_hash = brd->board_hash;
-	U32 old_material = brd->material[WHITE];
+	uint64_t old_hash = brd->board_hash;
+	uint32_t old_material = brd->material[WHITE];
 	enum piece old_pce = brd->pieces[c3];
 
 	// remove the knight from c3
@@ -843,7 +844,7 @@ void test_clear_piece()
 
 	assert_true(old_hash != brd->board_hash);
 
-	U32 new_material = brd->material[WHITE] + get_piece_value(W_KNIGHT);
+	uint32_t new_material = brd->material[WHITE] + get_piece_value(W_KNIGHT);
 	assert_true(new_material == old_material);
 
 	assert_true(old_pce == W_KNIGHT);
@@ -869,14 +870,14 @@ void test_add_piece()
 	assert_true(count_bits(brd->bitboards[W_KNIGHT]) == 2);
 
 	// save some info before the move for comparison
-	U64 old_hash = brd->board_hash;
-	U32 old_material = brd->material[WHITE];
+	uint64_t old_hash = brd->board_hash;
+	uint32_t old_material = brd->material[WHITE];
 
 	// add a white knight to c4
 	add_piece_to_board(brd, W_KNIGHT, c4);
 
 	assert_true(old_hash != brd->board_hash);
-	U32 new_material = brd->material[WHITE];
+	uint32_t new_material = brd->material[WHITE];
 	assert_true(new_material == (old_material + get_piece_value(W_KNIGHT)));
 
 	assert_true(brd->pieces[c4] == W_KNIGHT);
@@ -945,15 +946,15 @@ void test_move_piece()
 	assert_true(count_bits(brd->bitboards[W_KNIGHT]) == 2);
 
 	// save some info before the move for comparison
-	U64 old_hash = brd->board_hash;
-	U32 old_material = brd->material[WHITE];
+	uint64_t old_hash = brd->board_hash;
+	uint32_t old_material = brd->material[WHITE];
 
 	// add a white knight from e4 to d3
 	move_piece(brd, e5, d3);
 
 	assert_true(old_hash != brd->board_hash);
 
-	U32 new_material = brd->material[WHITE];
+	uint32_t new_material = brd->material[WHITE];
 	assert_true(new_material == old_material);
 
 	assert_true(brd->pieces[d3] == W_KNIGHT);
@@ -1008,7 +1009,6 @@ void test_capture_move_gen_1(void){
 	generate_all_capture_moves(brd, list);
 
 	assert_true(list->move_count == 0);
-
 	free(list);
 }
 
@@ -1021,9 +1021,34 @@ void test_capture_move_gen_2(void){
 
 	assert_true(list->move_count == 8);
 
+	for(int i = 0; i < list->move_count; i++){
+		mv_bitmap mv = list->moves[i].move_bitmap;
+		enum piece pce = CAPTURED_PCE(mv);
+		
+		assert_true(pce != NO_PIECE);		
+	}
+
 	free(list);
 }
 
+void test_capture_move_gen_3(void){
+	struct board *brd = init_game("6r1/1b2npb1/1p2P3/1PPBpnR1/Pk1PpPpQ/N1qP1rp1/3P1Npp/BK1R4 w - - 0 1");
+	struct move_list *list = malloc(sizeof(struct move_list));
+	memset(list, 0, sizeof(struct move_list));
+
+	generate_all_capture_moves(brd, list);
+
+	assert_true(list->move_count == 17);
+
+	for(int i = 0; i < list->move_count; i++){
+		mv_bitmap mv = list->moves[i].move_bitmap;
+		enum piece pce = CAPTURED_PCE(mv);
+		
+		assert_true(pce != NO_PIECE);		
+	}
+
+	free(list);
+}
 
 
 
@@ -1049,7 +1074,7 @@ void move_test_fixture(void)
 	
 	run_test(test_capture_move_gen_1);
 	run_test(test_capture_move_gen_2);
-
+	run_test(test_capture_move_gen_3);
 
 
 	test_fixture_end();	// ends a fixture

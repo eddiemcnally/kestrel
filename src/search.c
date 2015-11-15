@@ -24,6 +24,7 @@
  */
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <string.h>
 #include <stdbool.h>
 #include <assert.h>
@@ -40,10 +41,10 @@
 #include "utils.h"
 
 static void reset_search_history(struct board *brd, struct search_info *si);
-static I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
+static int32_t alpha_beta(int32_t alpha, int32_t beta, uint8_t depth, struct board *brd,
 		      struct search_info *si);
-static void find_best_move(U64 current_move_index, struct move_list *mvlist);
-//static I32 do_quiessence_search(I32 alpha, I32 beta, struct board *brd, struct search_info *si);
+static void find_best_move(uint64_t current_move_index, struct move_list *mvlist);
+//static int32_t do_quiessence_search(int32_t alpha, int32_t beta, struct board *brd, struct search_info *si);
 
 // checks to see if most recent move is a repetition
 inline bool is_repetition(const struct board *brd)
@@ -66,9 +67,9 @@ inline bool is_repetition(const struct board *brd)
 void search_positions(struct board *brd, struct search_info *si)
 {
 	mv_bitmap best_move = NO_MOVE;
-	I32 best_score = -INFINITE;
-	U8 current_depth = 0;
-	U8 num_pv_moves = 0;
+	int32_t best_score = -INFINITE;
+	uint8_t current_depth = 0;
+	uint8_t num_pv_moves = 0;
 
 	// initialise for search
 	reset_search_history(brd, si);
@@ -132,12 +133,12 @@ static void reset_search_history(struct board *brd, struct search_info *si)
 }
 
 
-static void find_best_move(U64 current_move_index, struct move_list *mvl){
-	U32 best_score = 0;
-	U64 best_index = 0;
+static void find_best_move(uint64_t current_move_index, struct move_list *mvl){
+	uint32_t best_score = 0;
+	uint64_t best_index = 0;
 
-	for (U64 i = current_move_index; i < mvl->move_count; i++) {
-		U32 move_score = mvl->moves[mvl->move_count].score;
+	for (uint64_t i = current_move_index; i < mvl->move_count; i++) {
+		uint32_t move_score = mvl->moves[mvl->move_count].score;
 		if (move_score > best_score) {
 			best_score = move_score;
 			best_index = i;
@@ -151,7 +152,7 @@ static void find_best_move(U64 current_move_index, struct move_list *mvl){
 }
 
 
-static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
+static inline int32_t alpha_beta(int32_t alpha, int32_t beta, uint8_t depth, struct board *brd,
 			     struct search_info *si)
 {
 	//if (depth == 0) {
@@ -174,15 +175,15 @@ static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 
 	generate_all_moves(brd, mv_list);
 
-	U16 num_legal_moves = 0;
-	I32 orig_alpha = alpha;
+	uint16_t num_legal_moves = 0;
+	int32_t orig_alpha = alpha;
 	mv_bitmap best_move = NO_MOVE;
-	I32 score = -INFINITE;
+	int32_t score = -INFINITE;
 
 	// check our PV moves....if we have one, then mod score, and exit
 	mv_bitmap pv_move = find_move(brd->pvtable, brd->board_hash);
 	if (pv_move != NO_MOVE){
-		for (U16 i = 0; i < mv_list->move_count; i++) {
+		for (uint16_t i = 0; i < mv_list->move_count; i++) {
 			mv_bitmap mv = mv_list->moves[i].move_bitmap;
 			if (mv == pv_move){
 				mv_list->moves[i].score = SCORE_ADJ_PV_MOVE;
@@ -192,7 +193,7 @@ static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 	}
 
 
-	for (U16 i = 0; i < mv_list->move_count; i++) {
+	for (uint16_t i = 0; i < mv_list->move_count; i++) {
 
 		find_best_move(i, mv_list);
 
@@ -206,7 +207,7 @@ static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 		num_legal_moves++;
 
 		// swap alpha/beta
-		score = -alpha_beta(-beta, -alpha, (U8)(depth - 1), brd, si);
+		score = -alpha_beta(-beta, -alpha, (uint8_t)(depth - 1), brd, si);
 
 		take_move(brd);
 
@@ -256,7 +257,7 @@ static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 			king = B_KING;
 		}
 
-		U64 bb_king = brd->bitboards[king];
+		uint64_t bb_king = brd->bitboards[king];
 		enum square king_sq = pop_1st_bit(&bb_king);
 
 		enum colour opp_side = GET_OPPOSITE_SIDE(brd->side_to_move);
@@ -279,7 +280,7 @@ static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 }
 
 /*
-static inline I32 do_quiessence_search(I32 alpha, I32 beta, 
+static inline int32_t do_quiessence_search(int32_t alpha, int32_t beta, 
 							struct board *brd, struct search_info *si){
 
 	si->node_count++;
@@ -293,7 +294,7 @@ static inline I32 do_quiessence_search(I32 alpha, I32 beta,
 		return evaluate_position(brd);
 	}
 	
-	U32 score = evaluate_position(brd);
+	uint32_t score = evaluate_position(brd);
 
 
 
