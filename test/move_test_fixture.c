@@ -44,6 +44,11 @@ void test_sample_board_position(void);
 void test_clear_piece(void);
 void test_add_piece(void);
 void test_move_piece(void);
+void test_capture_move_gen_1(void);
+void test_capture_move_gen_2(void);
+
+
+
 
 void test_generation_white_pawn_moves(void)
 {
@@ -994,6 +999,32 @@ void test_make_move_take_move(void)
 }
 
 
+void test_capture_move_gen_1(void){
+	struct board *brd = init_game(STARTING_FEN);
+
+	struct move_list *list = malloc(sizeof(struct move_list));
+	memset(list, 0, sizeof(struct move_list));
+
+	generate_all_capture_moves(brd, list);
+
+	assert_true(list->move_count == 0);
+
+	free(list);
+}
+
+void test_capture_move_gen_2(void){
+	struct board *brd = init_game("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
+	struct move_list *list = malloc(sizeof(struct move_list));
+	memset(list, 0, sizeof(struct move_list));
+
+	generate_all_capture_moves(brd, list);
+
+	assert_true(list->move_count == 8);
+
+	free(list);
+}
+
+
 
 
 void move_test_fixture(void)
@@ -1015,6 +1046,11 @@ void move_test_fixture(void)
 	run_test(test_add_piece);
 	run_test(test_move_piece);
 	run_test(test_make_move_take_move);
+	
+	run_test(test_capture_move_gen_1);
+	run_test(test_capture_move_gen_2);
+
+
 
 	test_fixture_end();	// ends a fixture
 }

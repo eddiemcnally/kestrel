@@ -43,7 +43,7 @@ static void reset_search_history(struct board *brd, struct search_info *si);
 static I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 		      struct search_info *si);
 static void find_best_move(U64 current_move_index, struct move_list *mvlist);
-
+//static I32 do_quiessence_search(I32 alpha, I32 beta, struct board *brd, struct search_info *si);
 
 // checks to see if most recent move is a repetition
 inline bool is_repetition(const struct board *brd)
@@ -154,10 +154,9 @@ static void find_best_move(U64 current_move_index, struct move_list *mvl){
 static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 			     struct search_info *si)
 {
-	if (depth == 0) {
-		si->node_count++;
-		return evaluate_position(brd);
-	}
+	//if (depth == 0) {
+	//	return do_quiessence_search(alpha, beta, brd, si);
+	//}
 
 	si->node_count++;
 
@@ -278,3 +277,38 @@ static inline I32 alpha_beta(I32 alpha, I32 beta, U8 depth, struct board *brd,
 
 	return alpha;
 }
+
+/*
+static inline I32 do_quiessence_search(I32 alpha, I32 beta, 
+							struct board *brd, struct search_info *si){
+
+	si->node_count++;
+
+	if ((is_repetition(brd) || brd->fifty_move_counter >= 100)
+				&& brd->ply ==0){
+		return 0;
+	}
+
+	if (brd->ply > MAX_SEARCH_DEPTH - 1) {
+		return evaluate_position(brd);
+	}
+	
+	U32 score = evaluate_position(brd);
+
+
+
+
+
+
+
+	if (alpha != orig_alpha) {
+		// alpha is improved....better move
+		add_move_to_pv_table(brd->pvtable, brd->board_hash, best_move);
+	}
+
+	return alpha;
+
+}
+
+*/
+

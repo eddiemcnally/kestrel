@@ -47,6 +47,7 @@ void print_move_details(U32 move_bitmap, U32 score);
 void print_move_list(const struct move_list *list);
 void print_move_list_details(const struct move_list *list);
 void generate_all_moves(struct board *brd, struct move_list *mvl);
+void generate_all_capture_moves(struct board *brd, struct move_list *mvl);
 void validate_move_list(struct move_list *mvl);
 mv_bitmap MOVE(enum square from, enum square to, enum piece capture,
 	       enum piece promote, U32 fl);
