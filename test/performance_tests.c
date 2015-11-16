@@ -60,6 +60,17 @@ typedef struct EPD {
 // on the net. It gives the number of legal moves at each depth for a 
 // given position
 // 
+// see : 
+//		http://chessprogramming.wikispaces.com/Perft
+//		http://chessprogramming.wikispaces.com/Extended+Position+Description
+//
+// The included file "perftsuit.epd" was downloaded from the following
+// link :
+//		http://code.haskell.org/ChessLibrary/perftsuite.epd
+//
+
+
+
 #define NUM_EPD	126
 struct EPD test_positions[NUM_EPD] = {
 	{"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 20, 400,
@@ -253,9 +264,10 @@ void test_move_gen_depth()
 	uint64_t total_nodes = 0;
 
 	for (int i = 0; i < NUM_EPD; i++) {
+	
 		struct EPD e = test_positions[i];
 
-		printf("Analysing FEN : '%s'\n", e.fen);
+		printf("Analysing FEN to depth %d : '%s'\n", depth, e.fen);
 		struct board *brd = init_game(e.fen);
 
 		start_time = get_time_in_millis();
@@ -263,13 +275,13 @@ void test_move_gen_depth()
 		////////////
 		leafNodes = 0;
 		perf_test(depth, brd);
+		elapsed = get_elapsed_time_in_millis(start_time);
 
 		assert_true(leafNodes == e.depth5);
 		total_nodes += leafNodes;
 		free(brd);
 		//////////
 
-		elapsed = get_elapsed_time_in_millis(start_time);
 		total_move_time += elapsed;
 	}
 
@@ -284,11 +296,14 @@ void perf_test(int depth, struct board *brd)
 {
 
 	leafNodes = 0;
+	uint64_t start_time, elapsed;
 
 	struct move_list mv_list = {
 		.moves = {{0, 0}},
 		.move_count = 0
 	};
+
+	start_time = get_time_in_millis();
 
 	generate_all_moves(brd, &mv_list);
 
@@ -301,8 +316,11 @@ void perf_test(int depth, struct board *brd)
 		perft(depth - 1, brd);
 		take_move(brd);
 	}
-
-	printf("Test Complete : %ju nodes visited\n\n\n", leafNodes);
+	elapsed = get_elapsed_time_in_millis(start_time);
+	
+	double nps = ((double)leafNodes / ((double)elapsed / 1000));
+	
+	printf("Test Complete : %ju nodes visited, nodes/sec %f\n\n\n", leafNodes, nps);
 
 	return;
 }
@@ -315,6 +333,7 @@ void perft(int depth, struct board *brd)
 		return;
 	}
 
+
 	struct move_list mv_list = {
 		.moves = {{0, 0}},
 		.move_count = 0
@@ -325,7 +344,6 @@ void perft(int depth, struct board *brd)
 	mv_bitmap mv;
 	for (uint32_t mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
 		mv = mv_list.moves[mv_num].move_bitmap;
-
 		if (make_move(brd, mv)) {
 			perft(depth - 1, brd);
 			take_move(brd);

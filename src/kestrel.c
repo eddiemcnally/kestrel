@@ -89,7 +89,7 @@ int main(int argc, char **argv)
 		} else if (input[0] == 't') {
 			take_move(brd);
 		} else if (input[0] == 's'){
-			si->depth = 3;
+			si->depth = 6;
 			search_positions(brd, si);
 
 		} else {

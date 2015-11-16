@@ -44,7 +44,7 @@ static void reset_search_history(struct board *brd, struct search_info *si);
 static int32_t alpha_beta(int32_t alpha, int32_t beta, uint8_t depth, struct board *brd,
 		      struct search_info *si);
 static void find_best_move(uint64_t current_move_index, struct move_list *mvlist);
-//static int32_t do_quiessence_search(int32_t alpha, int32_t beta, struct board *brd, struct search_info *si);
+static int32_t do_quiessence_search(int32_t alpha, int32_t beta, struct board *brd, struct search_info *si);
 
 // checks to see if most recent move is a repetition
 inline bool is_repetition(const struct board *brd)
@@ -155,9 +155,9 @@ static void find_best_move(uint64_t current_move_index, struct move_list *mvl){
 static inline int32_t alpha_beta(int32_t alpha, int32_t beta, uint8_t depth, struct board *brd,
 			     struct search_info *si)
 {
-	//if (depth == 0) {
-	//	return do_quiessence_search(alpha, beta, brd, si);
-	//}
+	if (depth == 0) {
+		return do_quiessence_search(alpha, beta, brd, si);
+	}
 
 	si->node_count++;
 
@@ -279,14 +279,14 @@ static inline int32_t alpha_beta(int32_t alpha, int32_t beta, uint8_t depth, str
 	return alpha;
 }
 
-/*
+
 static inline int32_t do_quiessence_search(int32_t alpha, int32_t beta, 
 							struct board *brd, struct search_info *si){
 
 	si->node_count++;
 
 	if ((is_repetition(brd) || brd->fifty_move_counter >= 100)
-				&& brd->ply ==0){
+				&& brd->ply == 0){
 		return 0;
 	}
 
@@ -294,11 +294,60 @@ static inline int32_t do_quiessence_search(int32_t alpha, int32_t beta,
 		return evaluate_position(brd);
 	}
 	
-	uint32_t score = evaluate_position(brd);
+	int32_t score = evaluate_position(brd);
+	if(score >= beta) {
+		return beta;
+	}
+	
+	if(score > alpha) {
+		alpha = score;
+	}
+	
 
+	struct move_list mv_list[1];
+	memset(mv_list, 0, sizeof(struct move_list));
 
+	generate_all_capture_moves(brd, mv_list);
 
+	uint16_t num_legal_moves = 0;
+	int32_t orig_alpha = alpha;
+	mv_bitmap best_move = NO_MOVE;
 
+	score = -INFINITE;
+
+	for (uint16_t i = 0; i < mv_list->move_count; i++) {
+
+		find_best_move(i, mv_list);
+
+		mv_bitmap mv = mv_list->moves[i].move_bitmap;
+
+		if (!make_move(brd, mv)) {
+			// invalid move
+			continue;
+		}
+
+		num_legal_moves++;
+
+		// swap alpha/beta
+		score = -do_quiessence_search(-beta, -alpha, brd, si);
+
+		take_move(brd);
+
+		if (score > alpha) {
+			if (score >= beta) {
+				// a beta cut-off, so can stop searching
+				if (num_legal_moves == 1) {
+					si->fail_high_first++;
+				}
+				si->fail_high++;
+				return beta;
+			}
+
+			// improved alpha, so save move
+			alpha = score;
+			best_move = mv;
+		}
+	}
 
 
 
@@ -311,5 +360,5 @@ static inline int32_t do_quiessence_search(int32_t alpha, int32_t beta,
 
 }
 
-*/
+
 
