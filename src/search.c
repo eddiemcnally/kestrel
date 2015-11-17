@@ -135,7 +135,7 @@ static void reset_search_history(struct board *brd, struct search_info *si)
 
 static void find_best_move(uint64_t current_move_index, struct move_list *mvl){
 	uint32_t best_score = 0;
-	uint64_t best_index = 0;
+	uint64_t best_index = current_move_index;
 
 	for (uint64_t i = current_move_index; i < mvl->move_count; i++) {
 		uint32_t move_score = mvl->moves[mvl->move_count].score;
