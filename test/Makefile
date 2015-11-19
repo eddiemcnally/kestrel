@@ -28,7 +28,7 @@ CFLAGS	=		-O3 -flto -std=c11 \
 				-Wcast-align \
 				-Wmissing-include-dirs \
 				-Wpointer-arith \
-				-lubsan
+
 #
 # flags for profiling code
 #	CFLAGS	=	-O3 -pg -std=c11

@@ -14,7 +14,7 @@
 				-march=native \
 				-mtune=native \
 				-lmcheck \
-				-fsanitize=undefined \
+				-fsanitize=address \
 				-fomit-frame-pointer \
 				--param large-function-growth=20000 \
 				--param max-inline-insns-single=90000 \
@@ -33,7 +33,7 @@
 				-Wcast-align \
 				-Wmissing-include-dirs \
 				-Wpointer-arith \
-				-lubsan
+
 
 # flags for profiling code
 #	CFLAGS	=	-O3 -pg -std=iso9899:2011
