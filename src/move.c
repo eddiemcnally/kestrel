@@ -273,7 +273,7 @@ static const uint16_t victim_score[NUM_PIECES] = {
 	600		// B_KING
 };
 
-//                      [victim]    [attacker]
+//                      	[victim]    [attacker]
 static uint32_t mvv_lva_score[NUM_PIECES][NUM_PIECES];
 
 // pawn capture score is symmetrical (ie, same regardless of 
@@ -459,18 +459,10 @@ add_quiet_move(struct board *brd, mv_bitmap mv, struct move_list *mvlist,
 									enum piece pce)
 {
 	assert(CAPTURED_PCE(mv) == NO_PIECE);
-	
-	// adjust score based on the type of move
-	if (brd->search_killers[0][brd->ply] == mv){
-		mvlist->moves[mvlist->move_count].score = SCORE_ADJ_KILLER_SEARCH_0;
-	} else if (brd->search_killers[1][brd->ply] == mv){
-		mvlist->moves[mvlist->move_count].score = SCORE_ADJ_KILLER_SEARCH_1;		
-	} else {
-		// adj by search history
-		enum square tosq = TOSQ(mv);
-		mvlist->moves[mvlist->move_count].score = brd->search_history[pce][tosq];
-	}
+	assert(pce != NO_PIECE);
+	assert(brd != NULL);
 
+	mvlist->moves[mvlist->move_count].score = 0;
 	mvlist->moves[mvlist->move_count].move_bitmap = mv;
 	mvlist->move_count++;
 }

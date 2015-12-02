@@ -177,8 +177,6 @@ struct board {
 	// principle variation table
 	struct pv_table * pvtable;
 
-	mv_bitmap pv_array[MAX_SEARCH_DEPTH];
-
 	// castling permissions
 	uint8_t castle_perm;
 
@@ -188,45 +186,7 @@ struct board {
 	// a hash of the current board
 	uint64_t board_hash;
 
-	mv_bitmap search_history[NUM_PIECES][NUM_SQUARES];
-	
-	// killer moves : moves that aren't captures, but lead to a 
-	// beta cut-off in the alpha-beta search
-	// NOTE: maintain 2 only
-	mv_bitmap search_killers[2][MAX_SEARCH_DEPTH];
-
 };
-
-
-// holds info associated with searching
-struct search_info {
-	// start time of search
-	uint64_t start_time;
-	// stop time of search
-	uint64_t stop_time;
-	// depth to search to
-	uint8_t depth;
-	// count of moved remaining
-	uint32_t moves_remaining;
-	// count of nodes
-	uint64_t node_count;
-
-	// quit command has been issued
-	bool quit_set;
-	// indicates infinite search is activated
-	bool infinite;
-	// flag indicating depth is set
-	bool depth_set;
-	// flag indicating time is set
-	bool time_set;
-	// search is stopped
-	bool stopped;
-
-
-	float fail_high;
-	float fail_high_first;
-};
-
 
 
 

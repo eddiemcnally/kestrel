@@ -24,8 +24,6 @@
 
 struct pv_table *create_pv_table(void);
 void dump_pv_table_stats(const struct pv_table *table);
-uint8_t populate_pv_line(const struct pv_table *table, struct board *brd,
-		      const uint8_t depth);
 void add_move_to_pv_table(const struct pv_table *table, const uint64_t board_hash,
 	      const mv_bitmap move);
 mv_bitmap find_move(const struct pv_table *table, const uint64_t board_hash);

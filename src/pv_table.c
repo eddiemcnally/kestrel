@@ -171,27 +171,6 @@ void dispose_table(struct pv_table *table)
 	free(table);
 }
 
-inline uint8_t populate_pv_line(const struct pv_table *table, struct board *brd,
-		      const uint8_t depth)
-{
-	mv_bitmap move = find_move(table, brd->board_hash);
-
-	uint8_t count = 0;
-	while (move != NO_MOVE && count < depth) {
-		make_move(brd, move);
-		brd->pv_array[count++] = move;
-
-		move = find_move(table, brd->board_hash);
-	}
-
-	// revert the moves
-	while (brd->ply > 0) {
-		take_move(brd);
-	}
-
-	return count;
-}
-
 static inline void init_table(struct pv_table *tab)
 {
 	struct pv_entry *elem = &tab->entries[0];

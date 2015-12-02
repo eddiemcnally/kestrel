@@ -23,7 +23,6 @@
 #include "types.h"
 
 
-void search_positions(struct board *brd, struct search_info *si);
 bool is_repetition(const struct board *brd);
 
 #endif
