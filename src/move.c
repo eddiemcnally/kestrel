@@ -40,6 +40,7 @@
 #include "move.h"
 #include "utils.h"
 
+static void do_gen_moves(struct board *brd, struct move_list *mvl, bool captures_only);
 static void add_pawn_capture_move(enum colour col,
 				  enum square from, enum square to,
 				  enum piece capture, struct move_list *mvl);
@@ -309,24 +310,7 @@ void init_mvv_lva_scores(void){
  */
 void generate_all_moves(struct board *brd, struct move_list *mvl)
 {
-	//ASSERT_BOARD_OK(brd);
-
-	if (brd->side_to_move == WHITE) {
-		generate_white_pawn_moves(brd, mvl, false);
-		generate_knight_piece_moves(brd, mvl, W_KNIGHT, BLACK, false);
-		generate_king_moves(brd, mvl, W_KING, WHITE, BLACK, false);
-		generate_sliding_horizontal_vertical_moves(brd, mvl, W_ROOK, false);
-		generate_sliding_diagonal_moves(brd, mvl, W_BISHOP, false);
-		generate_queen_moves(brd, mvl, W_QUEEN, false);
-	} else {
-		generate_black_pawn_moves(brd, mvl, false);
-		generate_knight_piece_moves(brd, mvl, B_KNIGHT, WHITE, false);
-		generate_king_moves(brd, mvl, B_KING, BLACK, WHITE, false);
-		generate_sliding_horizontal_vertical_moves(brd, mvl, B_ROOK, false);
-		generate_sliding_diagonal_moves(brd, mvl, B_BISHOP, false);
-		generate_queen_moves(brd, mvl, B_QUEEN, false);
-	}
-
+	do_gen_moves(brd, mvl, false);
 }
 
 
@@ -340,24 +324,29 @@ void generate_all_moves(struct board *brd, struct move_list *mvl)
  */
 void generate_all_capture_moves(struct board *brd, struct move_list *mvl)
 {
+	do_gen_moves(brd, mvl, true);
+}
+
+
+
+static inline void do_gen_moves(struct board *brd, struct move_list *mvl, bool captures_only)
+{
 	//ASSERT_BOARD_OK(brd);
-
 	if (brd->side_to_move == WHITE) {
-		generate_white_pawn_moves(brd, mvl, true);
-		generate_knight_piece_moves(brd, mvl, W_KNIGHT, BLACK, true);
-		generate_king_moves(brd, mvl, W_KING, WHITE, BLACK, true);
-		generate_sliding_horizontal_vertical_moves(brd, mvl, W_ROOK, true);
-		generate_sliding_diagonal_moves(brd, mvl, W_BISHOP, true);
-		generate_queen_moves(brd, mvl, W_QUEEN, true);
+		generate_white_pawn_moves(brd, mvl, captures_only);
+		generate_knight_piece_moves(brd, mvl, W_KNIGHT, BLACK, captures_only);
+		generate_king_moves(brd, mvl, W_KING, WHITE, BLACK, captures_only);
+		generate_sliding_horizontal_vertical_moves(brd, mvl, W_ROOK, captures_only);
+		generate_sliding_diagonal_moves(brd, mvl, W_BISHOP, captures_only);
+		generate_queen_moves(brd, mvl, W_QUEEN, captures_only);
 	} else {
-		generate_black_pawn_moves(brd, mvl, true);
-		generate_knight_piece_moves(brd, mvl, B_KNIGHT, WHITE, true);
-		generate_king_moves(brd, mvl, B_KING, BLACK, WHITE, true);
-		generate_sliding_horizontal_vertical_moves(brd, mvl, B_ROOK, true);
-		generate_sliding_diagonal_moves(brd, mvl, B_BISHOP, true);
-		generate_queen_moves(brd, mvl, B_QUEEN, true);
+		generate_black_pawn_moves(brd, mvl, captures_only);
+		generate_knight_piece_moves(brd, mvl, B_KNIGHT, WHITE, captures_only);
+		generate_king_moves(brd, mvl, B_KING, BLACK, WHITE, captures_only);
+		generate_sliding_horizontal_vertical_moves(brd, mvl, B_ROOK, captures_only);
+		generate_sliding_diagonal_moves(brd, mvl, B_BISHOP, captures_only);
+		generate_queen_moves(brd, mvl, B_QUEEN, captures_only);
 	}
-
 }
 
 

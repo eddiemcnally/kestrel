@@ -41,6 +41,9 @@
 #include "utils.h"
 
 
+int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, int32_t depth);
+
+
 // checks to see if most recent move is a repetition
 inline bool is_repetition(const struct board *brd)
 {
@@ -57,5 +60,54 @@ inline bool is_repetition(const struct board *brd)
 	}
 	return false;
 }
+
+
+
+
+
+
+int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, int32_t depth) {
+	if(depth == 0){
+		// simple position eval until quiessence is implemented
+		return evaluate_position(brd);
+	} 
+	
+	struct move_list mvl[1];
+	
+	generate_all_moves(brd, mvl);
+
+	int32_t num_moves = mvl[0].move_count;
+	
+	for(int32_t i = 0; i < num_moves; i++){
+		struct move mv = mvl[0].moves[i];
+		
+		bool valid_move = make_move(brd, mv.move_bitmap);
+		if (valid_move == false){
+			continue;
+		}
+		
+		int32_t score = alpha_beta(brd, -beta, -alpha, depth - 1);
+		
+		take_move(brd);
+		
+		if (score >= beta){
+			return beta;		// fail-hard beta cutoff
+		}
+		if (score > alpha){
+			alpha = score;
+		}
+		
+	}
+	return alpha;
+	
+}
+
+
+
+
+
+
+
+
 
 
