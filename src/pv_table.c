@@ -101,11 +101,10 @@ void add_move_to_pv_table(const struct pv_table *table, const uint64_t board_has
 	struct pv_entry *entry = &table->entries[index];
 
 	if (entry->move == NO_MOVE) {
-		// empty slot
+		// empty slot, so just add the move
 		entry->move = move;
 		entry->hashkey = board_hash;
 	} else {
-		//printf("pv_table key collision..board_hash 0x%016llx....index 0x%016llx\n", board_hash, index);
 		// key collision
 		// create new pv_entry and add to list
 		struct pv_entry *new = get_empty_entry();

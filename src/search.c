@@ -72,6 +72,9 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, int32_t depth
 		return evaluate_position(brd);
 	} 
 	
+	mv_bitmap best_move = NO_MOVE;
+	bool is_alpha_improved = false;
+	
 	struct move_list mvl[1];
 	
 	generate_all_moves(brd, mvl);
@@ -83,6 +86,7 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, int32_t depth
 		
 		bool valid_move = make_move(brd, mv.move_bitmap);
 		if (valid_move == false){
+			// moved already reverted
 			continue;
 		}
 		
@@ -95,11 +99,16 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, int32_t depth
 		}
 		if (score > alpha){
 			alpha = score;
-		}
-		
+			is_alpha_improved = true;
+			best_move = mv.move_bitmap;
+		}		
 	}
-	return alpha;
 	
+	if (is_alpha_improved){
+		add_move_to_pv_table(brd->pvtable, brd->board_hash, best_move);
+	}
+	
+	return alpha;
 }
 
 
