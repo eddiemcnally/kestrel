@@ -118,6 +118,20 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 
 	uint16_t num_moves = mvl[0].move_count;
 	
+	
+	// if a move is in the PV table, then set the score to be high
+	// so it gets sorted correctly
+	mv_bitmap pv_mv = find_move(brd->pvtable, brd->board_hash);
+	if (pv_mv != NO_MOVE){
+		// find in move list
+		for(uint32_t i = 0; i < mvl[0].move_count; i++){
+			if (mvl[0].moves[i].move_bitmap == pv_mv){
+				mvl[0].moves[i].score = 200000;
+			}
+		}
+	}
+	
+	
 	for(uint16_t i = 0; i < num_moves; i++){
 		
 		pick_best_move_from_mvlist(i, &mvl[0]);		

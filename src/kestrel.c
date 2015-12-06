@@ -86,7 +86,7 @@ int main(int argc, char **argv)
 		} else if (input[0] == 't') {
 			take_move(&brd);
 		} else if (input[0] == 's') {
-			search_positions(&brd, 4);
+			search_positions(&brd, 5);
 		} else {
 			move = parse_move(input, &brd);
 			if (move != NO_MOVE) {
