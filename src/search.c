@@ -66,6 +66,9 @@ inline bool is_repetition(const struct board *brd)
 
 void search_positions(struct board *brd, uint8_t depth){
 	
+	
+	assert(ASSERT_BOARD_OK(brd) == true);
+	
 	mv_bitmap best_move = NO_MOVE;
 	int32_t score = 0;
 
@@ -95,7 +98,7 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, int32_t depth
 	mv_bitmap best_move = NO_MOVE;
 	bool is_alpha_improved = false;
 	
-	struct move_list mvl[1];
+	struct move_list mvl[1] = {0};
 	
 	generate_all_moves(brd, mvl);
 

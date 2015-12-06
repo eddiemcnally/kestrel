@@ -56,7 +56,8 @@ enum {
 	BQCA = 0x08			// black, queen-side
 };
 
-struct board *init_board(char *fen);
+void dispose_board(struct board *brd);
+struct board init_board(char *fen);
 uint8_t populate_pv_line(struct board *brd, uint8_t depth);
 void set_piece_material(struct board *brd);
 uint64_t overlay_white_pieces(const struct board * brd);

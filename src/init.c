@@ -33,14 +33,14 @@
 #include "init.h"
 #include "board_utils.h"
 
-struct board *init_game(char *fen)
+struct board init_game(char *fen)
 {
 	init_hash_keys();
 	init_mvv_lva_scores();
 
-	struct board *brd = init_board(fen);
+	struct board brd = init_board(fen);
 
-	ASSERT_BOARD_OK(brd);
+	ASSERT_BOARD_OK(&brd);
 
 	return brd;
 }

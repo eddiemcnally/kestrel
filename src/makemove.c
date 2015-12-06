@@ -119,6 +119,7 @@ bool make_move(struct board *brd, mv_bitmap mv)
 			move_piece(brd, h8, f8);
 			break;
 		default:
+			printf("to : %s\n", print_square(to));
 			assert(false);
 			break;
 		}

@@ -51,8 +51,8 @@ int main(int argc, char **argv)
 	// set process pri and cpu affinity for max performance
 	set_priority_and_affinity();
 
-	struct board *brd = init_game(SAMPLE_POSITION);
-	print_board(brd);
+	struct board brd = init_game(SAMPLE_POSITION);
+	print_board(&brd);
 
 
 ////////////// debug /////////////////
@@ -74,20 +74,23 @@ int main(int argc, char **argv)
 	char input[6];
 	mv_bitmap move = NO_MOVE;
 	while (true) {
-		print_board(brd);
+		print_board(&brd);
 		printf("Enter a move > ");
 		fgets(input, 6, stdin);
 
 		if (input[0] == 'q') {
 			// quit
+			dispose_board(&brd);
 			break;
 		} else if (input[0] == 't') {
-			take_move(brd);
+			take_move(&brd);
+		} else if (input[0] == 's') {
+			search_positions(&brd, 5);
 		} else {
-			move = parse_move(input, brd);
+			move = parse_move(input, &brd);
 			if (move != NO_MOVE) {
-				make_move(brd, move);
-				if (is_repetition(brd)) {
+				make_move(&brd, move);
+				if (is_repetition(&brd)) {
 					printf("*** repetition ***\n");
 				}
 			} else {
