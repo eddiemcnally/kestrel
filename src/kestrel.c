@@ -39,7 +39,8 @@
 #include "search.h"
 #include "move.h"
 
-// sample game position
+// sample game positions
+#define MATE_IN_TWO			"2bqkbn1/2pppp2/np2N3/r3P1p1/p2N2B1/5Q2/PPPPKPP1/RNB2r2 w KQkq - 0 1"
 #define SAMPLE_POSITION 	"r1b1k2r/ppppnppp/2n2q2/2b5/3NP3/2P1B3/PP3PPP/RN1QKB1R w KQkq - 0 1"
 
 int main(int argc, char **argv)
@@ -51,7 +52,7 @@ int main(int argc, char **argv)
 	// set process pri and cpu affinity for max performance
 	set_priority_and_affinity();
 
-	struct board brd = init_game(SAMPLE_POSITION);
+	struct board brd = init_game(MATE_IN_TWO);
 	print_board(&brd);
 
 
@@ -85,7 +86,7 @@ int main(int argc, char **argv)
 		} else if (input[0] == 't') {
 			take_move(&brd);
 		} else if (input[0] == 's') {
-			search_positions(&brd, 5);
+			search_positions(&brd, 4);
 		} else {
 			move = parse_move(input, &brd);
 			if (move != NO_MOVE) {

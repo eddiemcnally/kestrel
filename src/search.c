@@ -41,8 +41,9 @@
 #include "utils.h"
 
 
-int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, int32_t depth);
-
+int32_t quiesce(struct board *brd, int32_t alpha, int32_t beta);
+int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth);
+static void init_search(struct board *brd);
 
 // checks to see if most recent move is a repetition
 inline bool is_repetition(const struct board *brd)
@@ -66,8 +67,9 @@ inline bool is_repetition(const struct board *brd)
 
 void search_positions(struct board *brd, uint8_t depth){
 	
-	
 	assert(ASSERT_BOARD_OK(brd) == true);
+
+	init_search(brd);
 	
 	mv_bitmap best_move = NO_MOVE;
 	int32_t score = 0;
@@ -75,24 +77,34 @@ void search_positions(struct board *brd, uint8_t depth){
 	
 	// use iterative deepening
 	for(uint8_t i = 1; i < depth; i++){
-		score = alpha_beta(brd, -INFINITE, INFINITE, depth);
+		score = alpha_beta(brd, -INFINITE, INFINITE, i);
 		
-		populate_pv_line(brd, depth);
+		uint8_t num_moves = populate_pv_line(brd, depth);
 		
 		best_move = brd->pv_line[0];
 		
-		printf("depth %d score %d best move %s\n", depth, score, print_move(best_move));
+		printf("depth %d score %d best move %s, #moves %d\n", i, score, print_move(best_move), num_moves);
+		printf("\t\t\tpv line :\t");
+		for(uint8_t j = 0; j < num_moves; j++){
+			printf(" %s", print_move(brd->pv_line[j]));
+		}		
+		printf("\n");
 	}
 }
 
 
 
+static void init_search(struct board *brd){
+	dispose_table(brd->pvtable);
+	
+	brd-> pvtable = create_pv_table();	
+}
+	
 
-
-int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, int32_t depth) {
+int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth) {
 	if(depth == 0){
 		// simple position eval until quiessence is implemented
-		return evaluate_position(brd);
+		return quiesce(brd, alpha, beta);
 	} 
 	
 	mv_bitmap best_move = NO_MOVE;
@@ -113,7 +125,8 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, int32_t depth
 			continue;
 		}
 		
-		int32_t score = alpha_beta(brd, -beta, -alpha, depth - 1);
+		// note: alpha/beta are swapped, and sign is reversed
+		int32_t score = -alpha_beta(brd, -beta, -alpha, (uint8_t)(depth - 1));
 		
 		take_move(brd);
 		
@@ -136,10 +149,50 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, int32_t depth
 
 
 
+int32_t quiesce(struct board *brd, int32_t alpha, int32_t beta){
+	
+	if (is_repetition(brd) || brd->fifty_move_counter >= 100){
+		return 0;
+	}
+	
+	if (brd->ply > MAX_SEARCH_DEPTH){
+		return evaluate_position(brd);
+	}
+	
+	int32_t stand_pat_score = evaluate_position(brd);
+	
+	if (stand_pat_score >= beta){
+		return beta;
+	}
+	if (stand_pat_score > alpha){
+		alpha = stand_pat_score;
+	}
+	
+	struct move_list mvl[1] = {0};
+	
+	generate_all_capture_moves(brd, mvl);
 
-
-
-
-
-
+	int32_t num_moves = mvl[0].move_count;
+	
+	for(int32_t i = 0; i < num_moves; i++){
+		struct move mv = mvl[0].moves[i];
+		
+		bool valid_move = make_move(brd, mv.move_bitmap);
+		if (valid_move == false){
+			// moved already reverted
+			continue;
+		}
+		
+		// note: alpha/beta are swapped, and sign is reversed
+		int32_t score = -quiesce(brd, -beta, -alpha);
+		
+		take_move(brd);
+		
+        if( score >= beta )
+            return beta;
+        if( score > alpha )
+           alpha = score;
+	}
+	return alpha;
+}
 

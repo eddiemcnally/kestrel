@@ -99,8 +99,7 @@ uint8_t populate_pv_line(struct board *brd, uint8_t depth){
 	}
 
 	// rollback moves
-	uint8_t i = count;
-	while(i-- > 0) {
+	while(brd->ply > 0) {
 		take_move(brd);
 	}
 	
