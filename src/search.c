@@ -44,6 +44,8 @@
 int32_t quiesce(struct board *brd, int32_t alpha, int32_t beta);
 int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth);
 static void init_search(struct board *brd);
+static void pick_best_move_from_mvlist(uint16_t move_num, struct move_list *mvl);
+
 
 // checks to see if most recent move is a repetition
 inline bool is_repetition(const struct board *brd)
@@ -114,9 +116,12 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 	
 	generate_all_moves(brd, mvl);
 
-	int32_t num_moves = mvl[0].move_count;
+	uint16_t num_moves = mvl[0].move_count;
 	
-	for(int32_t i = 0; i < num_moves; i++){
+	for(uint16_t i = 0; i < num_moves; i++){
+		
+		pick_best_move_from_mvlist(i, &mvl[0]);		
+		
 		struct move mv = mvl[0].moves[i];
 		
 		bool valid_move = make_move(brd, mv.move_bitmap);
@@ -148,6 +153,27 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 }
 
 
+static void pick_best_move_from_mvlist(uint16_t move_num, struct move_list *mvl){
+
+	uint32_t best_score = 0;
+	uint16_t best_move_num = move_num; 
+
+	for(uint16_t i = move_num; i < mvl->move_count; i++){
+		if (mvl->moves[i].score > best_score){
+			best_score = mvl->moves[i].score;
+			best_move_num = i;
+		}	
+	} 
+
+	struct move temp_mv = mvl->moves[move_num];
+	mvl->moves[move_num] = mvl->moves[best_move_num];
+	mvl->moves[best_move_num] = temp_mv;
+}
+
+ 
+
+
+
 
 int32_t quiesce(struct board *brd, int32_t alpha, int32_t beta){
 	
@@ -172,9 +198,9 @@ int32_t quiesce(struct board *brd, int32_t alpha, int32_t beta){
 	
 	generate_all_capture_moves(brd, mvl);
 
-	int32_t num_moves = mvl[0].move_count;
+	uint16_t num_moves = mvl[0].move_count;
 	
-	for(int32_t i = 0; i < num_moves; i++){
+	for(uint16_t i = 0; i < num_moves; i++){
 		struct move mv = mvl[0].moves[i];
 		
 		bool valid_move = make_move(brd, mv.move_bitmap);

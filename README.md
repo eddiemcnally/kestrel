@@ -1,7 +1,7 @@
 
 First attempt at a C-based chess engine.
 
-The code is developed on Debian Jessie (BunsenLabs Linux), and is compiled with gcc 4.9.x. Currently there is a dependancy on gcc built-in functions.
+The code is developed on Debian Testing (stretch/sid) and is compiled with gcc 5.2.x. Currently there is a dependancy on gcc built-in functions.
 
 The ./test directory contains test fixtures for running unit tests (uses the 'seatest' test framework - see https://github.com/keithn/seatest).
 
@@ -20,7 +20,7 @@ Some implementation notes:
 This is a work-in-progress. Current state:
 * Can read in FEN
 * Can generate moves with an initial implementation of an AlphaBeta search/evaluate functionality.
-* Current state (Nov 2015) :
+* Current state (Dec 2015) :
     * correctly completes the 126 perft tests to a depth of 6 (> 12x10^9 moves generated)
     * implements alpha-beta search with principle variation  
     * implements iterative deepening
@@ -32,4 +32,14 @@ This is a work-in-progress. Current state:
 	* ./test_kestrel
 * In terms of performance, does about 13x10^6 moves/sec during the perft testing. Spec of host:
 	- Intel® Core™ i5-3337U CPU @ 1.80GHz × 4
-	- Debian GNU/Linux Jessie 64-bit
+	- Debian GNU/Linux stretch/sid 64-bit
+
+
+Feature set:
+* Bitboards (nd use of occupancy mask lookups)
+* Iterative Deepening
+* Alpha-beta with Principle Variation
+* Quiessence Search
+
+
+
