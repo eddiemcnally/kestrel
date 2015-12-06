@@ -22,7 +22,7 @@
 #include <stdbool.h>
 #include "types.h"
 
-
+void search_positions(struct board *brd, uint8_t depth);
 bool is_repetition(const struct board *brd);
 
 #endif

@@ -176,7 +176,9 @@ struct board {
 
 	// principle variation table
 	struct pv_table * pvtable;
-
+	// the best moves from the current position
+	mv_bitmap pv_line[MAX_SEARCH_DEPTH];
+	
 	// castling permissions
 	uint8_t castle_perm;
 

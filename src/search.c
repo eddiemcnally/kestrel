@@ -64,6 +64,26 @@ inline bool is_repetition(const struct board *brd)
 
 
 
+void search_positions(struct board *brd, uint8_t depth){
+	
+	mv_bitmap best_move = NO_MOVE;
+	int32_t score = 0;
+
+	
+	// use iterative deepening
+	for(uint8_t i = 1; i < depth; i++){
+		score = alpha_beta(brd, -INFINITE, INFINITE, depth);
+		
+		populate_pv_line(brd, depth);
+		
+		best_move = brd->pv_line[0];
+		
+		printf("depth %d score %d best move %s\n", depth, score, print_move(best_move));
+	}
+}
+
+
+
 
 
 int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, int32_t depth) {

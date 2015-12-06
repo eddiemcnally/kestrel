@@ -78,6 +78,32 @@ static struct board *get_clean_board(void)
 	return brd;
 }
 
+
+
+uint8_t populate_pv_line(struct board *brd, uint8_t depth){
+
+	mv_bitmap mv = find_move(brd->pvtable, brd->board_hash);
+
+	uint8_t count = 0;
+
+	while((mv != NO_MOVE) && (count < depth)){
+		make_move(brd, mv);
+		brd->pv_line[count++] = mv;
+	
+		mv = find_move(brd->pvtable, brd->board_hash);
+	}
+
+	// rollback moves
+	uint8_t i = count;
+	while(i-- > 0) {
+		take_move(brd);
+	}
+	
+	return count;
+}
+
+
+
 inline uint64_t overlay_white_pieces(const struct board * brd)
 {
 	return brd->bitboards[W_PAWN] | brd->bitboards[W_BISHOP]
