@@ -131,7 +131,7 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 		}
 	}
 	
-	
+	uint8_t legal_move_cnt = 0;
 	for(uint16_t i = 0; i < num_moves; i++){
 		
 		pick_best_move_from_mvlist(i, &mvl[0]);		
@@ -143,6 +143,8 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 			// moved already reverted
 			continue;
 		}
+		
+		legal_move_cnt++;
 		
 		// note: alpha/beta are swapped, and sign is reversed
 		int32_t score = -alpha_beta(brd, -beta, -alpha, (uint8_t)(depth - 1));
@@ -157,6 +159,27 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 			is_alpha_improved = true;
 			best_move = mv.move_bitmap;
 		}		
+	}
+	
+	if(legal_move_cnt == 0) {
+		// no legal moves....must be mate
+		enum piece king = NO_PIECE;
+		if (brd->side_to_move == WHITE)
+			king = W_KING;
+		else 
+			king = B_KING;
+			
+		uint64_t king_bb = brd->bitboards[king];
+		enum square king_sq = pop_1st_bit(&king_bb);
+		
+		enum colour opposite_side = GET_OPPOSITE_SIDE(brd->side_to_move);
+		
+		if (is_sq_attacked(brd, king_sq, opposite_side)){
+			return -MATE + brd->ply;
+		} else {
+			// draw
+			return 0;
+		}
 	}
 	
 	if (is_alpha_improved){
@@ -213,6 +236,9 @@ int32_t quiesce(struct board *brd, int32_t alpha, int32_t beta){
 	generate_all_capture_moves(brd, mvl);
 
 	uint16_t num_moves = mvl[0].move_count;
+	struct move best_move = {0};
+	bool is_alpha_improved = false;
+	
 	
 	for(uint16_t i = 0; i < num_moves; i++){
 		struct move mv = mvl[0].moves[i];
@@ -228,11 +254,21 @@ int32_t quiesce(struct board *brd, int32_t alpha, int32_t beta){
 		
 		take_move(brd);
 		
-        if( score >= beta )
-            return beta;
-        if( score > alpha )
-           alpha = score;
+		if (score > alpha){
+			if (score >= beta){
+				return beta;
+			}
+			is_alpha_improved = true;
+			alpha = score;
+			best_move = mv;
+		}
 	}
+	
+	if (is_alpha_improved){
+		add_move_to_pv_table(brd->pvtable, brd->board_hash, best_move.move_bitmap);
+	}
+
+	
 	return alpha;
 }
 

@@ -40,6 +40,7 @@ Feature set:
 * Iterative Deepening
 * Alpha-beta with Principle Variation
 * Quiessence Search
+* Piece Square Valuation
 
 
 
