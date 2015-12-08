@@ -469,7 +469,7 @@ static inline void add_pawn_capture_move(enum colour col, enum square from,
 	}
 	assert(capture != NO_PIECE);
 	
-	mv_bitmap mv = 0;
+	mv_bitmap mv = 0; 
 	
 	if (col == WHITE) {
 		uint32_t score = mvv_lva_score[capture][W_PAWN];
