@@ -40,7 +40,7 @@
 #include "hashkeys.h"
 #include "pieces.h"
 
-static struct board get_clean_board(void);
+static struct board * get_clean_board(void);
 
 /*
  * Creates and initialises a new board. The default starting piece
@@ -50,10 +50,10 @@ static struct board get_clean_board(void);
  * @return	a new board
  *
  */
-struct board init_board(char *fen)
+struct board * init_board(char *fen)
 {
-	struct board brd = get_clean_board();
-	consume_fen_notation(fen, &brd);
+	struct board * brd = get_clean_board();
+	consume_fen_notation(fen, brd);
 	return brd;
 }
 
@@ -64,23 +64,26 @@ struct board init_board(char *fen)
  * @return	ptr to a created board struct
  *
  */
-static struct board get_clean_board(void)
+static struct board * get_clean_board(void)
 {
 
-	struct board brd[1] = {0};
+	struct board * brd = malloc(sizeof(struct board));
+	memset(brd, 0, sizeof(struct board));
 
 	for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
-		brd[0].pieces[sq] = NO_PIECE;
+		brd->pieces[sq] = NO_PIECE;
 	}
 	
-	brd[0].pvtable = create_pv_table();
+	brd->pvtable = create_pv_table();
 
-	return brd[0];
+	return brd;
 }
 
 
 void dispose_board(struct board *brd){
 	dispose_table(brd->pvtable);
+	
+	free(brd);
 }
 
 

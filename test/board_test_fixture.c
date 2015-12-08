@@ -51,7 +51,7 @@ void board_test_fixture(void);
 void test_initial_board_placement()
 {
 	init_hash_keys();
-	struct board *the_board = init_game(STARTING_FEN);
+	struct board * the_board = init_game(STARTING_FEN);
 
 	assert_true(W_ROOK == get_piece_at_square(the_board, a1));
 	assert_true(W_KNIGHT == get_piece_at_square(the_board, b1));

@@ -464,6 +464,9 @@ static inline void add_pawn_capture_move(enum colour col, enum square from,
 					 enum square to, enum piece capture,
 					 struct move_list *mvl)
 {
+	if (capture != NO_PIECE){
+		printf("***** capture %d\n", capture);
+	}
 	assert(capture != NO_PIECE);
 	
 	mv_bitmap mv = 0;
@@ -1132,7 +1135,7 @@ static inline uint64_t get_negative_diagonal_mask(const enum square sq)
  * @return
  *
  */
-char *print_move(uint32_t move_bitmap)
+char *print_move(mv_bitmap move_bitmap)
 {
 
 	static char move_string[6];
@@ -1165,7 +1168,7 @@ char *print_move(uint32_t move_bitmap)
 	return move_string;
 }
 
-void print_move_details(uint32_t move_bitmap, uint32_t score)
+void print_move_details(mv_bitmap move_bitmap, uint32_t score)
 {
 	int from_file = GET_FILE(FROMSQ(move_bitmap));
 	int from_rank = GET_RANK(FROMSQ(move_bitmap));
@@ -1193,15 +1196,16 @@ void print_move_details(uint32_t move_bitmap, uint32_t score)
  *
  */
 
+
 void print_move_list_details(const struct move_list *list)
 {
-	printf("MoveList Details:\n");
+	printf("MoveList Details: (%d)\n", list->move_count);
 
 	for (int i = 0; i < list->move_count; i++) {
-		uint32_t move = list->moves[i].move_bitmap;
+		mv_bitmap mv = list->moves[i].move_bitmap;
 		uint32_t score = list->moves[i].score;
 
-		print_move_details(move, score);
+		print_move_details(mv, score);
 	}
 	printf("MoveList Total %d Moves:\n\n", list->move_count);
 }

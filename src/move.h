@@ -43,7 +43,7 @@ enum score_adj {
 
 
 char *print_move(mv_bitmap move_bitmap);
-void print_move_details(uint32_t move_bitmap, uint32_t score);
+void print_move_details(mv_bitmap move_bitmap, uint32_t score);
 void print_move_list(const struct move_list *list);
 void print_move_list_details(const struct move_list *list);
 void generate_all_moves(struct board *brd, struct move_list *mvl);
