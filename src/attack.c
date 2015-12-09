@@ -1,6 +1,6 @@
 /*
  * attack.c
- *  
+ *
  * ---------------------------------------------------------------------
  * DESCRIPTION: Contains code associated with checking if a square is 
  * being attacked.
