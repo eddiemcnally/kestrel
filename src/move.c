@@ -464,9 +464,6 @@ static inline void add_pawn_capture_move(enum colour col, enum square from,
 					 enum square to, enum piece capture,
 					 struct move_list *mvl)
 {
-	if (capture != NO_PIECE){
-		printf("***** capture %d\n", capture);
-	}
 	assert(capture != NO_PIECE);
 	
 	mv_bitmap mv = 0; 

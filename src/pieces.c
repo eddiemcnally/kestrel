@@ -49,3 +49,7 @@ inline uint32_t get_piece_value(const enum piece pce)
 	return piece_values[pce];
 }
 
+inline bool is_valid_piece(enum piece pce){
+	return IS_VALID_PIECE(pce);
+}
+
