@@ -5,7 +5,7 @@
  * DESCRIPTION : Contains code for searching for moves and determining
  * the best ones
  * ---------------------------------------------------------------------
- *
+ * 
  *
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
