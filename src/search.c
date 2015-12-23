@@ -108,10 +108,12 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 		return quiesce(brd, alpha, beta);
 	} 
 	
+	
 	mv_bitmap best_move = NO_MOVE;
 	bool is_alpha_improved = false;
 	
-	struct move_list mvl[1] = {0};
+	struct move_list mvl[1];
+	memset(mvl, 0, sizeof(struct move_list));	
 		
 	generate_all_moves(brd, mvl);
 
@@ -232,8 +234,9 @@ int32_t quiesce(struct board *brd, int32_t alpha, int32_t beta){
 		alpha = stand_pat_score;
 	}
 
-	struct move_list mvl[1] = {0};
-		
+	struct move_list mvl[1];
+	memset(mvl, 0, sizeof(struct move_list));	
+			
 	generate_all_capture_moves(brd, mvl);
 	
 	print_move_list_details(mvl);
