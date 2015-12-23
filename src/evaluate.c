@@ -25,14 +25,18 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <assert.h>
 #include "types.h"
 #include "board_utils.h"
+#include "board.h"
 #include "evaluate.h"
 #include "pieces.h"
 #include "move.h"
 
 
 static int32_t eval_piece(const struct board *brd, enum piece pce, const int8_t *pt);
+static int32_t adj_pawn_dependant_pieces(const struct board *brd, enum piece target_pce, enum piece pawn, const int32_t *adj_vals);
+static int32_t adj_paired_pieces(const struct board *brd, enum piece pce);
 
 
 
@@ -124,6 +128,23 @@ static const int8_t MIRROR_PT[NUM_SQUARES] ={
 
 #define MIRROR_SQUARE(sq)	(MIRROR_PT[sq])
 
+// knights are less valuable when there are fewer pawns
+// numbers obtained from :
+// http://chessprogramming.wikispaces.com/CPW-Engine_eval
+static const int32_t knight_adj[8] = { -16, -12, -8, -4,  0,  4,  8, 12};
+
+// rooks are less valuable when there are more pawns
+static const int32_t rook_adj[8] =   {12,  9,  6,  3,  0, -3, -6, -9};
+
+// define additional score values based on having paired pieces
+// these values are taken from:
+// http://chessprogramming.wikispaces.com/CPW-Engine_eval_init
+#define BISHOP_PAIR_ADJ		30
+#define KNIGHT_PAIR_ADJ  	8
+#define ROOK_PAIR_ADJ		16
+
+
+
 /*
  * 
  * name: evaluate_position
@@ -154,6 +175,24 @@ int32_t evaluate_position(const struct board *brd)
 	score += eval_piece(brd, W_QUEEN, QUEEN_PT);
 	score -= eval_piece(brd, B_QUEEN, QUEEN_PT);
 
+	// now adjust value of knights based on number of pawns
+	score += adj_pawn_dependant_pieces(brd, W_KNIGHT, W_PAWN, knight_adj);
+	score -= adj_pawn_dependant_pieces(brd, B_KNIGHT, B_PAWN, knight_adj);
+
+	// now adjust value of rooks based on number of pawns
+	score += adj_pawn_dependant_pieces(brd, W_ROOK, W_PAWN, rook_adj);
+	score -= adj_pawn_dependant_pieces(brd, B_ROOK, B_PAWN, rook_adj);
+
+	// adjust score based on paired pieces
+	score += adj_paired_pieces(brd, W_BISHOP);
+	score += adj_paired_pieces(brd, W_KNIGHT);
+	score += adj_paired_pieces(brd, W_ROOK);
+	score -= adj_paired_pieces(brd, B_BISHOP);
+	score -= adj_paired_pieces(brd, B_KNIGHT);
+	score -= adj_paired_pieces(brd, B_ROOK);
+	
+	
+
 	if (brd->side_to_move == WHITE) {
 		return score;
 	} else {
@@ -180,3 +219,64 @@ inline static int32_t eval_piece(const struct board *brd, enum piece pce,
 	}
 	return score;
 }
+
+
+// knights lose value as pawns disappear, and rooks gain value
+inline static int32_t adj_pawn_dependant_pieces(const struct board *brd, enum piece target_pce, enum piece pawn, const int32_t *adj_vals){
+
+	// for each target, adjust the score based on the number of friendly pawns
+	// -------
+	
+	uint64_t target_bb = brd->bitboards[target_pce];
+	if (target_bb == 0){
+		// no pieces of this type, so nothing to adjust by
+		return 0;
+	}
+	uint8_t num_targets = count_bits(target_bb);
+
+	uint64_t pawn_bb = brd->bitboards[pawn];
+	uint8_t num_pawns = count_bits(pawn_bb);
+
+	// should never be > 8
+	if (num_pawns > 8){
+		assert(num_pawns < 8);
+		num_pawns = 8;
+	}
+		
+	int32_t adj_val = *(adj_vals + num_pawns);
+	
+	int32_t retval = 0;
+	for(int i = 0; i < num_targets; i++){
+		retval += adj_val;
+	}
+
+	return retval;
+} 
+
+
+inline static int32_t adj_paired_pieces(const struct board *brd, enum piece pce){
+	uint64_t pce_bb = brd->bitboards[pce];
+	uint8_t num_pieces = count_bits(pce_bb);
+	
+	if (num_pieces <= 1){
+		// no adjustment
+		return 0;
+	}
+	
+	switch(pce){
+		case W_BISHOP:
+		case B_BISHOP:
+			return BISHOP_PAIR_ADJ;
+		case W_KNIGHT:
+		case B_KNIGHT:
+			return KNIGHT_PAIR_ADJ;
+		case W_ROOK:
+		case B_ROOK:
+			return ROOK_PAIR_ADJ;
+		default:
+			assert(false);			
+	}
+	assert(false);
+}
+
+
