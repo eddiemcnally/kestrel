@@ -65,5 +65,6 @@ uint64_t overlay_black_pieces(const struct board * brd);
 void overlay_boards(struct board *the_board);
 uint8_t count_bits(uint64_t bb);
 uint64_t square_to_bitboard(enum square sq);
+bool is_piece_on_square(const struct board *brd, enum piece pce, enum square sq);
 
 #endif

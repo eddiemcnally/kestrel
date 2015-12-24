@@ -126,6 +126,11 @@ inline uint64_t overlay_black_pieces(const struct board * brd)
 }
 
 
+inline bool is_piece_on_square(const struct board *brd, enum piece pce, enum square sq){
+	enum piece on_board = brd->pieces[sq];
+	return (pce == on_board);
+}
+
 
 inline uint64_t square_to_bitboard(enum square sq)
 {

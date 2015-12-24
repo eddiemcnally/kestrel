@@ -35,9 +35,9 @@
 
 
 static int32_t eval_piece(const struct board *brd, enum piece pce, const int8_t *pt);
-static int32_t adj_pawn_dependant_pieces(const struct board *brd, enum piece target_pce, enum piece pawn, const int32_t *adj_vals);
-static int32_t adj_paired_pieces(const struct board *brd, enum piece pce);
-
+static int32_t eval_pawn_dependant_pieces(const struct board *brd, enum piece target_pce, enum piece pawn, const int32_t *adj_vals);
+static int32_t eval_paired_pieces(const struct board *brd, enum piece pce);
+static int32_t eval_pawn_shield(const struct board *brd, enum piece king);
 
 
 /*****************************************************
@@ -139,9 +139,19 @@ static const int32_t rook_adj[8] =   {12,  9,  6,  3,  0, -3, -6, -9};
 // define additional score values based on having paired pieces
 // these values are taken from:
 // http://chessprogramming.wikispaces.com/CPW-Engine_eval_init
-#define BISHOP_PAIR_ADJ		30
-#define KNIGHT_PAIR_ADJ  	8
-#define ROOK_PAIR_ADJ		16
+enum paired_piece_val{
+	BISHOP_PAIR_ADJ 	= 30,
+	KNIGHT_PAIR_ADJ  	= 8,
+	ROOK_PAIR_ADJ		= 16
+};
+
+// value of having a pawn shield
+// these values are taken from:
+// http://chessprogramming.wikispaces.com/CPW-Engine_eval_init
+enum pawn_shield_val{
+	PAWN_SHIELD_1 	= 10,	// on rank immediately in front of king
+    PAWN_SHIELD_2 	= 5		// moved off immediate rank in front of king
+};
 
 
 
@@ -159,7 +169,10 @@ int32_t evaluate_position(const struct board *brd)
 
 	// NOTE: black material is -ve, white is +ve
 	//	
-	// now adjust for piece position
+
+
+	// adjust for piece position
+	// =========================
 	score += eval_piece(brd, W_PAWN, PAWN_PT);
 	score -= eval_piece(brd, B_PAWN, PAWN_PT);
 
@@ -175,21 +188,30 @@ int32_t evaluate_position(const struct board *brd)
 	score += eval_piece(brd, W_QUEEN, QUEEN_PT);
 	score -= eval_piece(brd, B_QUEEN, QUEEN_PT);
 
-	// now adjust value of knights based on number of pawns
-	score += adj_pawn_dependant_pieces(brd, W_KNIGHT, W_PAWN, knight_adj);
-	score -= adj_pawn_dependant_pieces(brd, B_KNIGHT, B_PAWN, knight_adj);
+	// adjust value of knights based on number of pawns
+	// ================================================
+	score += eval_pawn_dependant_pieces(brd, W_KNIGHT, W_PAWN, knight_adj);
+	score -= eval_pawn_dependant_pieces(brd, B_KNIGHT, B_PAWN, knight_adj);
 
 	// now adjust value of rooks based on number of pawns
-	score += adj_pawn_dependant_pieces(brd, W_ROOK, W_PAWN, rook_adj);
-	score -= adj_pawn_dependant_pieces(brd, B_ROOK, B_PAWN, rook_adj);
+	// ==================================================
+	score += eval_pawn_dependant_pieces(brd, W_ROOK, W_PAWN, rook_adj);
+	score -= eval_pawn_dependant_pieces(brd, B_ROOK, B_PAWN, rook_adj);
 
 	// adjust score based on paired pieces
-	score += adj_paired_pieces(brd, W_BISHOP);
-	score += adj_paired_pieces(brd, W_KNIGHT);
-	score += adj_paired_pieces(brd, W_ROOK);
-	score -= adj_paired_pieces(brd, B_BISHOP);
-	score -= adj_paired_pieces(brd, B_KNIGHT);
-	score -= adj_paired_pieces(brd, B_ROOK);
+	// ===================================
+	score += eval_paired_pieces(brd, W_BISHOP);
+	score += eval_paired_pieces(brd, W_KNIGHT);
+	score += eval_paired_pieces(brd, W_ROOK);
+	score -= eval_paired_pieces(brd, B_BISHOP);
+	score -= eval_paired_pieces(brd, B_KNIGHT);
+	score -= eval_paired_pieces(brd, B_ROOK);
+	
+	// adjust for benefits of having a pawn shield in front of king
+	// ============================================================
+	score += eval_pawn_shield(brd, W_KING);
+	score -= eval_pawn_shield(brd, B_KING);
+	
 	
 	
 
@@ -222,7 +244,8 @@ inline static int32_t eval_piece(const struct board *brd, enum piece pce,
 
 
 // knights lose value as pawns disappear, and rooks gain value
-inline static int32_t adj_pawn_dependant_pieces(const struct board *brd, enum piece target_pce, enum piece pawn, const int32_t *adj_vals){
+inline static int32_t eval_pawn_dependant_pieces(const struct board *brd, 
+					enum piece target_pce, enum piece pawn, const int32_t *adj_vals){
 
 	// for each target, adjust the score based on the number of friendly pawns
 	// -------
@@ -254,7 +277,7 @@ inline static int32_t adj_pawn_dependant_pieces(const struct board *brd, enum pi
 } 
 
 
-inline static int32_t adj_paired_pieces(const struct board *brd, enum piece pce){
+inline static int32_t eval_paired_pieces(const struct board *brd, enum piece pce){
 	uint64_t pce_bb = brd->bitboards[pce];
 	uint8_t num_pieces = count_bits(pce_bb);
 	
@@ -278,5 +301,90 @@ inline static int32_t adj_paired_pieces(const struct board *brd, enum piece pce)
 	}
 	assert(false);
 }
+
+inline static int32_t eval_pawn_shield(const struct board *brd, enum piece king){
+
+	enum colour col = GET_COLOUR(king);
+	
+	uint64_t king_bb = brd->bitboards[king];
+	enum square king_sq = pop_1st_bit(&king_bb);
+	uint8_t king_file = GET_FILE(king_sq);
+
+	int32_t retval = 0;
+
+	if (col == WHITE){
+		if (king_file > FILE_E ) {
+			if (is_piece_on_square(brd, W_PAWN, f2))
+				retval += PAWN_SHIELD_1;
+			else if (is_piece_on_square(brd, W_PAWN, f3))
+				retval += PAWN_SHIELD_2;
+
+			if (is_piece_on_square(brd, W_PAWN, g2))
+				retval += PAWN_SHIELD_1;
+			else if (is_piece_on_square(brd, W_PAWN, g3))
+				retval += PAWN_SHIELD_2;
+
+			if (is_piece_on_square(brd, W_PAWN, h2))
+				retval += PAWN_SHIELD_1;
+			else if (is_piece_on_square(brd, W_PAWN, h3))
+				retval += PAWN_SHIELD_2;
+				
+		} else if (king_file < FILE_D){
+			if (is_piece_on_square(brd, W_PAWN, a2))
+				retval += PAWN_SHIELD_1;
+			else if (is_piece_on_square(brd, W_PAWN, a3))
+				retval += PAWN_SHIELD_2;
+
+			if (is_piece_on_square(brd, W_PAWN, b2))
+				retval += PAWN_SHIELD_1;
+			else if (is_piece_on_square(brd, W_PAWN, b3))
+				retval += PAWN_SHIELD_2;
+
+			if (is_piece_on_square(brd, W_PAWN, c2))
+				retval += PAWN_SHIELD_1;
+			else if (is_piece_on_square(brd, W_PAWN, c3))
+				retval += PAWN_SHIELD_2;
+		}
+
+	} else {
+		if (king_file > FILE_E){
+			if (is_piece_on_square(brd, B_PAWN, f7))
+				retval += PAWN_SHIELD_1;
+			else if (is_piece_on_square(brd, B_PAWN, f6))
+				retval += PAWN_SHIELD_2;
+
+			if (is_piece_on_square(brd, B_PAWN, g7))
+				retval += PAWN_SHIELD_1;
+			else if (is_piece_on_square(brd, B_PAWN, g6))
+				retval += PAWN_SHIELD_2;
+
+			if (is_piece_on_square(brd, B_PAWN, h7))
+				retval += PAWN_SHIELD_1;
+			else if (is_piece_on_square(brd, B_PAWN, h6))
+				retval += PAWN_SHIELD_2;
+				
+		} else if (king_file < FILE_D){
+			if (is_piece_on_square(brd, B_PAWN, a7))
+				retval += PAWN_SHIELD_1;
+			else if (is_piece_on_square(brd, B_PAWN, a6))
+				retval += PAWN_SHIELD_2;
+
+			if (is_piece_on_square(brd, B_PAWN, b7))
+				retval += PAWN_SHIELD_1;
+			else if (is_piece_on_square(brd, B_PAWN, b6))
+				retval += PAWN_SHIELD_2;
+
+			if (is_piece_on_square(brd, B_PAWN, c7))
+				retval += PAWN_SHIELD_1;
+			else if (is_piece_on_square(brd, B_PAWN, c6))
+				retval += PAWN_SHIELD_2;
+		}
+	}
+
+	return retval;
+}
+
+
+
 
 
