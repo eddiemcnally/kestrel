@@ -44,7 +44,7 @@ CFLAGS	=		-O3 -flto -std=c11 \
 	SRCS	=	../src/board.c \
 				../src/pieces.c \
 				../src/board_utils.c \
-				../src/move.c \
+				../src/move_gen.c \
 				../src/init.c \
 				../src/hashkeys.c \
 				../src/fen.c \

@@ -27,7 +27,8 @@
 #include <stdbool.h>
 #include "types.h"
 #include "makemove.h"
-#include "move.h"
+#include "move_gen.h"
+#include "move_gen_utils.h"
 #include "pv_table.h"
 
 static void init_table(struct pv_table *tab);

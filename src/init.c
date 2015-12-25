@@ -28,7 +28,8 @@
 #include <stdbool.h>
 #include "types.h"
 #include "board.h"
-#include "move.h"
+#include "move_gen.h"
+#include "move_gen_utils.h"
 #include "hashkeys.h"
 #include "init.h"
 #include "board_utils.h"

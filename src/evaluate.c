@@ -31,7 +31,8 @@
 #include "board.h"
 #include "evaluate.h"
 #include "pieces.h"
-#include "move.h"
+#include "move_gen.h"
+#include "move_gen_utils.h"
 
 
 static int32_t eval_piece(const struct board *brd, enum piece pce, const int8_t *pt);
@@ -211,9 +212,7 @@ int32_t evaluate_position(const struct board *brd)
 	// ============================================================
 	score += eval_pawn_shield(brd, W_KING);
 	score -= eval_pawn_shield(brd, B_KING);
-	
-	
-	
+		
 
 	if (brd->side_to_move == WHITE) {
 		return score;

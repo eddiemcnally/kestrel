@@ -35,7 +35,8 @@
 #include "board.h"
 #include "utils.h"
 #include "board_utils.h"
-#include "move.h"
+#include "move_gen.h"
+#include "move_gen_utils.h"
 #include "hashkeys.h"
 
 //----- hashkeys for positions

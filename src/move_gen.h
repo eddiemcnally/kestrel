@@ -1,5 +1,5 @@
 /*
- * move.h
+ * move_gen.h
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
  * kestrel is free software: you can redistribute it and/or modify it
@@ -21,39 +21,18 @@
 #include <stdbool.h>
 #include "types.h"
 
-struct move {
-	mv_bitmap move_bitmap;
-	uint32_t score;
-};
 
 struct move_list {
-	struct move moves[MAX_POSITION_MOVES];
-	uint16_t move_count;
+	mv_bitmap moves[MAX_POSITION_MOVES];	// list of moves
+	uint16_t move_count;					// #moves in list
 };
 
 
 
-enum score_adj {
-	SCORE_ADJ_PV_MOVE = 2000000,
-	SCORE_ADJ_CAPTURE = 1000000,
-	SCORE_ADJ_KILLER_SEARCH_0 = 900000,
-	SCORE_ADJ_KILLER_SEARCH_1 = 800000
-};
 
 
-
-char *print_move(mv_bitmap move_bitmap);
-void print_move_details(mv_bitmap move_bitmap, uint32_t score);
-void print_move_list(const struct move_list *list);
-void print_move_list_details(const struct move_list *list);
 void generate_all_moves(struct board *brd, struct move_list *mvl);
 void generate_all_capture_moves(struct board *brd, struct move_list *mvl);
-void validate_move_list(struct move_list *mvl);
-mv_bitmap MOVE(enum square from, enum square to, enum piece capture,
-	       enum piece promote, uint32_t fl);
-uint8_t pop_1st_bit(uint64_t * bb);
-uint64_t reverse_bits(uint64_t word);
-enum piece get_piece_at_square(const struct board *the_board, enum square sq);
 void init_mvv_lva_scores(void);
 
 

@@ -30,7 +30,8 @@
 #include <assert.h>
 #include <inttypes.h>
 #include "types.h"
-#include "move.h"
+#include "move_gen.h"
+#include "move_gen_utils.h"
 #include "hashkeys.h"
 #include "board.h"
 #include "pieces.h"
@@ -284,7 +285,7 @@ void assert_boards_are_equal(const struct board *brd1, const struct board *brd2)
  */
 struct board *clone_board(const struct board *board_to_clone)
 {
-	uint16_t size = sizeof(struct board);
+	uint32_t size = sizeof(struct board);
 	struct board *brd = malloc(size);
 	memcpy(brd, board_to_clone, size);
 	return brd;
@@ -313,7 +314,7 @@ mv_bitmap parse_move(char *ip_move, struct board * brd)
 
 	// create ampty move list
 	struct move_list mv_list = {
-		.moves = {{0, 0}},
+		.moves = {0},
 		.move_count = 0
 	};
 
@@ -323,7 +324,7 @@ mv_bitmap parse_move(char *ip_move, struct board * brd)
 	enum piece promoted = NO_PIECE;
 
 	for (int move_num = 0; move_num < mv_list.move_count; move_num++) {
-		move = mv_list.moves[move_num].move_bitmap;
+		move = mv_list.moves[move_num];
 
 		if ((FROMSQ(move) == from) && (TOSQ(move) == to)) {
 			promoted = PROMOTED_PCE(move);
