@@ -29,10 +29,21 @@
 #include <string.h>
 #include <stdbool.h>
 #include <assert.h>
+#include "types.h"
+#include "pieces.h"
+#include "board.h"
+#include "move_gen_utils.h"
 
 
+#define R2(n)     n,     n + 2*64,     n + 1*64,     n + 3*64
+#define R4(n) R2(n), R2(n + 2*16), R2(n + 1*16), R2(n + 3*16)
+#define R6(n) R4(n), R4(n + 2*4 ), R4(n + 1*4 ), R4(n + 3*4 )
 
 
+static const unsigned char BitReverseTable256[256] =
+{
+    R6(0), R6(2), R6(1), R6(3)
+};
 
 
 // function to map move attributes to a bitmapped field
@@ -40,11 +51,14 @@
 inline mv_bitmap MOVE(enum square from, enum square to, enum piece capture,
 		      enum piece promote, uint64_t flags, uint32_t score)
 {
-	return (  ((uint64_t)from 		<< MV_MASK_OFF_FROM_SQ) 
+	return (  
+			(
+			  ((uint64_t)from 		<< MV_MASK_OFF_FROM_SQ) 
 			| ((uint64_t)to 		<< MV_MASK_OFF_TO_SQ) 	 
 			| ((uint64_t)capture 	<< MV_MASK_OFF_CAPTURED_PCE)  
 			| ((uint64_t)promote 	<< MV_MASK_OFF_PROMOTED_PCE) 
 			| flags
+			)
 			+ score
 	  );
 }
@@ -62,9 +76,6 @@ inline uint64_t get_move(mv_bitmap mv){
 inline void add_to_score(uint64_t *score, uint32_t to_add){
 	*score = *score + to_add;
 }
-
-
-inline void Set
 
 /*
  * Returns the piece type on the given square
@@ -156,12 +167,12 @@ void validate_move_list(struct move_list *mvl)
 	assert(mvl->move_count < MAX_POSITION_MOVES);
 
 	for (int i = 0; i < mvl->move_count; i++) {
-		struct move m = mvl->moves[i];
+		mv_bitmap m = mvl->moves[i];
 
-		enum square from = FROMSQ(m.move_bitmap);
-		enum square to = TOSQ(m.move_bitmap);
-		enum piece capt = CAPTURED_PCE(m.move_bitmap);
-		enum piece promote = PROMOTED_PCE(m.move_bitmap);
+		enum square from = FROMSQ(m);
+		enum square to = TOSQ(m);
+		enum piece capt = CAPTURED_PCE(m);
+		enum piece promote = PROMOTED_PCE(m);
 
 		assert(is_valid_piece(capt));
 		assert(is_valid_piece(promote));
@@ -169,7 +180,7 @@ void validate_move_list(struct move_list *mvl)
 		assert(from >= a1 && from <= h8);
 		assert(to >= a1 && to <= h8);
 
-		assert(m.score == 0);
+		assert(get_score(m) == 0);
 	}
 }
 
@@ -183,7 +194,6 @@ void validate_move_list(struct move_list *mvl)
  */
 char *print_move(mv_bitmap move_bitmap)
 {
-
 	static char move_string[6];
 
 	int from_file = GET_FILE(FROMSQ(move_bitmap));
@@ -214,7 +224,7 @@ char *print_move(mv_bitmap move_bitmap)
 	return move_string;
 }
 
-void print_move_details(mv_bitmap move_bitmap, uint32_t score)
+void print_move_details(mv_bitmap move_bitmap)
 {
 	int from_file = GET_FILE(FROMSQ(move_bitmap));
 	int from_rank = GET_RANK(FROMSQ(move_bitmap));
@@ -228,6 +238,8 @@ void print_move_details(mv_bitmap move_bitmap, uint32_t score)
 	char c_capt = get_piece_label(captured);
 	char c_promoted = get_piece_label(promoted);
 
+	uint32_t score = get_score(move_bitmap);
+	
 	printf("%c%c%c%c, captured '%c' promote '%c' score %d\n",
 	       ('a' + from_file), ('1' + from_rank), ('a' + to_file),
 	       ('1' + to_rank), c_capt, c_promoted, score);
@@ -248,10 +260,8 @@ void print_move_list_details(const struct move_list *list)
 	printf("MoveList Details: (%d)\n", list->move_count);
 
 	for (int i = 0; i < list->move_count; i++) {
-		mv_bitmap mv = list->moves[i].move_bitmap;
-		uint32_t score = list->moves[i].score;
-
-		print_move_details(mv, score);
+		mv_bitmap mv = list->moves[i];
+		print_move_details(mv);
 	}
 	printf("MoveList Total %d Moves:\n\n", list->move_count);
 }
@@ -269,8 +279,7 @@ void print_move_list(const struct move_list *list)
 	printf("MoveList:\n");
 
 	for (int i = 0; i < list->move_count; i++) {
-		uint32_t move = list->moves[i].move_bitmap;
-		//uint32_t score = list->moves[i].score;
+		mv_bitmap move = list->moves[i];
 
 		printf("%s\n", print_move(move));
 	}

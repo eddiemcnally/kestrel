@@ -32,7 +32,9 @@
 #include "board_utils.h"
 #include "makemove.h"
 #include "utils.h"
-#include "move.h"
+#include "move_gen.h"
+#include "move_gen_utils.h"
+
 
 void perf_test(int depth, struct board *brd);
 void divide_perft(int depth, struct board *brd);
@@ -299,7 +301,7 @@ void perf_test(int depth, struct board *brd)
 	uint64_t start_time, elapsed;
 
 	struct move_list mv_list = {
-		.moves = {{0, 0}},
+		.moves = {0},
 		.move_count = 0
 	};
 
@@ -309,7 +311,7 @@ void perf_test(int depth, struct board *brd)
 
 	mv_bitmap mv;
 	for (uint32_t mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
-		mv = mv_list.moves[mv_num].move_bitmap;
+		mv = mv_list.moves[mv_num];
 		if (!make_move(brd, mv)) {
 			continue;
 		}
@@ -335,7 +337,7 @@ void perft(int depth, struct board *brd)
 
 
 	struct move_list mv_list = {
-		.moves = {{0, 0}},
+		.moves = {0},
 		.move_count = 0
 	};
 
@@ -343,7 +345,7 @@ void perft(int depth, struct board *brd)
 
 	mv_bitmap mv;
 	for (uint32_t mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
-		mv = mv_list.moves[mv_num].move_bitmap;
+		mv = mv_list.moves[mv_num];
 		if (make_move(brd, mv)) {
 			perft(depth - 1, brd);
 			take_move(brd);
@@ -363,7 +365,7 @@ void divide_perft(int depth, struct board *brd)
 	//uint32_t move_cnt = 0;
 
 	struct move_list mv_list = {
-		.moves = {{0, 0}},
+		.moves = {0},
 		.move_count = 0
 	};
 
@@ -371,7 +373,7 @@ void divide_perft(int depth, struct board *brd)
 
 	mv_bitmap mv;
 	for (uint32_t mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
-		mv = mv_list.moves[mv_num].move_bitmap;
+		mv = mv_list.moves[mv_num];
 
 		if (make_move(brd, mv)) {
 			//move_cnt = divide((depth - 1), brd, mv);
@@ -402,7 +404,7 @@ uint32_t divide(int depth, struct board * brd)
 	}
 
 	struct move_list mv_list = {
-		.moves = {{0, 0}},
+		.moves = {0},
 		.move_count = 0
 	};
 
@@ -410,7 +412,7 @@ uint32_t divide(int depth, struct board * brd)
 
 	mv_bitmap mv;
 	for (uint32_t mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
-		mv = mv_list.moves[mv_num].move_bitmap;
+		mv = mv_list.moves[mv_num];
 		if (make_move(brd, mv)) {
 			nodes += divide((depth - 1), brd);
 			take_move(brd);

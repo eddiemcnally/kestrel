@@ -45,6 +45,7 @@ CFLAGS	=		-O3 -flto -std=c11 \
 				../src/pieces.c \
 				../src/board_utils.c \
 				../src/move_gen.c \
+				../src/move_gen_utils.c \
 				../src/init.c \
 				../src/hashkeys.c \
 				../src/fen.c \

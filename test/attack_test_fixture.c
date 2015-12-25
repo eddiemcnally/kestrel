@@ -28,7 +28,8 @@
 #include "board.h"
 #include "pieces.h"
 #include "board_utils.h"
-#include "move.h"
+#include "move_gen.h"
+#include "move_gen_utils.h"
 
 void attack_test_fixture(void);
 void test_is_square_being_attacked_by_knight(void);

@@ -27,7 +27,8 @@
 #include "makemove.h"
 #include "board.h"
 #include "fen.h"
-#include "move.h"
+#include "move_gen.h"
+#include "move_gen_utils.h"
 #include "pieces.h"
 #include "utils.h"
 

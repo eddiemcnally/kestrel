@@ -30,7 +30,9 @@
 #include "utils.h"
 #include "board_utils.h"
 #include "makemove.h"
-#include "move.h"
+#include "move_gen.h"
+#include "move_gen_utils.h"
+
 
 void test_generation_white_pawn_moves(void);
 void test_generation_black_pawn_moves(void);
@@ -702,7 +704,7 @@ void test_generation_queen_moves(void)
 	mv = MOVE(c2, e2, NO_PIECE, NO_PIECE, 0, 0);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
-	mv = MOVE(c2, d3, B_PAWN, NO_PIECE, 0);
+	mv = MOVE(c2, d3, B_PAWN, NO_PIECE, 0, 0);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
 	// now look at the black queens
@@ -906,7 +908,7 @@ void test_en_passant(void)
 {
 	struct board *brd = init_game("4k3/2p5/8/3P4/8/8/8/4K3 b - - 0 1");
 
-	mv_bitmap mv = MOVE(c7, c5, NO_PIECE, NO_PIECE, MFLAG_PAWN_START);
+	mv_bitmap mv = MOVE(c7, c5, NO_PIECE, NO_PIECE, MFLAG_PAWN_START, 0);
 	make_move(brd, mv);
 
 	// make sure all other pieces are as expected
@@ -983,7 +985,7 @@ void test_make_move_take_move(void)
 
 	for (int i = 0; i < list->move_count; i++) {
 		// make a move, take it back, and compare board before and after
-		mv_bitmap mv = list->moves[i].move_bitmap;
+		mv_bitmap mv = list->moves[i];
 
 		struct board *before_move = clone_board(brd);
 		make_move(brd, mv);
@@ -1022,7 +1024,7 @@ void test_capture_move_gen_2(void){
 	assert_true(list->move_count == 8);
 
 	for(int i = 0; i < list->move_count; i++){
-		mv_bitmap mv = list->moves[i].move_bitmap;
+		mv_bitmap mv = list->moves[i];
 		enum piece pce = CAPTURED_PCE(mv);
 		
 		assert_true(pce != NO_PIECE);		
