@@ -38,6 +38,7 @@
 #include "makemove.h"
 #include "occupancy_mask.h"
 #include "move_gen.h"
+#include "move_gen_utils.h"
 #include "utils.h"
 
 static void do_gen_moves(struct board *brd, struct move_list *mvl, bool captures_only);
@@ -727,8 +728,8 @@ generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
 
 			if (cap_sq == brd->en_passant) {
 				mv_bitmap mv = MOVE(pawn_sq, cap_sq, pce, NO_PIECE,
-													MFLAG_EN_PASSANT, 0);
-				add_capture_move(mv, mvl, pawn_v_pawn_score);
+													MFLAG_EN_PASSANT, pawn_v_pawn_score);
+				add_capture_move(mv, mvl);
 			}
 		}
 		// check for capture right

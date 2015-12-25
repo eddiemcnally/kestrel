@@ -38,7 +38,7 @@
 // function to map move attributes to a bitmapped field
 // see typdef for mv_bitmap for a description
 inline mv_bitmap MOVE(enum square from, enum square to, enum piece capture,
-		      enum piece promote, uint32_t flags, uint32_t score)
+		      enum piece promote, uint64_t flags, uint32_t score)
 {
 	return (  ((uint64_t)from 		<< MV_MASK_OFF_FROM_SQ) 
 			| ((uint64_t)to 		<< MV_MASK_OFF_TO_SQ) 	 
@@ -51,6 +51,20 @@ inline mv_bitmap MOVE(enum square from, enum square to, enum piece capture,
 
 
 
+inline uint32_t get_score(mv_bitmap mv){
+	return (uint32_t)(mv & MV_MASK_SCORE);
+}
+
+inline uint64_t get_move(mv_bitmap mv){
+	return (uint64_t)(mv & MV_MASK_MOVE);
+}
+
+inline void add_to_score(uint64_t *score, uint32_t to_add){
+	*score = *score + to_add;
+}
+
+
+inline void Set
 
 /*
  * Returns the piece type on the given square

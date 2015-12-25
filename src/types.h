@@ -64,6 +64,11 @@ const uint64_t  MFLAG_PAWN_START 	= 0x0080000000000000;
 const uint64_t  MFLAG_CASTLE 		= 0x0100000000000000;
 const uint64_t  MFLAG_NONE			= 0x0;
 
+const uint64_t  MV_MASK_SCORE		= 0x00000000FFFFFFFF;
+const uint64_t  MV_MASK_MOVE		= 0xFFFFFFFF00000000;
+
+
+
 #define	IS_EN_PASS_MOVE(mv)		((mv & MFLAG_EN_PASSANT) != 0)
 #define IS_CAPTURE_MOVE(mv)		((CAPTURED_PCE(mv) != NO_PIECE))
 

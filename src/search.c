@@ -113,34 +113,34 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 	mv_bitmap best_move = NO_MOVE;
 	bool is_alpha_improved = false;
 	
-	struct move_list mvl[1];
-	memset(mvl, 0, sizeof(struct move_list));	
+	struct move_list mvl;
+	memset(&mvl, 0, sizeof(struct move_list));	
 		
-	generate_all_moves(brd, mvl);
+	generate_all_moves(brd, &mvl);
 
-	uint16_t num_moves = mvl[0].move_count;
+	uint16_t num_moves = mvl.move_count;
 	
 	
 	// if a move is in the PV table, then set the score to be high
 	// so it gets sorted correctly
-	//mv_bitmap pv_mv = find_move(brd->pvtable, brd->board_hash);
-	//if (pv_mv != NO_MOVE){
-		//// find in move list
-		//for(uint32_t i = 0; i < mvl[0].move_count; i++){
-			//if (mvl[0].moves[i].move_bitmap == pv_mv){
-				//mvl[0].moves[i].score = 200000;
-			//}
-		//}
-	//}
+	mv_bitmap pv_mv = find_move(brd->pvtable, brd->board_hash);
+	if (pv_mv != NO_MOVE){
+		// find in move list
+		for(uint32_t i = 0; i < mvl.move_count; i++){
+			if (mvl.moves[i] == pv_mv){
+				add_to_score(&(mvl.moves[i]), 200000);
+			}
+		}
+	}
 	
 	uint8_t legal_move_cnt = 0;
 	for(uint16_t i = 0; i < num_moves; i++){
 		
-		bring_best_move_to_top(i, mvl);
+		bring_best_move_to_top(i, &mvl);
 		
-		struct move mv = mvl[0].moves[i];
+		mv_bitmap mv = mvl.moves[i];
 		
-		bool valid_move = make_move(brd, mv.move_bitmap);
+		bool valid_move = make_move(brd, mv);
 		if (valid_move == false){
 			// moved already reverted
 			continue;
@@ -159,7 +159,7 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 		if (score > alpha){
 			alpha = score;
 			is_alpha_improved = true;
-			best_move = mv.move_bitmap;
+			best_move = mv;
 		}		
 	}
 	
@@ -198,13 +198,14 @@ static void bring_best_move_to_top(uint16_t move_num, struct move_list *mvl){
 	uint16_t best_move_num = move_num; 
 
 	for(uint16_t i = move_num; i < mvl->move_count; i++){
-		if (mvl->moves[i].score > best_score){
-			best_score = mvl->moves[i].score;
+		uint32_t score = get_score(mvl->moves[i]);
+		if (score > best_score){
+			best_score = score;
 			best_move_num = i;
 		}	
 	} 
 
-	struct move temp_mv = mvl->moves[move_num];
+	mv_bitmaptemp_mv = mvl->moves[move_num];
 	mvl->moves[move_num] = mvl->moves[best_move_num];
 	mvl->moves[best_move_num] = temp_mv;
 }
@@ -243,16 +244,16 @@ int32_t quiesce(struct board *brd, int32_t alpha, int32_t beta){
 	//validate_move_list(mvl);
 
 	uint16_t num_moves = mvl->move_count;
-	struct move best_move = {.move_bitmap = 0, .score = 0};
+	mv_bitmap best_move = 0;
 	bool is_alpha_improved = false;
 		
 	for(uint16_t i = 0; i < num_moves; i++){
 				
 		bring_best_move_to_top(i, mvl);		
 		
-		struct move mv = mvl->moves[i];
+		mv_bitmap mv = mvl->moves[i];
 		
-		bool valid_move = make_move(brd, mv.move_bitmap);
+		bool valid_move = make_move(brd, mv);
 		if (valid_move == false){
 			// moved already reverted
 			continue;
@@ -274,7 +275,7 @@ int32_t quiesce(struct board *brd, int32_t alpha, int32_t beta){
 	}
 	
 	if (is_alpha_improved){
-		add_move_to_pv_table(brd->pvtable, brd->board_hash, best_move.move_bitmap);
+		add_move_to_pv_table(brd->pvtable, brd->board_hash, best_move);
 	}
 
 	return alpha;
