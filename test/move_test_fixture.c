@@ -437,7 +437,7 @@ void test_generation_sliding_diagonal_moves(void)
 	//print_board(brd);
 
 	// black bishops
-	TEST_generate_sliding_diagonal_moves(brd, mvl, B_BISHOP);
+	TEST_generate_sliding_diagonal_moves(brd, mvl, BLACK);
 
 	//print_move_list_details(mvl);
 
@@ -472,7 +472,7 @@ void test_generation_sliding_diagonal_moves(void)
 
 	//print_board(brd);
 
-	TEST_generate_sliding_diagonal_moves(brd, mvl, W_BISHOP);
+	TEST_generate_sliding_diagonal_moves(brd, mvl, WHITE);
 	assert_true(mvl->move_count == 10);
 
 	//print_move_list_details(mvl);
@@ -510,7 +510,7 @@ void test_generation_sliding_horizontal_and_vertical_moves(void)
 	struct move_list *mvl = malloc(sizeof(struct move_list));
 	memset(mvl, 0, sizeof(struct move_list));
 
-	TEST_generate_sliding_horizontal_vertical_moves(brd, mvl, B_ROOK);
+	TEST_generate_sliding_horizontal_vertical_moves(brd, mvl, BLACK);
 
 	assert_true(mvl->move_count == 11);
 
@@ -544,7 +544,7 @@ void test_generation_sliding_horizontal_and_vertical_moves(void)
 	mvl = malloc(sizeof(struct move_list));
 	memset(mvl, 0, sizeof(struct move_list));
 
-	TEST_generate_sliding_horizontal_vertical_moves(brd, mvl, W_ROOK);
+	TEST_generate_sliding_horizontal_vertical_moves(brd, mvl, WHITE);
 
 	assert_true(mvl->move_count == 25);
 
@@ -647,163 +647,6 @@ void test_king_castling_moves(void)
 	assert_true(mvl->move_count == 1);
 
 	mv = MOVE(e8, g8, NO_PIECE, NO_PIECE, MFLAG_CASTLE, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-
-}
-
-void test_generation_queen_moves(void)
-{
-
-	char *sliding_test =
-	    "4q3/4p2p/q4p1Q/1k2p2P/1p4P1/p1Pp1KPP/PpQ2PP1/8 w - - 0 1";
-	struct board *brd = init_game(sliding_test);
-
-	struct move_list *mvl = malloc(sizeof(struct move_list));
-	memset(mvl, 0, sizeof(struct move_list));
-
-	TEST_generate_queen_moves(brd, mvl, W_QUEEN);
-
-	assert_true(mvl->move_count == 19);
-
-	// check W_QUEEN's
-	mv_bitmap mv = MOVE(h6, h7, B_PAWN, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(h6, f6, B_PAWN, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(h6, g6, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(h6, g7, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(h6, f8, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(h6, g5, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(h6, f4, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(h6, e3, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(h6, d2, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(h6, c1, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-
-	mv = MOVE(c2, b3, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(c2, a4, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(c2, b2, B_PAWN, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(c2, b1, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(c2, c1, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(c2, d1, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(c2, d2, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(c2, e2, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-
-	mv = MOVE(c2, d3, B_PAWN, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-
-	// now look at the black queens
-	brd = init_game(sliding_test);
-	mvl = malloc(sizeof(struct move_list));
-	memset(mvl, 0, sizeof(struct move_list));
-
-	TEST_generate_queen_moves(brd, mvl, B_QUEEN);
-
-	assert_true(mvl->move_count == 22);
-
-	mv = MOVE(a6, a7, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(a6, a8, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(a6, b6, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(a6, c6, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(a6, d6, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(a6, e6, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(a6, b7, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(a6, c8, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(a6, a5, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(a6, a4, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-
-	mv = MOVE(e8, d8, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(e8, c8, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(e8, b8, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(e8, a8, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(e8, d7, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(e8, c6, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(e8, f8, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(e8, g8, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(e8, h8, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(e8, f7, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(e8, g6, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(e8, h5, W_PAWN, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-
-// check the queen
-	brd =
-	    init_game
-	    ("r3k2r/p2pqpb1/bn2pnp1/2pPN3/1pB1P3/2N2Q1p/PPPB1PPP/R3K2R w KQkq c6 0 2");
-
-	mvl = malloc(sizeof(struct move_list));
-	memset(mvl, 0, sizeof(struct move_list));
-
-	TEST_generate_queen_moves(brd, mvl, W_QUEEN);
-
-	assert_true(mvl->move_count == 11);
-
-	mv = MOVE(f3, e3, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-
-	mv = MOVE(f3, d3, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-
-	mv = MOVE(f3, e2, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-
-	mv = MOVE(f3, d1, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-
-	mv = MOVE(f3, g3, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-
-	mv = MOVE(f3, h3, B_PAWN, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-
-	mv = MOVE(f3, f4, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-
-	mv = MOVE(f3, f5, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-
-	mv = MOVE(f3, f6, B_KNIGHT, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-
-	mv = MOVE(f3, g4, NO_PIECE, NO_PIECE, 0, 0);
-	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(f3, h5, NO_PIECE, NO_PIECE, 0, 0);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
 }
@@ -1067,7 +910,6 @@ void move_test_fixture(void)
 	run_test(test_en_passant);
 	run_test(test_generation_sliding_horizontal_and_vertical_moves);
 	run_test(test_generation_sliding_diagonal_moves);
-	run_test(test_generation_queen_moves);
 	run_test(test_sample_board_position);
 	run_test(test_clear_piece);
 	run_test(test_add_piece);

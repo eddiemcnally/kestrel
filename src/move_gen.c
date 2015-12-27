@@ -49,7 +49,7 @@ static void add_pawn_move(struct board *brd, enum colour col,
 					enum square from, enum square to, struct move_list *mvl);
 static void add_capture_move(mv_bitmap move_bitmap, struct move_list *mvlist);
 static void add_quiet_move(struct board *brd, mv_bitmap mv, 
-								struct move_list *mvlist, enum piece pce);
+								struct move_list *mvlist);
 static void generate_white_pawn_moves(struct board *brd,
 				      struct move_list *mvl, const bool only_capture_moves);
 static void generate_black_pawn_moves(struct board *brd,
@@ -71,16 +71,12 @@ static void generate_black_castle_moves(struct board *brd,
 					struct move_list *mvl);
 static void generate_white_castle_moves(struct board *brd,
 					struct move_list *mvl);
-static void generate_sliding_horizontal_vertical_moves(struct board
-						       *brd, struct move_list
-						       *mvl, enum piece pce, 
-						       const bool only_capture_moves);
+static void generate_sliding_horizontal_vertical_moves (struct board *brd,
+					   struct move_list *mvl,
+					   enum colour col, const bool only_capture_moves);
 static void generate_sliding_diagonal_moves(struct board *brd,
 					    struct move_list *mvl,
-					    enum piece pce, const bool only_capture_moves);
-static void generate_queen_moves(struct board *brd,
-				 struct move_list *mvl, enum piece pce, 
-				 const bool only_capture_moves);
+					    enum colour col, const bool only_capture_moves);
 
 
 /* indexed using enum square
@@ -323,30 +319,22 @@ static inline void do_gen_moves(struct board *brd, struct move_list *mvl, bool c
 		generate_white_pawn_moves(brd, mvl, captures_only);
 		generate_knight_piece_moves(brd, mvl, W_KNIGHT, BLACK, captures_only);
 		generate_king_moves(brd, mvl, W_KING, WHITE, BLACK, captures_only);
-		generate_sliding_horizontal_vertical_moves(brd, mvl, W_ROOK, captures_only);
-		generate_sliding_diagonal_moves(brd, mvl, W_BISHOP, captures_only);
-		generate_queen_moves(brd, mvl, W_QUEEN, captures_only);
+		// generate rook and queen horizontal moves
+		generate_sliding_horizontal_vertical_moves(brd, mvl, WHITE, captures_only);
+		// generate bishop and queen diagonal moves 
+		generate_sliding_diagonal_moves(brd, mvl, WHITE, captures_only);
 	} else {
 		generate_black_pawn_moves(brd, mvl, captures_only);
 		generate_knight_piece_moves(brd, mvl, B_KNIGHT, WHITE, captures_only);
 		generate_king_moves(brd, mvl, B_KING, BLACK, WHITE, captures_only);
-		generate_sliding_horizontal_vertical_moves(brd, mvl, B_ROOK, captures_only);
-		generate_sliding_diagonal_moves(brd, mvl, B_BISHOP, captures_only);
-		generate_queen_moves(brd, mvl, B_QUEEN, captures_only);
+		// generate rook and queen horizontal moves
+		generate_sliding_horizontal_vertical_moves(brd, mvl, BLACK, captures_only);
+		// generate bishop and queen diagonal moves 
+		generate_sliding_diagonal_moves(brd, mvl, BLACK, captures_only);
 	}
 }
 
 
-
-
-static inline void
-generate_queen_moves(struct board *brd, struct move_list *mvl,
-		     enum piece pce, const bool only_capture_moves)
-{
-	generate_sliding_horizontal_vertical_moves(brd, mvl, pce, only_capture_moves);
-	generate_sliding_diagonal_moves(brd, mvl, pce, only_capture_moves);
-
-}
 
 
 
@@ -363,11 +351,9 @@ add_capture_move(mv_bitmap move_bitmap, struct move_list *mvlist)
 
 
 static inline void
-add_quiet_move(struct board *brd, mv_bitmap mv, struct move_list *mvlist, 
-									enum piece pce)
+add_quiet_move(struct board *brd, mv_bitmap mv, struct move_list *mvlist)
 {
 	//assert(CAPTURED_PCE(mv) == NO_PIECE);
-	assert(pce != NO_PIECE);
 	assert(brd != NULL);
 
 	mvlist->moves[mvlist->move_count] = mv;
@@ -442,37 +428,37 @@ static inline void add_pawn_move(struct board *brd, enum colour col,
 		if (GET_RANK(from) == RANK_7) {
 			// pawn can promote to 4 pieces
 			mv = MOVE(from, to, NO_PIECE, W_QUEEN, MFLAG_NONE, 0);
-			add_quiet_move(brd, mv, mvl, W_PAWN);
+			add_quiet_move(brd, mv, mvl);
 			
 			mv = MOVE(from, to, NO_PIECE, W_ROOK, MFLAG_NONE, 0);
-			add_quiet_move(brd, mv, mvl, W_PAWN);
+			add_quiet_move(brd, mv, mvl);
 			
 			mv = MOVE(from, to, NO_PIECE, W_BISHOP, MFLAG_NONE, 0);
-			add_quiet_move(brd, mv, mvl, W_PAWN);
+			add_quiet_move(brd, mv, mvl);
 			
 			mv = MOVE(from, to, NO_PIECE, W_KNIGHT, MFLAG_NONE, 0);
-			add_quiet_move(brd, mv, mvl, W_PAWN);
+			add_quiet_move(brd, mv, mvl);
 		} else {
 			mv = MOVE(from, to, NO_PIECE, NO_PIECE, MFLAG_NONE, 0);
-			add_quiet_move(brd, mv, mvl, W_PAWN);
+			add_quiet_move(brd, mv, mvl);
 		}
 	} else if (col == BLACK){
 		if (GET_RANK(from) == RANK_2) {
 			// pawn can promote to 4 pieces
 			mv = MOVE(from, to, NO_PIECE, B_QUEEN, MFLAG_NONE, 0);
-			add_quiet_move(brd, mv, mvl, B_PAWN);
+			add_quiet_move(brd, mv, mvl);
 						
 			mv = MOVE(from, to, NO_PIECE, B_ROOK, MFLAG_NONE, 0);
-			add_quiet_move(brd, mv, mvl, B_PAWN);
+			add_quiet_move(brd, mv, mvl);
 			
 			mv = MOVE(from, to, NO_PIECE, B_BISHOP, MFLAG_NONE, 0);
-			add_quiet_move(brd, mv, mvl, B_PAWN);
+			add_quiet_move(brd, mv, mvl);
 			
 			mv = MOVE(from, to, NO_PIECE, B_KNIGHT, MFLAG_NONE, 0);
-			add_quiet_move(brd, mv, mvl, B_PAWN);
+			add_quiet_move(brd, mv, mvl);
 		} else {
 			mv = MOVE(from, to, NO_PIECE, NO_PIECE, MFLAG_NONE, 0);
-			add_quiet_move(brd, mv, mvl, B_PAWN);
+			add_quiet_move(brd, mv, mvl);
 		}
 	} else {
 		assert(false);
@@ -537,7 +523,7 @@ static inline void generate_knight_piece_moves(struct board *brd,
 				enum square empty_sq = pop_1st_bit(&empty_squares);
 
 				mv_bitmap mv = MOVE(knight_sq, empty_sq, NO_PIECE, NO_PIECE, MFLAG_NONE, 0);
-				add_quiet_move(brd, mv, mvl, knight);
+				add_quiet_move(brd, mv, mvl);
 			}
 		}
 	}
@@ -591,7 +577,7 @@ static inline void generate_king_moves(struct board *brd,
 
 			mv_bitmap mv = MOVE(king_sq, empty_sq, NO_PIECE, NO_PIECE, MFLAG_NONE, 0);
 
-			add_quiet_move(brd, mv, mvl, pce);
+			add_quiet_move(brd, mv, mvl);
 		}
 
 		// check for castling moves
@@ -619,7 +605,7 @@ static inline void generate_white_castle_moves(struct board *brd,
 
 				mv_bitmap mv = MOVE(e1, g1, NO_PIECE,
 											NO_PIECE, MFLAG_CASTLE, 0);
-				add_quiet_move(brd, mv, mvl, W_KING);
+				add_quiet_move(brd, mv, mvl);
 			}
 		}
 	}
@@ -635,7 +621,7 @@ static inline void generate_white_castle_moves(struct board *brd,
 
 				mv_bitmap mv = MOVE(e1, c1, NO_PIECE,
 										NO_PIECE, MFLAG_CASTLE, 0);
-				add_quiet_move(brd, mv, mvl, W_KING);
+				add_quiet_move(brd, mv, mvl);
 			}
 		}
 	}
@@ -654,7 +640,7 @@ static inline void generate_black_castle_moves(struct board *brd,
 
 				mv_bitmap mv = MOVE(e8, g8, NO_PIECE,
 											NO_PIECE, MFLAG_CASTLE, 0);
-				add_quiet_move(brd, mv, mvl, B_KING);
+				add_quiet_move(brd, mv, mvl);
 			}
 		}
 	}
@@ -670,7 +656,7 @@ static inline void generate_black_castle_moves(struct board *brd,
 
 				mv_bitmap mv = MOVE(e8, c8, NO_PIECE,
 											NO_PIECE, MFLAG_CASTLE, 0);
-				add_quiet_move(brd, mv, mvl, B_KING);
+				add_quiet_move(brd, mv, mvl);
 			}
 		}
 	}
@@ -709,7 +695,7 @@ generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
 						mv_bitmap mv = MOVE(pawn_sq, next_sq_2, NO_PIECE,
 									NO_PIECE, MFLAG_PAWN_START, 0);
 
-						add_quiet_move(brd, mv, mvl, W_PAWN);
+						add_quiet_move(brd, mv, mvl);
 					}
 				}
 			}
@@ -780,7 +766,7 @@ generate_black_pawn_moves(struct board *brd, struct move_list *mvl,
 						mv_bitmap mv = MOVE(pawn_sq, next_sq_2,
 									NO_PIECE, NO_PIECE,
 									MFLAG_PAWN_START, 0);
-						add_quiet_move(brd, mv, mvl, B_PAWN);
+						add_quiet_move(brd, mv, mvl);
 					}
 				}
 			}
@@ -820,7 +806,8 @@ generate_black_pawn_moves(struct board *brd, struct move_list *mvl,
 	}
 }
 
-/* Generates sliding horizontal and vertical moves (a la Rook)
+/* Generates sliding horizontal and vertical moves for queen and rook
+ * for the given colour
  *
  * Based on the code on page:
  * 		http://chessprogramming.wikispaces.com/Efficient+Generation+of+Sliding+Piece+Attacks
@@ -835,10 +822,17 @@ generate_black_pawn_moves(struct board *brd, struct move_list *mvl,
  */
 static inline void generate_sliding_horizontal_vertical_moves (struct board *brd,
 					   struct move_list *mvl,
-					   enum piece pce, const bool only_capture_moves)
+					   enum colour col, const bool only_capture_moves)
 {
-
-	uint64_t bb = brd->bitboards[pce];
+	uint64_t bb = 0;
+	if (col == WHITE){
+		bb = brd->bitboards[W_ROOK];
+		bb |= brd->bitboards[W_QUEEN];
+	} else {
+		bb = brd->bitboards[B_ROOK];
+		bb |= brd->bitboards[B_QUEEN];
+	}
+	
 
 	while (bb != 0) {
 
@@ -867,23 +861,13 @@ static inline void generate_sliding_horizontal_vertical_moves (struct board *brd
 
 		uint64_t all_moves = (horizontal & hmask) | (vertical & vmask);
 
-		enum colour col = (IS_BLACK(pce)) ? BLACK : WHITE;
-
-		// get all same colour as piece being considered
-		uint64_t col_occupied = 0;
-		if (col == WHITE)
-			col_occupied = brd->colour_bb[WHITE];
-		else
-			col_occupied = brd->colour_bb[BLACK];
-
+		// get all same colour as piece being considered so
+		// they can be excluded (since they block a move)
+		uint64_t col_occupied = brd->colour_bb[col];
 		uint64_t excl_same_col = all_moves & ~col_occupied;
-		//printf("Mask Same Colour\n");
-		//print_mask_as_board(&excl_same_col, pce, pce_sq);
 
 		while (excl_same_col != 0) {
-
 			enum square sq = pop_1st_bit(&excl_same_col);
-
 			enum piece mv_pce = get_piece_at_square(brd, sq);
 
 			if (mv_pce != NO_PIECE) {
@@ -894,14 +878,14 @@ static inline void generate_sliding_horizontal_vertical_moves (struct board *brd
 			} else {
 				if (only_capture_moves == false){
 					mv_bitmap mv = MOVE(pce_sq, sq, NO_PIECE, NO_PIECE, MFLAG_NONE, 0);
-					add_quiet_move(brd, mv, mvl, pce);
+					add_quiet_move(brd, mv, mvl);
 				}
 			}
 		}
 	}
 }
 
-/* Generates sliding diagonal moves (a la Bishop)
+/* Generates sliding diagonal moves for bishop and queen for the given colour
  *
  * Based on the code on page:
  * 		http://chessprogramming.wikispaces.com/Efficient+Generation+of+Sliding+Piece+Attacks
@@ -916,11 +900,17 @@ static inline void generate_sliding_horizontal_vertical_moves (struct board *brd
  */
 
 static inline void generate_sliding_diagonal_moves(struct board *brd,
-				struct move_list *mvl, enum piece pce, const bool only_capture_moves)
+				struct move_list *mvl, enum colour col, const bool only_capture_moves)
 {
-
-	uint64_t bb = brd->bitboards[pce];
-
+	uint64_t bb = 0;
+	if (col == WHITE){
+		bb = brd->bitboards[W_BISHOP];
+		bb |= brd->bitboards[W_QUEEN];
+	} else {
+		bb = brd->bitboards[B_BISHOP];
+		bb |= brd->bitboards[B_QUEEN];
+	}
+	
 	while (bb != 0) {
 
 		enum square pce_sq = pop_1st_bit(&bb);
@@ -948,18 +938,9 @@ static inline void generate_sliding_diagonal_moves(struct board *brd,
 
 		uint64_t all_moves = (diagpos & posmask) | (diagneg & negmask);
 
-		enum colour col = (IS_BLACK(pce)) ? BLACK : WHITE;
-
 		// get all same colour as piece being considered
-		uint64_t col_occupied = 0;
-		if (col == WHITE)
-			col_occupied = brd->colour_bb[WHITE];
-		else
-			col_occupied = brd->colour_bb[BLACK];
-
+		uint64_t col_occupied = brd->colour_bb[col];
 		uint64_t excl_same_col = all_moves & ~col_occupied;
-		//printf("Mask Same Colour\n");
-		//print_mask_as_board(&excl_same_col, pce, pce_sq);
 
 		while (excl_same_col != 0) {
 
@@ -975,7 +956,7 @@ static inline void generate_sliding_diagonal_moves(struct board *brd,
 			} else {
 				if (only_capture_moves == false){
 					mv_bitmap mv = MOVE(pce_sq, sq, NO_PIECE, NO_PIECE, MFLAG_NONE, 0);
-					add_quiet_move(brd, mv, mvl, pce);
+					add_quiet_move(brd, mv, mvl);
 				}
 			}
 		}
@@ -1065,24 +1046,18 @@ TEST_generate_castle_moves(struct board *brd, struct move_list *mvl,
 void
 TEST_generate_sliding_horizontal_vertical_moves(struct board *brd,
 						struct move_list *mvl,
-						enum piece pce)
+						enum colour col)
 {
-	generate_sliding_horizontal_vertical_moves(brd, mvl, pce, false);
+	generate_sliding_horizontal_vertical_moves(brd, mvl, col, false);
 }
 
 void
 TEST_generate_sliding_diagonal_moves(struct board *brd,
-				     struct move_list *mvl, enum piece pce)
+				     struct move_list *mvl, enum colour col)
 {
-	generate_sliding_diagonal_moves(brd, mvl, pce, false);
+	generate_sliding_diagonal_moves(brd, mvl, col, false);
 }
 
-void
-TEST_generate_queen_moves(struct board *brd, struct move_list *mvl,
-			  enum piece pce)
-{
-	generate_queen_moves(brd, mvl, pce, false);
-}
 
 bool TEST_is_move_in_list(struct move_list *mvl, mv_bitmap mv)
 {
@@ -1095,9 +1070,9 @@ uint32_t TEST_get_move_score(enum piece victim, enum piece attacker)
 }
 
 void TEST_add_quiet_move(struct board *brd, 
-		mv_bitmap move_bitmap, struct move_list *mvlist, enum piece pce)
+		mv_bitmap move_bitmap, struct move_list *mvlist)
 {
-	add_quiet_move(brd, move_bitmap, mvlist, pce);
+	add_quiet_move(brd, move_bitmap, mvlist);
 }
 
 

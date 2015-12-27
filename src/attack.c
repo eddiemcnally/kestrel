@@ -82,7 +82,7 @@ bool is_sq_attacked(const struct board *brd, enum square sq,
 			return true;
 		}
 
-		// get the bitbard for rook and queen
+		// get the bitboard for rook and queen
 		uint64_t rq_bb = 0;
 		rq_bb = brd->bitboards[W_ROOK];
 		rq_bb |= brd->bitboards[W_QUEEN];
@@ -198,8 +198,6 @@ static inline bool is_BLACK_pawn_attacking_square(const struct board *brd,
 {
 	uint64_t bbPawn = brd->bitboards[B_PAWN];
 	uint64_t mask = 0;
-
-	//TOFIX: this approach won't work for en-passant
 
 	// overlay all masks for all the pieces
 	while (bbPawn != 0) {

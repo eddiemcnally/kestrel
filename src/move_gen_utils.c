@@ -114,9 +114,12 @@ inline uint8_t pop_1st_bit(uint64_t * bb)
 	uint8_t bit = (uint8_t) __builtin_ctzll(*bb);
 
 	// clear the bit
-	clear_bit(bb, bit);
+	*bb = *bb & (uint64_t) (~(0x01ull << bit));
 	return bit;
 }
+
+
+
 
 
 

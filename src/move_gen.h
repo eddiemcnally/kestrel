@@ -49,16 +49,16 @@ void TEST_generate_castle_moves(struct board *brd,
 void TEST_generate_sliding_horizontal_vertical_moves(struct board
 						     *brd,
 						     struct move_list *mvl,
-						     enum piece pce);
+						     enum colour col);
 void TEST_generate_sliding_diagonal_moves(struct board *brd,
 					  struct move_list *mvl,
-					  enum piece pce);
+					  enum colour col);
 void TEST_generate_queen_moves(struct board *brd,
 			       struct move_list *mvl, enum piece pce);
 bool TEST_is_move_in_list(struct move_list *mvl, mv_bitmap mv);
 void TEST_add_en_passent_move(mv_bitmap move_bitmap, struct move_list *mvlist);
 void TEST_add_quiet_move(struct board *brd, mv_bitmap move_bitmap, 
-			struct move_list *mvlist, enum piece pce);
+			struct move_list *mvlist);
 uint32_t TEST_get_move_score(enum piece victim, enum piece attacker);
 struct move_list *TEST_get_empty_move_list(void);
 
