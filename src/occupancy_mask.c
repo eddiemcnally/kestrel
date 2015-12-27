@@ -2,7 +2,7 @@
  * occupancy_mask.c
  * 
  * ---------------------------------------------------------------------
- * DESCRIPTION: code for generating bitbard ccupancy masks
+ * DESCRIPTION: code for generating bitbard occupancy masks
  * ---------------------------------------------------------------------
  * 
  * 

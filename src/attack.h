@@ -22,10 +22,11 @@
 #include <stdbool.h>
 #include "types.h"
 
+uint64_t in_between(enum square sq1, enum square sq2);
+
+
 uint8_t get_LSB_index(uint64_t bb);
 uint8_t get_MSB_index(uint64_t bb);
-void clear_LSB_to_inclusive_bit(uint64_t * bb, uint8_t bit);
-void clear_MSB_to_inclusive_bit(uint64_t * bb, uint8_t bit);
 bool is_sq_attacked(const struct board *brd, enum square sq,
 		    enum colour attacking_side);
 

@@ -39,14 +39,6 @@
 #include "utils.h"
 #include "occupancy_mask.h"
 
-static bool are_intervening_squares_empty(const struct board *brd,
-					  uint64_t occ_mask,
-					  enum square attacking_sq,
-					  enum square target_sq);
-static bool is_blocked_horizontally(const struct board *brd,
-				    enum square sq1, enum square sq2);
-static bool is_blocked_vertically(const struct board *brd, enum square sq1,
-				  enum square sq2);
 static bool is_attacked_horizontally_or_vertically(const struct board *brd,
 						   enum square sq_one,
 						   enum square sq_two);
@@ -83,6 +75,13 @@ bool is_sq_attacked(const struct board *brd, enum square sq,
 	// trading code bloat for efficiency and duplicate the calls
 	// based on colour....
 	if (attacking_side == WHITE) {
+		if (is_knight_attacking_square(brd, sq_bb, W_KNIGHT)) {
+			return true;
+		}
+		if (is_WHITE_pawn_attacking_square(brd, sq_bb)) {
+			return true;
+		}
+
 		// get the bitbard for rook and queen
 		uint64_t rq_bb = 0;
 		rq_bb = brd->bitboards[W_ROOK];
@@ -90,6 +89,7 @@ bool is_sq_attacked(const struct board *brd, enum square sq,
 		if (is_rook_or_queen_attacking_square(brd, sq, rq_bb)) {
 			return true;
 		}
+
 		// get the bitboard for bishop and queen
 		uint64_t rq_bq = 0;
 		rq_bq = brd->bitboards[W_BISHOP];
@@ -98,18 +98,19 @@ bool is_sq_attacked(const struct board *brd, enum square sq,
 			return true;
 		}
 
-		if (is_knight_attacking_square(brd, sq_bb, W_KNIGHT)) {
-			return true;
-		}
-		if (is_WHITE_pawn_attacking_square(brd, sq_bb)) {
-			return true;
-		}
-
 		if (is_king_attacking_square(brd, sq_bb, W_KING)) {
 			return true;
 		}
 
-	} else if (attacking_side == BLACK) {
+	} else {
+
+		if (is_knight_attacking_square(brd, sq_bb, B_KNIGHT)) {
+			return true;
+		}
+		if (is_BLACK_pawn_attacking_square(brd, sq_bb)) {
+			return true;
+		}
+
 		// get the bitboard for rook and queen
 		uint64_t rq_bb = 0;
 		rq_bb = brd->bitboards[B_ROOK];
@@ -125,20 +126,10 @@ bool is_sq_attacked(const struct board *brd, enum square sq,
 			return true;
 		}
 
-		if (is_knight_attacking_square(brd, sq_bb, B_KNIGHT)) {
-			return true;
-		}
-		if (is_BLACK_pawn_attacking_square(brd, sq_bb)) {
-			return true;
-		}
-
 		if (is_king_attacking_square(brd, sq_bb, B_KING)) {
 			return true;
 		}
-	} else {
-		assert(false);
-	}
-	
+	} 
 	return false;
 }
 
@@ -224,8 +215,6 @@ static inline bool is_WHITE_pawn_attacking_square(const struct board *brd,
 	uint64_t bbPawn = brd->bitboards[W_PAWN];
 	uint64_t mask = 0;
 
-	//TOFIX: this approach won't work for en-passant
-
 	// overlay all masks for all the pieces
 	while (bbPawn != 0) {
 		enum square att_pce_sq = pop_1st_bit(&bbPawn);
@@ -248,11 +237,10 @@ static inline bool is_king_attacking_square(const struct board *brd,
 	return ((mask & sqBB) != 0);
 }
 
-static inline bool is_attacked_horizontally_or_vertically(const struct
-							  board *brd,
-							  enum square
-							  sq_one,
-							  enum square sq_two)
+static inline bool is_attacked_horizontally_or_vertically(
+							const struct board *brd,
+							enum square sq_one,
+							enum square sq_two)
 {
 	uint64_t rook_mask = GET_ROOK_OCC_MASK(sq_one);
 	if (CHECK_BIT(rook_mask, sq_two) == false){
@@ -261,83 +249,19 @@ static inline bool is_attacked_horizontally_or_vertically(const struct
 		return false;
 	}
 		
-	int sq_one_rank = GET_RANK(sq_one);
-	int sq_two_rank = GET_RANK(sq_two);
-
-	if (sq_one_rank == sq_two_rank) {
-		bool blocked = is_blocked_horizontally(brd, sq_one, sq_two);
-		return !blocked;
+		
+	uint64_t interim_squares = in_between(sq_one, sq_two);
+	uint64_t pieces_on_board = brd->board;
+	
+	if ((interim_squares & pieces_on_board) == 0){
+		// no intervening/blocking pieces
+		return true;
 	}
-
-	int sq_two_file = GET_FILE(sq_two);
-	int sq_one_file = GET_FILE(sq_one);
-	if (sq_one_file == sq_two_file) {
-		bool blocked = is_blocked_vertically(brd, sq_one, sq_two);
-		return !blocked;
-	}
-
+	
 	return false;
 }
 
-/*
- * Searches along the rank between the squares to see if the path is
- * blocked by a piece
- * name: search_horizontally
- * @param
- * @return : true if blocking piece between start_sq and end_sq, false otherwise
- *
- */
-static inline bool is_blocked_horizontally(const struct board *brd,
-					   enum square start_sq,
-					   enum square end_sq)
-{
-	enum square start = start_sq;
-	enum square end = end_sq;
-	if (start > end) {
-		// swap for convenience
-		start = end_sq;
-		end = start_sq;
-	}
-	// TODO : replace this loop with a lookup mask for all
-	// possible horizontal intervening squares (could then do a simple
-	// bit mask check instead of a loop) 
-	for (enum square s = start + 1; s < end; s++) {
-		if (IS_SQUARE_OCCUPIED(brd->board, s)) {
-			return true;
-		}
-	}
-	return false;
-}
 
-/*
- * Searches along the file between the squares to see if the path is
- * blocked by a piece
- * name: search_vertically
- * @param
- * @return : true if blocking piece between start_sq and end_sq, false otherwise
- *
- */
-static inline bool is_blocked_vertically(const struct board *brd,
-					 enum square start_sq,
-					 enum square end_sq)
-{
-	enum square start = start_sq;
-	enum square end = end_sq;
-	if (start > end) {
-		// swap for convenience
-		start = end_sq;
-		end = start_sq;
-	}
-	// TODO : replace this loop with a lookup mask for all
-	// possible vertical intervening squares (could then so a simple
-	// bit mask check instead of a loop) 
-	for (enum square s = start + 8; s < end; s = s + 8) {
-		if (IS_SQUARE_OCCUPIED(brd->board, s)) {
-			return true;
-		}
-	}
-	return false;
-}
 
 /*
  * Searches diagonally down left and right, seeing of the path is blocked
@@ -356,67 +280,71 @@ static inline bool is_attacked_diagonally(const struct board *brd,
 	if (CHECK_BIT(diag_occ_mask, target_sq)) {
 		// target sq is on diagonal....check to see if vector between
 		// attacking square and target is blocked
-		return are_intervening_squares_empty(brd, diag_occ_mask,
-						     attacking_sq, target_sq);
+		uint64_t interim_squares = in_between(attacking_sq, target_sq);
+		uint64_t pieces_on_board = brd->board;
+		
+		if ((interim_squares & pieces_on_board) == 0){
+			// no intervening/blocking pieces
+			return true;
+		}
+		return false;		
 	}
 
 	uint64_t anti_diag_occ_mask = GET_ANTI_DIAGONAL_OCC_MASK(attacking_sq);
 	if (CHECK_BIT(anti_diag_occ_mask, target_sq)) {
 		// target sq is on diagonal....check to see if vector between
 		// attacking square and target is blocked
-		return are_intervening_squares_empty(brd, anti_diag_occ_mask,
-						     attacking_sq, target_sq);
+		uint64_t interim_squares = in_between(attacking_sq, target_sq);
+		uint64_t pieces_on_board = brd->board;
+		
+		if ((interim_squares & pieces_on_board) == 0){
+			// no intervening/blocking pieces
+			return true;
+		}
+		return false;		
 	}
 	return false;
 }
 
-static inline bool are_intervening_squares_empty(const struct board *brd,
-						 uint64_t occ_mask,
-						 enum square attacking_sq,
-						 enum square target_sq)
-{
-	//// clear all bits outside the range between the 2 squares.
-	if (attacking_sq < target_sq) {
-		clear_LSB_to_inclusive_bit(&occ_mask, attacking_sq);
-		clear_MSB_to_inclusive_bit(&occ_mask, target_sq);
-	} else {
-		clear_LSB_to_inclusive_bit(&occ_mask, target_sq);
-		clear_MSB_to_inclusive_bit(&occ_mask, attacking_sq);
-	}
 
-	if ((brd->board & occ_mask) != 0) {
-		return false;
-	}
-	// squares empty
-	return true;
+
+
+
+
+
+// This code returns a bitboard with bits set representing squares between 
+// the given 2 squares.
+//
+// The code is taken from :
+// http://chessprogramming.wikispaces.com/Square+Attacked+By#Legality%20Test-In%20Between
+//
+// TODO:
+// as the link above mentions, this code is too slow for on-the-fly calculation.
+// Move the results into a pre-calculated array and replace this function with 
+// a lookup 
+ 
+inline uint64_t in_between(enum square sq1, enum square sq2) {
+	const uint64_t m1   = 0xffffffffffffffff;
+	const uint64_t a2a7 = 0x0001010101010100;
+	const uint64_t b2g7 = 0x0040201008040200;
+	const uint64_t h1b7 = 0x0002040810204080; 
+	uint64_t btwn, line, rank, file;
+
+	btwn  = (m1 << sq1) ^ (m1 << sq2);
+	file  =   (sq2 & 7) - (sq1   & 7);
+	rank  =  ((sq2 | 7) -  sq1) >> 3 ;
+	line  =      (   (file  &  7) - 1) & a2a7; /* a2a7 if same file */
+	line += 2 * ((   (rank  &  7) - 1) >> 58); /* b1g1 if same rank */
+	line += (((rank - file) & 15) - 1) & b2g7; /* b2g7 if same diagonal */
+	line += (((rank + file) & 15) - 1) & h1b7; /* h1b7 if same antidiag */
+	line *= btwn & -btwn; /* mul acts like shift by smaller square */
+
+	return line & btwn;   /* return the bits on that line in-between */
 }
 
-inline void clear_LSB_to_inclusive_bit(uint64_t * bb, uint8_t bit)
-{
-	if (*bb == 0) {
-		return;
-	}
 
-	uint8_t lsb = get_LSB_index(*bb);
 
-	while ((lsb <= bit) && (*bb != 0)) {
-		clear_bit(bb, lsb);
-		lsb = get_LSB_index(*bb);
-	}
-}
 
-inline void clear_MSB_to_inclusive_bit(uint64_t * bb, uint8_t bit)
-{
-	if (*bb == 0) {
-		return;
-	}
-
-	uint8_t msb = get_MSB_index(*bb);
-	while ((msb >= bit) && (*bb != 0)) {
-		clear_bit(bb, msb);
-		msb = get_MSB_index(*bb);
-	}
-}
 
 /**
  * int __builtin_ctz (unsigned int x)

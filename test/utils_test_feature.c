@@ -61,14 +61,6 @@ void test_bit_reversal(void)
 
 }
 
-void test_clear_MSB(void)
-{
-	uint64_t bb = 0x54673;
-	clear_MSB_to_inclusive_bit(&bb, 10);
-
-	assert_true(bb == 0x273);
-}
-
 void test_find_LSB()
 {
 	uint64_t test_val = 0x526200817;
@@ -103,13 +95,6 @@ void test_find_MSB()
 	b = get_MSB_index(test_val);
 	assert_true(b == 0);
 
-}
-
-void test_clear_LSB(void)
-{
-	uint64_t bb = 0x54673;
-	clear_LSB_to_inclusive_bit(&bb, 5);
-	assert_true(bb == 0x54640);
 }
 
 void test_flip_side()
@@ -161,8 +146,6 @@ void utils_test_fixture(void)
 	run_test(test_find_LSB);
 	run_test(test_find_MSB);
 	run_test(test_bit_reversal);
-	run_test(test_clear_MSB);
-	run_test(test_clear_LSB);
 	run_test(test_flip_side);
 	run_test(test_pv_table);
 
