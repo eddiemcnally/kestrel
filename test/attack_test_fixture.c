@@ -381,19 +381,6 @@ void debug_move()
 	assert_true(is_sq_attacked(brd, g7, WHITE) == false);
 }
 
-void test_inbetween_bits(){
-
-	uint64_t bb = in_between(a1, a8);
-	print_mask_as_board(&bb);
-
-	bb = in_between(f4, b8);
-	print_mask_as_board(&bb);
-
-	bb = in_between(f4, b6);
-	print_mask_as_board(&bb);
-
-}
-
 
 void attack_test_fixture(void)
 {
@@ -403,8 +390,6 @@ void attack_test_fixture(void)
 	run_test(test_is_square_being_attacked_by_pawn);
 	run_test(test_is_square_being_attacked_by_king);
 	run_test(test_is_square_under_attack);
-
-	//run_test(test_inbetween_bits);
 
 	//run_test(debug_move);
 

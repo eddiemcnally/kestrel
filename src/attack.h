@@ -22,8 +22,9 @@
 #include <stdbool.h>
 #include "types.h"
 
-uint64_t in_between(enum square sq1, enum square sq2);
 
+
+void init_attack_framework(void);
 bool is_sq_attacked(const struct board *brd, enum square sq,
 		    enum colour attacking_side);
 

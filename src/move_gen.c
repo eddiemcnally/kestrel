@@ -41,6 +41,7 @@
 #include "move_gen_utils.h"
 #include "utils.h"
 
+static void init_mvv_lva_scores(void);
 static void do_gen_moves(struct board *brd, struct move_list *mvl, bool captures_only);
 static void add_pawn_capture_move(enum colour col,
 				  enum square from, enum square to,
@@ -272,18 +273,10 @@ static uint32_t pawn_v_pawn_score = 0;
 
 
 
-void init_mvv_lva_scores(void){
-	for(uint8_t attacker = W_PAWN; attacker <= B_KING; attacker++) {
-		for(uint8_t victim = W_PAWN; victim <= B_KING; victim++) {
-			mvv_lva_score[victim][attacker] = (uint32_t)(victim_score[victim]
-								+ 6 - ( victim_score[attacker] / 100));
-		}
-	}
-	pawn_v_pawn_score = mvv_lva_score[W_PAWN][B_PAWN];
+
+void init_move_gen_framework(void){
+	init_mvv_lva_scores();
 }
-
-
-
 
 
 
@@ -312,6 +305,18 @@ void generate_all_moves(struct board *brd, struct move_list *mvl)
 void generate_all_capture_moves(struct board *brd, struct move_list *mvl)
 {
 	do_gen_moves(brd, mvl, true);
+}
+
+
+
+static void init_mvv_lva_scores(void){
+	for(uint8_t attacker = W_PAWN; attacker <= B_KING; attacker++) {
+		for(uint8_t victim = W_PAWN; victim <= B_KING; victim++) {
+			mvv_lva_score[victim][attacker] = (uint32_t)(victim_score[victim]
+								+ 6 - ( victim_score[attacker] / 100));
+		}
+	}
+	pawn_v_pawn_score = mvv_lva_score[W_PAWN][B_PAWN];
 }
 
 

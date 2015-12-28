@@ -31,13 +31,15 @@
 #include "move_gen.h"
 #include "move_gen_utils.h"
 #include "hashkeys.h"
+#include "attack.h"
 #include "init.h"
 #include "board_utils.h"
 
 struct board * init_game(char *fen)
 {
 	init_hash_keys();
-	init_mvv_lva_scores();
+	init_move_gen_framework();
+	init_attack_framework();	
 
 	struct board * brd = init_board(fen);
 

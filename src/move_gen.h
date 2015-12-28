@@ -34,7 +34,7 @@ mv_bitmap MOVE(enum square from, enum square to, enum piece capture,
 	       enum piece promote, uint64_t flags, uint32_t score);
 void generate_all_moves(struct board *brd, struct move_list *mvl);
 void generate_all_capture_moves(struct board *brd, struct move_list *mvl);
-void init_mvv_lva_scores(void);
+void init_move_gen_framework(void);
 
 
 void TEST_generate_white_pawn_moves(struct board *brd,

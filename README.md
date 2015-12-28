@@ -13,7 +13,12 @@ The ./debug directory contains some Python 3 code that was developed to help par
 Some implementation notes:
 * At a very high level, I am using BlueFever Software as a guide to the implementation steps. There are video tutorials on YouTube.
 * The engine makes heavy use of bitboards (uint64_t types to represent the board). Using bitboards allows for using pre-generated lookup bitmasks ("occupancy masks") to identify potential attacking squares for any piece on the board.
-* As mentioned above, there is an dependency on gcc builtin functions (specifically, __builtin_ctzll, __builtin_popcntll, __builtin_bswap64). There is also a dependency on some gcc-specific #pragma's.
+* As mentioned above, there is an dependency on gcc builtin functions. Specifically:
+  * __builtin_ctzll
+  * __builtin_popcntll
+  * __builtin_bswap64
+  * __builtin_prefetch
+  There is also a dependency on some gcc-specific #pragma's to disable some compiler warnings (sign conversions) in specific functions.
 * The search is alpha-beta, with principle variation. The alpha-beta routine is called using iterative deepening.
 
 
@@ -30,7 +35,7 @@ This is a work-in-progress. Current state:
 	* cd ./test
 	* make
 	* ./test_kestrel
-* In terms of performance, does about 13x10^6 moves/sec during the perft testing. Spec of host:
+* In terms of performance, does about 14x10^6 moves/sec during the perft testing. Spec of host:
 	- Intel® Core™ i5-3337U CPU @ 1.80GHz × 4
 	- Debian GNU/Linux 8 (jessie) 64-bit
 

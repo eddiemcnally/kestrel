@@ -53,6 +53,31 @@ static bool is_rook_or_queen_attacking_square(const struct board *brd,
 					      enum square sq, uint64_t rq_bb);
 static bool is_bishop_or_queen_attacking_square(const struct board *brd,
 						enum square sq, uint64_t bq_bb);
+static uint64_t in_between(enum square sq1, enum square sq2);
+static void populate_intervening_squares_array(void);
+
+
+
+
+// a lookup array of bitmasks for squares between the "from" and "to"
+// squares.  
+// since there is a commutative property associated with to/from squares 
+// when identifying interveing squares, it's irrelevent whether you index using
+// [from][to] or [to][from]
+static uint64_t intervening_squares_lookup[NUM_SQUARES][NUM_SQUARES];
+
+
+///////////////////////////////////////////////////////
+
+
+
+
+void init_attack_framework(void){
+	populate_intervening_squares_array();
+}
+
+
+
 
 /*
  * Checks to see if a given square is being attacked by
@@ -66,6 +91,7 @@ static bool is_bishop_or_queen_attacking_square(const struct board *brd,
 bool is_sq_attacked(const struct board *brd, enum square sq,
 		    enum colour attacking_side)
 {
+
 	// create a bitboard for the square being considered
 	uint64_t sq_bb = 0;
 	set_bit(&sq_bb, sq);
@@ -132,6 +158,20 @@ bool is_sq_attacked(const struct board *brd, enum square sq,
 	} 
 	return false;
 }
+
+
+
+
+static void populate_intervening_squares_array(void){
+	for(int fr_sq = a1; fr_sq <= h8; fr_sq++){
+		for(int to_sq = a1; to_sq <= h8; to_sq++){
+			
+			uint64_t bits = in_between(fr_sq, to_sq);
+			intervening_squares_lookup[fr_sq][to_sq] = bits;
+		}
+	}
+}
+
 
 // checks vertical and horizontal for both rook and queen
 static inline bool is_rook_or_queen_attacking_square(const struct board
@@ -212,10 +252,15 @@ static inline bool is_attacked_horizontally_or_vertically(
 							enum square sq_one,
 							enum square sq_two)
 {
+		
 	uint64_t rook_mask = GET_ROOK_OCC_MASK(sq_one);
 
+	__builtin_prefetch(&intervening_squares_lookup[sq_one][sq_two]);
+	
 	if (CHECK_BIT(rook_mask, sq_two)){
-		uint64_t interim_squares = in_between(sq_one, sq_two);
+		//uint64_t interim_squares = in_between(sq_one, sq_two);
+		
+		uint64_t interim_squares = intervening_squares_lookup[sq_one][sq_two];
 		uint64_t pieces_on_board = brd->board;
 		
 		if ((interim_squares & pieces_on_board) == 0){
@@ -242,8 +287,14 @@ static inline bool is_attacked_diagonally(const struct board *brd,
 					  enum square target_sq)
 {
 	uint64_t bishop_occ_mask = GET_BISHOP_OCC_MASK(attacking_sq);
+	
+	__builtin_prefetch(&intervening_squares_lookup[attacking_sq][target_sq]);
+
 	if(CHECK_BIT(bishop_occ_mask, target_sq)){
-		uint64_t interim_squares = in_between(attacking_sq, target_sq);
+		
+		//uint64_t interim_squares = in_between(attacking_sq, target_sq);
+		
+		uint64_t interim_squares = intervening_squares_lookup[attacking_sq][target_sq];
 		uint64_t pieces_on_board = brd->board;
 		
 		if ((interim_squares & pieces_on_board) == 0){
@@ -266,12 +317,7 @@ static inline bool is_attacked_diagonally(const struct board *brd,
 // The code is taken from :
 // http://chessprogramming.wikispaces.com/Square+Attacked+By#Legality%20Test-In%20Between
 //
-// TODO:
-// as the link above mentions, this code is too slow for on-the-fly calculation.
-// Move the results into a pre-calculated array and replace this function with 
-// a lookup 
- 
-inline uint64_t in_between(enum square sq1, enum square sq2) {
+static uint64_t in_between(enum square sq1, enum square sq2) {
 	const uint64_t m1   = 0xffffffffffffffff;
 	const uint64_t a2a7 = 0x0001010101010100;
 	const uint64_t b2g7 = 0x0040201008040200;
