@@ -274,7 +274,7 @@ void test_fen_parsing_general_layout_2()
 	assert_true(brd->pawn_control[BLACK][g6] == 2);
 	assert_true(brd->pawn_control[BLACK][h6] == 1);
 	assert_true(brd->pawn_control[BLACK][b4] == 1);
-	assert_true(brd->pawn_control[BLACK][c4] == 1);
+	assert_true(brd->pawn_control[BLACK][d4] == 1);
 
 	
 }

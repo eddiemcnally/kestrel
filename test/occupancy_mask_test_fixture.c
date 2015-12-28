@@ -33,8 +33,6 @@ void test_rook_occupancy_mask(void);
 void test_knight_occupancy_mask(void);
 void test_bishop_occupancy_mask(void);
 void test_queen_occupancy_mask(void);
-void test_white_pawn_occupancy_mask(void);
-void test_black_pawn_occupancy_mask(void);
 void occupancy_mask_test_fixture(void);
 
 /**
@@ -164,89 +162,6 @@ void test_rook_occupancy_mask(void)
 
 }
 
-void test_white_pawn_occupancy_mask(void)
-{
-
-//              56 57 58 59 60 61 62 63
-//              48 49 50 51 52 53 54 55
-//              40 41 42 43 44 45 46 47 
-//              32 33 34 35 36 37 38 39
-//              24 25 26 27 28 29 30 31
-//              16 17 18 19 20 21 22 23
-//              08 09 10 11 12 13 14 15
-//              00 01 02 03 40 05 06 07
-
-	uint64_t mask = GET_WHITE_PAWN_OCC_MASK(a2);
-	//printf("0x%016llx\n", mask);  
-	assert_true(CHECK_BIT(mask, b3));
-	assert_true(1 == count_bits(mask));
-
-	mask = GET_WHITE_PAWN_OCC_MASK(h2);
-	//printf("0x%016llx\n", mask);  
-	assert_true(CHECK_BIT(mask, g3));
-	assert_true(1 == count_bits(mask));
-
-	mask = GET_WHITE_PAWN_OCC_MASK(d2);
-	//printf("0x%016llx\n", mask);  
-	assert_true(CHECK_BIT(mask, c3));
-	assert_true(CHECK_BIT(mask, e3));
-	assert_true(2 == count_bits(mask));
-
-	mask = GET_WHITE_PAWN_OCC_MASK(g6);
-	//printf("0x%016llx\n", mask);  
-	assert_true(CHECK_BIT(mask, f7));
-	assert_true(CHECK_BIT(mask, h7));
-	assert_true(2 == count_bits(mask));
-
-	mask = GET_WHITE_PAWN_OCC_MASK(c7);
-	//printf("0x%016llx\n", mask);  
-	assert_true(CHECK_BIT(mask, b8));
-	assert_true(CHECK_BIT(mask, d8));
-	assert_true(2 == count_bits(mask));
-
-}
-
-void test_black_pawn_occupancy_mask(void)
-{
-
-//              56 57 58 59 60 61 62 63
-//              48 49 50 51 52 53 54 55
-//              40 41 42 43 44 45 46 47 
-//              32 33 34 35 36 37 38 39
-//              24 25 26 27 28 29 30 31
-//              16 17 18 19 20 21 22 23
-//              08 09 10 11 12 13 14 15
-//              00 01 02 03 40 05 06 07
-
-	uint64_t mask = GET_BLACK_PAWN_OCC_MASK(a7);
-	//printf("0x%016llx\n", mask);  
-	assert_true(CHECK_BIT(mask, b6));
-	assert_true(1 == count_bits(mask));
-
-	mask = GET_BLACK_PAWN_OCC_MASK(h2);
-	//printf("0x%016llx\n", mask);  
-	assert_true(CHECK_BIT(mask, g1));
-	assert_true(1 == count_bits(mask));
-
-	mask = GET_BLACK_PAWN_OCC_MASK(d2);
-	//printf("0x%016llx\n", mask);  
-	assert_true(CHECK_BIT(mask, c1));
-	assert_true(CHECK_BIT(mask, e1));
-	assert_true(2 == count_bits(mask));
-
-	mask = GET_BLACK_PAWN_OCC_MASK(g6);
-	//printf("0x%016llx\n", mask);  
-	assert_true(CHECK_BIT(mask, f5));
-	assert_true(CHECK_BIT(mask, h5));
-	assert_true(2 == count_bits(mask));
-
-	mask = GET_BLACK_PAWN_OCC_MASK(c7);
-	//printf("0x%016llx\n", mask);  
-	assert_true(CHECK_BIT(mask, b6));
-	assert_true(CHECK_BIT(mask, d6));
-	assert_true(2 == count_bits(mask));
-
-}
 
 void test_knight_occupancy_mask(void)
 {
@@ -388,8 +303,5 @@ void occupancy_mask_test_fixture(void)
 	run_test(test_rook_occupancy_mask);
 	run_test(test_queen_occupancy_mask);
 	run_test(test_bishop_occupancy_mask);
-	run_test(test_white_pawn_occupancy_mask);
-	run_test(test_black_pawn_occupancy_mask);
-
 	test_fixture_end();	// ends a fixture
 }
