@@ -9,7 +9,9 @@
 
 # NOTE: setting the inline limit values to be obscenely high since the size of
 #		the binary isn't a concern
-CFLAGS	=		-O3 -flto -std=c11 \
+CFLAGS	=		-O3 \
+				-flto \
+				-std=c11 \
 				-march=native \
 				-mtune=native \
 				-fomit-frame-pointer \

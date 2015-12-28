@@ -29,9 +29,7 @@ void add_to_score(uint64_t *score, uint32_t to_add);
 
 
 void validate_move_list(struct move_list *mvl);
-mv_bitmap MOVE(enum square from, enum square to, enum piece capture,
-	       enum piece promote, uint64_t flags, uint32_t score);
-enum piece get_piece_at_square(const struct board *the_board, enum square sq);
+
 struct move_list *get_empty_move_list(void);
 bool is_move_in_list(struct move_list *mvl, mv_bitmap mv);
 uint64_t reverse_bits(uint64_t word);

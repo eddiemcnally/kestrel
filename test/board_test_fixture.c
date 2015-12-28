@@ -32,7 +32,7 @@
 #include "pieces.h"
 #include "utils.h"
 
-void verify_initial_board_placement(struct board *the_board);
+void verify_initial_board_placement(struct board *brd);
 void test_initial_board_placement(void);
 void test_clean_board(void);
 void test_fen_parsing_initial_board_layout(void);
@@ -52,61 +52,61 @@ void board_test_fixture(void);
 void test_initial_board_placement()
 {
 	init_hash_keys();
-	struct board * the_board = init_game(STARTING_FEN);
+	struct board * brd = init_game(STARTING_FEN);
 
-	assert_true(W_ROOK == get_piece_at_square(the_board, a1));
-	assert_true(W_KNIGHT == get_piece_at_square(the_board, b1));
-	assert_true(W_BISHOP == get_piece_at_square(the_board, c1));
-	assert_true(W_QUEEN == get_piece_at_square(the_board, d1));
-	assert_true(W_KING == get_piece_at_square(the_board, e1));
-	assert_true(W_BISHOP == get_piece_at_square(the_board, f1));
-	assert_true(W_KNIGHT == get_piece_at_square(the_board, g1));
-	assert_true(W_ROOK == get_piece_at_square(the_board, h1));
+	assert_true(W_ROOK == brd->pieces[a1]);
+	assert_true(W_KNIGHT == brd->pieces[b1]);
+	assert_true(W_BISHOP == brd->pieces[c1]);
+	assert_true(W_QUEEN == brd->pieces[d1]);
+	assert_true(W_KING == brd->pieces[e1]);
+	assert_true(W_BISHOP == brd->pieces[f1]);
+	assert_true(W_KNIGHT == brd->pieces[g1]);
+	assert_true(W_ROOK == brd->pieces[h1]);
 
-	assert_true(W_PAWN == get_piece_at_square(the_board, a2));
-	assert_true(W_PAWN == get_piece_at_square(the_board, b2));
-	assert_true(W_PAWN == get_piece_at_square(the_board, c2));
-	assert_true(W_PAWN == get_piece_at_square(the_board, d2));
-	assert_true(W_PAWN == get_piece_at_square(the_board, e2));
-	assert_true(W_PAWN == get_piece_at_square(the_board, f2));
-	assert_true(W_PAWN == get_piece_at_square(the_board, g2));
-	assert_true(W_PAWN == get_piece_at_square(the_board, h2));
+	assert_true(W_PAWN == brd->pieces[a2]);
+	assert_true(W_PAWN == brd->pieces[b2]);
+	assert_true(W_PAWN == brd->pieces[c2]);
+	assert_true(W_PAWN == brd->pieces[d2]);
+	assert_true(W_PAWN == brd->pieces[e2]);
+	assert_true(W_PAWN == brd->pieces[f2]);
+	assert_true(W_PAWN == brd->pieces[g2]);
+	assert_true(W_PAWN == brd->pieces[h2]);
 
-	assert_true(B_PAWN == get_piece_at_square(the_board, a7));
-	assert_true(B_PAWN == get_piece_at_square(the_board, b7));
-	assert_true(B_PAWN == get_piece_at_square(the_board, c7));
-	assert_true(B_PAWN == get_piece_at_square(the_board, d7));
-	assert_true(B_PAWN == get_piece_at_square(the_board, e7));
-	assert_true(B_PAWN == get_piece_at_square(the_board, f7));
-	assert_true(B_PAWN == get_piece_at_square(the_board, g7));
-	assert_true(B_PAWN == get_piece_at_square(the_board, h7));
+	assert_true(B_PAWN == brd->pieces[a7]);
+	assert_true(B_PAWN == brd->pieces[b7]);
+	assert_true(B_PAWN == brd->pieces[c7]);
+	assert_true(B_PAWN == brd->pieces[d7]);
+	assert_true(B_PAWN == brd->pieces[e7]);
+	assert_true(B_PAWN == brd->pieces[f7]);
+	assert_true(B_PAWN == brd->pieces[g7]);
+	assert_true(B_PAWN == brd->pieces[h7]);
 
-	assert_true(B_ROOK == get_piece_at_square(the_board, a8));
-	assert_true(B_KNIGHT == get_piece_at_square(the_board, b8));
-	assert_true(B_BISHOP == get_piece_at_square(the_board, c8));
-	assert_true(B_QUEEN == get_piece_at_square(the_board, d8));
-	assert_true(B_KING == get_piece_at_square(the_board, e8));
-	assert_true(B_BISHOP == get_piece_at_square(the_board, f8));
-	assert_true(B_KNIGHT == get_piece_at_square(the_board, g8));
-	assert_true(B_ROOK == get_piece_at_square(the_board, h8));
+	assert_true(B_ROOK == brd->pieces[a8]);
+	assert_true(B_KNIGHT == brd->pieces[b8]);
+	assert_true(B_BISHOP == brd->pieces[c8]);
+	assert_true(B_QUEEN == brd->pieces[d8]);
+	assert_true(B_KING == brd->pieces[e8]);
+	assert_true(B_BISHOP == brd->pieces[f8]);
+	assert_true(B_KNIGHT == brd->pieces[g8]);
+	assert_true(B_ROOK == brd->pieces[h8]);
 
 	// no piece present
 	for (int i = a3; i < h6; i++) {
-		assert_true(get_piece_at_square(the_board, i) == NO_PIECE);
+		assert_true(brd->pieces[i] == NO_PIECE);
 	}
 
 	// now verify remainder of struct is populated
-	assert_true(the_board->side_to_move == WHITE);
+	assert_true(brd->side_to_move == WHITE);
 
-	assert_true(the_board->en_passant == NO_SQUARE);
+	assert_true(brd->en_passant == NO_SQUARE);
 
-	assert_true(the_board->fifty_move_counter == 0);
-	assert_true(the_board->ply == 0);
-	assert_true(the_board->history_ply == 0);
+	assert_true(brd->fifty_move_counter == 0);
+	assert_true(brd->ply == 0);
+	assert_true(brd->history_ply == 0);
 
-	assert_true(the_board->castle_perm == (WQCA | WKCA | BQCA | BKCA));
+	assert_true(brd->castle_perm == (WQCA | WKCA | BQCA | BKCA));
 
-	assert_true(the_board->board_hash != 0);
+	assert_true(brd->board_hash != 0);
 
 }
 
@@ -117,57 +117,57 @@ void test_fen_parsing_initial_board_layout(void)
 	char *test_fen =
 	    "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
-	struct board *the_board = init_game(test_fen);
+	struct board *brd = init_game(test_fen);
 
-	//print_board(the_board);
+	//print_board(brd);
 
 	// verify the board
-	assert_true(W_ROOK == get_piece_at_square(the_board, a1));
-	assert_true(W_KNIGHT == get_piece_at_square(the_board, b1));
-	assert_true(W_BISHOP == get_piece_at_square(the_board, c1));
-	assert_true(W_QUEEN == get_piece_at_square(the_board, d1));
-	assert_true(W_KING == get_piece_at_square(the_board, e1));
-	assert_true(W_BISHOP == get_piece_at_square(the_board, f1));
-	assert_true(W_KNIGHT == get_piece_at_square(the_board, g1));
-	assert_true(W_ROOK == get_piece_at_square(the_board, h1));
+	assert_true(W_ROOK == brd->pieces[a1]);
+	assert_true(W_KNIGHT == brd->pieces[b1]);
+	assert_true(W_BISHOP == brd->pieces[c1]);
+	assert_true(W_QUEEN == brd->pieces[d1]);
+	assert_true(W_KING == brd->pieces[e1]);
+	assert_true(W_BISHOP == brd->pieces[f1]);
+	assert_true(W_KNIGHT == brd->pieces[g1]);
+	assert_true(W_ROOK == brd->pieces[h1]);
 
-	assert_true(W_PAWN == get_piece_at_square(the_board, a2));
-	assert_true(W_PAWN == get_piece_at_square(the_board, b2));
-	assert_true(W_PAWN == get_piece_at_square(the_board, c2));
-	assert_true(W_PAWN == get_piece_at_square(the_board, d2));
-	assert_true(W_PAWN == get_piece_at_square(the_board, e2));
-	assert_true(W_PAWN == get_piece_at_square(the_board, f2));
-	assert_true(W_PAWN == get_piece_at_square(the_board, g2));
-	assert_true(W_PAWN == get_piece_at_square(the_board, h2));
+	assert_true(W_PAWN == brd->pieces[a2]);
+	assert_true(W_PAWN == brd->pieces[b2]);
+	assert_true(W_PAWN == brd->pieces[c2]);
+	assert_true(W_PAWN == brd->pieces[d2]);
+	assert_true(W_PAWN == brd->pieces[e2]);
+	assert_true(W_PAWN == brd->pieces[f2]);
+	assert_true(W_PAWN == brd->pieces[g2]);
+	assert_true(W_PAWN == brd->pieces[h2]);
 
-	assert_true(B_PAWN == get_piece_at_square(the_board, a7));
-	assert_true(B_PAWN == get_piece_at_square(the_board, b7));
-	assert_true(B_PAWN == get_piece_at_square(the_board, c7));
-	assert_true(B_PAWN == get_piece_at_square(the_board, d7));
-	assert_true(B_PAWN == get_piece_at_square(the_board, e7));
-	assert_true(B_PAWN == get_piece_at_square(the_board, f7));
-	assert_true(B_PAWN == get_piece_at_square(the_board, g7));
-	assert_true(B_PAWN == get_piece_at_square(the_board, h7));
+	assert_true(B_PAWN == brd->pieces[a7]);
+	assert_true(B_PAWN == brd->pieces[b7]);
+	assert_true(B_PAWN == brd->pieces[c7]);
+	assert_true(B_PAWN == brd->pieces[d7]);
+	assert_true(B_PAWN == brd->pieces[e7]);
+	assert_true(B_PAWN == brd->pieces[f7]);
+	assert_true(B_PAWN == brd->pieces[g7]);
+	assert_true(B_PAWN == brd->pieces[h7]);
 
-	assert_true(B_ROOK == get_piece_at_square(the_board, a8));
-	assert_true(B_KNIGHT == get_piece_at_square(the_board, b8));
-	assert_true(B_BISHOP == get_piece_at_square(the_board, c8));
-	assert_true(B_QUEEN == get_piece_at_square(the_board, d8));
-	assert_true(B_KING == get_piece_at_square(the_board, e8));
-	assert_true(B_BISHOP == get_piece_at_square(the_board, f8));
-	assert_true(B_KNIGHT == get_piece_at_square(the_board, g8));
-	assert_true(B_ROOK == get_piece_at_square(the_board, h8));
+	assert_true(B_ROOK == brd->pieces[a8]);
+	assert_true(B_KNIGHT == brd->pieces[b8]);
+	assert_true(B_BISHOP == brd->pieces[c8]);
+	assert_true(B_QUEEN == brd->pieces[d8]);
+	assert_true(B_KING == brd->pieces[e8]);
+	assert_true(B_BISHOP == brd->pieces[f8]);
+	assert_true(B_KNIGHT == brd->pieces[g8]);
+	assert_true(B_ROOK == brd->pieces[h8]);
 
 	// no piece present
 	for (int i = a3; i < h6; i++) {
-		assert_true(NO_PIECE == get_piece_at_square(the_board, i));
+		assert_true(NO_PIECE == brd->pieces[i]);
 	}
 
-	assert_true(the_board->side_to_move == WHITE);
+	assert_true(brd->side_to_move == WHITE);
 
-	assert_true(the_board->castle_perm == (WKCA | WQCA | BKCA | BQCA));
+	assert_true(brd->castle_perm == (WKCA | WQCA | BKCA | BQCA));
 
-	assert_true(the_board->en_passant == NO_SQUARE);
+	assert_true(brd->en_passant == NO_SQUARE);
 
 }
 
@@ -177,20 +177,20 @@ void test_fen_parsing_general_layout_1()
 	// this is the initial board setup
 	char *test_fen = "k7/8/8/4N3/8/8/8/3K4 b - - 13 56";
 
-	struct board *the_board = init_game(test_fen);
+	struct board *brd = init_game(test_fen);
 
-	//print_board(the_board);
+	//print_board(brd);
 
 	// verify the board
-	assert_true(B_KING == get_piece_at_square(the_board, a8));
-	assert_true(W_KNIGHT == get_piece_at_square(the_board, e5));
-	assert_true(W_KING == get_piece_at_square(the_board, d1));
+	assert_true(B_KING == brd->pieces[a8]);
+	assert_true(W_KNIGHT == brd->pieces[e5]);
+	assert_true(W_KING == brd->pieces[d1]);
 
-	assert_true(the_board->side_to_move == BLACK);
+	assert_true(brd->side_to_move == BLACK);
 
-	assert_true(the_board->castle_perm == 0);
+	assert_true(brd->castle_perm == 0);
 
-	assert_true(the_board->en_passant == NO_SQUARE);
+	assert_true(brd->en_passant == NO_SQUARE);
 }
 
 void test_fen_parsing_general_layout_2()
@@ -200,47 +200,83 @@ void test_fen_parsing_general_layout_2()
 	char *test_fen =
 	    "rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2";
 
-	struct board *the_board = init_game(test_fen);
+	struct board *brd = init_game(test_fen);
 
-	//print_board(the_board);
+	//print_board(brd);
 
 	// verify the board
-	assert_true(W_ROOK == get_piece_at_square(the_board, a1));
-	assert_true(W_KNIGHT == get_piece_at_square(the_board, b1));
-	assert_true(W_BISHOP == get_piece_at_square(the_board, c1));
-	assert_true(W_QUEEN == get_piece_at_square(the_board, d1));
-	assert_true(W_KING == get_piece_at_square(the_board, e1));
-	assert_true(W_BISHOP == get_piece_at_square(the_board, f1));
+	assert_true(W_ROOK == brd->pieces[a1]);
+	assert_true(W_KNIGHT == brd->pieces[b1]);
+	assert_true(W_BISHOP == brd->pieces[c1]);
+	assert_true(W_QUEEN == brd->pieces[d1]);
+	assert_true(W_KING == brd->pieces[e1]);
+	assert_true(W_BISHOP == brd->pieces[f1]);
 
-	assert_true(W_ROOK == get_piece_at_square(the_board, h1));
+	assert_true(W_ROOK == brd->pieces[h1]);
 
-	assert_true(W_PAWN == get_piece_at_square(the_board, a2));
-	assert_true(W_PAWN == get_piece_at_square(the_board, b2));
-	assert_true(W_PAWN == get_piece_at_square(the_board, d2));
-	assert_true(W_PAWN == get_piece_at_square(the_board, f2));
-	assert_true(W_PAWN == get_piece_at_square(the_board, g2));
-	assert_true(W_PAWN == get_piece_at_square(the_board, h2));
+	assert_true(W_PAWN == brd->pieces[a2]);
+	assert_true(W_PAWN == brd->pieces[b2]);
+	assert_true(W_PAWN == brd->pieces[d2]);
+	assert_true(W_PAWN == brd->pieces[f2]);
+	assert_true(W_PAWN == brd->pieces[g2]);
+	assert_true(W_PAWN == brd->pieces[h2]);
 
-	assert_true(B_PAWN == get_piece_at_square(the_board, a7));
-	assert_true(B_PAWN == get_piece_at_square(the_board, b7));
-	assert_true(B_PAWN == get_piece_at_square(the_board, d7));
-	assert_true(B_PAWN == get_piece_at_square(the_board, f7));
-	assert_true(B_PAWN == get_piece_at_square(the_board, g7));
-	assert_true(B_PAWN == get_piece_at_square(the_board, h7));
+	assert_true(B_PAWN == brd->pieces[a7]);
+	assert_true(B_PAWN == brd->pieces[b7]);
+	assert_true(B_PAWN == brd->pieces[d7]);
+	assert_true(B_PAWN == brd->pieces[f7]);
+	assert_true(B_PAWN == brd->pieces[g7]);
+	assert_true(B_PAWN == brd->pieces[h7]);
 
-	assert_true(B_ROOK == get_piece_at_square(the_board, a8));
-	assert_true(B_KNIGHT == get_piece_at_square(the_board, b8));
-	assert_true(B_BISHOP == get_piece_at_square(the_board, c8));
-	assert_true(B_QUEEN == get_piece_at_square(the_board, d8));
-	assert_true(B_KING == get_piece_at_square(the_board, e8));
-	assert_true(B_BISHOP == get_piece_at_square(the_board, f8));
-	assert_true(B_ROOK == get_piece_at_square(the_board, h8));
+	assert_true(B_ROOK == brd->pieces[a8]);
+	assert_true(B_KNIGHT == brd->pieces[b8]);
+	assert_true(B_BISHOP == brd->pieces[c8]);
+	assert_true(B_QUEEN == brd->pieces[d8]);
+	assert_true(B_KING == brd->pieces[e8]);
+	assert_true(B_BISHOP == brd->pieces[f8]);
+	assert_true(B_ROOK == brd->pieces[h8]);
 
-	assert_true(the_board->side_to_move == BLACK);
+	assert_true(brd->side_to_move == BLACK);
 
-	assert_true(the_board->castle_perm == (WKCA | WQCA | BKCA | BQCA));
+	assert_true(brd->castle_perm == (WKCA | WQCA | BKCA | BQCA));
 
-	assert_true(the_board->en_passant == NO_SQUARE);
+	assert_true(brd->en_passant == NO_SQUARE);
+	
+	
+	// test pawn positions
+	for(int f = FILE_A; f <= FILE_H; f++){
+		assert_true(brd->pawns_on_file[WHITE][f] == 1);
+		assert_true(brd->pawns_on_file[BLACK][f] == 1);
+	}
+	assert_true(brd->pawns_on_rank[WHITE][RANK_2] == 7);
+	assert_true(brd->pawns_on_rank[WHITE][RANK_4] == 1);
+	
+	assert_true(brd->pawns_on_rank[BLACK][RANK_7] == 7);
+	assert_true(brd->pawns_on_rank[BLACK][RANK_5] == 1);
+	
+	assert_true(brd->pawn_control[WHITE][a3] == 1);
+	assert_true(brd->pawn_control[WHITE][b3] == 2);
+	assert_true(brd->pawn_control[WHITE][c3] == 2);
+	assert_true(brd->pawn_control[WHITE][d3] == 1);
+	assert_true(brd->pawn_control[WHITE][e3] == 2);
+	assert_true(brd->pawn_control[WHITE][f3] == 1);
+	assert_true(brd->pawn_control[WHITE][g3] == 2);
+	assert_true(brd->pawn_control[WHITE][h3] == 1);
+	assert_true(brd->pawn_control[WHITE][d5] == 1);
+	assert_true(brd->pawn_control[WHITE][f5] == 1);
+	
+	assert_true(brd->pawn_control[BLACK][a6] == 1);
+	assert_true(brd->pawn_control[BLACK][b6] == 1);
+	assert_true(brd->pawn_control[BLACK][c6] == 2);
+	assert_true(brd->pawn_control[BLACK][d6] == 1);
+	assert_true(brd->pawn_control[BLACK][e6] == 2);
+	assert_true(brd->pawn_control[BLACK][f6] == 2);
+	assert_true(brd->pawn_control[BLACK][g6] == 2);
+	assert_true(brd->pawn_control[BLACK][h6] == 1);
+	assert_true(brd->pawn_control[BLACK][b4] == 1);
+	assert_true(brd->pawn_control[BLACK][c4] == 1);
+
+	
 }
 
 void test_setting_bits_in_a_board()

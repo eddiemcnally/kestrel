@@ -53,8 +53,6 @@ static bool is_rook_or_queen_attacking_square(const struct board *brd,
 					      enum square sq, uint64_t rq_bb);
 static bool is_bishop_or_queen_attacking_square(const struct board *brd,
 						enum square sq, uint64_t bq_bb);
-static bool is_WHITE_pawn_attacking_square(const struct board *brd, uint64_t sqBB);
-static bool is_BLACK_pawn_attacking_square(const struct board *brd, uint64_t sqBB);
 
 /*
  * Checks to see if a given square is being attacked by
@@ -78,7 +76,8 @@ bool is_sq_attacked(const struct board *brd, enum square sq,
 		if (is_knight_attacking_square(brd, sq_bb, W_KNIGHT)) {
 			return true;
 		}
-		if (is_WHITE_pawn_attacking_square(brd, sq_bb)) {
+		// white pawn controls this square?
+		if (brd->pawn_control[WHITE][sq] > 0){
 			return true;
 		}
 
@@ -107,7 +106,8 @@ bool is_sq_attacked(const struct board *brd, enum square sq,
 		if (is_knight_attacking_square(brd, sq_bb, B_KNIGHT)) {
 			return true;
 		}
-		if (is_BLACK_pawn_attacking_square(brd, sq_bb)) {
+		// Black pawn controls this square?
+		if (brd->pawn_control[BLACK][sq] > 0) {
 			return true;
 		}
 
@@ -191,34 +191,6 @@ static inline bool is_knight_attacking_square(const struct board *brd,
 		}
 	}
 	return false;
-}
-
-static inline bool is_BLACK_pawn_attacking_square(const struct board *brd,
-						  uint64_t sqBB)
-{
-	uint64_t bbPawn = brd->bitboards[B_PAWN];
-	uint64_t mask = 0;
-
-	// overlay all masks for all the pieces
-	while (bbPawn != 0) {
-		enum square att_pce_sq = pop_1st_bit(&bbPawn);
-		mask |= GET_BLACK_PAWN_OCC_MASK(att_pce_sq);
-	}
-	return ((mask & sqBB) != 0);
-}
-
-static inline bool is_WHITE_pawn_attacking_square(const struct board *brd,
-						  uint64_t sqBB)
-{
-	uint64_t bbPawn = brd->bitboards[W_PAWN];
-	uint64_t mask = 0;
-
-	// overlay all masks for all the pieces
-	while (bbPawn != 0) {
-		enum square att_pce_sq = pop_1st_bit(&bbPawn);
-		mask |= GET_WHITE_PAWN_OCC_MASK(att_pce_sq);
-	}
-	return ((mask & sqBB) != 0);
 }
 
 static inline bool is_king_attacking_square(const struct board *brd,
@@ -387,12 +359,15 @@ bool TEST_is_pawn_attacking_square(const struct board * brd,
 				   enum square sq, enum colour attacking_side)
 {
 	if (attacking_side == WHITE) {
-		return is_WHITE_pawn_attacking_square(brd,
-						      square_to_bitboard(sq));
+		if (brd->pawn_control[WHITE][sq] > 0){
+			return true;
+		}
 	} else {
-		return is_BLACK_pawn_attacking_square(brd,
-						      square_to_bitboard(sq));
+		if (brd->pawn_control[BLACK][sq] > 0){
+			return true;
+		}
 	}
+	return false;
 }
 
 bool TEST_is_king_attacking_square(const struct board * brd,

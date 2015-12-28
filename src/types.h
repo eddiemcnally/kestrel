@@ -23,6 +23,9 @@
 
 
 
+#define NUM_RANKS 	8
+#define NUM_FILES	8
+
 enum colour {
 	BLACK = 0,
 	WHITE = 1,
@@ -159,6 +162,11 @@ struct board {
 	// of each colour are on the board
 	uint64_t colour_bb[NUM_COLOURS];
 
+	// maintain separate info about the pawns to simplify the
+	// evaluation of pawn structure, open files, etc
+	uint8_t pawns_on_file[NUM_COLOURS][NUM_FILES];
+	uint8_t pawns_on_rank[NUM_COLOURS][NUM_RANKS];
+	uint8_t pawn_control[NUM_COLOURS][NUM_SQUARES];
 
 	// the next side to move
 	enum colour side_to_move;

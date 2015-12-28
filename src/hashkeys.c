@@ -131,7 +131,7 @@ uint64_t get_position_hash(const struct board * brd)
 	uint64_t retval = 0;
 
 	for (enum square sq = a1; sq <= h8; sq++) {
-		enum piece pce = get_piece_at_square(brd, sq);
+		enum piece pce = brd->pieces[sq];
 		if (pce != NO_PIECE) {
 			retval ^= get_piece_hash(pce, sq);
 		}

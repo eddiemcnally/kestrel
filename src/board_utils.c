@@ -60,7 +60,7 @@ void print_board(const struct board *the_board)
 		printf("%d  ", rank + 1);	// enum is zero-based
 		for (int file = FILE_A; file <= FILE_H; file++) {
 			enum square sq = GET_SQUARE(rank, file);
-			enum piece pce = get_piece_at_square(the_board, sq);
+			enum piece pce = the_board->pieces[sq];
 			if (pce != NO_PIECE) {
 				char c = get_piece_label(pce);
 				printf("%3c", c);
@@ -139,7 +139,7 @@ char *print_square(enum square sq)
 void print_compressed_board(const struct board *brd)
 {
 	for (enum square sq = a1; sq <= h8; sq++) {
-		enum piece pce = get_piece_at_square(brd, sq);
+		enum piece pce = brd->pieces[sq];
 		if (pce == NO_PIECE) {
 			printf(".");
 		} else {
@@ -176,7 +176,7 @@ bool ASSERT_BOARD_OK(const struct board *brd)
 
 	// check where Kings are
 	for (enum square sq = a1; sq <= h8; sq++) {
-		enum piece pce = get_piece_at_square(brd, sq);
+		enum piece pce = brd->pieces[sq];
 		if (pce != NO_PIECE) {
 			if (pce == W_KING) {
 
@@ -196,7 +196,7 @@ bool ASSERT_BOARD_OK(const struct board *brd)
 
 	// check verbose representation of board
 	for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
-		enum piece pce = get_piece_at_square(brd, sq);
+		enum piece pce = brd->pieces[sq];
 		if (pce != NO_PIECE) {
 			assert(pce == brd->pieces[sq]);
 		}
@@ -208,7 +208,7 @@ bool ASSERT_BOARD_OK(const struct board *brd)
 	// calc and verify the material count
 	uint32_t local_material[NUM_COLOURS] = { 0 };
 	for (enum square sq = 0; sq <= h8; sq++) {
-		enum piece pce = get_piece_at_square(brd, sq);
+		enum piece pce = brd->pieces[sq];
 		if (pce != NO_PIECE) {
 			enum colour col = GET_COLOUR(pce);
 			local_material[col] += get_piece_value(pce);

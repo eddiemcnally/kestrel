@@ -755,10 +755,10 @@ void test_en_passant(void)
 	make_move(brd, mv);
 
 	// make sure all other pieces are as expected
-	assert_true(get_piece_at_square(brd, e8) == B_KING);
-	assert_true(get_piece_at_square(brd, c5) == B_PAWN);
-	assert_true(get_piece_at_square(brd, d5) == W_PAWN);
-	assert_true(get_piece_at_square(brd, e1) == W_KING);
+	assert_true(brd->pieces[e8] == B_KING);
+	assert_true(brd->pieces[c5] == B_PAWN);
+	assert_true(brd->pieces[d5] == W_PAWN);
+	assert_true(brd->pieces[e1] == W_KING);
 	// 4 pieces on the board
 	assert_true(count_bits(brd->board) == 4);
 	assert_true(brd->en_passant == c6);
@@ -768,9 +768,9 @@ void test_en_passant(void)
 	make_move(brd, mv);
 
 	// make sure all other pieces are as expected
-	assert_true(get_piece_at_square(brd, e8) == B_KING);
-	assert_true(get_piece_at_square(brd, c6) == W_PAWN);
-	assert_true(get_piece_at_square(brd, e1) == W_KING);
+	assert_true(brd->pieces[e8] == B_KING);
+	assert_true(brd->pieces[c6] == W_PAWN);
+	assert_true(brd->pieces[e1] == W_KING);
 	// 4 pieces on the board
 	assert_true(count_bits(brd->board) == 3);
 

@@ -46,23 +46,6 @@ static const unsigned char BitReverseTable256[256] =
 };
 
 
-// function to map move attributes to a bitmapped field
-// see typdef for mv_bitmap for a description
-inline mv_bitmap MOVE(enum square from, enum square to, enum piece capture,
-		      enum piece promote, uint64_t flags, uint32_t score)
-{
-	return (  
-			(
-			  ((uint64_t)from 		<< MV_MASK_OFF_FROM_SQ) 
-			| ((uint64_t)to 		<< MV_MASK_OFF_TO_SQ) 	 
-			| ((uint64_t)capture 	<< MV_MASK_OFF_CAPTURED_PCE)  
-			| ((uint64_t)promote 	<< MV_MASK_OFF_PROMOTED_PCE) 
-			| flags
-			)
-			+ score
-	  );
-}
-
 
 
 inline uint32_t get_score(mv_bitmap mv){
@@ -85,12 +68,6 @@ inline void add_to_score(uint64_t *score, uint32_t to_add){
  * @return	the piece or NO_PIECE
  *
  */
-
-inline enum piece get_piece_at_square(const struct board *the_board,
-				      enum square sq)
-{
-	return the_board->pieces[sq];
-}
 
 inline struct move_list *get_empty_move_list()
 {
