@@ -52,7 +52,7 @@ int main(int argc, char **argv)
 	// set process pri and cpu affinity for max performance
 	set_priority_and_affinity();
 
-	struct board * brd = init_game(WAC1);
+	struct board * brd = init_game(MATE_IN_TWO);
 	print_board(brd);
 
 
