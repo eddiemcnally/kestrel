@@ -13,7 +13,7 @@ The ./debug directory contains some Python 3 code that was developed to help par
 Some implementation notes:
 * At a very high level, I am using BlueFever Software as a guide to the implementation steps. There are video tutorials on YouTube.
 * The engine makes heavy use of bitboards (uint64_t types to represent the board). Using bitboards allows for using pre-generated lookup bitmasks ("occupancy masks") to identify potential attacking squares for any piece on the board.
-* As mentioned above, there is an dependency on gcc builtin functions. The engine makes use of an inbuilt functions for determing LSB and MSB in a word, and to count bits in a word.
+* As mentioned above, there is an dependency on gcc builtin functions (specifically, __builtin_ctzll, __builtin_popcntll, __builtin_bswap64). There is also a dependency on some gcc-specific #pragma's.
 * The search is alpha-beta, with principle variation. The alpha-beta routine is called using iterative deepening.
 
 
