@@ -61,42 +61,6 @@ void test_bit_reversal(void)
 
 }
 
-void test_find_LSB()
-{
-	uint64_t test_val = 0x526200817;
-	uint8_t b = get_LSB_index(test_val);
-	assert_true(b == 0);
-
-	test_val = 0x29310040;
-	b = get_LSB_index(test_val);
-	assert_true(b == 6);
-
-	test_val = 0x1;
-	b = get_LSB_index(test_val);
-	assert_true(b == 0);
-
-}
-
-void test_find_MSB()
-{
-	uint64_t test_val = 0x526200817;
-	uint8_t b = get_MSB_index(test_val);
-	assert_true(b == 34);
-
-	test_val = 0x29310040;
-	b = get_MSB_index(test_val);
-	assert_true(b == 29);
-
-	test_val = 0x8000000000000000;
-	b = get_MSB_index(test_val);
-	assert_true(b == 63);
-
-	test_val = 0x1;
-	b = get_MSB_index(test_val);
-	assert_true(b == 0);
-
-}
-
 void test_flip_side()
 {
 	enum colour fs = GET_OPPOSITE_SIDE(WHITE);
@@ -143,8 +107,6 @@ void utils_test_fixture(void)
 
 	test_fixture_start();
 
-	run_test(test_find_LSB);
-	run_test(test_find_MSB);
 	run_test(test_bit_reversal);
 	run_test(test_flip_side);
 	run_test(test_pv_table);

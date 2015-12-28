@@ -24,9 +24,6 @@
 
 uint64_t in_between(enum square sq1, enum square sq2);
 
-
-uint8_t get_LSB_index(uint64_t bb);
-uint8_t get_MSB_index(uint64_t bb);
 bool is_sq_attacked(const struct board *brd, enum square sq,
 		    enum colour attacking_side);
 

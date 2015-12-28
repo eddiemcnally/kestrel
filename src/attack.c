@@ -213,21 +213,16 @@ static inline bool is_attacked_horizontally_or_vertically(
 							enum square sq_two)
 {
 	uint64_t rook_mask = GET_ROOK_OCC_MASK(sq_one);
-	if (CHECK_BIT(rook_mask, sq_two) == false){
-		// sq_one and sq_two don't share
-		// a file or a rank
-		return false;
-	}
+
+	if (CHECK_BIT(rook_mask, sq_two)){
+		uint64_t interim_squares = in_between(sq_one, sq_two);
+		uint64_t pieces_on_board = brd->board;
 		
-		
-	uint64_t interim_squares = in_between(sq_one, sq_two);
-	uint64_t pieces_on_board = brd->board;
-	
-	if ((interim_squares & pieces_on_board) == 0){
-		// no intervening/blocking pieces
-		return true;
+		if ((interim_squares & pieces_on_board) == 0){
+			// no intervening/blocking pieces
+			return true;
+		}
 	}
-	
 	return false;
 }
 
@@ -246,10 +241,8 @@ static inline bool is_attacked_diagonally(const struct board *brd,
 					  enum square attacking_sq,
 					  enum square target_sq)
 {
-	uint64_t diag_occ_mask = GET_DIAGONAL_OCC_MASK(attacking_sq);
-	if (CHECK_BIT(diag_occ_mask, target_sq)) {
-		// target sq is on diagonal....check to see if vector between
-		// attacking square and target is blocked
+	uint64_t bishop_occ_mask = GET_BISHOP_OCC_MASK(attacking_sq);
+	if(CHECK_BIT(bishop_occ_mask, target_sq)){
 		uint64_t interim_squares = in_between(attacking_sq, target_sq);
 		uint64_t pieces_on_board = brd->board;
 		
@@ -257,21 +250,6 @@ static inline bool is_attacked_diagonally(const struct board *brd,
 			// no intervening/blocking pieces
 			return true;
 		}
-		return false;		
-	}
-
-	uint64_t anti_diag_occ_mask = GET_ANTI_DIAGONAL_OCC_MASK(attacking_sq);
-	if (CHECK_BIT(anti_diag_occ_mask, target_sq)) {
-		// target sq is on diagonal....check to see if vector between
-		// attacking square and target is blocked
-		uint64_t interim_squares = in_between(attacking_sq, target_sq);
-		uint64_t pieces_on_board = brd->board;
-		
-		if ((interim_squares & pieces_on_board) == 0){
-			// no intervening/blocking pieces
-			return true;
-		}
-		return false;		
 	}
 	return false;
 }
@@ -314,29 +292,6 @@ inline uint64_t in_between(enum square sq1, enum square sq2) {
 
 
 
-
-
-/**
- * int __builtin_ctz (unsigned int x)
- *
- * Returns the number of trailing 0-bits in x, starting at the least
- * significant bit position. If x is 0, the result is undefined
- */
-inline uint8_t get_LSB_index(uint64_t bb)
-{
-	// gcc built-in function (see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html)
-	return (uint8_t) __builtin_ctzll(bb);
-}
-
-inline uint8_t get_MSB_index(uint64_t bb)
-{
-	// gcc built-in function (see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html)
-	uint8_t b = (uint8_t) __builtin_clzll(bb);
-
-	// the above is number of leading zeros.
-	// the MSB index is (63-b)
-	return (uint8_t) (63 - b);
-}
 
 /**
  * Test wrapper functions.
