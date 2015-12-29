@@ -60,7 +60,7 @@ static void generate_knight_piece_moves(struct board *brd,
 					       enum colour opposite_col, 
 					       const bool only_capture_moves);
 static inline void generate_king_moves(struct board *brd,
-				       struct move_list *mvl, enum piece pce,
+				       struct move_list *mvl, 
 				       enum colour col, enum colour opposite_col, 
 				       const bool only_capture_moves);
 static void generate_black_castle_moves(struct board *brd,
@@ -288,7 +288,7 @@ static inline void do_gen_moves(struct board *brd, struct move_list *mvl, bool c
 	if (brd->side_to_move == WHITE) {
 		generate_white_pawn_moves(brd, mvl, captures_only);
 		generate_knight_piece_moves(brd, mvl, W_KNIGHT, BLACK, captures_only);
-		generate_king_moves(brd, mvl, W_KING, WHITE, BLACK, captures_only);
+		generate_king_moves(brd, mvl, WHITE, BLACK, captures_only);
 		// generate rook and queen horizontal moves
 		generate_sliding_horizontal_vertical_moves(brd, mvl, WHITE, captures_only);
 		// generate bishop and queen diagonal moves 
@@ -296,7 +296,7 @@ static inline void do_gen_moves(struct board *brd, struct move_list *mvl, bool c
 	} else {
 		generate_black_pawn_moves(brd, mvl, captures_only);
 		generate_knight_piece_moves(brd, mvl, B_KNIGHT, WHITE, captures_only);
-		generate_king_moves(brd, mvl, B_KING, BLACK, WHITE, captures_only);
+		generate_king_moves(brd, mvl,BLACK, WHITE, captures_only);
 		// generate rook and queen horizontal moves
 		generate_sliding_horizontal_vertical_moves(brd, mvl, BLACK, captures_only);
 		// generate bishop and queen diagonal moves 
@@ -442,12 +442,12 @@ static inline void generate_knight_piece_moves(struct board *brd,
 		
 	// get the bitboard representing all of the piece types
 	// on the board
-	uint64_t bbKnight = brd->bitboards[knight];
+	uint64_t knight_bb = brd->bitboards[knight];
 
 	// iterate over all knights of this colour on the board
-	while (bbKnight != 0) {
+	while (knight_bb != 0) {
 
-		enum square knight_sq = pop_1st_bit(&bbKnight);
+		enum square knight_sq = pop_1st_bit(&knight_bb);
 
 		// get occupancy mask for this piece and square
 		uint64_t mask = GET_KNIGHT_OCC_MASK(knight_sq);
@@ -455,12 +455,7 @@ static inline void generate_knight_piece_moves(struct board *brd,
 
 		// AND'ing with opposite colour pieces, will give all
 		// pieces that can be captured
-		uint64_t opp_pieces = 0;
-		if (opposite_col == WHITE)
-			opp_pieces = brd->colour_bb[WHITE];
-		else
-			opp_pieces = brd->colour_bb[BLACK];
-
+		uint64_t opp_pieces = brd->colour_bb[opposite_col];
 		uint64_t capture_squares = mask & opp_pieces;
 		while (capture_squares != 0) {
 			// loop creating capture moves
@@ -469,7 +464,6 @@ static inline void generate_knight_piece_moves(struct board *brd,
 			uint32_t score = 0;
 			
 			mv_bitmap mv = MOVE(knight_sq, cap_sq, p, NO_PIECE, MFLAG_NONE, score);
-
 			add_capture_move(mv, mvl);
 		}
 
@@ -480,7 +474,6 @@ static inline void generate_knight_piece_moves(struct board *brd,
 			while (empty_squares != 0) {
 				// loop creating quiet moves
 				enum square empty_sq = pop_1st_bit(&empty_squares);
-
 				mv_bitmap mv = MOVE(knight_sq, empty_sq, NO_PIECE, NO_PIECE, MFLAG_NONE, 0);
 				add_quiet_move(mv, mvl);
 			}
@@ -497,14 +490,11 @@ static inline void generate_knight_piece_moves(struct board *brd,
  *
  */
 static inline void generate_king_moves(struct board *brd,
-				       struct move_list *mvl, enum piece pce,
+				       struct move_list *mvl, 
 				       enum colour col, enum colour opposite_col,
 				       const bool only_capture_moves)
 {
-	// get the bitboard representing the king
-	uint64_t bbKing = brd->bitboards[pce];
-
-	enum square king_sq = pop_1st_bit(&bbKing);
+	enum square king_sq = brd->king_sq[col][0];
 
 	// get occupancy mask for this piece and square
 	uint64_t mask = GET_KING_OCC_MASK(king_sq);
@@ -633,33 +623,28 @@ generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
 	
 	// get the bitboard representing all WHITE pawns
 	// on the board
-	uint64_t bbPawn = brd->bitboards[W_PAWN];
+	uint64_t pawn_bb = brd->bitboards[W_PAWN];
 
 	uint64_t bb_black_pieces = brd->colour_bb[BLACK];
 
-	while (bbPawn != 0) {
+	while (pawn_bb != 0) {
 
-		enum square pawn_sq = pop_1st_bit(&bbPawn);
+		enum square pawn_sq = pop_1st_bit(&pawn_bb);
 
 		uint8_t pawn_file = GET_FILE(pawn_sq);
 		uint8_t pawn_rank = GET_RANK(pawn_sq);
-		enum square next_sq_1 = pawn_sq + NORTH;
+		enum square north_sq = pawn_sq + NORTH;
 
-		//assert(next_sq_1 <= h8);
 		if (only_capture_moves == false){
-			if (IS_SQUARE_OCCUPIED(brd->board, next_sq_1) == false) {
-				add_pawn_move(WHITE, pawn_sq, next_sq_1, mvl);
+			if (IS_SQUARE_OCCUPIED(brd->board, north_sq) == false) {
+				add_pawn_move(WHITE, pawn_sq, north_sq, mvl);
 
 				if (pawn_rank == RANK_2) {
-					enum square next_sq_2 = pawn_sq + NN;
-
-					//assert(next_sq_2 <= h8);
-					bool sq_2_occupied =
-						IS_SQUARE_OCCUPIED(brd->board, next_sq_2);
-					if (sq_2_occupied == false) {
-						mv_bitmap mv = MOVE(pawn_sq, next_sq_2, NO_PIECE,
+					enum square north_x2 = pawn_sq + NN;
+;
+					if (IS_SQUARE_OCCUPIED(brd->board, north_x2) == false) {
+						mv_bitmap mv = MOVE(pawn_sq, north_x2, NO_PIECE,
 									NO_PIECE, MFLAG_PAWN_START, 0);
-
 						add_quiet_move(mv, mvl);
 					}
 				}
@@ -667,30 +652,30 @@ generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
 		}
 		// check for capture left
 		if (pawn_file > FILE_A) {
-			enum square cap_sq = pawn_sq + NW;
-			enum piece pce = brd->pieces[cap_sq];
+			enum square northwest = pawn_sq + NW;
+			enum piece pce = brd->pieces[northwest];
 
-			if (CHECK_BIT(bb_black_pieces, cap_sq) != 0){
-				add_pawn_capture_move(WHITE, pawn_sq, cap_sq, pce, mvl);
+			if (IS_SQUARE_OCCUPIED(bb_black_pieces, northwest) == true){
+				add_pawn_capture_move(WHITE, pawn_sq, northwest, pce, mvl);
 			}
 
-			if (cap_sq == brd->en_passant) {
-				mv_bitmap mv = MOVE(pawn_sq, cap_sq, pce, NO_PIECE,	MFLAG_EN_PASSANT, 0);
+			if (northwest == brd->en_passant) {
+				mv_bitmap mv = MOVE(pawn_sq, northwest, pce, NO_PIECE,	MFLAG_EN_PASSANT, 0);
 				add_capture_move(mv, mvl);
 			}
 		}
 		// check for capture right
 		if (pawn_file < FILE_H) {
-			enum square cap_sq = pawn_sq + NE;
-			enum piece pce = brd->pieces[cap_sq];
+			enum square northeast = pawn_sq + NE;
+			enum piece pce = brd->pieces[northeast];
 
-			if (CHECK_BIT(bb_black_pieces, cap_sq) != 0){
-				add_pawn_capture_move(WHITE, pawn_sq, cap_sq,
+			if (IS_SQUARE_OCCUPIED(bb_black_pieces, northeast) == true){
+				add_pawn_capture_move(WHITE, pawn_sq, northeast,
 						      pce, mvl);
 			}
 
-			if (cap_sq == brd->en_passant) {
-				mv_bitmap mv = MOVE(pawn_sq, cap_sq, pce,
+			if (northeast == brd->en_passant) {
+				mv_bitmap mv = MOVE(pawn_sq, northeast, pce,
 										NO_PIECE, MFLAG_EN_PASSANT, 0);
 				add_capture_move(mv, mvl);
 			}
@@ -714,29 +699,28 @@ generate_black_pawn_moves(struct board *brd, struct move_list *mvl,
 		
 	// get the bitboard representing all BLACK pawns
 	// on the board
-	uint64_t bbPawn = brd->bitboards[B_PAWN];
+	uint64_t pawn_bb = brd->bitboards[B_PAWN];
 
 	uint64_t bb_white_pieces = brd->colour_bb[WHITE];
 
-	while (bbPawn != 0) {
+	while (pawn_bb != 0) {
 
-		enum square pawn_sq = pop_1st_bit(&bbPawn);
+		enum square pawn_sq = pop_1st_bit(&pawn_bb);
 
-		//int pawn_rank = GET_RANK(pawn_sq);
 		int pawn_file = GET_FILE(pawn_sq);
 		int pawn_rank = GET_RANK(pawn_sq);
-		enum square next_sq_1 = pawn_sq + SOUTH;
+		enum square south_sq = pawn_sq + SOUTH;
 		if (only_capture_moves == false){
-			if (IS_SQUARE_OCCUPIED(brd->board, next_sq_1) == false) {
-				add_pawn_move(BLACK, pawn_sq, next_sq_1, mvl);
+			if (IS_SQUARE_OCCUPIED(brd->board, south_sq) == false) {
+				add_pawn_move(BLACK, pawn_sq, south_sq, mvl);
 
 				if (pawn_rank == RANK_7) {
-					enum square next_sq_2 = pawn_sq + SS;	// can skip down 2 ranks
+					enum square south_x2 = pawn_sq + SS;	// can skip down 2 ranks
 
 					bool sq_2_occupied =
-						IS_SQUARE_OCCUPIED(brd->board, next_sq_2);
+						IS_SQUARE_OCCUPIED(brd->board, south_x2);
 					if (sq_2_occupied == false) {
-						mv_bitmap mv = MOVE(pawn_sq, next_sq_2,
+						mv_bitmap mv = MOVE(pawn_sq, south_x2,
 									NO_PIECE, NO_PIECE,
 									MFLAG_PAWN_START, 0);
 						add_quiet_move(mv, mvl);
@@ -747,31 +731,31 @@ generate_black_pawn_moves(struct board *brd, struct move_list *mvl,
 		
 		// check for capture left
 		if (pawn_file > FILE_A) {
-			enum square cap_sq = pawn_sq + SW;
-			enum piece pce = brd->pieces[cap_sq];
+			enum square southwest = pawn_sq + SW;
+			enum piece pce = brd->pieces[southwest];
 
-			if (CHECK_BIT(bb_white_pieces, cap_sq) != 0){
-				add_pawn_capture_move(BLACK, pawn_sq, cap_sq,
+			if (IS_SQUARE_OCCUPIED(bb_white_pieces, southwest) == true){
+				add_pawn_capture_move(BLACK, pawn_sq, southwest,
 						      pce, mvl);
 			}
 
-			if (cap_sq == brd->en_passant) {
-				mv_bitmap mv = MOVE(pawn_sq, cap_sq, pce,
+			if (southwest == brd->en_passant) {
+				mv_bitmap mv = MOVE(pawn_sq, southwest, pce,
 						  NO_PIECE, MFLAG_EN_PASSANT, 0);
 				add_capture_move(mv, mvl);
 			}
 		}
 		// check for capture right
 		if (pawn_file < FILE_H) {
-			enum square cap_sq = pawn_sq + SE;
-			enum piece pce = brd->pieces[cap_sq];
+			enum square southeast = pawn_sq + SE;
+			enum piece pce = brd->pieces[southeast];
 
-			if (CHECK_BIT(bb_white_pieces, cap_sq) != 0){
-				add_pawn_capture_move(BLACK, pawn_sq, cap_sq, pce, mvl);
+			if (IS_SQUARE_OCCUPIED(bb_white_pieces, southeast) == true){
+				add_pawn_capture_move(BLACK, pawn_sq, southeast, pce, mvl);
 			}
 
-			if (cap_sq == brd->en_passant) {
-				mv_bitmap mv = MOVE(pawn_sq, cap_sq, pce,
+			if (southeast == brd->en_passant) {
+				mv_bitmap mv = MOVE(pawn_sq, southeast, pce,
 											NO_PIECE, MFLAG_EN_PASSANT, 0);
 				add_capture_move(mv, mvl);
 			}
@@ -990,18 +974,14 @@ void
 TEST_generate_king_moves(struct board *brd, struct move_list *mvl,
 			 enum colour col)
 {
-	enum piece pce;
 	enum colour opposite_col;
 	if (col == WHITE){
-		pce = W_KING;
 		opposite_col = BLACK;
 	} else {
-
-		pce = B_KING;
 		opposite_col = WHITE;
 	}
 
-	generate_king_moves(brd, mvl, pce, col, opposite_col, false);
+	generate_king_moves(brd, mvl, col, opposite_col, false);
 }
 
 void

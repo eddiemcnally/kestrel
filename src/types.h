@@ -88,10 +88,10 @@ enum square {
 	a6, b6, c6, d6, e6, f6, g6, h6,
 	a7, b7, c7, d7, e7, f7, g7, h7,
 	a8, b8, c8, d8, e8, f8, g8, h8,
-	NUM_SQUARES
+	NUM_SQUARES = 64,
+	NO_SQUARE	= 100
 };
 
-#define	NO_SQUARE	(100)
 
 // white is even, black is odd
 enum piece {
@@ -106,11 +106,11 @@ enum piece {
 	W_QUEEN 	= 8,
 	B_QUEEN		= 9,
 	W_KING		= 10,
-	B_KING		= 11
+	B_KING		= 11,
+	NUM_PIECES	= 12,
+	NO_PIECE	= 0x0F
 };
 
-#define NO_PIECE	0x0F
-#define NUM_PIECES	12
 
 
 // contains information before the current
@@ -167,6 +167,10 @@ struct board {
 	uint8_t pawns_on_file[NUM_COLOURS][NUM_FILES];
 	uint8_t pawns_on_rank[NUM_COLOURS][NUM_RANKS];
 	uint8_t pawn_control[NUM_COLOURS][NUM_SQUARES];
+
+	// we need to look up the king position very frequently,
+	// so save it for a quick lookup
+	enum square king_sq[NUM_COLOURS][1];
 
 	// the next side to move
 	enum colour side_to_move;

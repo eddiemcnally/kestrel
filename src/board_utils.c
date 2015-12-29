@@ -170,7 +170,6 @@ bool ASSERT_BOARD_OK(const struct board *brd)
 
 	uint64_t wking_bb = brd->bitboards[W_KING];
 	assert(count_bits(wking_bb) == 1);
-
 	uint64_t bking_bb = brd->bitboards[B_KING];
 	assert(count_bits(bking_bb) == 1);
 
@@ -184,12 +183,14 @@ bool ASSERT_BOARD_OK(const struct board *brd)
 				enum square wk_sq = pop_1st_bit(&bb_wk);
 
 				assert(sq == wk_sq);
+				assert(brd->king_sq[WHITE][0] == wk_sq);
 			} else if (pce == B_KING) {
 
 				uint64_t bb_bk = brd->bitboards[B_KING];
 				enum square bk_sq = pop_1st_bit(&bb_bk);
 
 				assert(sq == bk_sq);
+				assert(brd->king_sq[BLACK][0] == bk_sq);
 			}
 		}
 	}

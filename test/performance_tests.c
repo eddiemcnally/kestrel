@@ -322,7 +322,7 @@ void perf_test(int depth, struct board *brd)
 	
 	double nps = ((double)leafNodes / ((double)elapsed / 1000));
 	
-	printf("Test Complete : %ju nodes visited, nodes/sec %f\n\n\n", leafNodes, nps);
+	printf("Test Complete : %ju nodes visited, elapsed (ms) %d, nodes/sec %f\n\n\n", leafNodes, (int)elapsed, nps);
 
 	return;
 }

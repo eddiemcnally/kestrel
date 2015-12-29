@@ -29,7 +29,7 @@ CFLAGS	=		-O3 \
 				-Wcast-qual \
 				-Wcast-align \
 				-Wmissing-include-dirs \
-				-Wpointer-arith \
+				-Wpointer-arith
 
 #
 # flags for profiling code

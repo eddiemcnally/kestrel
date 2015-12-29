@@ -167,15 +167,7 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 	
 	if(legal_move_cnt == 0) {
 		// no legal moves....must be mate or draw
-		enum piece king = NO_PIECE;
-		if (brd->side_to_move == WHITE)
-			king = W_KING;
-		else 
-			king = B_KING;
-			
-		uint64_t king_bb = brd->bitboards[king];
-		enum square king_sq = pop_1st_bit(&king_bb);
-		
+		enum square king_sq = brd->king_sq[brd->side_to_move][0];	
 		enum colour opposite_side = GET_OPPOSITE_SIDE(brd->side_to_move);
 		
 		if (is_sq_attacked(brd, king_sq, opposite_side)){

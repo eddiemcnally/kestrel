@@ -34,7 +34,6 @@
 #include "board.h"
 #include "move_gen_utils.h"
 
-
 #define R2(n)     n,     n + 2*64,     n + 1*64,     n + 3*64
 #define R4(n) R2(n), R2(n + 2*16), R2(n + 1*16), R2(n + 3*16)
 #define R6(n) R4(n), R4(n + 2*4 ), R4(n + 1*4 ), R4(n + 3*4 )
@@ -89,7 +88,7 @@ inline struct move_list *get_empty_move_list()
 inline uint8_t pop_1st_bit(uint64_t * bb)
 {
 	uint8_t bit = (uint8_t) __builtin_ctzll(*bb);
-
+	
 	// clear the bit
 	*bb = *bb & (uint64_t) (~(0x01ull << bit));
 	return bit;
@@ -265,5 +264,8 @@ void print_move_list(const struct move_list *list)
 	}
 	//printf("MoveList Total %d Moves:\n\n", list->move_count);
 }
+
+
+
 
 
