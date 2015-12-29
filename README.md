@@ -18,7 +18,7 @@ Some implementation notes:
   * __builtin_popcntll
   * __builtin_bswap64
   * __builtin_prefetch
-There is also a dependency on some gcc-specific #pragma's to disable some compiler warnings (sign conversions) in specific functions.
+  * There is also a dependency on some gcc-specific #pragma's to disable some compiler warnings (sign conversions) in specific functions.
 * The search is alpha-beta, with principle variation. The alpha-beta routine is called using iterative deepening.
 
 
