@@ -812,87 +812,124 @@ void test_move_piece()
 
 }
 
-void test_make_move_take_move(void)
+void test_make_move_take_move_1(void)
 {
+	const int NUM_POSITIONS = 21;
+	
+	char *positions[NUM_POSITIONS];
+	positions[0] = "4q3/p4p2/n2ppp2/kP1P1b1P/2p1PbrQ/1P3RNp/2P2K1R/8 w - - 0 1";
+	positions[1] = "2k4r/2pqpp2/2pppn2/P1R1P1bQ/1PP3PP/8/p6N/4KR1b w - - 0 1";
+	positions[2] = "B2qQ3/1bpp1K2/p3PP1p/p1R5/rP4N1/1P4R1/3pPP1p/5kb1 w - - 0 1";
+	positions[3] = "3R2q1/1b3Rpp/3pq1p1/2br1p1N/1P2P1Qp/1B1P4/PPK2k1p/8 w - - 0 1";
+	positions[4] = "4k3/1PPb2q1/Pp3bP1/2R2p1K/q1n1p2R/Q1p1rp2/1p2PP2/7n w - - 0 1";
+	positions[5] = "K7/1PP1pP2/BPRPqp2/1P1rp1P1/Q2pR3/2Pp4/1pb1p1kb/2N1q3 w - - 0 1";
+	positions[6] = "1R6/p3p1Q1/NPPP1PPP/1Rp2kp1/1p1p4/1K1P1B2/2P2qp1/B3r2q w - - 0 1";
+	positions[7] = "8/pp2k3/B4q2/6RP/2P2BK1/7R/Q3Pr2/1q3N2 w - - 0 1";
+	positions[8] = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1";
+	positions[9] = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+	positions[10] = "8/1pQ2B2/p3p2p/2Pqr1p1/2bP1bPq/1p3kPP/PB6/N5K1 w - - 0 1";
+	positions[11] = "2qq3Q/3b1Kp1/P2b1P1p/r3pp2/1B4BP/4P1P1/2pp1P2/1N3k2 w - - 0 1";
+	positions[12] = "4B1q1/1Q6/1rp3qk/3P3p/1bp3PP/3PPp1P/ppN4K/4Bb2 w - - 0 1";
+	positions[13] = "7q/P3p1q1/1k1p1P2/3pNbb1/B1p3P1/1Ppp1KPr/5P1B/Q7 w - - 0 1";
+	positions[14] = "k2B1N2/p4B1p/2KP4/pp1P4/2pPPbqP/4rp1Q/5P2/3b2q1 w - - 0 1";
+	positions[15] = "4Bb1q/qb2p1P1/p2Qr1P1/Kpp1B3/2p1P2P/6P1/P1k1p3/3N4 w - - 0 1";
+	positions[16] = "6B1/3P1p2/1b2rp2/3ppk2/PPPP4/NqP1B2p/bpqQK3/8 w - - 0 1";
+	positions[17] = "2N5/2r1b3/4p2p/PPPb4/B1n1np2/1ppp2P1/1P1Pk3/4B1K1 w - - 0 1";
+	positions[18] = "4B3/1Pk1p1P1/P3P2r/N1pbpKp1/2PP2nB/4p2n/6p1/2b5 w - - 0 1";
+	positions[19] = "3n4/2pp2P1/p1b4r/2p1nPP1/8/P1pP1kBB/1p1b3P/1N3K2 w - - 0 1";
+	positions[20] = "7B/p2p4/B1b1r3/P1PP2b1/k2N1p1n/3pp1Pp/1K2PP2/5n2 w - - 0 1";
 
-	char *sample_position =
-	    "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1";
-	struct board *brd = init_game(sample_position);
+	for (int pos = 0; pos < NUM_POSITIONS; pos++){
+		char *sample_position = positions[pos];
+		
+		//printf("processing FEN %s\n", sample_position);
+		
+		struct board *brd = init_game(sample_position);
 
-	struct move_list *list = malloc(sizeof(struct move_list));
-	memset(list, 0, sizeof(struct move_list));
+		struct move_list list = {
+			.moves = {0},
+			.move_count = 0
+			};
+			
+		
+		generate_all_moves(brd, &list);
 
-	generate_all_moves(brd, list);
+		struct board *starting_brd = clone_board(brd);
 
-	struct board *starting_brd = clone_board(brd);
+		for (int i = 0; i < list.move_count; i++) {
+			// make a move, take it back, and compare board before and after
+			mv_bitmap mv = list.moves[i];
+			
+			struct board *before_move = clone_board(brd);
+			bool valid_move = make_move(brd, mv);
+			if (!valid_move){
+				continue;
+			}
+			
+			take_move(brd);
+			
+			assert_boards_are_equal(brd, before_move);
+			free(before_move);
 
-	for (int i = 0; i < list->move_count; i++) {
-		// make a move, take it back, and compare board before and after
-		mv_bitmap mv = list->moves[i];
+		}
 
-		struct board *before_move = clone_board(brd);
-		make_move(brd, mv);
-		take_move(brd);
-
-		assert_boards_are_equal(brd, before_move);
-		free(before_move);
-
+		assert_boards_are_equal(brd, starting_brd);
+		free(starting_brd);
 	}
-
-	assert_boards_are_equal(brd, starting_brd);
-	free(starting_brd);
-
 }
+
 
 
 void test_capture_move_gen_1(void){
 	struct board *brd = init_game(STARTING_FEN);
 
-	struct move_list *list = malloc(sizeof(struct move_list));
-	memset(list, 0, sizeof(struct move_list));
+	struct move_list list = {
+		.moves = {0},
+		.move_count = 0
+		};
 
-	generate_all_capture_moves(brd, list);
+	generate_all_capture_moves(brd, &list);
 
-	assert_true(list->move_count == 0);
-	free(list);
+	assert_true(list.move_count == 0);
+
 }
 
 void test_capture_move_gen_2(void){
 	struct board *brd = init_game("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
-	struct move_list *list = malloc(sizeof(struct move_list));
-	memset(list, 0, sizeof(struct move_list));
+	struct move_list list = {
+		.moves = {0},
+		.move_count = 0
+		};
+	generate_all_capture_moves(brd, &list);
 
-	generate_all_capture_moves(brd, list);
+	assert_true(list.move_count == 8);
 
-	assert_true(list->move_count == 8);
-
-	for(int i = 0; i < list->move_count; i++){
-		mv_bitmap mv = list->moves[i];
+	for(int i = 0; i < list.move_count; i++){
+		mv_bitmap mv = list.moves[i];
 		enum piece pce = CAPTURED_PCE(mv);
 		
 		assert_true(pce != NO_PIECE);		
 	}
-
-	free(list);
 }
 
 void test_capture_move_gen_3(void){
 	struct board *brd = init_game("6r1/1b2npb1/1p2P3/1PPBpnR1/Pk1PpPpQ/N1qP1rp1/3P1Npp/BK1R4 w - - 0 1");
-	struct move_list *list = malloc(sizeof(struct move_list));
-	memset(list, 0, sizeof(struct move_list));
 
-	generate_all_capture_moves(brd, list);
+	struct move_list list = {
+		.moves = {0},
+		.move_count = 0
+		};
 
-	assert_true(list->move_count == 17);
+	generate_all_capture_moves(brd, &list);
 
-	for(int i = 0; i < list->move_count; i++){
-		mv_bitmap mv = list->moves[i];
+	assert_true(list.move_count == 17);
+
+	for(int i = 0; i < list.move_count; i++){
+		mv_bitmap mv = list.moves[i];
 		enum piece pce = CAPTURED_PCE(mv);
 		
 		assert_true(pce != NO_PIECE);		
 	}
-
-	free(list);
 }
 
 
@@ -914,7 +951,7 @@ void move_test_fixture(void)
 	run_test(test_clear_piece);
 	run_test(test_add_piece);
 	run_test(test_move_piece);
-	run_test(test_make_move_take_move);
+	run_test(test_make_move_take_move_1);
 	
 	run_test(test_capture_move_gen_1);
 	run_test(test_capture_move_gen_2);

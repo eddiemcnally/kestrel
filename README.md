@@ -45,6 +45,7 @@ Feature set:
 * Bitboards (and use of occupancy mask lookups)
 * Iterative Deepening
 * Alpha-beta with Principle Variation
+* Zobrist hashing
 * Quiessence Search
 * Piece Square Valuation
 

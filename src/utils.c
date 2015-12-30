@@ -33,18 +33,7 @@
 #include "types.h"
 #include "utils.h"
 
-uint64_t generate_rand64(void)
-{
-	uint64_t retval = 0;
 
-	retval = (uint64_t) rand();
-	retval |= (uint64_t) rand() << 15;
-	retval |= (uint64_t) rand() << 30;
-	retval |= (uint64_t) rand() << 45;
-	retval |= ((uint64_t) rand() & 0xf) << 60;
-
-	return retval;
-}
 
 void set_priority_and_affinity(void)
 {

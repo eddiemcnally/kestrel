@@ -263,6 +263,7 @@ void test_move_gen_depth()
 	uint64_t start_time, elapsed;
 
 	int depth = 5;
+	
 	uint64_t total_nodes = 0;
 
 	for (int i = 0; i < NUM_EPD; i++) {

@@ -2,8 +2,7 @@
  * hashkeys.c
  * 
  * ---------------------------------------------------------------------
- * Description : code associated with generating hash codes based on
- * the attributes of the 'struct board'/
+ * Description : code associated with generating Zobrist hash codes 
  * --------------------------------------------------------------------- 
  * 
  *  
@@ -22,32 +21,33 @@
  *
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
  */
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <assert.h>
 #include "types.h"
-#include "utils.h"
-#include "pieces.h"
-#include "board.h"
-#include "utils.h"
-#include "board_utils.h"
-#include "move_gen.h"
-#include "move_gen_utils.h"
 #include "hashkeys.h"
 
-//----- hashkeys for positions
-static uint64_t piece_keys[NUM_PIECES][NUM_SQUARES] = { {0} };
 
-static uint64_t side_to_move_key = 0;
-// 16 combinations because of 4 bits being used for castle enum
-static uint64_t castle_keys[16] = { 0 };
+static uint64_t generate_rand64(void);
+#define NUM_CASTLE_KEYS		16
 
-static uint64_t en_passant_keys[NUM_SQUARES] = { 0 };
-//-----
+
+static struct {
+	uint64_t piece_keys[NUM_PIECES][NUM_SQUARES];
+	uint64_t side_to_move_key;
+	// 16 combinations because of 4 bits being used for castle enum
+	uint64_t castle_keys[NUM_CASTLE_KEYS];
+	// could use FILE, but using squares means we don't have to 
+	// calc the file in order to access the key
+	uint64_t en_passant_keys[NUM_SQUARES];
+} zobrist;
+
 
 /*
  * Initialises hashkeys with random numbers
@@ -58,19 +58,24 @@ static uint64_t en_passant_keys[NUM_SQUARES] = { 0 };
  */
 void init_hash_keys()
 {
+	// reset the seed for the RNG
+	time_t now = time(0);
+	srand((unsigned int)now);
+		
 	for (int pce = 0; pce < NUM_PIECES; pce++) {
 		for (int sq = 0; sq < NUM_SQUARES; sq++) {
-			piece_keys[pce][sq] = generate_rand64();
+			zobrist.piece_keys[pce][sq] = generate_rand64();
 		}
 	}
 
-	side_to_move_key = generate_rand64();
-	for (int i = 0; i < 16; i++) {
-		castle_keys[i] = generate_rand64();
+	zobrist.side_to_move_key = generate_rand64();
+	
+	for (int i = 0; i < NUM_CASTLE_KEYS; i++) {
+		zobrist.castle_keys[i] = generate_rand64();
 	}
 	
 	for (int i = 0; i < NUM_SQUARES; i++) {
-		en_passant_keys[i] = generate_rand64();
+		zobrist.en_passant_keys[i] = generate_rand64();
 	}
 	
 	
@@ -85,7 +90,7 @@ void init_hash_keys()
  */
 inline uint64_t get_castle_hash(uint8_t castle_map)
 {
-	return castle_keys[castle_map];
+	return zobrist.castle_keys[castle_map];
 }
 
 /* Returns the side hashkey
@@ -97,7 +102,7 @@ inline uint64_t get_castle_hash(uint8_t castle_map)
  */
 inline uint64_t get_side_hash(void)
 {
-	return side_to_move_key;
+	return zobrist.side_to_move_key;
 }
 
 /* Returns the hashkey for a particular piece on a given square
@@ -109,13 +114,12 @@ inline uint64_t get_side_hash(void)
  */
 inline uint64_t get_piece_hash(enum piece pce, enum square sq)
 {
-	return piece_keys[pce][sq];
+	return zobrist.piece_keys[pce][sq];
 }
 
 inline uint64_t get_en_passant_hash(enum square sq)
 {
-	//assert(sq != NO_SQUARE);
-	return en_passant_keys[sq];
+	return zobrist.en_passant_keys[sq];
 }
 
 /*Given a board, return a positon hashkey
@@ -146,6 +150,17 @@ uint64_t get_position_hash(const struct board * brd)
 	}
 
 	retval ^= get_castle_hash(brd->castle_perm);
+	
+	return retval;
+}
+
+static uint64_t generate_rand64(void)
+{
+	// GNU C rand() generates a 32-bit
+	uint64_t retval = (uint64_t) rand();
+	retval |= (uint64_t) rand () << 32;
 
 	return retval;
 }
+
+

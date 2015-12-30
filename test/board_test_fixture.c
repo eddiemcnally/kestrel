@@ -39,6 +39,7 @@ void test_fen_parsing_initial_board_layout(void);
 void test_add_to_board(void);
 void test_fen_parsing_general_layout_1(void);
 void test_fen_parsing_general_layout_2(void);
+void test_fen_parsing_general_layout_3(void);
 void test_setting_bits_in_a_board(void);
 void test_clearing_bits_in_a_board(void);
 void test_checking_bits_in_a_board(void);
@@ -279,6 +280,25 @@ void test_fen_parsing_general_layout_2()
 	
 }
 
+
+// en passant
+void test_fen_parsing_general_layout_3()
+{
+
+	// this is the initial board setup
+	char *test_fen = "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 1";
+
+	struct board *brd = init_game(test_fen);
+
+	//print_board(brd);
+
+	assert_true(brd->side_to_move == WHITE);
+	assert_true(brd->castle_perm == (WKCA | WQCA | BKCA | BQCA));
+
+	assert_true(brd->en_passant == c6);
+}
+
+
 void test_setting_bits_in_a_board()
 {
 
@@ -414,6 +434,7 @@ void board_test_fixture(void)
 	run_test(test_fen_parsing_initial_board_layout);
 	run_test(test_fen_parsing_general_layout_1);
 	run_test(test_fen_parsing_general_layout_2);
+	run_test(test_fen_parsing_general_layout_3);
 	run_test(test_bit_counting);
 	run_test(test_LSB_clear);
 

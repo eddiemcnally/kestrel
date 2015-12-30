@@ -54,11 +54,6 @@ static const uint8_t castle_permission_mask[NUM_SQUARES] = {
 
 static void remove_pawn_from_board(struct board *brd, enum colour col, enum square sq);
 static void add_pawn_to_board(struct board *brd, enum colour col, enum square sq);
-static void update_piece_hash(struct board *brd, enum piece pce, enum square sq);
-static void update_castle_hash(struct board *brd);
-static void update_side_hash(struct board *brd);
-static void update_EP_hash(struct board *brd);
-
 
 
 inline void move_piece(struct board *brd, enum square from, enum square to)
@@ -71,13 +66,16 @@ inline void move_piece(struct board *brd, enum square from, enum square to)
 
 	//assert(IS_VALID_PIECE(pce));
 
+	// adjust the hash
+	brd->board_hash ^= get_piece_hash(pce, from);
+	brd->board_hash ^= get_piece_hash(pce, to);	
+	
+
 	// clear up the "from" resources
-	update_piece_hash(brd, pce, from);
 	brd->pieces[from] = NO_PIECE;
 	clear_bit(&brd->bitboards[pce], from);
 	
 	// set up the "to" resources
-	update_piece_hash(brd, pce, to);
 	brd->pieces[to] = pce;
 	set_bit(&brd->bitboards[pce], to);
 
@@ -85,20 +83,20 @@ inline void move_piece(struct board *brd, enum square from, enum square to)
 		clear_bit(&brd->colour_bb[WHITE], from);
 		set_bit(&brd->colour_bb[WHITE], to);
 		if(pce == W_PAWN){
+			// easiest way to move a pawn
 			remove_pawn_from_board(brd, WHITE, from);
 			add_pawn_to_board(brd, WHITE, to);
-		}
-		if (pce == W_KING){
+		} else if (pce == W_KING){
 			brd->king_sq[WHITE][0] = to;
 		}
 	} else {
 		clear_bit(&brd->colour_bb[BLACK], from);
 		set_bit(&brd->colour_bb[BLACK], to);
 		if(pce == B_PAWN){
+			// easiest way to move a pawn
 			remove_pawn_from_board(brd, BLACK, from);
 			add_pawn_to_board(brd, BLACK, to);
-		}
-		if (pce == B_KING){
+		} else if (pce == B_KING){
 			brd->king_sq[BLACK][0] = to;
 		}
 	}
@@ -149,23 +147,24 @@ bool make_move(struct board *brd, mv_bitmap mv)
 	}
 
 	if (brd->en_passant != NO_SQUARE) {
-		update_EP_hash(brd);
+		brd->board_hash ^= get_en_passant_hash(brd->en_passant);
 	}
-	update_castle_hash(brd);
+
 
 	// set up history
 	brd->history[brd->history_ply].move = mv;
-	brd->history[brd->history_ply].fifty_move_counter =
-	    brd->fifty_move_counter;
+	brd->history[brd->history_ply].fifty_move_counter = brd->fifty_move_counter;
 	brd->history[brd->history_ply].en_passant = brd->en_passant;
 	brd->history[brd->history_ply].castle_perm = brd->castle_perm;
 
+	brd->board_hash ^= get_castle_hash(brd->castle_perm);
 	brd->castle_perm &= castle_permission_mask[from];
 	brd->castle_perm &= castle_permission_mask[to];
+	brd->board_hash ^= get_castle_hash(brd->castle_perm);
+
+
 	brd->en_passant = NO_SQUARE;
-
-	update_castle_hash(brd);
-
+	
 	enum piece captured = CAPTURED_PCE(mv);
 	brd->fifty_move_counter++;
 
@@ -188,7 +187,7 @@ bool make_move(struct board *brd, mv_bitmap mv)
 			} else {
 				brd->en_passant = from - 8;
 			}
-			update_EP_hash(brd);
+			brd->board_hash ^= get_en_passant_hash(brd->en_passant);
 		}
 	}
 
@@ -201,7 +200,7 @@ bool make_move(struct board *brd, mv_bitmap mv)
 	}
 	// flip side
 	brd->side_to_move = GET_OPPOSITE_SIDE(brd->side_to_move);
-	update_side_hash(brd);
+	brd->board_hash ^= get_side_hash();
 
 	// check if move is valid (ie, king in check)
 	enum square king_sq = brd->king_sq[side][0];
@@ -229,24 +228,24 @@ inline void take_move(struct board *brd)
 
 	// hash out en passant and castle if set
 	if (brd->en_passant != NO_SQUARE) {
-		update_EP_hash(brd);
+		brd->board_hash ^= get_en_passant_hash(brd->en_passant);
 	}
-	update_castle_hash(brd);
+	
+	brd->board_hash ^= get_castle_hash(brd->castle_perm);
 
 	brd->castle_perm = brd->history[brd->history_ply].castle_perm;
-	brd->fifty_move_counter =
-	    brd->history[brd->history_ply].fifty_move_counter;
+	brd->fifty_move_counter = brd->history[brd->history_ply].fifty_move_counter;
 	brd->en_passant = brd->history[brd->history_ply].en_passant;
 
 	// now, hash back in
 	if (brd->en_passant != NO_SQUARE) {
-		update_EP_hash(brd);
+		brd->board_hash ^= get_en_passant_hash(brd->en_passant);
 	}
-	update_castle_hash(brd);
+	brd->board_hash ^= get_castle_hash(brd->castle_perm);
 
 	// flip side
 	brd->side_to_move = GET_OPPOSITE_SIDE(brd->side_to_move);
-	update_side_hash(brd);
+	brd->board_hash ^= get_side_hash();
 
 	if (MFLAG_EN_PASSANT & mv) {
 		if (brd->side_to_move == WHITE) {
@@ -297,7 +296,7 @@ inline void take_move(struct board *brd)
 void add_piece_to_board(struct board *brd, enum piece pce, enum square sq)
 {
 	enum colour col = GET_COLOUR(pce);
-	update_piece_hash(brd, pce, sq);
+	brd->board_hash ^= get_piece_hash(pce, sq);
 
 	brd->pieces[sq] = pce;
 	brd->material[col] += get_piece_value(pce);
@@ -374,7 +373,7 @@ inline void remove_piece_from_board(struct board *brd, enum square sq)
 	enum piece pce = brd->pieces[sq];
 	enum colour col = GET_COLOUR(pce);
 
-	update_piece_hash(brd, pce, sq);
+	brd->board_hash ^= get_piece_hash(pce, sq);
 
 	brd->pieces[sq] = NO_PIECE;
 
@@ -466,24 +465,4 @@ inline void clear_bit(uint64_t * brd, enum square sq)
 inline void set_bit(uint64_t * brd, enum square sq)
 {
 	*brd = *brd | (uint64_t) (0x01ull << sq);
-}
-
-static inline void update_piece_hash(struct board *brd, enum piece pce, enum square sq)
-{
-	brd->board_hash ^= get_piece_hash(pce, sq);
-}
-
-static inline void update_castle_hash(struct board *brd)
-{
-	brd->board_hash ^= get_castle_hash(brd->castle_perm);
-}
-
-static inline void update_side_hash(struct board *brd)
-{
-	brd->board_hash ^= get_side_hash();
-}
-
-static inline void update_EP_hash(struct board *brd)
-{
-	brd->board_hash ^= get_en_passant_hash(brd->en_passant);
 }

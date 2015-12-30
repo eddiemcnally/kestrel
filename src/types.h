@@ -72,6 +72,8 @@ typedef uint64_t mv_bitmap;
 
 #define	IS_EN_PASS_MOVE(mv)		((mv & MFLAG_EN_PASSANT) != 0)
 #define IS_CAPTURE_MOVE(mv)		((CAPTURED_PCE(mv) != NO_PIECE))
+#define IS_CASTLE_MOVE(mv)		((mv & MFLAG_CASTLE) != 0)
+
 
 
 

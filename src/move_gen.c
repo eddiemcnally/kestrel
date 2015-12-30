@@ -643,8 +643,7 @@ generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
 					enum square north_x2 = pawn_sq + NN;
 ;
 					if (IS_SQUARE_OCCUPIED(brd->board, north_x2) == false) {
-						mv_bitmap mv = MOVE(pawn_sq, north_x2, NO_PIECE,
-									NO_PIECE, MFLAG_PAWN_START, 0);
+						mv_bitmap mv = MOVE(pawn_sq, north_x2, NO_PIECE, NO_PIECE, MFLAG_PAWN_START, 0);
 						add_quiet_move(mv, mvl);
 					}
 				}
@@ -720,9 +719,7 @@ generate_black_pawn_moves(struct board *brd, struct move_list *mvl,
 					bool sq_2_occupied =
 						IS_SQUARE_OCCUPIED(brd->board, south_x2);
 					if (sq_2_occupied == false) {
-						mv_bitmap mv = MOVE(pawn_sq, south_x2,
-									NO_PIECE, NO_PIECE,
-									MFLAG_PAWN_START, 0);
+						mv_bitmap mv = MOVE(pawn_sq, south_x2,NO_PIECE, NO_PIECE,MFLAG_PAWN_START, 0);
 						add_quiet_move(mv, mvl);
 					}
 				}
