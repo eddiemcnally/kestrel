@@ -39,6 +39,20 @@
 #include "move_gen_utils.h"
 #include "hashkeys.h"
 
+
+
+
+
+
+enum pawn_action{
+	ADD,		// signifies we're adding a pawn
+	REMOVE		// removing a pawn
+};
+
+static inline void set_up_pawn_info(struct board *brd, enum colour col, 
+								enum square sq, enum pawn_action action);
+
+
 //bit mask for castle permissions
 static const uint8_t castle_permission_mask[NUM_SQUARES] = {
 	13, 15, 15, 15, 12, 15, 15, 14,
@@ -50,10 +64,6 @@ static const uint8_t castle_permission_mask[NUM_SQUARES] = {
 	15, 15, 15, 15, 15, 15, 15, 15,
 	7, 15, 15, 15, 3, 15, 15, 11
 };
-
-
-static void remove_pawn_from_board(struct board *brd, enum colour col, enum square sq);
-static void add_pawn_to_board(struct board *brd, enum colour col, enum square sq);
 
 
 inline void move_piece(struct board *brd, enum square from, enum square to)
@@ -84,20 +94,20 @@ inline void move_piece(struct board *brd, enum square from, enum square to)
 		set_bit(&brd->colour_bb[WHITE], to);
 		if(pce == W_PAWN){
 			// easiest way to move a pawn
-			remove_pawn_from_board(brd, WHITE, from);
-			add_pawn_to_board(brd, WHITE, to);
+			set_up_pawn_info(brd, WHITE, from, REMOVE);
+			set_up_pawn_info(brd, WHITE, to, ADD);
 		} else if (pce == W_KING){
-			brd->king_sq[WHITE][0] = to;
+			brd->king_sq[WHITE] = to;
 		}
 	} else {
 		clear_bit(&brd->colour_bb[BLACK], from);
 		set_bit(&brd->colour_bb[BLACK], to);
 		if(pce == B_PAWN){
 			// easiest way to move a pawn
-			remove_pawn_from_board(brd, BLACK, from);
-			add_pawn_to_board(brd, BLACK, to);
+			set_up_pawn_info(brd, BLACK, from, REMOVE);
+			set_up_pawn_info(brd, BLACK, to, ADD);
 		} else if (pce == B_KING){
-			brd->king_sq[BLACK][0] = to;
+			brd->king_sq[BLACK] = to;
 		}
 	}
 
@@ -157,6 +167,7 @@ bool make_move(struct board *brd, mv_bitmap mv)
 	brd->history[brd->history_ply].en_passant = brd->en_passant;
 	brd->history[brd->history_ply].castle_perm = brd->castle_perm;
 
+	// reste castle and set again
 	brd->board_hash ^= get_castle_hash(brd->castle_perm);
 	brd->castle_perm &= castle_permission_mask[from];
 	brd->castle_perm &= castle_permission_mask[to];
@@ -164,11 +175,9 @@ bool make_move(struct board *brd, mv_bitmap mv)
 
 
 	brd->en_passant = NO_SQUARE;
-	
-	enum piece captured = CAPTURED_PCE(mv);
 	brd->fifty_move_counter++;
 
-	if (captured != NO_PIECE) {
+	if (CAPTURED_PCE(mv) != NO_PIECE) {
 		remove_piece_from_board(brd, to);
 		brd->fifty_move_counter = 0;
 	}
@@ -203,7 +212,7 @@ bool make_move(struct board *brd, mv_bitmap mv)
 	brd->board_hash ^= get_side_hash();
 
 	// check if move is valid (ie, king in check)
-	enum square king_sq = brd->king_sq[side][0];
+	enum square king_sq = brd->king_sq[side];
 
 	// side is already flipped above, so use that as the attacking side
 	if (is_sq_attacked(brd, king_sq, brd->side_to_move)) {
@@ -281,7 +290,7 @@ inline void take_move(struct board *brd)
 	}
 
 	enum piece promoted = PROMOTED_PCE(mv);
-	if (promoted != NO_PIECE) {
+	if (PROMOTED_PCE(mv) != NO_PIECE) {
 		enum colour prom_col = GET_COLOUR(promoted);
 		remove_piece_from_board(brd, from);
 
@@ -304,17 +313,16 @@ void add_piece_to_board(struct board *brd, enum piece pce, enum square sq)
 	// set piece on bitboards
 	set_bit(&brd->bitboards[pce], sq);
 	set_bit(&brd->board, sq);
-
 	set_bit(&brd->colour_bb[col], sq);
 	
 	switch (pce){
 		case W_PAWN:
 		case B_PAWN:
-			add_pawn_to_board(brd, col, sq);
+			set_up_pawn_info(brd, col, sq, ADD);
 			break;
 		case W_KING:
 		case B_KING:
-			brd->king_sq[col][0] = sq;
+			brd->king_sq[col] = sq;
 			break;
 		default:
 			break;		
@@ -322,50 +330,6 @@ void add_piece_to_board(struct board *brd, enum piece pce, enum square sq)
 	
 }	
 
-static inline void add_pawn_to_board(struct board *brd, enum colour col, enum square sq){
-
-	uint8_t file = GET_FILE(sq);
-	uint8_t rank = GET_RANK(sq);
-	
-	brd->pawns_on_file[col][file]++;
-	brd->pawns_on_rank[col][rank]++;
-	
-	
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wconversion"
-#pragma GCC diagnostic ignored "-Wsign-conversion"
-		
-	int32_t next_sq = 0;
-	switch (col){
-		case WHITE:
-			if (file > FILE_A){
-				next_sq = sq + NW;
-				brd->pawn_control[col][next_sq]++;
-			}
-			if (file < FILE_H){
-				next_sq = sq + NE;
-				brd->pawn_control[col][next_sq]++;
-			}
-			break;
-		
-		case BLACK:
-			if (file > FILE_A){
-				next_sq = sq + SW;
-				brd->pawn_control[col][next_sq]++;
-			}
-			if (file < FILE_H){
-				next_sq = sq + SE;
-				brd->pawn_control[col][next_sq]++;
-			}
-			break;
-		default:
-			assert(false);
-		}
-#pragma GCC diagnostic pop
-
-
-}
 
 
 inline void remove_piece_from_board(struct board *brd, enum square sq)
@@ -388,25 +352,32 @@ inline void remove_piece_from_board(struct board *brd, enum square sq)
 	switch (pce){
 		case W_PAWN:
 		case B_PAWN:
-			remove_pawn_from_board(brd, col, sq);
+			set_up_pawn_info(brd, col, sq, REMOVE);
 			break;
 		case W_KING:
 		case B_KING:
-			brd->king_sq[col][0] = NO_SQUARE;
+			brd->king_sq[col] = NO_SQUARE;
 			break;
 		default:
 			break;		
 	}	
 }
 
-static inline void remove_pawn_from_board(struct board *brd, enum colour col, enum square sq){
+
+
+
+static inline void set_up_pawn_info(struct board *brd, enum colour col, enum square sq, enum pawn_action action){
 
 	uint8_t file = GET_FILE(sq);
 	uint8_t rank = GET_RANK(sq);
 	
-	brd->pawns_on_file[col][file]--;
-	brd->pawns_on_rank[col][rank]--;
-
+	if (action == ADD){
+		brd->pawns_on_file[col][file]++;
+		brd->pawns_on_rank[col][rank]++;
+	} else {
+		brd->pawns_on_file[col][file]--;
+		brd->pawns_on_rank[col][rank]--;
+	} 
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wconversion"
@@ -417,26 +388,43 @@ static inline void remove_pawn_from_board(struct board *brd, enum colour col, en
 		case WHITE:
 			if (file > FILE_A){
 				next_sq = sq + NW;
-				brd->pawn_control[col][next_sq]--;
+			
+				if (action == ADD) 
+					brd->pawn_control[col][next_sq]++;
+				else  
+					brd->pawn_control[col][next_sq]--;
 			}
 			if (file < FILE_H){
 				next_sq = sq + NE;
-				brd->pawn_control[col][next_sq]--;
+			
+				if (action == ADD) 
+					brd->pawn_control[col][next_sq]++;
+				else  
+					brd->pawn_control[col][next_sq]--;
 			}
 			break;
 		
 		case BLACK:
 			if (file > FILE_A){
 				next_sq = sq + SW;
-				brd->pawn_control[col][next_sq]--;
+				
+				if (action == ADD) 
+					brd->pawn_control[col][next_sq]++;
+				else  
+					brd->pawn_control[col][next_sq]--;
 			}
 			if (file < FILE_H){
 				next_sq = sq + SE;
-				brd->pawn_control[col][next_sq]--;
+				
+				if (action == ADD) 
+					brd->pawn_control[col][next_sq]++;
+				else  
+					brd->pawn_control[col][next_sq]--;
 			}
 			break;
 		default:
 			assert(false);
+			
 	}
 #pragma GCC diagnostic pop
 

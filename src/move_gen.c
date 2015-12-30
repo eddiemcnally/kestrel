@@ -494,7 +494,7 @@ static inline void generate_king_moves(struct board *brd,
 				       enum colour col, enum colour opposite_col,
 				       const bool only_capture_moves)
 {
-	enum square king_sq = brd->king_sq[col][0];
+	enum square king_sq = brd->king_sq[col];
 
 	// get occupancy mask for this piece and square
 	uint64_t mask = GET_KING_OCC_MASK(king_sq);

@@ -305,7 +305,7 @@ inline static int32_t eval_pawn_shield(const struct board *brd, enum piece king)
 
 	enum colour col = GET_COLOUR(king);
 	
-	enum square king_sq = brd->king_sq[col][0];
+	enum square king_sq = brd->king_sq[col];
 	uint8_t king_file = GET_FILE(king_sq);
 
 	int32_t retval = 0;

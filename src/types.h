@@ -171,8 +171,9 @@ struct board {
 	uint8_t pawn_control[NUM_COLOURS][NUM_SQUARES];
 
 	// we need to look up the king position very frequently,
-	// so save it for a quick lookup
-	enum square king_sq[NUM_COLOURS][1];
+	// so save it for a quick lookup, rather than extracting it
+	// from a bitboard each time
+	enum square king_sq[NUM_COLOURS];
 
 	// the next side to move
 	enum colour side_to_move;
