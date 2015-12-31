@@ -50,6 +50,7 @@ void test_move_piece(void);
 void test_capture_move_gen_1(void);
 void test_capture_move_gen_2(void);
 void test_capture_move_gen_3(void);
+void test_zobrist_hashing_makemove_takemove(void);
 
 
 
@@ -879,6 +880,73 @@ void test_make_move_take_move_1(void)
 }
 
 
+void test_zobrist_hashing_makemove_takemove(void){
+
+	
+	// check enpassant hashing
+	// =======================
+	char *enpass_pos = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+	
+	struct board *brd = init_game(enpass_pos);
+
+	uint64_t pre_ep_hash = brd->board_hash;
+
+	// make move to cause enpassant on e3
+	mv_bitmap mv = MOVE(e2, e4, NO_PIECE, NO_PIECE, MFLAG_PAWN_START, 0);
+	make_move(brd, mv);
+	// check hash has changed
+	assert_true(pre_ep_hash != brd->board_hash);
+	take_move(brd);
+	// check hash is back to original
+	assert_true(brd->board_hash == pre_ep_hash);
+	dispose_board(brd);
+	
+	// check castle hashing
+	// ====================
+	char *castle_pos = "r1bqkbnr/pppp2pp/2n1pp2/8/8/3BPN2/PPPP1PPP/RNBQK2R w KQkq - 0 1";
+	
+	brd = init_game(castle_pos);
+
+	uint64_t pre_castle_hash = brd->board_hash;
+
+	// make castle move
+	mv = MOVE(e1, g1, NO_PIECE, NO_PIECE, MFLAG_CASTLE, 0);
+	make_move(brd, mv);
+	// check hash has changed
+	assert_true(pre_castle_hash != brd->board_hash);
+	take_move(brd);
+	// check hash is back to original
+	assert_true(brd->board_hash == pre_castle_hash);
+	dispose_board(brd);
+	
+	
+
+	// check side-to-move hashing
+	// ==========================
+	char *side_to_move_pos = "r1bqkbnr/pppp2pp/2n1pp2/8/8/3BPN2/PPPP1PPP/RNBQK2R w KQkq - 0 1";
+	
+	brd = init_game(side_to_move_pos);
+
+	uint64_t pre_swap_hash = brd->board_hash;
+
+	// flip sides
+	flip_sides(brd);
+	
+	// check hash has changed
+	assert_true(pre_swap_hash != brd->board_hash);
+	
+	// flip back and check hash is back to original
+	flip_sides(brd);
+	assert_true(brd->board_hash == pre_castle_hash);
+	dispose_board(brd);
+
+	// NOTE: hashing around moves is tested elsewhere
+
+
+
+}
+
+
 
 void test_capture_move_gen_1(void){
 	struct board *brd = init_game(STARTING_FEN);
@@ -956,7 +1024,8 @@ void move_test_fixture(void)
 	run_test(test_capture_move_gen_1);
 	run_test(test_capture_move_gen_2);
 	run_test(test_capture_move_gen_3);
-
+	
+	run_test(test_zobrist_hashing_makemove_takemove);
 
 	test_fixture_end();	// ends a fixture
 }

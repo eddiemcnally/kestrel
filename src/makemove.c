@@ -208,8 +208,7 @@ bool make_move(struct board *brd, mv_bitmap mv)
 		add_piece_to_board(brd, promoted, to);
 	}
 	// flip side
-	brd->side_to_move = GET_OPPOSITE_SIDE(brd->side_to_move);
-	brd->board_hash ^= get_side_hash();
+	flip_sides(brd);
 
 	// check if move is valid (ie, king in check)
 	enum square king_sq = brd->king_sq[side];
@@ -253,8 +252,7 @@ inline void take_move(struct board *brd)
 	brd->board_hash ^= get_castle_hash(brd->castle_perm);
 
 	// flip side
-	brd->side_to_move = GET_OPPOSITE_SIDE(brd->side_to_move);
-	brd->board_hash ^= get_side_hash();
+	flip_sides(brd);
 
 	if (MFLAG_EN_PASSANT & mv) {
 		if (brd->side_to_move == WHITE) {
@@ -300,6 +298,12 @@ inline void take_move(struct board *brd)
 }
 
 
+
+inline void flip_sides(struct board *brd){
+	// flip side
+	brd->side_to_move = GET_OPPOSITE_SIDE(brd->side_to_move);
+	brd->board_hash ^= get_side_hash();
+}
 
 
 void add_piece_to_board(struct board *brd, enum piece pce, enum square sq)

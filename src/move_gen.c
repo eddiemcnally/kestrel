@@ -449,14 +449,14 @@ static inline void generate_knight_piece_moves(struct board *brd,
 
 		enum square knight_sq = pop_1st_bit(&knight_bb);
 
-		// get occupancy mask for this piece and square
+		// get occupancy mask for knight at this square
 		uint64_t mask = GET_KNIGHT_OCC_MASK(knight_sq);
-
 
 		// AND'ing with opposite colour pieces, will give all
 		// pieces that can be captured
 		uint64_t opp_pieces = brd->colour_bb[opposite_col];
 		uint64_t capture_squares = mask & opp_pieces;
+
 		while (capture_squares != 0) {
 			// loop creating capture moves
 			enum square cap_sq = pop_1st_bit(&capture_squares);
@@ -468,7 +468,7 @@ static inline void generate_knight_piece_moves(struct board *brd,
 		}
 
 		if (only_capture_moves == false){
-			// find all quiet moves
+			// find all quiet moves (ie, moves to empty squares)
 			uint64_t all_pieces = brd->board;
 			uint64_t empty_squares = ~all_pieces & mask;
 			while (empty_squares != 0) {
@@ -635,6 +635,8 @@ generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
 		uint8_t pawn_rank = GET_RANK(pawn_sq);
 		enum square north_sq = pawn_sq + NORTH;
 
+		// check for moving 1 and 2 squares forward
+		// ======================================== 
 		if (only_capture_moves == false){
 			if (IS_SQUARE_OCCUPIED(brd->board, north_sq) == false) {
 				add_pawn_move(WHITE, pawn_sq, north_sq, mvl);
@@ -650,6 +652,7 @@ generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
 			}
 		}
 		// check for capture left
+		// ======================
 		if (pawn_file > FILE_A) {
 			enum square northwest = pawn_sq + NW;
 			enum piece pce = brd->pieces[northwest];
@@ -664,6 +667,7 @@ generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
 			}
 		}
 		// check for capture right
+		//========================
 		if (pawn_file < FILE_H) {
 			enum square northeast = pawn_sq + NE;
 			enum piece pce = brd->pieces[northeast];
@@ -708,6 +712,9 @@ generate_black_pawn_moves(struct board *brd, struct move_list *mvl,
 
 		int pawn_file = GET_FILE(pawn_sq);
 		int pawn_rank = GET_RANK(pawn_sq);
+
+		// check for moving 1 and 2 squares forward
+		//=========================================
 		enum square south_sq = pawn_sq + SOUTH;
 		if (only_capture_moves == false){
 			if (IS_SQUARE_OCCUPIED(brd->board, south_sq) == false) {
@@ -727,6 +734,7 @@ generate_black_pawn_moves(struct board *brd, struct move_list *mvl,
 		}
 		
 		// check for capture left
+		// ======================
 		if (pawn_file > FILE_A) {
 			enum square southwest = pawn_sq + SW;
 			enum piece pce = brd->pieces[southwest];
@@ -743,6 +751,7 @@ generate_black_pawn_moves(struct board *brd, struct move_list *mvl,
 			}
 		}
 		// check for capture right
+		//========================
 		if (pawn_file < FILE_H) {
 			enum square southeast = pawn_sq + SE;
 			enum piece pce = brd->pieces[southeast];
@@ -781,14 +790,13 @@ static inline void generate_sliding_horizontal_vertical_moves (struct board *brd
 					   struct move_list *mvl,
 					   enum colour col, const bool only_capture_moves)
 {
-			
+
+	// create a single bitboard for both rook nd queen
 	uint64_t bb = 0;
 	if (col == WHITE){
-		bb = brd->bitboards[W_ROOK];
-		bb |= brd->bitboards[W_QUEEN];
+		bb = brd->bitboards[W_ROOK] | brd->bitboards[W_QUEEN];
 	} else {
-		bb = brd->bitboards[B_ROOK];
-		bb |= brd->bitboards[B_QUEEN];
+		bb = brd->bitboards[B_ROOK] | brd->bitboards[B_QUEEN];
 	}
 	
 
@@ -859,13 +867,12 @@ static inline void generate_sliding_diagonal_moves(struct board *brd,
 				struct move_list *mvl, enum colour col, const bool only_capture_moves)
 {
 
+	// create single bitboard representing bishop and queen 
 	uint64_t bb = 0;
 	if (col == WHITE){
-		bb = brd->bitboards[W_BISHOP];
-		bb |= brd->bitboards[W_QUEEN];
+		bb = brd->bitboards[W_BISHOP] | brd->bitboards[W_QUEEN];
 	} else {
-		bb = brd->bitboards[B_BISHOP];
-		bb |= brd->bitboards[B_QUEEN];
+		bb = brd->bitboards[B_BISHOP] | brd->bitboards[B_QUEEN];
 	}
 	
 	while (bb != 0) {
@@ -926,13 +933,13 @@ inline mv_bitmap MOVE(enum square from, enum square to, enum piece capture,
 		      enum piece promote, uint64_t flags, uint32_t score)
 {
 	mv_bitmap retval = 0;
-	
+		
 	retval =  ((uint64_t)from 		<< MV_MASK_OFF_FROM_SQ);
 	retval |= ((uint64_t)to 		<< MV_MASK_OFF_TO_SQ); 
 	retval |= ((uint64_t)capture 	<< MV_MASK_OFF_CAPTURED_PCE);
 	retval |= ((uint64_t)promote 	<< MV_MASK_OFF_PROMOTED_PCE);
 	retval |= flags;
-	retval += score;
+	retval += score;	// score is lower 32 bits, so can simply add
 	
 	return retval;
 }
