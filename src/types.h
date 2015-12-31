@@ -26,11 +26,6 @@
 #define NUM_RANKS 	8
 #define NUM_FILES	8
 
-enum colour {
-	BLACK = 0,
-	WHITE = 1,
-	NUM_COLOURS = 2
-};
 
 /*
  *
@@ -94,6 +89,13 @@ enum square {
 	NO_SQUARE	= 100
 };
 
+
+
+enum colour {
+	WHITE = 0,
+	BLACK = 1,
+	NUM_COLOURS = 2
+};
 
 // white is even, black is odd
 enum piece {

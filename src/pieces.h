@@ -30,7 +30,9 @@
 
 #define GET_OPPOSITE_SIDE(side)	(side ^ 1)
 
-#define	GET_COLOUR(piece)		(IS_WHITE(piece) ? WHITE : BLACK )
+// this relies on the fact that white is 0 and black is 1
+// (and white pieces are even, and black pieces are odd)
+#define	GET_COLOUR(piece)		((piece & 0x01))
 
 #define IS_BISHOP(pce)			((pce == W_BISHOP) || (pce == B_BISHOP))
 #define IS_QUEEN(pce)			((pce == W_QUEEN) || (pce == B_QUEEN))

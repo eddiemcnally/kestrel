@@ -109,7 +109,14 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 		return quiesce(brd, alpha, beta);
 	} 
 	
+	if (is_repetition(brd) || brd->fifty_move_counter >= 100){
+		return 0;
+	}
 	
+	if (brd->ply >= MAX_SEARCH_DEPTH){
+		return evaluate_position(brd);
+	}
+		
 	mv_bitmap best_move = NO_MOVE;
 	bool is_alpha_improved = false;
 	
@@ -155,14 +162,14 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 		
 		take_move(brd);
 		
-		if (score >= beta){
-			return beta;		// fail-hard beta cutoff
-		}
 		if (score > alpha){
+			if (score >= beta){
+				return beta;
+			}
 			alpha = score;
 			is_alpha_improved = true;
 			best_move = mv;
-		}		
+		}			
 	}
 	
 	if(legal_move_cnt == 0) {
@@ -215,7 +222,7 @@ int32_t quiesce(struct board *brd, int32_t alpha, int32_t beta){
 		return 0;
 	}
 	
-	if (brd->ply > MAX_SEARCH_DEPTH){
+	if (brd->ply >= MAX_SEARCH_DEPTH){
 		return evaluate_position(brd);
 	}
 	
@@ -227,6 +234,7 @@ int32_t quiesce(struct board *brd, int32_t alpha, int32_t beta){
 	if (stand_pat_score > alpha){
 		alpha = stand_pat_score;
 	}
+
 
 	struct move_list mvl = {
 		.moves = {0},
@@ -244,6 +252,13 @@ int32_t quiesce(struct board *brd, int32_t alpha, int32_t beta){
 		bring_best_move_to_top(i, &mvl);		
 		
 		mv_bitmap mv = mvl.moves[i];
+		
+		if (IS_CAPTURE_MOVE(mv)){
+			enum piece cap_pce = CAPTURED_PCE(mv);
+			if (IS_KING(cap_pce)){
+				return INFINITE;
+			}
+		}
 		
 		bool valid_move = make_move(brd, mv);
 		if (valid_move == false){

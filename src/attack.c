@@ -48,7 +48,7 @@ static bool is_attacked_diagonally(const struct board *brd,
 static bool is_knight_attacking_square(const struct board *brd, uint64_t sq_bb,
 				       enum piece attacking_piece);
 static bool is_king_attacking_square(const struct board *brd, uint64_t sq_bb,
-				     enum piece attacking_piece);
+				     enum colour col);
 static bool is_rook_or_queen_attacking_square(const struct board *brd,
 					      enum square sq, uint64_t rq_bb);
 static bool is_bishop_or_queen_attacking_square(const struct board *brd,
@@ -62,7 +62,7 @@ static void populate_intervening_squares_array(void);
 // a lookup array of bitmasks for squares between the "from" and "to"
 // squares.  
 // since there is a commutative property associated with to/from squares 
-// when identifying interveing squares, it's irrelevent whether you index using
+// when identifying intervening squares, it's irrelevent whether you index using
 // [from][to] or [to][from]
 static uint64_t intervening_squares_lookup[NUM_SQUARES][NUM_SQUARES];
 
@@ -93,13 +93,13 @@ bool is_sq_attacked(const struct board *brd, enum square sq,
 {
 
 	// create a bitboard for the square being considered
-	uint64_t bb_knight = 0;
-	set_bit(&bb_knight, sq);
+	uint64_t sq_bb = 0;
+	set_bit(&sq_bb, sq);
 
 	// trading code bloat for efficiency and duplicate the calls
 	// based on colour....
 	if (attacking_side == WHITE) {
-		if (is_knight_attacking_square(brd, bb_knight, W_KNIGHT)) {
+		if (is_knight_attacking_square(brd, sq_bb, W_KNIGHT)) {
 			return true;
 		}
 		// white pawn controls this square?
@@ -123,13 +123,13 @@ bool is_sq_attacked(const struct board *brd, enum square sq,
 			return true;
 		}
 
-		if (is_king_attacking_square(brd, bb_knight, W_KING)) {
+		if (is_king_attacking_square(brd, sq_bb, WHITE)) {
 			return true;
 		}
 
 	} else {
 
-		if (is_knight_attacking_square(brd, bb_knight, B_KNIGHT)) {
+		if (is_knight_attacking_square(brd, sq_bb, B_KNIGHT)) {
 			return true;
 		}
 		// Black pawn controls this square?
@@ -152,7 +152,7 @@ bool is_sq_attacked(const struct board *brd, enum square sq,
 			return true;
 		}
 
-		if (is_king_attacking_square(brd, bb_knight, B_KING)) {
+		if (is_king_attacking_square(brd, sq_bb, BLACK)) {
 			return true;
 		}
 	} 
@@ -218,27 +218,29 @@ static inline bool is_knight_attacking_square(const struct board *brd,
 	// this colour
 	uint64_t bb_knight = brd->bitboards[attacking_piece];
 
+	// overlay all occupancy masks into a single occupancy mask
+	uint64_t overlay_mask = 0;
 	while (bb_knight != 0) {
 		enum square att_pce_sq = pop_1st_bit(&bb_knight);
 
 		// get occupancy mask for this piece and square
-		uint64_t mask = GET_KNIGHT_OCC_MASK(att_pce_sq);
-
-		if ((mask & sq_bb) != 0) {
-			// a Knight is attacking this square
-			return true;
-		}
+		overlay_mask |= GET_KNIGHT_OCC_MASK(att_pce_sq);
 	}
+	
+	if ((overlay_mask & sq_bb) != 0) {
+		// a Knight is attacking this square
+		return true;
+	}
+	
 	return false;
 }
 
 static inline bool is_king_attacking_square(const struct board *brd,
 					    uint64_t sq_bb,
-					    enum piece attacking_piece)
+					    enum colour col)
 {
 	// get the bitboard representing the king on the board of
 	// this colour
-	enum colour col = GET_COLOUR(attacking_piece);
 	enum square att_pce_sq = brd->king_sq[col];
 
 	// get occupancy mask for this square
@@ -365,13 +367,7 @@ bool TEST_is_pawn_attacking_square(const struct board * brd,
 bool TEST_is_king_attacking_square(const struct board * brd,
 				   enum square sq, enum colour attacking_side)
 {
-	enum piece pce;
-	if (attacking_side == WHITE) {
-		pce = W_KING;
-	} else {
-		pce = B_KING;
-	}
-	return is_king_attacking_square(brd, square_to_bitboard(sq), pce);
+	return is_king_attacking_square(brd, square_to_bitboard(sq), attacking_side);
 }
 
 bool TEST_is_attacked_horizontally_or_vertically(const struct board * brd,

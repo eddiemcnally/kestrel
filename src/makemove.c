@@ -167,7 +167,7 @@ bool make_move(struct board *brd, mv_bitmap mv)
 	brd->history[brd->history_ply].en_passant = brd->en_passant;
 	brd->history[brd->history_ply].castle_perm = brd->castle_perm;
 
-	// reste castle and set again
+	// reset castle and set again
 	brd->board_hash ^= get_castle_hash(brd->castle_perm);
 	brd->castle_perm &= castle_permission_mask[from];
 	brd->castle_perm &= castle_permission_mask[to];
