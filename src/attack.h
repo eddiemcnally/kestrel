@@ -16,8 +16,7 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _ATTACK_H_
-#define _ATTACK_H_
+#pragma once
 
 #include <stdbool.h>
 #include "types.h"
@@ -48,4 +47,4 @@ bool TEST_is_attacked_horizontally_or_vertically(const struct board *brd,
 bool TEST_is_attacked_diagonally(const struct board *brd,
 				 enum square sq_one, enum square sq_two);
 
-#endif
+

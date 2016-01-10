@@ -15,8 +15,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef _MAKE_MOVE_H_
-#define _MAKE_MOVE_H_
+#pragma once
 
 bool make_move(struct board *brd, mv_bitmap mv);
 void take_move(struct board *brd);
@@ -28,4 +27,4 @@ void move_piece(struct board *brd, enum square from, enum square to);
 void remove_piece_from_board(struct board *brd, enum square sq);
 void add_piece_to_board(struct board *brd, enum piece pce, enum square sq);
 
-#endif
+

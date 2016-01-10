@@ -16,11 +16,10 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _INIT_H_
-#define _INIT_H_
+#pragma once
 
 #include "types.h"
 
 struct board * init_game(char *fen);
 
-#endif
+

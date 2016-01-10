@@ -16,8 +16,7 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _UTILS_H_
-#define _UTILS_H_
+#pragma once
 
 #include "types.h"
 
@@ -31,4 +30,3 @@ uint64_t get_elapsed_time_in_millis(uint64_t start_time);
 #define IS_SQUARE_OCCUPIED(BB, SQ)	( ( (BB >> SQ) & 0x01ull) != 0)
 #define CHECK_BIT(BB, SQ)				(IS_SQUARE_OCCUPIED(BB, SQ))
 
-#endif

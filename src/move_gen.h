@@ -15,8 +15,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef _MOVE_H_
-#define _MOVE_H_
+#pragma once
 
 #include <stdbool.h>
 #include "types.h"
@@ -63,4 +62,4 @@ uint32_t TEST_get_move_score(enum piece victim, enum piece attacker);
 struct move_list *TEST_get_empty_move_list(void);
 
 
-#endif
+#pragma once

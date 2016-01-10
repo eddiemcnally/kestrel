@@ -15,12 +15,11 @@
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef _FEN_H_
-#define _FEN_H_
+#pragma once
 
 int consume_fen_notation(const char *fen_string, struct board *board_to_setup);
 
 // starting FEN position
 #define STARTING_FEN 	"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
-#endif
+

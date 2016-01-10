@@ -15,8 +15,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef _HASHKEYS_H_
-#define _HASHKEYS_H_
+#pragma once
  
 void init_hash_keys(void);
 uint64_t get_position_hash(const struct board *brd);
@@ -25,4 +24,4 @@ uint64_t get_side_hash(void);
 uint64_t get_en_passant_hash(enum square sq);
 uint64_t get_piece_hash(enum piece pce, enum square sq);
 
-#endif
+

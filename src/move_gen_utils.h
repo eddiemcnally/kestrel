@@ -15,8 +15,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef _MOVE_UTILS_H_
-#define _MOVE_UTILS_H_
+#pragma once
 
 #include <stdbool.h>
 #include "types.h"
@@ -41,4 +40,4 @@ void print_move_list_details(const struct move_list *list);
 
 
 
-#endif
+

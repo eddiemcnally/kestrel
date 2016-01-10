@@ -15,8 +15,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef _PV_TABLE_H_
-#define _PV_TABLE_H_
+#pragma once
 
 #include "types.h"
 
@@ -29,4 +28,4 @@ void add_move_to_pv_table(const struct pv_table *table, const uint64_t board_has
 mv_bitmap find_move(const struct pv_table *table, const uint64_t board_hash);
 void dispose_table(struct pv_table *table);
 
-#endif
+

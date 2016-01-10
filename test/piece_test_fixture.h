@@ -17,8 +17,7 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */  
 
-#ifndef _PIECE_TEST_FIXTURE_H
-#define _PIECE_TEST_FIXTURE_H
+#pragma once
 
 
 void test_rank_file_macros(void);
@@ -29,4 +28,4 @@ void test_piece_classification_IS_MINOR_PIECE(void);
 void test_piece_to_char_conversion(void);
 void piece_test_fixture(void);
 
-#endif
+

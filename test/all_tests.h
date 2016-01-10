@@ -16,9 +16,7 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _ALL_TESTS_H_
-#define _ALL_TESTS_H_
+#pragma once
 
 int main_do_it_myself_really_simply(int argc, char **argv);
 
-#endif

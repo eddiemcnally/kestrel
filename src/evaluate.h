@@ -16,9 +16,8 @@
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef _EVALUATE_H_
-#define _EVALUATE_H_
+#pragma once
 
 int32_t evaluate_position(const struct board * brd);
 
-#endif
+

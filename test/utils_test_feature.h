@@ -16,13 +16,8 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _UTILS_TEST_FEATURE_H_
-#define _UTILS_TEST_FEATURE_H_
-
+#pragma once
 
 void test_bit_reversal(void);
 void utils_test_fixture(void);
 void test_clear_MSB(void);
-
-
-#endif

@@ -16,8 +16,7 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _PIECES_H_
-#define _PIECES_H_
+#pragma once
 
 #include <stdbool.h>
 #include "types.h"
@@ -73,4 +72,4 @@ bool is_valid_piece(enum piece pce);
 uint32_t get_piece_value(const enum piece pce);
 
 
-#endif
+

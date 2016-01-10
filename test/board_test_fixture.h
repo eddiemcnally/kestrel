@@ -17,9 +17,7 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _BOARD_TEST_FIXTURE_H
-#define _BOARD_TEST_FIXTURE_H
-
+#pragma once
 
 
 void verify_initial_board_placement(struct board *the_board);
@@ -35,7 +33,3 @@ void test_checking_bits_in_a_board(void);
 void test_bit_counting(void);
 void test_LSB_clear(void);
 void board_test_fixture(void);
-
-
-
-#endif

@@ -16,8 +16,7 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _SEARCH_H_
-#define _SEARCH_H_
+#pragma once
 
 #include <stdbool.h>
 #include "types.h"
@@ -26,4 +25,4 @@
 void search_positions(struct board *brd, uint8_t depth);
 bool is_repetition(const struct board *brd);
 
-#endif
+

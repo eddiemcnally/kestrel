@@ -16,8 +16,7 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _BOARD_H_
-#define _BOARD_H_
+#pragma once
 
 #include <stdbool.h>
 #include "types.h"
@@ -101,4 +100,3 @@ uint8_t count_bits(uint64_t bb);
 uint64_t square_to_bitboard(enum square sq);
 bool is_piece_on_square(const struct board *brd, enum piece pce, enum square sq);
 
-#endif

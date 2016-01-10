@@ -15,8 +15,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef _TYPES_H_
-#define _TYPES_H_
+#pragma once
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -213,6 +212,3 @@ struct board {
 
 
 
-
-
-#endif

@@ -16,11 +16,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-
-#ifndef _MOVE_TEST_FIXTURE_H
-#define _MOVE_TEST_FIXTURE_H
-
+#pragma once
 
 void test_generation_white_pawn_moves(void);
 void test_generation_black_pawn_moves(void);
@@ -37,5 +33,3 @@ void test_add_piece(void);
 void test_move_piece(void);
 void move_test_fixture(void);
 
-
-#endif

@@ -17,8 +17,6 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _ATTACK_TEST_FIXTURE_H
-#define _ATTACK_TEST_FIXTURE_H
 
 
 void attack_test_fixture(void);
@@ -34,4 +32,3 @@ void test_is_blocked_up_or_down(void);
 void test_is_blocked_diagonally(void);
 
 
-#endif

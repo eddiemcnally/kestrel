@@ -16,8 +16,7 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _OCCUPANCY_MASK_H_
-#define _OCCUPANCY_MASK_H_
+#pragma once
 
 #include "types.h"
 
@@ -375,4 +374,4 @@ static const uint64_t rook_occupancy_masks[NUM_SQUARES] = {
 #define GET_QUEEN_OCC_MASK(square)			(queen_occupancy_masks[(square)])
 #define GET_ROOK_OCC_MASK(square)			(rook_occupancy_masks[(square)])
 
-#endif
+

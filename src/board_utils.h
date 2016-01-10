@@ -16,8 +16,7 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _BOARD_UTILS_H_
-#define _BOARD_UTILS_H_
+#pragma once
 
 #include <stdbool.h>
 #include "types.h"
@@ -31,4 +30,4 @@ struct board *clone_board(const struct board *board_to_clone);
 void print_compressed_board(const struct board *brd);
 mv_bitmap parse_move(char *ip_move, struct board *brd);
 
-#endif
+

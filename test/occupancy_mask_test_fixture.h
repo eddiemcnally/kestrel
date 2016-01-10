@@ -15,9 +15,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef _OCCUPANCY_MASK_TEST_FIXTURE_H
-#define _OCCUPANCY_MASK_TEST_FIXTURE_H
-
+#pragma once
 
 void test_king_occupancy_mask(void);
 void test_rook_occupancy_mask(void);
@@ -28,5 +26,3 @@ void test_white_pawn_occupancy_mask(void);
 void test_black_pawn_occupancy_mask(void);
 void occupancy_mask_test_fixture(void);
 
-
-#endif

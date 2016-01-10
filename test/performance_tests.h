@@ -15,9 +15,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef _PERFORMANCE_TESTS_H
-#define _PERFORMANCE_TESTS_H
-
+#pragma once
 
 void perf_test(int depth, struct board *brd);
 void divide_perft(int depth, struct board *brd);
@@ -27,4 +25,4 @@ void perft(int depth, struct board *brd);
 void bug_check(void);
 void perf_test_fixture(void);
 
-#endif
+
