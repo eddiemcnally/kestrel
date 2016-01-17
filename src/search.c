@@ -57,7 +57,7 @@ inline bool is_repetition(const struct board *brd)
 
 	int start = brd->history_ply - brd->fifty_move_counter;
 
-	for (int i = start; i < brd->history_ply; i++) {
+	for (int i = start; i < brd->history_ply-1; i++) {
 		if (brd->board_hash == brd->history[i].board_hash) {
 			return true;
 		}

@@ -106,6 +106,7 @@ void add_move_to_pv_table(const struct pv_table *table, const uint64_t board_has
 		entry->move = move;
 		entry->hashkey = board_hash;
 	} else {
+		//printf("KEY Collision on add()...mv = %s, hash = %ju\n", print_move(move), board_hash);
 		// key collision
 		// create new pv_entry and add to list
 		struct pv_entry *new = get_empty_entry();
