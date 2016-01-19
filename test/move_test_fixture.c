@@ -977,6 +977,7 @@ void test_capture_move_gen_2(void){
 		enum piece pce = CAPTURED_PCE(mv);
 		
 		assert_true(pce != NO_PIECE);		
+		assert_true(IS_CAPTURE_MOVE(mv) == true);
 	}
 }
 
@@ -997,6 +998,7 @@ void test_capture_move_gen_3(void){
 		enum piece pce = CAPTURED_PCE(mv);
 		
 		assert_true(pce != NO_PIECE);		
+		assert_true(IS_CAPTURE_MOVE(mv) == true);
 	}
 }
 

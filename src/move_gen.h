@@ -34,7 +34,7 @@ mv_bitmap MOVE(enum square from, enum square to, enum piece capture,
 void generate_all_moves(struct board *brd, struct move_list *mvl);
 void generate_all_capture_moves(struct board *brd, struct move_list *mvl);
 void init_move_gen_framework(void);
-
+bool move_exists(struct board *brd, mv_bitmap move_to_test) ;
 
 void TEST_generate_white_pawn_moves(struct board *brd,
 				    struct move_list *mvl);

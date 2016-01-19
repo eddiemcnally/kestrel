@@ -126,6 +126,7 @@ struct undo {
 	enum square en_passant;
 };
 
+
 // half moves
 #define MAX_GAME_MOVES 		2048
 #define MAX_POSITION_MOVES	256

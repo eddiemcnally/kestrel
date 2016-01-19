@@ -42,7 +42,7 @@
 #include "utils.h"
 
 
-static void do_gen_moves(struct board *brd, struct move_list *mvl, bool captures_only);
+static void do_gen_moves(struct board *brd, struct move_list *mvl, const bool captures_only);
 static void add_pawn_capture_move(enum colour col,
 				  enum square from, enum square to,
 				  enum piece capture, struct move_list *mvl);
@@ -282,7 +282,7 @@ void generate_all_capture_moves(struct board *brd, struct move_list *mvl)
 
 
 
-static inline void do_gen_moves(struct board *brd, struct move_list *mvl, bool captures_only)
+static inline void do_gen_moves(struct board *brd, struct move_list *mvl, const bool captures_only)
 {
 	//ASSERT_BOARD_OK(brd);
 	if (brd->side_to_move == WHITE) {
@@ -302,6 +302,7 @@ static inline void do_gen_moves(struct board *brd, struct move_list *mvl, bool c
 		// generate bishop and queen diagonal moves 
 		generate_sliding_diagonal_moves(brd, mvl, BLACK, captures_only);
 	}
+		
 }
 
 
@@ -923,6 +924,32 @@ static inline void generate_sliding_diagonal_moves(struct board *brd,
 			}
 		}
 	}
+}
+
+
+bool move_exists(struct board *brd, mv_bitmap move_to_test) {
+	
+	struct move_list mvl = {
+		.moves = {0},
+		.move_count = 0
+	};
+	
+	generate_all_moves(brd, &mvl);
+	
+	for (uint32_t m = 0; m < mvl.move_count; m++){
+		mv_bitmap mv = mvl.moves[m];
+		if (make_move(brd, mv) == false){
+			continue;
+		}
+		
+		take_move(brd);
+		
+		if(mvl.moves[m] == move_to_test){
+			return true;
+		}
+		
+	}
+	return false;
 }
 
 

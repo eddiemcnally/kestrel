@@ -25,11 +25,11 @@ Some implementation notes:
 This is a work-in-progress. Current state:
 * Can read in FEN
 * Can generate moves with an initial implementation of an AlphaBeta search/evaluate functionality.
-* Current state (Dec 2015) :
+* Current state (Jan 2016) :
     * correctly completes the 126 perft tests to a depth of 6 
     * implements alpha-beta search with principle variation  
     * implements iterative deepening
-    * there is a bug in the search, investigation ongoing
+    * there is a bug in the search (misses out on an obvious mate-in-two), investigation ongoing
 * The code is unoptimised, in the sense that no explicit effort has been undertaken to profile and tune the code paths (other than some rudamentary moving of code to improve inlining, removal of debug code and assert's and tweaking the gcc compile options).
 * The main code (./src) doesn't execute any meaningful operations. The main launch point is the test framework. To build and execute the test framework, run the following:
 	* cd ./test

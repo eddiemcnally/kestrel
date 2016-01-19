@@ -249,16 +249,23 @@ int32_t quiesce(struct board *brd, int32_t alpha, int32_t beta){
 		
 	for(uint16_t i = 0; i < num_moves; i++){
 				
-		bring_best_move_to_top(i, &mvl);		
+		//bring_best_move_to_top(i, &mvl);		
 		
 		mv_bitmap mv = mvl.moves[i];
+		
+		if (IS_CAPTURE_MOVE(mv) == false){
+			printf("*** Not capture move %s\n", print_move(mv));
+		}
+		
+		
+		assert(IS_CAPTURE_MOVE(mv));
 		
 		if (IS_CAPTURE_MOVE(mv)){
 			enum piece cap_pce = CAPTURED_PCE(mv);
 			if (IS_KING(cap_pce)){
 				return INFINITE;
 			}
-		}
+		} 
 		
 		bool valid_move = make_move(brd, mv);
 		if (valid_move == false){

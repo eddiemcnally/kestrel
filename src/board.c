@@ -88,7 +88,7 @@ void dispose_board(struct board *brd){
 }
 
 
-
+// returns the count.
 uint8_t populate_pv_line(struct board *brd, uint8_t depth){
 
 	mv_bitmap mv = find_move(brd->pvtable, brd->board_hash);
@@ -96,9 +96,17 @@ uint8_t populate_pv_line(struct board *brd, uint8_t depth){
 	uint8_t count = 0;
 
 	while((mv != NO_MOVE) && (count < depth)){
-		make_move(brd, mv);
-		brd->pv_line[count++] = mv;
-	
+		
+		assert(count < MAX_SEARCH_DEPTH);
+
+		if (move_exists(brd, mv)){
+			make_move(brd, mv);
+			brd->pv_line[count++] = mv;
+		} else {
+			printf("***** move doesn't exist ****\n");
+			break;
+		}
+		
 		mv = find_move(brd->pvtable, brd->board_hash);
 	}
 
