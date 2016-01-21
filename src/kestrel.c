@@ -60,7 +60,7 @@ int main(int argc, char **argv)
 	// set process pri and cpu affinity for max performance
 	set_priority_and_affinity();
 
-	struct board * brd = init_game(BK_01);
+	struct board * brd = init_game(WAC1);
 	print_board(brd);
 
 
@@ -94,7 +94,7 @@ int main(int argc, char **argv)
 			} else if (input[0] == 't') {
 				take_move(brd);
 			} else if (input[0] == 's') {
-				search_positions(brd, 5);
+				search_positions(brd, 6);
 				dump_pv_table_stats(brd->pvtable);
 			} else {
 				move = parse_move(input, brd);

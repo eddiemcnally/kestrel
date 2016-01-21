@@ -89,7 +89,7 @@ void search_positions(struct board *brd, uint8_t depth){
 		printf("depth %d score %d best move %s, #moves %d\n", i, score, print_move(best_move), num_moves);
 		printf("\t\t\tpv line :\t");
 		for(uint8_t j = 0; j < num_moves; j++){
-			printf(" %s", print_move(brd->pv_line[j]));
+			printf(".......%s", print_move(brd->pv_line[j]));
 		}		
 		printf("\n");
 	}
@@ -98,22 +98,39 @@ void search_positions(struct board *brd, uint8_t depth){
 
 
 static void init_search(struct board *brd){
+	
 	dispose_table(brd->pvtable);
 	
 	brd-> pvtable = create_pv_table();	
+	
+	// init move ordering support
+	for(uint8_t i = 0; i < NUM_PIECES; i++){
+		for(uint8_t j = 0; j < NUM_SQUARES; j++){
+			brd->search_history[i][j] = NO_PIECE;
+		} 
+	}
+	
+	for(uint8_t i = 0; i < SEARCH_KILLER_MOVES; i++){
+		for(uint8_t j = 0; j < MAX_SEARCH_DEPTH; j++){
+			brd->search_history[i][j] = NO_MOVE;
+		} 
+	}	
+	
+	brd->ply = 0;
 }
 	
 
 int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth) {
 	if(depth == 0){
-		return quiesce(brd, alpha, beta);
+		return evaluate_position(brd);
+		//quiesce(brd, alpha, beta);
 	} 
 	
 	if (is_repetition(brd) || brd->fifty_move_counter >= 100){
-		return 0;
+		return 0; // a draw 
 	}
 	
-	if (brd->ply >= MAX_SEARCH_DEPTH){
+	if (brd->ply >= MAX_SEARCH_DEPTH - 1){
 		return evaluate_position(brd);
 	}
 		
@@ -132,7 +149,7 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 	
 	// if a move is in the PV table, then set the score to be high
 	// so it gets sorted correctly
-	mv_bitmap pv_mv = find_move(brd->pvtable, brd->board_hash);
+	/*mv_bitmap pv_mv = find_move(brd->pvtable, brd->board_hash);
 	if (pv_mv != NO_MOVE){
 		// find in move list
 		for(uint32_t i = 0; i < mvl.move_count; i++){
@@ -141,7 +158,7 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 			}
 		}
 	}
-	
+	*/
 	uint8_t legal_move_cnt = 0;
 	for(uint16_t i = 0; i < num_moves; i++){
 		
@@ -173,14 +190,17 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 	}
 	
 	if(legal_move_cnt == 0) {
+		printf("***no legal moves left\n");
 		// no legal moves....must be mate or draw
 		enum square king_sq = brd->king_sq[brd->side_to_move];	
 		enum colour opposite_side = GET_OPPOSITE_SIDE(brd->side_to_move);
 		
 		if (is_sq_attacked(brd, king_sq, opposite_side)){
+			printf("***no legal moves left....MATE\n");
 			return -MATE + brd->ply;
 		} else {
 			// draw
+			printf("***no legal moves left.....draw\n");
 			return 0;
 		}
 	}

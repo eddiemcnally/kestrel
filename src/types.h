@@ -148,6 +148,7 @@ struct pv_table {
 };
 
 
+#define SEARCH_KILLER_MOVES 	2
 
 
 
@@ -209,7 +210,11 @@ struct board {
 	// a hash of the current board
 	uint64_t board_hash;
 
-};
+	// move ordering helper arrays
+	mv_bitmap search_history[NUM_PIECES][NUM_SQUARES];
+	mv_bitmap search_killers[SEARCH_KILLER_MOVES][MAX_SEARCH_DEPTH];
 
+
+};
 
 
