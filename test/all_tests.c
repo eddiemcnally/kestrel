@@ -26,6 +26,7 @@
 #include "performance_tests.h"
 #include "piece_test_fixture.h"
 #include "utils_test_feature.h"
+#include "search_tests.h"
 
 
 void all_tests(void);
@@ -41,13 +42,14 @@ void all_tests(void)
 	set_priority_and_affinity();
 
 	// add new test fixtures here.
-	board_test_fixture();
-	piece_test_fixture();
-	occupancy_mask_test_fixture();
-	move_test_fixture();
-	attack_test_fixture();
-	utils_test_fixture();
-	perf_test_fixture();
+	//board_test_fixture();
+	//piece_test_fixture();
+	//occupancy_mask_test_fixture();
+	//move_test_fixture();
+	//attack_test_fixture();
+	//utils_test_fixture();
+	//perf_test_fixture();
+	search_test_fixture();
 }
 
 void my_suite_setup(void)

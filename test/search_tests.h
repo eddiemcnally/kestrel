@@ -1,6 +1,6 @@
 /*
- * init.h
- * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
+ * search_tests.h
+ * Copyright (C) 2016 Eddie McNally <emcn@gmx.com>
  *
  * kestrel is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -15,15 +15,5 @@
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-#pragma once
-
-#include <stdbool.h>
-#include "types.h"
-#include "move_gen.h"
-
-
-void search_positions(struct board *brd, uint8_t depth);
-bool is_repetition(const struct board *brd);
-void bring_best_move_to_top(uint16_t move_num, struct move_list *mvl);
-
+void test_move_sort(void);
+void search_test_fixture(void);

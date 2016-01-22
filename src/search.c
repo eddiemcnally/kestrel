@@ -45,7 +45,6 @@
 int32_t quiesce(struct board *brd, int32_t alpha, int32_t beta);
 int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth);
 static void init_search(struct board *brd);
-static void bring_best_move_to_top(uint16_t move_num, struct move_list *mvl);
 
 
 // checks to see if most recent move is a repetition
@@ -149,7 +148,7 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 	
 	// if a move is in the PV table, then set the score to be high
 	// so it gets sorted correctly
-	/*mv_bitmap pv_mv = find_move(brd->pvtable, brd->board_hash);
+/*	mv_bitmap pv_mv = find_move(brd->pvtable, brd->board_hash);
 	if (pv_mv != NO_MOVE){
 		// find in move list
 		for(uint32_t i = 0; i < mvl.move_count; i++){
@@ -159,6 +158,7 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 		}
 	}
 	*/
+	
 	uint8_t legal_move_cnt = 0;
 	for(uint16_t i = 0; i < num_moves; i++){
 		
@@ -213,13 +213,13 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 }
 
 
-static void bring_best_move_to_top(uint16_t move_num, struct move_list *mvl){
+inline void bring_best_move_to_top(uint16_t move_num, struct move_list *mvl){
 
-	uint32_t best_score = 0;
+	int32_t best_score = 0;
 	uint16_t best_move_num = move_num; 
 
 	for(uint16_t i = move_num; i < mvl->move_count; i++){
-		uint32_t score = get_score(mvl->moves[i]);
+		int32_t score = get_score(mvl->moves[i]);
 		if (score > best_score){
 			best_score = score;
 			best_move_num = i;

@@ -337,7 +337,7 @@ static inline void add_pawn_capture_move(enum colour col, enum square from,
 	mv_bitmap mv = 0; 
 	
 	if (col == WHITE) {
-		uint32_t score = 0;
+		int32_t score = 0;
 		
 		if (GET_RANK(from) == RANK_7) {
 			// pawn can promote to 4 pieces
@@ -357,7 +357,7 @@ static inline void add_pawn_capture_move(enum colour col, enum square from,
 			add_capture_move(mv, mvl);
 		}
 	} else if (col == BLACK){
-		uint32_t score = 0;
+		int32_t score = 0;
 		
 		if (GET_RANK(from) == RANK_2) {
 			// pawn can promote to 4 pieces
@@ -462,7 +462,7 @@ static inline void generate_knight_piece_moves(struct board *brd,
 			// loop creating capture moves
 			enum square cap_sq = pop_1st_bit(&capture_squares);
 			enum piece p = brd->pieces[cap_sq];
-			uint32_t score = 0;
+			int32_t score = 0;
 			
 			mv_bitmap mv = MOVE(knight_sq, cap_sq, p, NO_PIECE, MFLAG_NONE, score);
 			add_capture_move(mv, mvl);
@@ -511,7 +511,7 @@ static inline void generate_king_moves(struct board *brd,
 		enum piece p = brd->pieces[cap_sq];
 //		assert(p != NO_PIECE);
 		
-		uint32_t score = 0;
+		int32_t score = 0;
 		mv_bitmap mv = MOVE(king_sq, cap_sq, p, NO_PIECE, MFLAG_NONE, score);
 		add_capture_move(mv, mvl);
 	}
@@ -957,7 +957,7 @@ bool move_exists(struct board *brd, mv_bitmap move_to_test) {
 // function to map move attributes to a bitmapped field
 // see typdef for mv_bitmap for a description
 inline mv_bitmap MOVE(enum square from, enum square to, enum piece capture,
-		      enum piece promote, uint64_t flags, uint32_t score)
+		      enum piece promote, uint64_t flags, int32_t score)
 {
 	mv_bitmap retval = 0;
 		
@@ -966,8 +966,8 @@ inline mv_bitmap MOVE(enum square from, enum square to, enum piece capture,
 	retval |= ((uint64_t)capture 	<< MV_MASK_OFF_CAPTURED_PCE);
 	retval |= ((uint64_t)promote 	<< MV_MASK_OFF_PROMOTED_PCE);
 	retval |= flags;
-	retval += score;	// score is lower 32 bits, so can simply add
-	
+	retval |= ((uint32_t)(score) & MV_MASK_SCORE);	
+		
 	return retval;
 }
 

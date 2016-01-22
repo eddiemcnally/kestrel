@@ -66,7 +66,8 @@ CFLAGS	=		-O3 \
 				attack_test_fixture.c \
 				utils_test_feature.c \
 				move_test_fixture.c \
-				performance_tests.c
+				performance_tests.c \
+				search_tests.c
 
 
 # define the C object files

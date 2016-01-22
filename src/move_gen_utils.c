@@ -47,16 +47,20 @@ static const unsigned char BitReverseTable256[256] =
 
 
 
-inline uint32_t get_score(mv_bitmap mv){
-	return (uint32_t)(mv & MV_MASK_SCORE);
+inline int32_t get_score(mv_bitmap mv){
+	return (int32_t)(mv & MV_MASK_SCORE);
 }
 
 inline uint64_t get_move(mv_bitmap mv){
 	return (uint64_t)(mv & MV_MASK_MOVE);
 }
 
-inline void add_to_score(uint64_t *score, uint32_t to_add){
-	*score = *score + to_add;
+inline void add_to_score(mv_bitmap *mv, int32_t to_add){
+	int32_t score = get_score(*mv);
+	
+	score += to_add;
+
+	*mv |= ((uint32_t)(score) & MV_MASK_SCORE);	
 }
 
 /*
@@ -217,7 +221,7 @@ void print_move_details(mv_bitmap move_bitmap)
 	char c_capt = get_piece_label(captured);
 	char c_promoted = get_piece_label(promoted);
 
-	uint32_t score = get_score(move_bitmap);
+	int32_t score = get_score(move_bitmap);
 	
 	printf("%c%c%c%c, captured '%c' promote '%c' score %d\n",
 	       ('a' + from_file), ('1' + from_rank), ('a' + to_file),

@@ -22,9 +22,9 @@
 #include "move_gen.h"
 #include "makemove.h"
 
-uint32_t get_score(mv_bitmap mv);
+int32_t get_score(mv_bitmap mv);
 uint64_t get_move(mv_bitmap mv);
-void add_to_score(uint64_t *score, uint32_t to_add);
+void add_to_score(mv_bitmap *mv, int32_t to_add);
 
 
 void validate_move_list(struct move_list *mvl);
