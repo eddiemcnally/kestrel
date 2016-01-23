@@ -97,6 +97,8 @@ void dump_pv_table_stats(const struct pv_table *table){
 void add_move_to_pv_table(const struct pv_table *table, const uint64_t board_hash,
 	      const mv_bitmap move)
 {
+	//printf("Adding mv to brd : %s\n", print_move(move));
+		
 	uint64_t index = get_index(board_hash);
 
 	struct pv_entry *entry = &table->entries[index];

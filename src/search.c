@@ -78,15 +78,16 @@ void search_positions(struct board *brd, uint8_t depth){
 
 	
 	// use iterative deepening
-	for(uint8_t i = 1; i < depth; i++){
+	for(uint8_t i = 1; i <= depth; i++){
 		score = alpha_beta(brd, -INFINITE, INFINITE, i);
 		
-		uint8_t num_moves = populate_pv_line(brd, depth);
+		uint8_t num_moves = populate_pv_line(brd, i);
 		
 		best_move = brd->pv_line[0];
 		
 		printf("depth %d score %d best move %s, #moves %d\n", i, score, print_move(best_move), num_moves);
 		printf("\t\t\tpv line :\t");
+		num_moves = populate_pv_line(brd, i);
 		for(uint8_t j = 0; j < num_moves; j++){
 			printf(".......%s", print_move(brd->pv_line[j]));
 		}		
@@ -129,12 +130,12 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 		return 0; // a draw 
 	}
 	
-	if (brd->ply >= MAX_SEARCH_DEPTH - 1){
+	if (brd->ply > MAX_SEARCH_DEPTH - 1){
 		return evaluate_position(brd);
 	}
 		
 	mv_bitmap best_move = NO_MOVE;
-	bool is_alpha_improved = false;
+	int32_t old_alpha = alpha;
 	
 	struct move_list mvl = {
 		.moves = {0},
@@ -162,7 +163,7 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 	uint8_t legal_move_cnt = 0;
 	for(uint16_t i = 0; i < num_moves; i++){
 		
-		bring_best_move_to_top(i, &mvl);
+		//bring_best_move_to_top(i, &mvl);
 		
 		mv_bitmap mv = mvl.moves[i];
 		
@@ -184,28 +185,28 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 				return beta;
 			}
 			alpha = score;
-			is_alpha_improved = true;
 			best_move = mv;
 		}			
 	}
 	
 	if(legal_move_cnt == 0) {
-		printf("***no legal moves left\n");
+		//printf("***no legal moves left\n");
 		// no legal moves....must be mate or draw
 		enum square king_sq = brd->king_sq[brd->side_to_move];	
 		enum colour opposite_side = GET_OPPOSITE_SIDE(brd->side_to_move);
 		
 		if (is_sq_attacked(brd, king_sq, opposite_side)){
-			printf("***no legal moves left....MATE\n");
+			///printf("***no legal moves left....MATE\n");
 			return -MATE + brd->ply;
 		} else {
 			// draw
-			printf("***no legal moves left.....draw\n");
+			///printf("***no legal moves left.....draw\n");
 			return 0;
 		}
 	}
 	
-	if (is_alpha_improved){
+	if (alpha != old_alpha){
+		// improved alpha, so add to pv table
 		add_move_to_pv_table(brd->pvtable, brd->board_hash, best_move);
 	}
 	

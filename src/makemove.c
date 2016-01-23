@@ -120,7 +120,7 @@ inline void move_piece(struct board *brd, enum square from, enum square to)
 // return false if move is invalid, true otherwise
 bool make_move(struct board *brd, mv_bitmap mv)
 {
-	//ASSERT_BOARD_OK(brd);
+	ASSERT_BOARD_OK(brd);
 
 	enum square from = FROMSQ(mv);
 	enum square to = TOSQ(mv);
@@ -161,6 +161,8 @@ bool make_move(struct board *brd, mv_bitmap mv)
 	}
 
 
+	brd->board_hash ^= get_castle_hash(brd->castle_perm);
+	
 	// set up history
 	brd->history[brd->history_ply].move = mv;
 	brd->history[brd->history_ply].fifty_move_counter = brd->fifty_move_counter;
@@ -168,7 +170,6 @@ bool make_move(struct board *brd, mv_bitmap mv)
 	brd->history[brd->history_ply].castle_perm = brd->castle_perm;
 
 	// reset castle and set again
-	brd->board_hash ^= get_castle_hash(brd->castle_perm);
 	brd->castle_perm &= castle_permission_mask[from];
 	brd->castle_perm &= castle_permission_mask[to];
 	brd->board_hash ^= get_castle_hash(brd->castle_perm);
