@@ -138,14 +138,18 @@ char *print_square(enum square sq)
 
 void print_compressed_board(const struct board *brd)
 {
-	for (enum square sq = a1; sq <= h8; sq++) {
+	for(enum square sq = a1; sq <=h8; sq++){
 		enum piece pce = brd->pieces[sq];
+		//printf("***pce = %d\n", pce);
+		assert(IS_VALID_PIECE_OR_NO_PIECE(pce));
+		
 		if (pce == NO_PIECE) {
 			printf(".");
 		} else {
 			printf("%c", get_piece_label(pce));
 		}
 	}
+	
 }
 
 /*

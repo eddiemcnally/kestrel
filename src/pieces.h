@@ -25,7 +25,8 @@
 #define IS_WHITE(piece)			((piece & 0x1) == 0)
 #define IS_BLACK(piece)			((piece & 0x1) == 1)
 
-#define IS_VALID_PIECE(pce)		((pce != NO_PIECE) && (pce >= W_PAWN) && (pce <= B_KING))
+#define IS_VALID_PIECE(pce)					((pce >= W_PAWN) && (pce <= B_KING))
+#define IS_VALID_PIECE_OR_NO_PIECE(pce)		((pce == NO_PIECE) || ((pce >= W_PAWN) && (pce <= B_KING)))
 
 #define GET_OPPOSITE_SIDE(side)	(side ^ 1)
 
@@ -44,18 +45,15 @@
 #define IS_BISHOP_OR_QUEEN(pce)	(IS_BISHOP(pce) || IS_QUEEN(pce))
 
 // piece values, indexed into using the enum piece enum
-// values are selected based on the table :
-//		http://chessprogramming.wikispaces.com/Point+Value#Basic%20values
-//
 static const uint32_t piece_values[NUM_PIECES] = {
 	100,			// W_PAWN
 	100,			// B_PAWN
-	350,			// W_BISHOP
-	350,			// B_BISHOP
-	350,			// W_KNIGHT
-	350,			// B_KNIGHT
-	500,			// W_ROOK
-	500,			// B_ROOK
+	325,			// W_BISHOP
+	325,			// B_BISHOP
+	325,			// W_KNIGHT
+	325,			// B_KNIGHT
+	550,			// W_ROOK
+	550,			// B_ROOK
 	1000,			// W_QUEEN
 	1000,			// B_QUEEN
 	50000,			// W_KING
@@ -63,7 +61,6 @@ static const uint32_t piece_values[NUM_PIECES] = {
 };
 #define INFINITE 	((int32_t)(30000))
 #define MATE 		29000
-
 
 
 

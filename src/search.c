@@ -171,17 +171,20 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 			
 			// note: alpha/beta are swapped, and sign is reversed
 			int32_t score = -alpha_beta(brd, -beta, -alpha, (uint8_t)(depth - 1));
-			
+			printf("after alphabeta.......score %d, alpha %d\n", score, alpha);	
 			take_move(brd);
 			
 			if (score > alpha){
 				if (score >= beta){
 					return beta;
 				}
+				
+				printf("score %d > alpha %d\n", score, alpha);
 				alpha = score;
 				best_move = mv;
 			}			
 		}
+		
 	}
 	
 	if(legal_move_cnt == 0) {

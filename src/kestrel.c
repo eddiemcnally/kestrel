@@ -63,6 +63,8 @@ int main(int argc, char **argv)
 	struct board * brd = init_game(WAC1);
 	print_board(brd);
 
+	search_positions(brd, 1);
+	return 9;
 
 ////////////// debug /////////////////
 //	struct move_list mv_list = {

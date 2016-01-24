@@ -211,19 +211,23 @@ int32_t evaluate_position(const struct board *brd)
 	score -= eval_pawn_shield(brd, B_KING);
 	*/	
 
-	int32_t retval = 0;
 	if (brd->side_to_move == WHITE) {
-		retval = score;
+		printf("******************* eval board *******************\n");
+		print_compressed_board(brd);
+		//printf("\nWHITE to move : white : %d, black : %d\n", brd->material[WHITE], brd->material[BLACK]);
+		printf("\nWHITE to move : score : %d\n", score);
+
+		return score;
 	} else {
-		retval = -score;
+		printf("******************* eval board *******************\n");
+		print_compressed_board(brd);
+		//printf("\nWHITE to move : white : %d, black : %d\n", brd->material[WHITE], brd->material[BLACK]);
+		printf("\nBLACK to move : score : %d\n", -score);
+
+
+		return -score;
 	}
 	
-	printf("******************* eval board *******************\n");
-	print_compressed_board(brd);
-	printf("white : %d, black : %d\n", brd->material[WHITE], brd->material[BLACK]);
-	printf("score : %d\n", retval);
-
-	return retval;
 }
 
 inline static int32_t eval_piece(const struct board *brd, enum piece pce,
