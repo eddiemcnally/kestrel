@@ -99,13 +99,8 @@ uint8_t populate_pv_line(struct board *brd, uint8_t depth){
 		
 		assert(count < MAX_SEARCH_DEPTH);
 
-		if (move_exists(brd, mv)){
-			make_move(brd, mv);
-			brd->pv_line[count++] = mv;
-		} else {
-			printf("***** move doesn't exist ****\n");
-			break;
-		}
+		make_move(brd, mv);
+		brd->pv_line[count++] = mv;
 		
 		mv = find_move(brd->pvtable, brd->board_hash);
 	}

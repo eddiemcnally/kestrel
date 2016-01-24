@@ -63,8 +63,7 @@ static const int8_t PAWN_PT[NUM_SQUARES] = {
 0	,	0	,	0	,	0	,	0	,	0	,	0	,	0	
 };
 
-
-static const int8_t KNIGHT_PT[NUM_SQUARES] ={
+static const int8_t KNIGHT_PT[NUM_SQUARES] = {
 0	,	-10	,	0	,	0	,	0	,	0	,	-10	,	0	,
 0	,	0	,	0	,	5	,	5	,	0	,	0	,	0	,
 0	,	0	,	10	,	10	,	10	,	10	,	0	,	0	,
@@ -72,12 +71,10 @@ static const int8_t KNIGHT_PT[NUM_SQUARES] ={
 5	,	10	,	15	,	20	,	20	,	15	,	10	,	5	,
 5	,	10	,	10	,	20	,	20	,	10	,	10	,	5	,
 0	,	0	,	5	,	10	,	10	,	5	,	0	,	0	,
-0	,	0	,	0	,	0	,	0	,	0	,	0	,	0	
+0	,	0	,	0	,	0	,	0	,	0	,	0	,	0		
 };
 
-
-
-static const int8_t BISHOP_PT[NUM_SQUARES] ={
+static const int8_t BISHOP_PT[NUM_SQUARES] = {
 0	,	0	,	-10	,	0	,	0	,	-10	,	0	,	0	,
 0	,	0	,	0	,	10	,	10	,	0	,	0	,	0	,
 0	,	0	,	10	,	15	,	15	,	10	,	0	,	0	,
@@ -88,8 +85,7 @@ static const int8_t BISHOP_PT[NUM_SQUARES] ={
 0	,	0	,	0	,	0	,	0	,	0	,	0	,	0	
 };
 
-
-static const int8_t ROOK_PT[NUM_SQUARES] ={
+static const int8_t ROOK_PT[NUM_SQUARES] = {
 0	,	0	,	5	,	10	,	10	,	5	,	0	,	0	,
 0	,	0	,	5	,	10	,	10	,	5	,	0	,	0	,
 0	,	0	,	5	,	10	,	10	,	5	,	0	,	0	,
@@ -97,7 +93,7 @@ static const int8_t ROOK_PT[NUM_SQUARES] ={
 0	,	0	,	5	,	10	,	10	,	5	,	0	,	0	,
 0	,	0	,	5	,	10	,	10	,	5	,	0	,	0	,
 25	,	25	,	25	,	25	,	25	,	25	,	25	,	25	,
-0	,	0	,	5	,	10	,	10	,	5	,	0	,	0	
+0	,	0	,	5	,	10	,	10	,	5	,	0	,	0		
 };
 
 
@@ -118,14 +114,14 @@ static const int8_t QUEEN_PT[NUM_SQUARES] ={
 // piece tables for BLACK
 
 static const int8_t MIRROR_PT[NUM_SQUARES] ={
-	56,	57,	58,	59,	60,	61,	62,	63,
-	48,	49,	50,	51,	52,	53,	54,	55,
-	40,	41,	42,	43,	44,	45,	46,	47,
-	32,	33,	34,	35,	36,	37,	38,	39,
-	24,	25,	26,	27,	28,	29,	30,	31,
-	16,	17,	18,	19,	20,	21,	22,	23,
-	8,	9,	10,	11,	12,	13,	14,	15,	
-	0,	1,	2,	3,	4,	5,	6,	7
+56	,	57	,	58	,	59	,	60	,	61	,	62	,	63	,
+48	,	49	,	50	,	51	,	52	,	53	,	54	,	55	,
+40	,	41	,	42	,	43	,	44	,	45	,	46	,	47	,
+32	,	33	,	34	,	35	,	36	,	37	,	38	,	39	,
+24	,	25	,	26	,	27	,	28	,	29	,	30	,	31	,
+16	,	17	,	18	,	19	,	20	,	21	,	22	,	23	,
+8	,	9	,	10	,	11	,	12	,	13	,	14	,	15	,
+0	,	1	,	2	,	3	,	4	,	5	,	6	,	7
 };
 
 #define MIRROR_SQUARE(sq)	(MIRROR_PT[sq])
@@ -215,11 +211,19 @@ int32_t evaluate_position(const struct board *brd)
 	score -= eval_pawn_shield(brd, B_KING);
 	*/	
 
+	int32_t retval = 0;
 	if (brd->side_to_move == WHITE) {
-		return score;
+		retval = score;
 	} else {
-		return -score;
+		retval = -score;
 	}
+	
+	printf("******************* eval board *******************\n");
+	print_compressed_board(brd);
+	printf("white : %d, black : %d\n", brd->material[WHITE], brd->material[BLACK]);
+	printf("score : %d\n", retval);
+
+	return retval;
 }
 
 inline static int32_t eval_piece(const struct board *brd, enum piece pce,
