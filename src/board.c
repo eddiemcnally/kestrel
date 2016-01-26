@@ -74,24 +74,20 @@ static struct board * get_clean_board(void)
 	for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
 		brd->pieces[sq] = NO_PIECE;
 	}
-	
-	brd->pvtable = create_pv_table();
-
 	return brd;
 }
 
 
 void dispose_board(struct board *brd){
-	dispose_table(brd->pvtable);
-	
+
 	free(brd);
 }
 
 
 // returns the count.
-uint8_t populate_pv_line(struct board *brd, uint8_t depth){
+uint8_t populate_pv_line(struct pv_table *pvt, struct board *brd, uint8_t depth){
 
-	mv_bitmap mv = find_move(brd->pvtable, brd->board_hash);
+	mv_bitmap mv = find_move(pvt, brd->board_hash);
 
 	uint8_t count = 0;
 
@@ -102,7 +98,7 @@ uint8_t populate_pv_line(struct board *brd, uint8_t depth){
 		make_move(brd, mv);
 		brd->pv_line[count++] = mv;
 		
-		mv = find_move(brd->pvtable, brd->board_hash);
+		mv = find_move(pvt, brd->board_hash);
 	}
 
 	// rollback moves

@@ -196,8 +196,6 @@ struct board {
 	// contains the pieces on each square
 	enum piece pieces[NUM_SQUARES];
 
-	// principle variation table
-	struct pv_table * pvtable;
 	// the best moves from the current position
 	mv_bitmap pv_line[MAX_SEARCH_DEPTH];
 	

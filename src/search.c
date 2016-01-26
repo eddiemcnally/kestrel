@@ -43,7 +43,7 @@
 
 
 int32_t quiesce(struct board *brd, int32_t alpha, int32_t beta);
-int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth);
+int32_t alpha_beta(struct board *brd, struct pv_table *pvt, int32_t alpha, int32_t beta, uint8_t depth);
 static void init_search(struct board *brd);
 
 
@@ -73,35 +73,33 @@ void search_positions(struct board *brd, uint8_t search_depth){
 
 	init_search(brd);
 	
+	struct pv_table *pvtable = create_pv_table();
+	
 	mv_bitmap best_move = NO_MOVE;
 	int32_t score = 0;
-
 	
 	// use iterative deepening
 	for(uint8_t current_depth = 1; current_depth <= search_depth; current_depth++){
-		score = alpha_beta(brd, -INFINITE, INFINITE, current_depth);
+		score = alpha_beta(brd, pvtable, -INFINITE, INFINITE, current_depth);
 		
-		uint8_t num_moves = populate_pv_line(brd, current_depth);
+		uint8_t num_moves = populate_pv_line(pvtable, brd, current_depth);
 		
 		best_move = brd->pv_line[0];
 		
 		printf("depth %d score %d best move %s, #moves %d\n", current_depth, score, print_move(best_move), num_moves);
 		printf("\t\t\tpv line :\t");
-		num_moves = populate_pv_line(brd, current_depth);
 		for(uint8_t j = 0; j < num_moves; j++){
 			printf(".......%s", print_move(brd->pv_line[j]));
 		}		
 		printf("\n");
 	}
+	
+	dispose_table(pvtable);
 }
 
 
 
 static void init_search(struct board *brd){
-	
-	dispose_table(brd->pvtable);
-	
-	brd-> pvtable = create_pv_table();	
 	
 	// init move ordering support
 	for(uint8_t i = 0; i < NUM_PIECES; i++){
@@ -120,7 +118,7 @@ static void init_search(struct board *brd){
 }
 	
 
-int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth) {
+int32_t alpha_beta(struct board *brd, struct pv_table *pvt, int32_t alpha, int32_t beta, uint8_t depth) {
 	if(depth == 0){
 		return evaluate_position(brd);
 		//quiesce(brd, alpha, beta);
@@ -170,16 +168,17 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 			legal_move_cnt++;
 			
 			// note: alpha/beta are swapped, and sign is reversed
-			int32_t score = -alpha_beta(brd, -beta, -alpha, (uint8_t)(depth - 1));
+			int32_t score = -alpha_beta(brd, pvt, -beta, -alpha, (uint8_t)(depth - 1));
 			printf("after alphabeta.......score %d, alpha %d\n", score, alpha);	
 			take_move(brd);
 			
 			if (score > alpha){
 				if (score >= beta){
+					printf("score %d > beta %d\n", score, beta);
 					return beta;
 				}
 				
-				printf("score %d > alpha %d\n", score, alpha);
+				printf("best score %d > alpha %d, move %s\n", score, alpha, print_move(mv));
 				alpha = score;
 				best_move = mv;
 			}			
@@ -206,7 +205,7 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 	if (alpha != old_alpha){
 		// improved alpha, so add to pv table
 		printf("Adding to pv %s, score %d\n", print_move(best_move), alpha);
-		add_move_to_pv_table(brd->pvtable, brd->board_hash, best_move);
+		add_move_to_pv_table(pvt, brd->board_hash, best_move);
 	}
 	
 	return alpha;
