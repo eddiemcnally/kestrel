@@ -85,9 +85,9 @@ void dispose_board(struct board *brd){
 
 
 // returns the count.
-uint8_t populate_pv_line(struct pv_table *pvt, struct board *brd, uint8_t depth){
+uint8_t populate_pv_line(struct board *brd, uint8_t depth){
 
-	mv_bitmap mv = find_move(pvt, brd->board_hash);
+	mv_bitmap mv = find_move(brd->board_hash);
 
 	uint8_t count = 0;
 
@@ -98,7 +98,7 @@ uint8_t populate_pv_line(struct pv_table *pvt, struct board *brd, uint8_t depth)
 		make_move(brd, mv);
 		brd->pv_line[count++] = mv;
 		
-		mv = find_move(pvt, brd->board_hash);
+		mv = find_move(brd->board_hash);
 	}
 
 	// rollback moves

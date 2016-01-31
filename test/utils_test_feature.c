@@ -77,25 +77,23 @@ void test_flip_side()
 
 void test_pv_table(){
 
-	struct pv_table *table = create_pv_table();
+	create_pv_table();
 
 	uint64_t start = (NUM_PV_ENTRIES / 2);
 
 	// add a multiple of the table size to force key collisions
 	for (uint64_t i = start; i < (3 * NUM_PV_ENTRIES); i++){
-		add_move_to_pv_table(table, i, (uint32_t)((i + 12345)));
+		add_move_to_pv_table(i, (uint32_t)((i + 12345)));
 	}
 
 	// now verify all additions
 	for (uint64_t i = start; i < (3 * NUM_PV_ENTRIES); i++){
-		mv_bitmap mv = find_move(table, i);
+		mv_bitmap mv = find_move(i);
 
 		assert_true(mv == (i + 12345));
 	}
 
-	//dump_pv_table_stats(table);
-
-	dispose_table(table);
+	dispose_pv_table();
 
 }
 

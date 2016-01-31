@@ -36,72 +36,36 @@ static struct pv_entry *get_empty_entry(void);
 static void init_pv_entry(struct pv_entry *entry);
 static uint64_t get_index(const uint64_t board_hash);
 
-/* Create and initialise a PV Table
- *
- * name: create_pv_table
- * @param
- * @return
- *
- */
 
-struct pv_table *create_pv_table(void)
+static struct pv_table * pvt = NULL;
+
+
+void create_pv_table(void)
 {
-	struct pv_table *retval = malloc(sizeof(struct pv_table));
+	if (pvt != NULL){
+		dispose_pv_table();
+	}
+	
+	pvt = malloc(sizeof(struct pv_table));
 
 	struct pv_entry *entries =
 	    malloc(NUM_PV_ENTRIES * sizeof(struct pv_entry));
 
-	retval->entries = entries;
+	pvt->entries = entries;
 
-	init_table(retval);
-
-	return retval;
-}
-
-// dumps stats for the pv_table
-void dump_pv_table_stats(const struct pv_table *table){
-	printf("pv_table stats : \n");
-
-	int num_empty = 0;
-	int num_non_empty = 0;
-	int num_items = 0;
-
-	for(int i = 0; i < NUM_PV_ENTRIES; i++){
-
-		struct pv_entry *entry = &table->entries[i];
-		if (entry->move != NO_MOVE){
-			num_non_empty++;
-			num_items++;
-
-			// count keys at this offset
-			int num_keys = 1;
-
-			while (entry->next != NULL) {
-				entry = entry->next;
-				num_keys++;
-				num_items++;
-			}
-			//printf("\tindex %d \t : %d\n", i, num_keys);
-		} else {
-			num_empty++;
-		}
-	}
-	printf("\tnum_empty = %d\n", num_empty);
-	printf("\tnum_non_empty = %d\n", num_non_empty);
-	printf("\tnum_items = %d\n", num_items);
-
+	init_table(pvt);
 }
 
 
 
-void add_move_to_pv_table(const struct pv_table *table, const uint64_t board_hash,
+void add_move_to_pv_table(const uint64_t board_hash,
 	      const mv_bitmap move)
 {
 	//printf("Adding mv to brd : %s\n", print_move(move));
 		
 	uint64_t index = get_index(board_hash);
 
-	struct pv_entry *entry = &table->entries[index];
+	struct pv_entry *entry = &pvt->entries[index];
 
 	if (entry->move == NO_MOVE) {
 		// empty slot, so just add the move
@@ -122,11 +86,11 @@ void add_move_to_pv_table(const struct pv_table *table, const uint64_t board_has
 	}
 }
 
-inline mv_bitmap find_move(const struct pv_table *table, const uint64_t board_hash)
+inline mv_bitmap find_move(const uint64_t board_hash)
 {
 	uint64_t index = get_index(board_hash);
 
-	struct pv_entry *entry = &table->entries[index];
+	struct pv_entry *entry = &pvt->entries[index];
 
 	if (entry->move == NO_MOVE) {
 		// slot empty
@@ -149,12 +113,12 @@ inline mv_bitmap find_move(const struct pv_table *table, const uint64_t board_ha
 	return NO_MOVE;
 }
 
-void dispose_table(struct pv_table *table)
+void dispose_pv_table()
 {
 	// dispose of linked lists
 	for (uint32_t i = 0; i < NUM_PV_ENTRIES; i++) {
 
-		struct pv_entry *entry = &table->entries[i];
+		struct pv_entry *entry = &pvt->entries[i];
 		if (entry->next != NULL) {
 			// scan down lined list and free up each entry's memory
 			struct pv_entry *pve = entry->next;
@@ -168,10 +132,10 @@ void dispose_table(struct pv_table *table)
 	}
 
 	// now dispose of array
-	free(table->entries);
+	free(pvt->entries);
 
 	// dispose table
-	free(table);
+	free(pvt);
 }
 
 static inline void init_table(struct pv_table *tab)

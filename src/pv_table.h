@@ -21,11 +21,10 @@
 
 #define		NUM_PV_ENTRIES	(1024 * 1024)
 
-struct pv_table *create_pv_table(void);
-void dump_pv_table_stats(const struct pv_table *table);
-void add_move_to_pv_table(const struct pv_table *table, const uint64_t board_hash,
+void create_pv_table(void);
+void add_move_to_pv_table(const uint64_t board_hash,
 	      const mv_bitmap move);
-mv_bitmap find_move(const struct pv_table *table, const uint64_t board_hash);
-void dispose_table(struct pv_table *table);
+mv_bitmap find_move(const uint64_t board_hash);
+void dispose_pv_table(void);
 
 
