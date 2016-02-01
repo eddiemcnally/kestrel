@@ -35,7 +35,7 @@
 #include "occupancy_mask.h"
 #include "fen.h"
 #include "utils.h"
-#include "pv_table.h"
+#include "tt.h"
 #include "search.h"
 #include "move_gen.h"
 #include "move_gen_utils.h"
@@ -63,7 +63,7 @@ int main(int argc, char **argv)
 	struct board * brd = init_game(MATE_IN_TWO);
 	print_board(brd);
 
-	search_positions(brd, 4);
+	search_positions(brd, 4, 64000000);
 	return 9;
 
 ////////////// debug /////////////////
@@ -96,7 +96,7 @@ int main(int argc, char **argv)
 			} else if (input[0] == 't') {
 				take_move(brd);
 			} else if (input[0] == 's') {
-				search_positions(brd, 3);
+				search_positions(brd, 3, 64000000);
 			} else {
 				move = parse_move(input, brd);
 				if (move != NO_MOVE) {

@@ -29,7 +29,9 @@ This is a work-in-progress. Current state:
     * correctly completes the 126 perft tests to a depth of 6 
     * implements alpha-beta search with principle variation  
     * implements iterative deepening
-    * there is a bug in the search (misses out on an obvious mate-in-two), investigation ongoing
+    * can solve a mate-in-2 problem
+    * Contains a primative Transposition Table
+    * Contains a primative position eval function.
 * The code is unoptimised, in the sense that no explicit effort has been undertaken to profile and tune the code paths (other than some rudamentary moving of code to improve inlining, removal of debug code and assert's and tweaking the gcc compile options).
 * The main code (./src) doesn't execute any meaningful operations. The main launch point is the test framework. To build and execute the test framework, run the following:
 	* cd ./test
@@ -45,7 +47,7 @@ Feature set:
 * Bitboards (and use of occupancy mask lookups)
 * Iterative Deepening
 * Alpha-beta with Principle Variation
-* Zobrist hashing
+* Zobrist hashing 
 * Quiessence Search
 * Piece Square Valuation
 

@@ -52,7 +52,7 @@
 				../src/hashkeys.c \
 				../src/fen.c \
 				../src/search.c \
-				../src/pv_table.c \
+				../src/tt.c \
 				../src/utils.c \
 				../src/attack.c \
 				../src/occupancy_mask.c \

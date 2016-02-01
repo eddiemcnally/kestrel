@@ -1,5 +1,5 @@
 /*
- * pv_table.h
+ * tt.h
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
  * kestrel is free software: you can redistribute it and/or modify it
@@ -19,12 +19,9 @@
 
 #include "types.h"
 
-#define		NUM_PV_ENTRIES	(1024 * 1024)
-
-void create_pv_table(void);
-void add_move_to_pv_table(const uint64_t board_hash,
-	      const mv_bitmap move);
-mv_bitmap find_move(const uint64_t board_hash);
-void dispose_pv_table(void);
+void create_tt_table(uint32_t tt_size_in_bytes);
+void add_to_tt(const uint64_t board_hash, const mv_bitmap move);
+mv_bitmap probe_tt(const uint64_t board_hash);
+void dispose_tt_table(void);
 
 

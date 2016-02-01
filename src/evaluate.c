@@ -182,7 +182,7 @@ int32_t evaluate_position(const struct board *brd)
 
 	score += eval_piece(brd, W_ROOK, ROOK_PT);
 	score -= eval_piece(brd, B_ROOK, ROOK_PT);
-/*
+
 	score += eval_piece(brd, W_QUEEN, QUEEN_PT);
 	score -= eval_piece(brd, B_QUEEN, QUEEN_PT);
 
@@ -209,22 +209,10 @@ int32_t evaluate_position(const struct board *brd)
 	// ============================================================
 	score += eval_pawn_shield(brd, W_KING);
 	score -= eval_pawn_shield(brd, B_KING);
-	*/	
 
 	if (brd->side_to_move == WHITE) {
-		printf("******************* eval board *******************\n");
-		print_compressed_board(brd);
-		//printf("\nWHITE to move : white : %d, black : %d\n", brd->material[WHITE], brd->material[BLACK]);
-		printf("\nWHITE to move : score : %d\n", score);
-
 		return score;
 	} else {
-		printf("******************* eval board *******************\n");
-		print_compressed_board(brd);
-		//printf("\nWHITE to move : white : %d, black : %d\n", brd->material[WHITE], brd->material[BLACK]);
-		printf("\nBLACK to move : score : %d\n", -score);
-
-
 		return -score;
 	}
 	

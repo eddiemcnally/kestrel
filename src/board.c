@@ -36,7 +36,7 @@
 #include "move_gen.h"
 #include "move_gen_utils.h"
 #include "board_utils.h"
-#include "pv_table.h"
+#include "tt.h"
 #include "makemove.h"
 #include "hashkeys.h"
 #include "pieces.h"
@@ -87,7 +87,7 @@ void dispose_board(struct board *brd){
 // returns the count.
 uint8_t populate_pv_line(struct board *brd, uint8_t depth){
 
-	mv_bitmap mv = find_move(brd->board_hash);
+	mv_bitmap mv = probe_tt(brd->board_hash);
 
 	uint8_t count = 0;
 
@@ -98,7 +98,7 @@ uint8_t populate_pv_line(struct board *brd, uint8_t depth){
 		make_move(brd, mv);
 		brd->pv_line[count++] = mv;
 		
-		mv = find_move(brd->board_hash);
+		mv = probe_tt(brd->board_hash);
 	}
 
 	// rollback moves

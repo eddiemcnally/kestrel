@@ -35,7 +35,7 @@
 #include "board.h"
 #include "pieces.h"
 #include "makemove.h"
-#include "pv_table.h"
+#include "tt.h"
 #include "board_utils.h"
 #include "move_gen.h"
 #include "move_gen_utils.h"
@@ -67,13 +67,13 @@ inline bool is_repetition(const struct board *brd)
 
 
 
-void search_positions(struct board *brd, uint8_t search_depth){
+void search_positions(struct board *brd, uint8_t search_depth, uint32_t tt_size_in_bytes){
 	
 	assert(ASSERT_BOARD_OK(brd) == true);
 
 	init_search(brd);
 	
-	create_pv_table();
+	create_tt_table(tt_size_in_bytes);
 	
 	mv_bitmap best_move = NO_MOVE;
 	int32_t score = 0;
@@ -142,20 +142,6 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 
 	uint16_t num_moves = mvl.move_count;
 	
-	
-	// if a move is in the PV table, then set the score to be high
-	// so it gets sorted correctly
-/*	mv_bitmap pv_mv = find_move(brd->pvtable, brd->board_hash);
-	if (pv_mv != NO_MOVE){
-		// find in move list
-		for(uint32_t i = 0; i < mvl.move_count; i++){
-			if (mvl.moves[i] == pv_mv){
-				add_to_score(&(mvl.moves[i]), 200000);
-			}
-		}
-	}
-	*/
-	
 	uint8_t legal_move_cnt = 0;
 	for(uint16_t i = 0; i < num_moves; i++){
 		//bring_best_move_to_top(i, &mvl);
@@ -167,21 +153,17 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 			
 			// note: alpha/beta are swapped, and sign is reversed
 			int32_t score = -alpha_beta(brd, -beta, -alpha, (uint8_t)(depth - 1));
-			printf("after alphabeta.......score %d, alpha %d\n", score, alpha);	
 			take_move(brd);
 			
 			if (score > alpha){
 				if (score >= beta){
-					printf("score %d > beta %d\n", score, beta);
 					return beta;
 				}
 				
-				printf("best score %d > alpha %d, move %s\n", score, alpha, print_move(mv));
 				alpha = score;
 				best_move = mv;
 			}			
-		}
-		
+		}	
 	}
 	
 	if(legal_move_cnt == 0) {
@@ -191,19 +173,16 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 		enum colour opposite_side = GET_OPPOSITE_SIDE(brd->side_to_move);
 		
 		if (is_sq_attacked(brd, king_sq, opposite_side)){
-			///printf("***no legal moves left....MATE\n");
 			return -MATE + brd->ply;
 		} else {
 			// draw
-			///printf("***no legal moves left.....draw\n");
 			return 0;
 		}
 	}
 	
 	if (alpha != old_alpha){
-		// improved alpha, so add to pv table
-		printf("Adding to pv %s, score %d\n", print_move(best_move), alpha);
-		add_move_to_pv_table(brd->board_hash, best_move);
+		// improved alpha, so add to tt
+		add_to_tt(brd->board_hash, best_move);
 	}
 	
 	return alpha;

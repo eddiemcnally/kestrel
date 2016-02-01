@@ -27,7 +27,7 @@
 #include "attack.h"
 #include "move_gen.h"
 #include "move_gen_utils.h"
-#include "pv_table.h"
+#include "tt.h"
 #include "board_utils.h"
 #include "utils.h"
 
@@ -75,28 +75,6 @@ void test_flip_side()
 
 
 
-void test_pv_table(){
-
-	create_pv_table();
-
-	uint64_t start = (NUM_PV_ENTRIES / 2);
-
-	// add a multiple of the table size to force key collisions
-	for (uint64_t i = start; i < (3 * NUM_PV_ENTRIES); i++){
-		add_move_to_pv_table(i, (uint32_t)((i + 12345)));
-	}
-
-	// now verify all additions
-	for (uint64_t i = start; i < (3 * NUM_PV_ENTRIES); i++){
-		mv_bitmap mv = find_move(i);
-
-		assert_true(mv == (i + 12345));
-	}
-
-	dispose_pv_table();
-
-}
-
 
 
 
@@ -107,7 +85,6 @@ void utils_test_fixture(void)
 
 	run_test(test_bit_reversal);
 	run_test(test_flip_side);
-	run_test(test_pv_table);
 
 	test_fixture_end();
 }

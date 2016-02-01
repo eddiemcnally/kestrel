@@ -134,20 +134,6 @@ struct undo {
 
 
 
-// principle variation table structs form a linked list
-struct pv_entry {
-	uint64_t hashkey;
-	mv_bitmap move;
-	struct pv_entry *next;
-};
-
-
-struct pv_table {
-	struct pv_entry *entries;
-	uint32_t num_entries;
-};
-
-
 #define SEARCH_KILLER_MOVES 	2
 
 

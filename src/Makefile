@@ -49,7 +49,7 @@
 	SRCS		=	kestrel.c board.c pieces.c board_utils.c \
 				move_gen.c move_gen_utils.c init.c hashkeys.c fen.c utils.c \
 				attack.c occupancy_mask.c makemove.c \
-				search.c pv_table.c evaluate.c
+				search.c tt.c evaluate.c
 
 # define the C object files
 #

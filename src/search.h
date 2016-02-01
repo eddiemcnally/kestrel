@@ -23,7 +23,7 @@
 #include "move_gen.h"
 
 
-void search_positions(struct board *brd, uint8_t depth);
+void search_positions(struct board *brd, uint8_t depth, uint32_t tt_size_in_bytes);
 bool is_repetition(const struct board *brd);
 void bring_best_move_to_top(uint16_t move_num, struct move_list *mvl);
 
