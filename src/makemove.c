@@ -120,7 +120,7 @@ inline void move_piece(struct board *brd, enum square from, enum square to)
 // return false if move is invalid, true otherwise
 bool make_move(struct board *brd, mv_bitmap mv)
 {
-	ASSERT_BOARD_OK(brd);
+	//ASSERT_BOARD_OK(brd);
 
 	enum square from = FROMSQ(mv);
 	enum square to = TOSQ(mv);

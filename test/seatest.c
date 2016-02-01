@@ -113,14 +113,21 @@ void seatest_teardown(void)
 		seatest_fixture_teardown();
 }
 
+
 char *test_file_name(char *path)
 {
+	
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Werror"
+		
 	char *file = path + strlen(path);
 	while (file != path && *file != '\\')
 		file--;
 	if (*file == '\\')
 		file++;
 	return file;
+#pragma GCC diagnostic pop
+
 }
 
 static int seatest_fixture_tests_run;

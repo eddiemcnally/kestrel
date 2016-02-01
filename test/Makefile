@@ -17,20 +17,8 @@
 				-fomit-frame-pointer \
 				-lmcheck \
 				--param large-function-growth=9000000 \
-				--param max-inline-insns-single=900000 \
-				-Wformat=2 \
-				-Wall \
-				-Werror \
-				-Wlogical-op \
-				-Wextra \
-				-Wconversion \
-				-Wsign-conversion \
-				-Wshadow \
-				-Wcast-qual \
-				-Wcast-align \
-				-Wmissing-include-dirs \
-				-Wpointer-arith
-
+				--param max-inline-insns-single=900000 
+#
 #
 # flags for profiling code
 #	CFLAGS	=	-O3 -pg -std=c11
