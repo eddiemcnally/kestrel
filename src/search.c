@@ -77,15 +77,14 @@ void search_positions(struct board *brd, uint8_t search_depth, uint32_t tt_size_
 	
 	mv_bitmap best_move = NO_MOVE;
 	int32_t score = 0;
-	
+	uint8_t num_moves = 0;
 	// use iterative deepening
 	for(uint8_t current_depth = 1; current_depth <= search_depth; current_depth++){
 		score = alpha_beta(brd, -INFINITE, INFINITE, current_depth);
 		
-		uint8_t num_moves = populate_pv_line(brd, current_depth);
+		num_moves = populate_pv_line(brd, current_depth);
 		
 		best_move = brd->pv_line[0];
-		
 		printf("depth %d score %d best move %s, #moves %d\n", current_depth, score, print_move(best_move), num_moves);
 		printf("\t\t\tpv line :\t");
 		for(uint8_t j = 0; j < num_moves; j++){
@@ -93,6 +92,15 @@ void search_positions(struct board *brd, uint8_t search_depth, uint32_t tt_size_
 		}		
 		printf("\n");
 	}
+
+	// populate the best moves
+	for(int i = 0; i < MAX_SEARCH_DEPTH; i++){
+		if (i < num_moves)
+			continue;
+			
+		brd->pv_line[i] = NO_MOVE;
+	}
+	
 }
 
 
@@ -111,6 +119,11 @@ static void init_search(struct board *brd){
 			brd->search_history[i][j] = NO_MOVE;
 		} 
 	}	
+	
+	for(int i = 0; i < MAX_SEARCH_DEPTH; i++){
+		brd->pv_line[i] = NO_MOVE;
+	}
+	
 	
 	brd->ply = 0;
 }

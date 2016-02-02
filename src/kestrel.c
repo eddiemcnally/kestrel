@@ -63,8 +63,22 @@ int main(int argc, char **argv)
 	struct board * brd = init_game(MATE_IN_TWO);
 	print_board(brd);
 
-	search_positions(brd, 4, 64000000);
-	return 9;
+	int depth = 4;
+	search_positions(brd, depth, 64000000);
+	
+	
+	printf("pv line :\t");
+	for(uint8_t i = 0; i < MAX_SEARCH_DEPTH; i++){
+		if (brd->pv_line[i] != NO_MOVE){
+			printf("%s ", print_move(brd->pv_line[i]));
+		} else {
+			break;
+		}
+	}		
+	printf("\n");
+	
+
+	return 0;
 
 ////////////// debug /////////////////
 //	struct move_list mv_list = {
@@ -96,7 +110,7 @@ int main(int argc, char **argv)
 			} else if (input[0] == 't') {
 				take_move(brd);
 			} else if (input[0] == 's') {
-				search_positions(brd, 3, 64000000);
+				search_positions(brd, depth, 64000000);
 			} else {
 				move = parse_move(input, brd);
 				if (move != NO_MOVE) {
