@@ -22,10 +22,16 @@
 #include <string.h>
 #include <time.h>
 #include "seatest.h"
+#include "init.h"
 #include "types.h"
 #include "search.h"
 #include "move_gen_utils.h"
 
+
+#define MATE_IN_TWO			"1r3rk1/1pnnq1bR/p1pp2B1/P2P1p2/1PP1pP2/2B3P1/5PK1/2Q4R w - - 0 1"
+
+void test_mate_in_2(void);
+void test_move_sort_1(void);
 
 
 void test_move_sort_1(void){
@@ -60,13 +66,36 @@ void test_move_sort_1(void){
 		
 }
 
+void test_mate_in_2(){
 
+
+	struct board * brd = init_game(MATE_IN_TWO);
+	
+	int depth = 4;
+	search_positions(brd, depth, 64000000);
+	
+	// expected moves are h7h8 g7h8 h1h8
+	// *** exclude the score ***
+	mv_bitmap h7h8 = get_move(MOVE(h7, h8, NO_PIECE, NO_PIECE, 0, 0));
+	mv_bitmap g7h8 = get_move(MOVE(g7, h8, W_ROOK, NO_PIECE, 0, 0));
+	mv_bitmap h1h8 = get_move(MOVE(h1, h8, B_BISHOP, NO_PIECE, 0, 0));
+	
+	mv_bitmap pv_line_h7h8 = get_move(brd->pv_line[0]);
+	mv_bitmap pv_line_g7h8 = get_move(brd->pv_line[1]);
+	mv_bitmap pv_line_h1h8 = get_move(brd->pv_line[2]);
+		
+	assert_true(h7h8 == pv_line_h7h8);
+	assert_true(g7h8 == pv_line_g7h8);
+	assert_true(h1h8 == pv_line_h1h8);
+
+}
 
 void search_test_fixture(void)
 {
 	test_fixture_start();	// starts a fixture
 
 	run_test(test_move_sort_1);
+	run_test(void test_mate_in_2);
 	
 	test_fixture_end();	// ends a fixture
 }
