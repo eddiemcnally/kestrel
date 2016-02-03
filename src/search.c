@@ -45,6 +45,7 @@
 int32_t quiesce(struct board *brd, int32_t alpha, int32_t beta);
 int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth);
 static void init_search(struct board *brd);
+//static int32_t quiescence(struct board *brd, int32_t alpha, int32_t beta);
 
 
 // checks to see if most recent move is a repetition
@@ -132,7 +133,7 @@ static void init_search(struct board *brd){
 int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth) {
 	if(depth == 0){
 		return evaluate_position(brd);
-		//quiesce(brd, alpha, beta);
+		//quiescence(brd, alpha, beta);
 	} 
 	
 	if (is_repetition(brd) || brd->fifty_move_counter >= 100){
@@ -195,11 +196,75 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 	
 	if (alpha != old_alpha){
 		// improved alpha, so add to tt
-		add_to_tt(brd->board_hash, best_move, depth);
+		add_to_tt(brd->board_hash, best_move);
 	}
 	
 	return alpha;
 }
+/*
+
+static int32_t quiescence(struct board *brd, int32_t alpha, int32_t beta) {
+	if (is_repetition(brd) || brd->fifty_move_counter > 100){
+		// draw
+		return 0;
+	}
+
+	if (brd->ply > MAX_SEARCH_DEPTH - 1){
+		return evaluate_position(brd);	
+	}
+	
+	// stand pat
+	int32_t score = evaluate_position(brd);
+	if (score >= beta){
+		return beta;
+	}	
+	if (score > alpha){
+		alpha = score;
+	}
+	
+	
+	mv_bitmap best_move = NO_MOVE;
+	int32_t old_alpha = alpha;
+	
+	struct move_list mvl = {
+		.moves = {0},
+		.move_count = 0
+	};
+		
+	// only the capture moves
+	generate_all_capture_moves(brd, &mvl);
+
+	uint16_t num_moves = mvl.move_count;
+	
+	for(uint16_t i = 0; i < num_moves; i++){
+		bring_best_move_to_top(i, &mvl);
+		mv_bitmap mv = mvl.moves[i];
+		bool valid_move = make_move(brd, mv);
+		if (valid_move){
+		
+			// note: alpha/beta are swapped, and sign is reversed
+			int32_t score = -quiescence(brd, -beta, -alpha);
+			take_move(brd);
+			
+			if (score > alpha){
+				if (score >= beta){
+					return beta;
+				}
+				
+				alpha = score;
+				best_move = mv;
+			}			
+		}	
+	}
+		
+	if (alpha != old_alpha){
+		// improved alpha, so add to tt
+		add_to_tt(brd->board_hash, best_move);
+	}
+	return alpha;
+}
+
+*/
 
 
 inline void bring_best_move_to_top(uint16_t move_num, struct move_list *mvl){

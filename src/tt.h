@@ -20,7 +20,7 @@
 #include "types.h"
 
 void create_tt_table(uint32_t tt_size_in_bytes);
-void add_to_tt(const uint64_t board_hash, const mv_bitmap move, uint8_t depth);
+void add_to_tt(const uint64_t board_hash, const mv_bitmap move);
 mv_bitmap probe_tt(const uint64_t board_hash);
 void dispose_tt_table(void);
 
