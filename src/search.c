@@ -195,7 +195,7 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 	
 	if (alpha != old_alpha){
 		// improved alpha, so add to tt
-		add_to_tt(brd->board_hash, best_move);
+		add_to_tt(brd->board_hash, best_move, depth);
 	}
 	
 	return alpha;
