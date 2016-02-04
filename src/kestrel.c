@@ -65,7 +65,7 @@ int main(int argc, char **argv)
 	struct board * brd = init_game(MATE_IN_TWO);
 	print_board(brd);
 
-	int depth = 4;
+	uint8_t depth = 4;
 	search_positions(brd, depth, 64000000);
 	
 	

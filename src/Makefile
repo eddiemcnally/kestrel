@@ -9,37 +9,37 @@
 
 # NOTE: setting the inline limit values to be obscenely high since the size of
 #		the binary isn't a concern
-#	CFLAGS	=	-O3 -std=iso9899:2011 \
-#				-flto \
-#				-march=native \
-#				-mtune=native \
-#				-lmcheck \
-#				-fsanitize=address \
-#				-fomit-frame-pointer \
-#				--param large-function-growth=20000 \
-#				--param max-inline-insns-single=90000 \
-#				-Wpedantic \
-#				-Wformat=2 \
-#				-Wall \
-#				-Wstrict-prototypes \
-#				-Wmissing-prototypes \
-#				-Werror \
-#				-Wlogical-op \
-#				-Wextra \
-#				-Wconversion \
-#				-Wsign-conversion \
-#				-Wshadow \
-#				-Wcast-qual \
-#				-Wcast-align \
-#				-Wmissing-include-dirs \
-#				-Wpointer-arith \
+	CFLAGS	=	-O3 -std=iso9899:2011 \
+				-flto \
+				-march=native \
+				-mtune=native \
+				-lmcheck \
+				-fsanitize=address \
+				-fomit-frame-pointer \
+				--param large-function-growth=20000 \
+				--param max-inline-insns-single=90000 \
+				-Wpedantic \
+				-Wformat=2 \
+				-Wall \
+				-Wstrict-prototypes \
+				-Wmissing-prototypes \
+				-Werror \
+				-Wlogical-op \
+				-Wextra \
+				-Wconversion \
+				-Wsign-conversion \
+				-Wshadow \
+				-Wcast-qual \
+				-Wcast-align \
+				-Wmissing-include-dirs \
+				-Wpointer-arith
 
 
 # flags for profiling code
 #	CFLAGS	=	-O3 -pg -std=iso9899:2011
 
 # more lax compiler options
-	CFLAGS	=	-Wall -g -std=iso9899:2011 -lubsan
+#	CFLAGS	=	-Wall -g -std=iso9899:2011 -lubsan
 
 # define any directories containing header files other than /usr/include
 #

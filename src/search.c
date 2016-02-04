@@ -201,6 +201,7 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 	
 	return alpha;
 }
+
 /*
 
 static int32_t quiescence(struct board *brd, int32_t alpha, int32_t beta) {
@@ -214,17 +215,14 @@ static int32_t quiescence(struct board *brd, int32_t alpha, int32_t beta) {
 	}
 	
 	// stand pat
-	int32_t score = evaluate_position(brd);
-	if (score >= beta){
+	int32_t stand_pat_score = evaluate_position(brd);
+	if (stand_pat_score >= beta){
 		return beta;
 	}	
-	if (score > alpha){
-		alpha = score;
+	if (stand_pat_score > alpha){
+		alpha = stand_pat_score;
 	}
 	
-	
-	mv_bitmap best_move = NO_MOVE;
-	int32_t old_alpha = alpha;
 	
 	struct move_list mvl = {
 		.moves = {0},
@@ -238,6 +236,7 @@ static int32_t quiescence(struct board *brd, int32_t alpha, int32_t beta) {
 	
 	for(uint16_t i = 0; i < num_moves; i++){
 		bring_best_move_to_top(i, &mvl);
+		
 		mv_bitmap mv = mvl.moves[i];
 		bool valid_move = make_move(brd, mv);
 		if (valid_move){
@@ -252,20 +251,13 @@ static int32_t quiescence(struct board *brd, int32_t alpha, int32_t beta) {
 				}
 				
 				alpha = score;
-				best_move = mv;
 			}			
 		}	
-	}
-		
-	if (alpha != old_alpha){
-		// improved alpha, so add to tt
-		add_to_tt(brd->board_hash, best_move);
 	}
 	return alpha;
 }
 
 */
-
 
 inline void bring_best_move_to_top(uint16_t move_num, struct move_list *mvl){
 
