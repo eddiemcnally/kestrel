@@ -68,6 +68,7 @@ int main(int argc, char **argv)
 	struct search_info si = {0};
 	si.depth = 4;
 	search_positions(brd, &si, 64000000);
+	dump_search_info(&si);
 	
 	
 	printf("pv line :\t");

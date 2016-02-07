@@ -135,11 +135,18 @@ int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alpha, int
 		//quiescence(brd, alpha, beta);
 	} 
 	
-	if (is_repetition(brd) || brd->fifty_move_counter >= 100){
+	if (is_repetition(brd)){
+		si->repetition++;
+		return 0; // a draw 
+	}
+	
+	if (brd->fifty_move_counter >= 100){
+		si->fifty_move_rule++;
 		return 0; // a draw 
 	}
 	
 	if (brd->ply > MAX_SEARCH_DEPTH - 1){
+		si->max_depth_reached++;
 		return evaluate_position(brd);
 	}
 		
@@ -284,6 +291,15 @@ inline void bring_best_move_to_top(uint16_t move_num, struct move_list *mvl){
 	mvl->moves[best_move_num] = temp_mv;
 }
 
- 
+void dump_search_info(struct search_info *si){
+	printf("Search Stats :\n");
+	printf("\tSearch Depth..............%d\n", si->depth);
+	printf("\t#nodes....................%d\n", si->num_nodes);
+	printf("\t#add to TT................%d\n", si->added_to_tt);
+	printf("\t#invalid moves............%d\n", si->invalid_moves_made);
+	printf("\t#repetitions..............%d\n", si->repetition);
+	printf("\t#50-move rules............%d\n", si->fifty_move_rule);
+	printf("\t#max depth reached........%d\n", si->max_depth_reached);
+}
 
 

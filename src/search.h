@@ -31,11 +31,15 @@ struct search_info {
 	// ---- search stats
 	uint32_t num_nodes;				// num nodes searched
 	uint32_t added_to_tt;			// num moves added to transposition table
-	uint32_t invalid_moves_made;	// moves that needed to be reverted
+	uint32_t invalid_moves_made;	// num moves that needed to be reverted
+	uint32_t repetition;			// num repetitions detected
+	uint32_t fifty_move_rule;		// num fifty move rule limits detected
+	uint32_t max_depth_reached;		// num times max search depth reached
 };
 
 
 void search_positions(struct board *brd, struct search_info *si, uint32_t tt_size_in_bytes);
 bool is_repetition(const struct board *brd);
 void bring_best_move_to_top(uint16_t move_num, struct move_list *mvl);
+void dump_search_info(struct search_info *si);
 
