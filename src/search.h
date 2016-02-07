@@ -35,6 +35,8 @@ struct search_info {
 	uint32_t repetition;			// num repetitions detected
 	uint32_t fifty_move_rule;		// num fifty move rule limits detected
 	uint32_t max_depth_reached;		// num times max search depth reached
+	uint32_t fail_high;				// num beta cut-offs
+	uint32_t fail_high_first;		// found best legal move first
 };
 
 

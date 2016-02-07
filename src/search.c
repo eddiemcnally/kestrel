@@ -173,13 +173,17 @@ int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alpha, int
 		bool valid_move = make_move(brd, mv);
 		if (valid_move){
 			legal_move_cnt++;
-			
+		
 			// note: alpha/beta are swapped, and sign is reversed
 			int32_t score = -alpha_beta(brd, si, -beta, -alpha, (uint8_t)(depth - 1));
 			take_move(brd);
 			
 			if (score > alpha){
 				if (score >= beta){
+					if (legal_move_cnt == 1){
+						si->fail_high_first++;
+					}
+					si->fail_high++;
 					return beta;
 				}
 				
@@ -300,6 +304,7 @@ void dump_search_info(struct search_info *si){
 	printf("\t#repetitions..............%d\n", si->repetition);
 	printf("\t#50-move rules............%d\n", si->fifty_move_rule);
 	printf("\t#max depth reached........%d\n", si->max_depth_reached);
+	printf("\tfhf/fh....................%.2f\n", ((float)si->fail_high_first/(float)si->fail_high));
 }
 
 
