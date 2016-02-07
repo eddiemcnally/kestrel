@@ -71,8 +71,9 @@ void test_mate_in_2(){
 
 	struct board * brd = init_game(MATE_IN_TWO);
 	
-	int depth = 4;
-	search_positions(brd, depth, 64000000);
+	struct search_info si = {0};
+	si.depth = 4;
+	search_positions(brd, &si, 64000000);
 	
 	// expected moves are h7h8 g7h8 h1h8
 	// *** exclude the score ***

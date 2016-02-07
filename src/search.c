@@ -42,10 +42,9 @@
 #include "utils.h"
 
 
-int32_t quiesce(struct board *brd, int32_t alpha, int32_t beta);
-int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth);
+int32_t quiesce(struct board *brd, struct search_info *si, int32_t alpha, int32_t beta);
+int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alpha, int32_t beta, uint8_t depth);
 static void init_search(struct board *brd);
-//static int32_t quiescence(struct board *brd, int32_t alpha, int32_t beta);
 
 
 // checks to see if most recent move is a repetition
@@ -68,7 +67,7 @@ inline bool is_repetition(const struct board *brd)
 
 
 
-void search_positions(struct board *brd, uint8_t search_depth, uint32_t tt_size_in_bytes){
+void search_positions(struct board *brd, struct search_info *si, uint32_t tt_size_in_bytes){
 	
 	assert(ASSERT_BOARD_OK(brd) == true);
 
@@ -80,8 +79,8 @@ void search_positions(struct board *brd, uint8_t search_depth, uint32_t tt_size_
 	int32_t score = 0;
 	uint8_t num_moves = 0;
 	// use iterative deepening
-	for(uint8_t current_depth = 1; current_depth <= search_depth; current_depth++){
-		score = alpha_beta(brd, -INFINITE, INFINITE, current_depth);
+	for(uint8_t current_depth = 1; current_depth <= si->depth; current_depth++){
+		score = alpha_beta(brd, si, -INFINITE, INFINITE, current_depth);
 		
 		num_moves = populate_pv_line(brd, current_depth);
 		
@@ -130,7 +129,7 @@ static void init_search(struct board *brd){
 }
 	
 
-int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth) {
+int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alpha, int32_t beta, uint8_t depth) {
 	if(depth == 0){
 		return evaluate_position(brd);
 		//quiescence(brd, alpha, beta);
@@ -160,13 +159,16 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 	for(uint16_t i = 0; i < num_moves; i++){
 		//bring_best_move_to_top(i, &mvl);
 		
+		// incr search stats
+		si->num_nodes++;
+		
 		mv_bitmap mv = mvl.moves[i];
 		bool valid_move = make_move(brd, mv);
 		if (valid_move){
 			legal_move_cnt++;
 			
 			// note: alpha/beta are swapped, and sign is reversed
-			int32_t score = -alpha_beta(brd, -beta, -alpha, (uint8_t)(depth - 1));
+			int32_t score = -alpha_beta(brd, si, -beta, -alpha, (uint8_t)(depth - 1));
 			take_move(brd);
 			
 			if (score > alpha){
@@ -177,6 +179,8 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 				alpha = score;
 				best_move = mv;
 			}			
+		} else {
+			si->invalid_moves_made++;
 		}	
 	}
 	
@@ -197,6 +201,9 @@ int32_t alpha_beta(struct board *brd, int32_t alpha, int32_t beta, uint8_t depth
 	if (alpha != old_alpha){
 		// improved alpha, so add to tt
 		add_to_tt(brd->board_hash, best_move);
+
+		// search stats
+		si->added_to_tt++;
 	}
 	
 	return alpha;
