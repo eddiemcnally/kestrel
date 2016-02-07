@@ -1,7 +1,7 @@
 
 First attempt at a C-based chess engine.
 
-The code is developed on Debian Jessie and is compiled with gcc 4.9.x. Currently there is a dependancy on gcc built-in functions.
+The code is developed on Debian Jessie and is compiled with gcc 4.9.2. Currently there is a dependancy on gcc built-in functions.
 
 The ./test directory contains test fixtures for running unit tests (uses the 'seatest' test framework - see https://github.com/keithn/seatest).
 
@@ -15,17 +15,14 @@ Some implementation notes:
 * The engine makes heavy use of bitboards (uint64_t types to represent the board). Using bitboards allows for using pre-generated lookup bitmasks ("occupancy masks") to identify potential attacking squares for any piece on the board.
 * As mentioned above, there is an dependency on gcc builtin functions. Specifically:
   * __builtin_ctzll
-  * __builtin_popcntll
   * __builtin_bswap64
-  * __builtin_prefetch
   * There is also a dependency on some gcc-specific #pragma's to disable some compiler warnings (sign conversions) in specific functions.
-* The search is alpha-beta, with principle variation. The alpha-beta routine is called using iterative deepening.
 
 
 This is a work-in-progress. Current state:
 * Can read in FEN
 * Can generate moves with an initial implementation of an AlphaBeta search/evaluate functionality.
-* Current state (Jan 2016) :
+* Current state (Feb 2016) :
     * correctly completes the 126 perft tests to a depth of 6 
     * implements alpha-beta search with principle variation  
     * implements iterative deepening
