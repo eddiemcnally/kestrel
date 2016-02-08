@@ -42,8 +42,8 @@
 #include "utils.h"
 
 
-int32_t quiesce(struct board *brd, struct search_info *si, int32_t alpha, int32_t beta);
-int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alpha, int32_t beta, uint8_t depth);
+static int32_t quiescence(struct board *brd, struct search_info *si, int32_t alpha, int32_t beta);
+static int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alpha, int32_t beta, uint8_t depth);
 static void init_search(struct board *brd);
 
 
@@ -130,9 +130,8 @@ static void init_search(struct board *brd){
 	
 
 int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alpha, int32_t beta, uint8_t depth) {
-	if(depth == 0){
-		return evaluate_position(brd);
-		//quiescence(brd, alpha, beta);
+	if(depth <= 0){
+		return quiescence(brd, si, alpha, beta);
 	} 
 	
 	if (is_repetition(brd)){
@@ -220,9 +219,9 @@ int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alpha, int
 	return alpha;
 }
 
-/*
 
-static int32_t quiescence(struct board *brd, int32_t alpha, int32_t beta) {
+
+static int32_t quiescence(struct board *brd, struct search_info *si, int32_t alpha, int32_t beta) {
 	if (is_repetition(brd) || brd->fifty_move_counter > 100){
 		// draw
 		return 0;
@@ -235,9 +234,11 @@ static int32_t quiescence(struct board *brd, int32_t alpha, int32_t beta) {
 	// stand pat
 	int32_t stand_pat_score = evaluate_position(brd);
 	if (stand_pat_score >= beta){
+		si->stand_pat_cutoff++;
 		return beta;
 	}	
 	if (stand_pat_score > alpha){
+		si->stand_pat_improvement++;
 		alpha = stand_pat_score;
 	}
 	
@@ -260,7 +261,7 @@ static int32_t quiescence(struct board *brd, int32_t alpha, int32_t beta) {
 		if (valid_move){
 		
 			// note: alpha/beta are swapped, and sign is reversed
-			int32_t score = -quiescence(brd, -beta, -alpha);
+			int32_t score = -quiescence(brd, si, -beta, -alpha);
 			take_move(brd);
 			
 			if (score > alpha){
@@ -275,7 +276,7 @@ static int32_t quiescence(struct board *brd, int32_t alpha, int32_t beta) {
 	return alpha;
 }
 
-*/
+
 
 inline void bring_best_move_to_top(uint16_t move_num, struct move_list *mvl){
 
@@ -305,6 +306,9 @@ void dump_search_info(struct search_info *si){
 	printf("\t#50-move rules............%d\n", si->fifty_move_rule);
 	printf("\t#max depth reached........%d\n", si->max_depth_reached);
 	printf("\tfhf/fh....................%.2f\n", ((float)si->fail_high_first/(float)si->fail_high));
+	printf("\tstand-pat beta cutoff.....%d\n", si->stand_pat_cutoff);
+	printf("\tstand-pat improvement.....%d\n", si->stand_pat_improvement);
+
 }
 
 
