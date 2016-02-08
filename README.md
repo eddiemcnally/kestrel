@@ -21,16 +21,16 @@ Some implementation notes:
 
 This is a work-in-progress. Current state:
 * Can read in FEN
-* Can generate moves with an initial implementation of an AlphaBeta search/evaluate functionality.
+* Can generate moves (pertf tests)
+* Implements alpha-beta searching with quiescence.
 * Current state (Feb 2016) :
     * correctly completes the 126 perft tests to a depth of 6 
     * implements alpha-beta search with principle variation  
     * implements iterative deepening
     * can solve a mate-in-2 problem
-    * Contains a primative Transposition Table
     * Contains a primative position eval function.
 * The code is unoptimised, in the sense that no explicit effort has been undertaken to profile and tune the code paths (other than some rudamentary moving of code to improve inlining, removal of debug code and assert's and tweaking the gcc compile options).
-* The main code (./src) doesn't execute any meaningful operations. The main launch point is the test framework. To build and execute the test framework, run the following:
+* The main code (./src) doesn't execute any meaningful operations. It currently solves a mate-in-2. The main launch point is the test framework. To build and execute the test framework, run the following:
 	* cd ./test
 	* make
 	* ./test_kestrel
