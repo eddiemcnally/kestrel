@@ -133,6 +133,7 @@ int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alpha, int
 	if(depth <= 0){
 		return quiescence(brd, si, alpha, beta);
 	} 
+	si->num_nodes++;	
 	
 	if (is_repetition(brd)){
 		si->repetition++;
@@ -195,12 +196,14 @@ int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alpha, int
 	}
 	
 	if(legal_move_cnt == 0) {
+		si->zero_legal_moves++;
 		//printf("***no legal moves left\n");
 		// no legal moves....must be mate or draw
 		enum square king_sq = brd->king_sq[brd->side_to_move];	
 		enum colour opposite_side = GET_OPPOSITE_SIDE(brd->side_to_move);
 		
 		if (is_sq_attacked(brd, king_sq, opposite_side)){
+			si->mates_detected++;
 			return -MATE + brd->ply;
 		} else {
 			// draw
@@ -226,6 +229,7 @@ static int32_t quiescence(struct board *brd, struct search_info *si, int32_t alp
 		// draw
 		return 0;
 	}
+	si->num_nodes++;
 
 	if (brd->ply > MAX_SEARCH_DEPTH - 1){
 		return evaluate_position(brd);	
@@ -302,13 +306,14 @@ void dump_search_info(struct search_info *si){
 	printf("\t#nodes....................%d\n", si->num_nodes);
 	printf("\t#add to TT................%d\n", si->added_to_tt);
 	printf("\t#invalid moves............%d\n", si->invalid_moves_made);
+	printf("\t#zero legal moves.........%d\n", si->zero_legal_moves);
 	printf("\t#repetitions..............%d\n", si->repetition);
+	printf("\t#mate moves detected......%d\n", si->mates_detected);
 	printf("\t#50-move rules............%d\n", si->fifty_move_rule);
 	printf("\t#max depth reached........%d\n", si->max_depth_reached);
 	printf("\tfhf/fh....................%.2f\n", ((float)si->fail_high_first/(float)si->fail_high));
 	printf("\tstand-pat beta cutoff.....%d\n", si->stand_pat_cutoff);
 	printf("\tstand-pat improvement.....%d\n", si->stand_pat_improvement);
-
 }
 
 

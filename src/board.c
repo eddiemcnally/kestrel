@@ -93,7 +93,7 @@ uint8_t populate_pv_line(struct board *brd, uint8_t depth){
 
 	while((mv != NO_MOVE) && (count < depth)){
 		
-		assert(count < MAX_SEARCH_DEPTH);
+		//assert(count < MAX_SEARCH_DEPTH);
 
 		make_move(brd, mv);
 		brd->pv_line[count++] = mv;

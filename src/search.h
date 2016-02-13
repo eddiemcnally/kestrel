@@ -32,6 +32,7 @@ struct search_info {
 	uint32_t num_nodes;				// num nodes searched
 	uint32_t added_to_tt;			// num moves added to transposition table
 	uint32_t invalid_moves_made;	// num moves that needed to be reverted
+	uint32_t zero_legal_moves;		// num times we hit zero legal moves
 	uint32_t repetition;			// num repetitions detected
 	uint32_t fifty_move_rule;		// num fifty move rule limits detected
 	uint32_t max_depth_reached;		// num times max search depth reached
@@ -39,6 +40,8 @@ struct search_info {
 	uint32_t fail_high_first;		// found best legal move first
 	uint32_t stand_pat_cutoff;		// num times stand pat is better than beta in Quiescence
 	uint32_t stand_pat_improvement;	// num times stand pat improves alpha
+	uint32_t mates_detected;		// num mate moves detected
+	
 };
 
 
