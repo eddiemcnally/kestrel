@@ -23,7 +23,7 @@
 #include "makemove.h"
 
 int32_t get_score(mv_bitmap mv);
-uint64_t get_move(mv_bitmap mv);
+mv_bitmap get_move(mv_bitmap mv);
 void add_to_score(mv_bitmap *mv, int32_t to_add);
 
 

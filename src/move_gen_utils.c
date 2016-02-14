@@ -51,8 +51,8 @@ inline int32_t get_score(mv_bitmap mv){
 	return (int32_t)(mv & MV_MASK_SCORE);
 }
 
-inline uint64_t get_move(mv_bitmap mv){
-	return (uint64_t)(mv & MV_MASK_MOVE);
+inline mv_bitmap get_move(mv_bitmap mv){
+	return (mv_bitmap)(mv & MV_MASK_MOVE);
 }
 
 inline void add_to_score(mv_bitmap *mv, int32_t to_add){
