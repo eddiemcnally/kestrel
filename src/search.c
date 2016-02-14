@@ -164,7 +164,7 @@ int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alpha, int
 	
 	uint8_t legal_move_cnt = 0;
 	for(uint16_t i = 0; i < num_moves; i++){
-		//bring_best_move_to_top(i, &mvl);
+		bring_best_move_to_top(i, &mvl);
 		
 		// incr search stats
 		si->num_nodes++;
