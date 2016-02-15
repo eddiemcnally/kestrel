@@ -44,6 +44,7 @@
 // sample game positions
 #define MATE_IN_TWO			"1r3rk1/1pnnq1bR/p1pp2B1/P2P1p2/1PP1pP2/2B3P1/5PK1/2Q4R w - - 0 1"
 #define MATE_IN_THREE		"8/R7/4kPP1/3ppp2/3B1P2/1K1P1P2/8/8 w - - 0 1"
+#define MATE_IN_FOUR		"k1K5/p7/P1N5/1P6/4pP2/2p1P3/pp6/r3Q3 w - - 0 1"
 #define WAC1 				"r1b1k2r/ppppnppp/2n2q2/2b5/3NP3/2P1B3/PP3PPP/RN1QKB1R w KQkq - 0 1"
 #define SAMPLE_POSITION		"r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"
 
@@ -62,11 +63,11 @@ int main(int argc, char **argv)
 	// set process pri and cpu affinity for max performance
 	set_priority_and_affinity();
 
-	struct board * brd = init_game(MATE_IN_TWO);
+	struct board * brd = init_game(MATE_IN_FOUR);
 	print_board(brd);
 
 	struct search_info si = {0};
-	si.depth = 4;
+	si.depth = 8;
 	search_positions(brd, &si, 64000000);
 	dump_search_info(&si);
 	
