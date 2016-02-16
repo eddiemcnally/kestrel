@@ -134,10 +134,6 @@ struct undo {
 
 
 
-#define SEARCH_KILLER_MOVES 	2
-
-
-
 /**
  * A container for holding a specific position
  */
@@ -193,11 +189,6 @@ struct board {
 
 	// a hash of the current board
 	uint64_t board_hash;
-
-	// move ordering helper arrays
-	mv_bitmap search_history[NUM_PIECES][NUM_SQUARES];
-	mv_bitmap search_killers[SEARCH_KILLER_MOVES][MAX_SEARCH_DEPTH];
-
 
 };
 

@@ -107,19 +107,6 @@ void search_positions(struct board *brd, struct search_info *si, uint32_t tt_siz
 
 static void init_search(struct board *brd){
 	
-	// init move ordering support
-	for(uint8_t i = 0; i < NUM_PIECES; i++){
-		for(uint8_t j = 0; j < NUM_SQUARES; j++){
-			brd->search_history[i][j] = NO_PIECE;
-		} 
-	}
-	
-	for(uint8_t i = 0; i < SEARCH_KILLER_MOVES; i++){
-		for(uint8_t j = 0; j < MAX_SEARCH_DEPTH; j++){
-			brd->search_history[i][j] = NO_MOVE;
-		} 
-	}	
-	
 	for(int i = 0; i < MAX_SEARCH_DEPTH; i++){
 		brd->pv_line[i] = NO_MOVE;
 	}

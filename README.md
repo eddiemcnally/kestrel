@@ -27,7 +27,7 @@ This is a work-in-progress. Current state:
     * correctly completes the 126 perft tests to a depth of 6 
     * implements alpha-beta search with principle variation  
     * implements iterative deepening
-    * can solve a mate-in-2 problem
+    * can solve a mate-in-3 problem
     * Contains a primative position eval function.
 * The code is unoptimised, in the sense that no explicit effort has been undertaken to profile and tune the code paths (other than some rudamentary moving of code to improve inlining, removal of debug code and assert's and tweaking the gcc compile options).
 * The main code (./src) doesn't execute any meaningful operations. It currently solves a mate-in-2. The main launch point is the test framework. To build and execute the test framework, run the following:
