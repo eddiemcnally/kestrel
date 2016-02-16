@@ -38,6 +38,7 @@ struct search_info {
 	uint32_t max_depth_reached;		// num times max search depth reached
 	uint32_t fail_high;				// num beta cut-offs
 	uint32_t fail_high_first;		// found best legal move first
+	uint32_t move_ordering_pv_move;	// num times move was in PV 
 	uint32_t stand_pat_cutoff;		// num times stand pat is better than beta in Quiescence
 	uint32_t stand_pat_improvement;	// num times stand pat improves alpha
 	uint32_t mates_detected;		// num mate moves detected

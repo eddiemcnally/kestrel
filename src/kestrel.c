@@ -63,11 +63,11 @@ int main(int argc, char **argv)
 	// set process pri and cpu affinity for max performance
 	set_priority_and_affinity();
 
-	struct board * brd = init_game(MATE_IN_FOUR);
+	struct board * brd = init_game(MATE_IN_TWO);
 	print_board(brd);
 
 	struct search_info si = {0};
-	si.depth = 8;
+	si.depth = 4;
 	search_positions(brd, &si, 64000000);
 	dump_search_info(&si);
 	

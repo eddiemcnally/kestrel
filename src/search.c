@@ -47,6 +47,14 @@ static int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alp
 static void init_search(struct board *brd);
 
 
+
+// use these to prioritise move ordering
+#define MOVE_ORDER_WEIGHT_PV_MOVE 	1000000
+
+
+
+
+
 // checks to see if most recent move is a repetition
 inline bool is_repetition(const struct board *brd)
 {
@@ -147,6 +155,19 @@ int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alpha, int
 		
 	generate_all_moves(brd, &mvl);
 
+	// check is position already in PV table
+	mv_bitmap pv_move = probe_tt(brd->board_hash);
+	if (pv_move != NO_MOVE){
+		// prioritise 
+		for(uint16_t i = 0; i < mvl.move_count; i++){
+			if (mvl.moves[i] == pv_move){
+				add_to_score(&mvl.moves[i], MOVE_ORDER_WEIGHT_PV_MOVE);
+				si->move_ordering_pv_move++;
+				break;
+			}
+		}
+	}
+	
 	uint16_t num_moves = mvl.move_count;
 	
 	uint8_t legal_move_cnt = 0;
@@ -298,6 +319,8 @@ void dump_search_info(struct search_info *si){
 	printf("\t#mate moves detected......%d\n", si->mates_detected);
 	printf("\t#50-move rules............%d\n", si->fifty_move_rule);
 	printf("\t#max depth reached........%d\n", si->max_depth_reached);
+	printf("\tmove ordering : PV Move...%d\n", si->move_ordering_pv_move);
+
 	printf("\tfhf/fh....................%.2f\n", ((float)si->fail_high_first/(float)si->fail_high));
 	printf("\tstand-pat beta cutoff.....%d\n", si->stand_pat_cutoff);
 	printf("\tstand-pat improvement.....%d\n", si->stand_pat_improvement);
