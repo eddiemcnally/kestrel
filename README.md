@@ -44,6 +44,7 @@ Feature set:
 * Bitboards (and use of occupancy mask lookups)
 * Iterative Deepening
 * Alpha-beta with Principle Variation
+* Move sorting using PV, captures, killer moves, history heuristics
 * Zobrist hashing 
 * Quiessence Search
 * Piece Square Valuation

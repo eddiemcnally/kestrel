@@ -48,9 +48,6 @@ static void init_search(struct board *brd);
 
 
 
-// use these to prioritise move ordering
-#define MOVE_ORDER_WEIGHT_PV_MOVE 	1000000
-
 
 
 
@@ -119,6 +116,17 @@ static void init_search(struct board *brd){
 		brd->pv_line[i] = NO_MOVE;
 	}
 	
+	for(int i = 0; i < NUM_PIECES; i++) {
+		for(int j = 0; j < NUM_SQUARES; j++) {
+			brd->search_history[i][j] = NO_MOVE;
+		}
+	}
+	
+	for(int i = 0; i < NUM_KILLER_MOVES; i++) {
+		for(int j = 0; j < MAX_SEARCH_DEPTH; j++) {
+			brd->search_killers[i][j] = NO_MOVE;
+		}
+	}	
 	
 	brd->ply = 0;
 }
@@ -192,11 +200,32 @@ int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alpha, int
 						si->fail_high_first++;
 					}
 					si->fail_high++;
+					
+					// killer move....beta cutoff, no capture
+					if (IS_CAPTURE_MOVE(mv) == false){
+						si->killer_moves++;
+						// shuffle down killers
+						brd->search_killers[1][brd->ply] = brd->search_killers[0][brd->ply];
+						brd->search_killers[0][brd->ply] = mv;
+					}
+										
 					return beta;
 				}
-				
 				alpha = score;
 				best_move = mv;
+				
+				
+				// search history....alpha cutoff, no capture
+				if (IS_CAPTURE_MOVE(mv) == false){
+					si->search_history++;
+					enum square from_sq = FROMSQ(best_move);
+					enum square to_sq = TOSQ(best_move);
+					
+					enum piece pce = brd->pieces[from_sq];
+					brd->search_history[pce][to_sq] += depth;
+				}	
+				
+				
 			}			
 		} else {
 			si->invalid_moves_made++;
@@ -292,11 +321,11 @@ static int32_t quiescence(struct board *brd, struct search_info *si, int32_t alp
 
 inline void bring_best_move_to_top(uint16_t move_num, struct move_list *mvl){
 
-	int32_t best_score = 0;
+	uint32_t best_score = 0;
 	uint16_t best_move_num = move_num; 
 
 	for(uint16_t i = move_num; i < mvl->move_count; i++){
-		int32_t score = get_score(mvl->moves[i]);
+		uint32_t score = get_score(mvl->moves[i]);
 		if (score > best_score){
 			best_score = score;
 			best_move_num = i;
@@ -320,7 +349,8 @@ void dump_search_info(struct search_info *si){
 	printf("\t#50-move rules............%d\n", si->fifty_move_rule);
 	printf("\t#max depth reached........%d\n", si->max_depth_reached);
 	printf("\tmove ordering : PV Move...%d\n", si->move_ordering_pv_move);
-
+	printf("\tmove ordering : Killers...%d\n", si->killer_moves);
+	printf("\tmove ordering : History...%d\n", si->search_history);
 	printf("\tfhf/fh....................%.2f\n", ((float)si->fail_high_first/(float)si->fail_high));
 	printf("\tstand-pat beta cutoff.....%d\n", si->stand_pat_cutoff);
 	printf("\tstand-pat improvement.....%d\n", si->stand_pat_improvement);

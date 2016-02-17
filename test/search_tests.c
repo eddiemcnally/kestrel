@@ -41,14 +41,14 @@ void test_move_sort_1(void){
 		.move_count = 0
 	};
 	
-	int32_t start_score = -500;
-	int32_t score_incr = 75;
+	uint32_t start_score = 3;
+	uint32_t score_incr = 75;
 	
 	// create some dummy moves and scores
 	for(int32_t i = 0; i < 20; i++){
 		// interested more in the score than squares or pieces
 		
-		int32_t score = start_score + (score_incr * i);
+		uint32_t score = start_score + (score_incr * i);
 		mv_bitmap mv = MOVE(e5, e6, NO_PIECE, NO_PIECE, MFLAG_NONE);
 		add_to_score(&mv, score);
 	
@@ -63,7 +63,7 @@ void test_move_sort_1(void){
 	
 	//print_move_list_details(&mvl);
 	mv_bitmap top_mv = mvl.moves[0];
-	assert_true(get_score(top_mv) == 925);
+	assert_true(get_score(top_mv) == 1428);
 		
 }
 

@@ -26,6 +26,15 @@ struct move_list {
 	uint16_t move_count;					// #moves in list
 };
 
+// add to score so we can sort based on most important
+#define MOVE_ORDER_WEIGHT_PV_MOVE 		2000000
+#define MOVE_ORDER_WEIGHT_CAPTURE		1000000
+#define MOVE_ORDER_WEIGHT_KILLER_0		900000
+#define MOVE_ORDER_WEIGHT_KILLER_1		800000
+
+
+
+
 
 
 
@@ -57,7 +66,7 @@ void TEST_generate_queen_moves(struct board *brd,
 			       struct move_list *mvl, enum piece pce);
 bool TEST_is_move_in_list(struct move_list *mvl, mv_bitmap mv);
 void TEST_add_en_passent_move(mv_bitmap move_bitmap, struct move_list *mvlist);
-void TEST_add_quiet_move(mv_bitmap move_bitmap, struct move_list *mvlist);
+void TEST_add_quiet_move(struct board *brd, mv_bitmap move_bitmap, struct move_list *mvlist);
 uint32_t TEST_get_move_score(enum piece victim, enum piece attacker);
 struct move_list *TEST_get_empty_move_list(void);
 
