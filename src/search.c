@@ -262,11 +262,12 @@ int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alpha, int
 
 
 static int32_t quiescence(struct board *brd, struct search_info *si, int32_t alpha, int32_t beta) {
+	si->num_nodes++;
+	
 	if (is_repetition(brd) || brd->fifty_move_counter > 100){
 		// draw
 		return 0;
 	}
-	si->num_nodes++;
 
 	if (brd->ply > MAX_SEARCH_DEPTH - 1){
 		return evaluate_position(brd);	
