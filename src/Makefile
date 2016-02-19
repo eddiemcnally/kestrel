@@ -3,8 +3,7 @@
 #               (dependencies are added to end of Makefile)
 # 'make'        build executable file 'kestrel'
 # 'make all'	makes executable file 'kestrel'
-# 'make clean'  removes all .o and executable files
-
+# 'make clean'  removes all .o and executable file
 	CC	=	gcc
 
 # NOTE: setting the inline limit values to be obscenely high since the size of
@@ -49,7 +48,7 @@
 	SRCS		=	kestrel.c board.c pieces.c board_utils.c \
 				move_gen.c move_gen_utils.c init.c hashkeys.c fen.c utils.c \
 				attack.c occupancy_mask.c makemove.c \
-				search.c tt.c evaluate.c
+				search.c tt.c evaluate.c uci_protocol.c
 
 # define the C object files
 #

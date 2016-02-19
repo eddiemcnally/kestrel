@@ -75,12 +75,14 @@ inline bool is_repetition(const struct board *brd)
 
 void search_positions(struct board *brd, struct search_info *si, uint32_t tt_size_in_bytes){
 	
+	si->search_start_time = get_time_of_day_in_millis();
+	
 	assert(ASSERT_BOARD_OK(brd) == true);
 
 	init_search(brd);
 	
 	create_tt_table(tt_size_in_bytes);
-	
+		
 	mv_bitmap best_move = NO_MOVE;
 	int32_t score = 0;
 	uint8_t num_moves = 0;
@@ -109,6 +111,9 @@ void search_positions(struct board *brd, struct search_info *si, uint32_t tt_siz
 			
 		brd->pv_line[i] = NO_MOVE;
 	}
+	// update search stats
+	uint32_t elapsed_time_in_millis = (uint32_t)(get_time_of_day_in_millis() - si->search_start_time);
+	si->nodes_per_second = (si->num_nodes * 1000) / elapsed_time_in_millis;
 	
 	printf("bestmove %s\n", print_move(best_move));
 }
@@ -134,6 +139,7 @@ static void init_search(struct board *brd){
 	}	
 	
 	brd->ply = 0;
+	
 }
 	
 
@@ -378,6 +384,7 @@ void dump_search_info(struct search_info *si){
 	printf("Search Stats :\n");
 	printf("\tSearch Depth..............%d\n", si->depth);
 	printf("\t#nodes....................%d\n", si->num_nodes);
+	printf("\t#nodes/sec................%d\n", si->nodes_per_second);
 	printf("\t#add to TT................%d\n", si->added_to_tt);
 	printf("\t#invalid moves............%d\n", si->invalid_moves_made);
 	printf("\t#zero legal moves.........%d\n", si->zero_legal_moves);

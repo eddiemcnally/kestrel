@@ -31,11 +31,13 @@ struct search_info {
 		
 	// ---- runtime info
 	uint64_t search_expiry_time;	// time of day in millis when search expires
+	uint64_t search_start_time;		// time when search starts
 	bool search_stopped;			// set when search has stopped/expired
 	
 		
 	// ---- search stats
 	uint32_t num_nodes;				// num nodes searched
+	uint32_t nodes_per_second;		// search performance
 	uint32_t added_to_tt;			// num moves added to transposition table
 	uint32_t invalid_moves_made;	// num moves that needed to be reverted
 	uint32_t zero_legal_moves;		// num times we hit zero legal moves

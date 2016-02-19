@@ -46,6 +46,7 @@
 				../src/occupancy_mask.c \
 				../src/makemove.c \
 				../src/evaluate.c \
+				../src/uci_protocol.c \
 				all_tests.c \
 				board_test_fixture.c \
 				piece_test_fixture.c \
