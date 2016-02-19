@@ -26,8 +26,14 @@
 struct search_info {
 	// ---- inputs to search
 	uint8_t depth;					// search depth
+	uint32_t search_time_limit_ms;	// search time in milliseconds
+	bool search_time_set;			// true => search time is set
+		
+	// ---- runtime info
+	uint64_t search_expiry_time;	// time of day in millis when search expires
+	bool search_stopped;			// set when search has stopped/expired
 	
-	
+		
 	// ---- search stats
 	uint32_t num_nodes;				// num nodes searched
 	uint32_t added_to_tt;			// num moves added to transposition table

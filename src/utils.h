@@ -22,7 +22,7 @@
 
 
 void set_priority_and_affinity(void);
-uint64_t get_time_in_millis(void);
+uint64_t get_time_of_day_in_millis(void);
 uint64_t get_elapsed_time_in_millis(uint64_t start_time);
 
 

@@ -54,7 +54,7 @@ void set_priority_and_affinity(void)
 }
 
 
-uint64_t get_time_in_millis(void)
+uint64_t get_time_of_day_in_millis(void)
 {
 	struct timeval tp;
 
@@ -69,6 +69,6 @@ uint64_t get_time_in_millis(void)
 
 uint64_t get_elapsed_time_in_millis(uint64_t start_time)
 {
-	uint64_t now_in_millis = get_time_in_millis();
+	uint64_t now_in_millis = get_time_of_day_in_millis();
 	return (now_in_millis - start_time);
 }

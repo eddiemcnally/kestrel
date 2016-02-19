@@ -45,10 +45,11 @@
 static int32_t quiescence(struct board *brd, struct search_info *si, int32_t alpha, int32_t beta);
 static int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alpha, int32_t beta, uint8_t depth);
 static void init_search(struct board *brd);
+static inline void check_search_time_limit(struct search_info *sinfo);
 
 
-
-
+// keep as power of 2
+#define	EXPIRY_NODE_COUNT	1024
 
 
 
@@ -87,6 +88,9 @@ void search_positions(struct board *brd, struct search_info *si, uint32_t tt_siz
 	for(uint8_t current_depth = 1; current_depth <= si->depth; current_depth++){
 		score = alpha_beta(brd, si, -INFINITE, INFINITE, current_depth);
 		
+		if (si->search_stopped == true){
+			break;
+		}
 		num_moves = populate_pv_line(brd, current_depth);
 		
 		best_move = brd->pv_line[0];
@@ -106,6 +110,7 @@ void search_positions(struct board *brd, struct search_info *si, uint32_t tt_siz
 		brd->pv_line[i] = NO_MOVE;
 	}
 	
+	printf("bestmove %s\n", print_move(best_move));
 }
 
 
@@ -132,10 +137,16 @@ static void init_search(struct board *brd){
 }
 	
 
-int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alpha, int32_t beta, uint8_t depth) {
+static int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alpha, int32_t beta, uint8_t depth) {
 	if(depth <= 0){
 		return quiescence(brd, si, alpha, beta);
 	} 
+	
+	// only check every so many nodes
+	if ((si->num_nodes & (EXPIRY_NODE_COUNT - 1)) == 0){
+		check_search_time_limit(si);	
+	}
+	
 	si->num_nodes++;	
 	
 	if (is_repetition(brd)){
@@ -193,7 +204,11 @@ int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alpha, int
 			// note: alpha/beta are swapped, and sign is reversed
 			int32_t score = -alpha_beta(brd, si, -beta, -alpha, (uint8_t)(depth - 1));
 			take_move(brd);
-			
+					
+			if (si->search_stopped == true){
+				return 0;
+			}
+										
 			if (score > alpha){
 				if (score >= beta){
 					if (legal_move_cnt == 1){
@@ -262,6 +277,11 @@ int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alpha, int
 
 
 static int32_t quiescence(struct board *brd, struct search_info *si, int32_t alpha, int32_t beta) {
+	
+	// only check every so many nodes
+	if ((si->num_nodes & (EXPIRY_NODE_COUNT - 1)) == 0){
+		check_search_time_limit(si);	
+	}
 	si->num_nodes++;
 	
 	if (is_repetition(brd) || brd->fifty_move_counter > 100){
@@ -305,6 +325,10 @@ static int32_t quiescence(struct board *brd, struct search_info *si, int32_t alp
 			// note: alpha/beta are swapped, and sign is reversed
 			int32_t score = -quiescence(brd, si, -beta, -alpha);
 			take_move(brd);
+					
+			if (si->search_stopped == true){
+				return 0;
+			}
 			
 			if (score > alpha){
 				if (score >= beta){
@@ -316,6 +340,18 @@ static int32_t quiescence(struct board *brd, struct search_info *si, int32_t alp
 		}	
 	}
 	return alpha;
+}
+
+
+
+static inline void check_search_time_limit(struct search_info *sinfo){
+	if(sinfo->search_time_set == true){
+		uint64_t curr_time_of_day = get_time_of_day_in_millis();
+		if (curr_time_of_day >= sinfo->search_expiry_time){
+			// search timed out
+			sinfo->search_stopped = true;
+		}
+	}
 }
 
 

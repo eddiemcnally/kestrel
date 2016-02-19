@@ -273,7 +273,7 @@ void test_move_gen_depth()
 		printf("Analysing FEN to depth %d : '%s'\n", depth, e.fen);
 		struct board *brd = init_game(e.fen);
 
-		start_time = get_time_in_millis();
+		start_time = get_time_of_day_in_millis();
 
 		////////////
 		leafNodes = 0;
@@ -306,7 +306,7 @@ void perf_test(int depth, struct board *brd)
 		.move_count = 0
 	};
 
-	start_time = get_time_in_millis();
+	start_time = get_time_of_day_in_millis();
 
 	generate_all_moves(brd, &mv_list);
 
