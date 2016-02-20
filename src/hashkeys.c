@@ -154,6 +154,17 @@ uint64_t get_position_hash(const struct board * brd)
 	return retval;
 }
 
+
+///////////////////////////////////
+////// NOTE ///////////////////////
+///////////////////////////////////
+// Replace the rand() with a predictable "random" number.
+// This has the advantage during debugging of always having the same
+// hash values for board positions.
+////////////////////////////////////////////////
+
+
+/*
 static uint64_t generate_rand64(void)
 {
 	// GNU C rand() generates a 32-bit
@@ -162,5 +173,14 @@ static uint64_t generate_rand64(void)
 
 	return retval;
 }
+*/
+// see https://en.wikipedia.org/wiki/Linear_congruential_generator
+static uint64_t generate_rand64(void){
+    static uint64_t next = 1;
+ 
+    next = next * 1103515245 + 12345;
+    return next;
+}
+
 
 

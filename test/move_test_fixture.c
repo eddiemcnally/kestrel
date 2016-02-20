@@ -937,7 +937,7 @@ void test_zobrist_hashing_makemove_takemove(void){
 	
 	// flip back and check hash is back to original
 	flip_sides(brd);
-	assert_true(brd->board_hash == pre_castle_hash);
+	assert_true(brd->board_hash == pre_swap_hash);
 	dispose_board(brd);
 
 	// NOTE: hashing around moves is tested elsewhere

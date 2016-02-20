@@ -12,8 +12,8 @@
 				-flto \
 				-march=native \
 				-mtune=native \
-				-lmcheck \
 				-fsanitize=address \
+				-fstack-protector \
 				-fomit-frame-pointer \
 				--param large-function-growth=20000 \
 				--param max-inline-insns-single=90000 \
@@ -38,7 +38,7 @@
 #	CFLAGS	=	-O3 -pg -std=iso9899:2011
 
 # more lax compiler options
-#	CFLAGS	=	-Wall -g -std=iso9899:2011 -lubsan
+#	CFLAGS	=	-Wall -g -std=iso9899:2011 -flto -march=native -mtune=native 
 
 # define any directories containing header files other than /usr/include
 #
