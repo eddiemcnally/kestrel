@@ -288,12 +288,9 @@ void assert_boards_are_equal(const struct board *brd1, const struct board *brd2)
  * @return
  *
  */
-struct board *clone_board(const struct board *board_to_clone)
+void clone_board(const struct board *board_to_clone, struct board *cloned)
 {
-	uint32_t size = sizeof(struct board);
-	struct board *brd = malloc(size);
-	memcpy(brd, board_to_clone, size);
-	return brd;
+	memcpy(cloned, board_to_clone, sizeof(struct board));
 }
 
 // parses and validates a user-entered move
