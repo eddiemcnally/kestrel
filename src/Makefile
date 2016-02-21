@@ -20,8 +20,12 @@
 				-Wpedantic \
 				-Wformat=2 \
 				-Wall \
+				-Wextra \
 				-Wstrict-prototypes \
 				-Wmissing-prototypes \
+				-Wswitch-default \
+				-Wunused \
+				-Wunused-macros \
 				-Werror \
 				-Wlogical-op \
 				-Wextra \

@@ -64,6 +64,9 @@ uint64_t get_occupancy_mask(enum piece pce, enum square sq)
 	case W_KING:
 	case B_KING:
 		return GET_KING_OCC_MASK(sq);
+	case W_PAWN:
+	case B_PAWN:
+	
 	default:
 		//assert(pce == NO_PIECE);
 		return 0;

@@ -109,11 +109,10 @@ enum piece {
 	W_QUEEN 	= 8,
 	B_QUEEN		= 9,
 	W_KING		= 10,
-	B_KING		= 11,
-	NUM_PIECES	= 12,
-	NO_PIECE	= 0x0F
+	B_KING		= 11
 };
-
+#define NUM_PIECES	12
+#define	NO_PIECE	(0x0F)
 
 
 // contains information before the current
