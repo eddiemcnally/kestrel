@@ -29,11 +29,8 @@
 
 
 #define MATE_IN_TWO			"1r3rk1/1pnnq1bR/p1pp2B1/P2P1p2/1PP1pP2/2B3P1/5PK1/2Q4R w - - 0 1"
-// Bratko-Kopec Tests - mate in 5
-#define BK_01	"1k1r4/pp1b1R2/3q2pp/4p3/2B5/4Q3/PPP2B2/2K5 b - - 0 1"
 
-void test_mate_in_2(void);
-void test_mate_in_5(void);
+void test_mate_in_two(void);
 void test_move_sort_1(void);
 
 
@@ -70,14 +67,13 @@ void test_move_sort_1(void){
 		
 }
 
-void test_mate_in_2(){
-
-
-	struct board * brd = init_game(MATE_IN_TWO);
+void test_mate_in_two()
+{
+	struct board brd = init_game(MATE_IN_TWO);
 	
 	struct search_info si = {0};
 	si.depth = 4;
-	search_positions(brd, &si, 64000000);
+	search_positions(&brd, &si, 64000000);
 	
 	// expected moves are h7h8 g7h8 h1h8
 	// *** exclude the score ***
@@ -85,47 +81,14 @@ void test_mate_in_2(){
 	mv_bitmap g7h8 = get_move(MOVE(g7, h8, W_ROOK, NO_PIECE, 0));
 	mv_bitmap h1h8 = get_move(MOVE(h1, h8, B_BISHOP, NO_PIECE, 0));
 	
-	mv_bitmap pv_line_h7h8 = get_move(brd->pv_line[0]);
-	mv_bitmap pv_line_g7h8 = get_move(brd->pv_line[1]);
-	mv_bitmap pv_line_h1h8 = get_move(brd->pv_line[2]);
+	mv_bitmap pv_line_h7h8 = get_move(brd.pv_line[0]);
+	mv_bitmap pv_line_g7h8 = get_move(brd.pv_line[1]);
+	mv_bitmap pv_line_h1h8 = get_move(brd.pv_line[2]);
 		
 	assert_true(h7h8 == pv_line_h7h8);
 	assert_true(g7h8 == pv_line_g7h8);
 	assert_true(h1h8 == pv_line_h1h8);
 	
-	dispose_board(brd);
-}
-
-
-void test_mate_in_5(){
-	struct board * brd = init_game(BK_01);
-	
-	struct search_info si = {0};
-	si.depth = 6;
-	search_positions(brd, &si, 64000000);
-	
-	// expected moves are d6d1 c1d1 d7g4 d1c1 d8d1
-	// *** exclude the score ***
-	mv_bitmap d6d1 = get_move(MOVE(d6, d1, NO_PIECE, NO_PIECE, 0));
-	//mv_bitmap c1d1 = get_move(MOVE(c1, d1, W_QUEEN, NO_PIECE, 0));
-	//mv_bitmap d7g4 = get_move(MOVE(d7, g4, NO_PIECE, NO_PIECE, 0));
-	//mv_bitmap d1c1 = get_move(MOVE(d1, c1, NO_PIECE, NO_PIECE, 0));
-	//mv_bitmap d8d1 = get_move(MOVE(d8, d1, NO_PIECE, NO_PIECE, 0));
-		
-	mv_bitmap pv_line_d6d1 = get_move(brd->pv_line[0]);
-	//mv_bitmap pv_line_c1d1 = get_move(brd->pv_line[1]);
-	//mv_bitmap pv_line_d7g4 = get_move(brd->pv_line[2]);
-	//mv_bitmap pv_line_d1c1 = get_move(brd->pv_line[3]);
-	//mv_bitmap pv_line_d8d1 = get_move(brd->pv_line[4]);
-		
-	assert_true(d6d1 == pv_line_d6d1);
-	//assert_true(c1d1 == pv_line_c1d1);
-	//assert_true(d7g4 == pv_line_d7g4);
-	//assert_true(d1c1 == pv_line_d1c1);
-	//assert_true(d8d1 == pv_line_d8d1);
-	
-	dispose_board(brd);
-
 }
 
 
@@ -135,8 +98,7 @@ void search_test_fixture(void)
 	test_fixture_start();	// starts a fixture
 
 	run_test(test_move_sort_1);
-	//run_test(test_mate_in_5);
-	run_test(test_mate_in_2);
+	run_test(test_mate_in_two);
 
 	
 	test_fixture_end();	// ends a fixture

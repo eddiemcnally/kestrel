@@ -256,12 +256,6 @@ inline static int32_t eval_pawn_dependant_pieces(const struct board *brd,
 	uint64_t pawn_bb = brd->bitboards[pawn];
 	uint8_t num_pawns = count_bits(pawn_bb);
 
-	// should never be > 8
-	if (num_pawns > 8){
-		assert(num_pawns < 8);
-		num_pawns = 8;
-	}
-		
 	int32_t adj_val = *(adj_vals + num_pawns);
 	
 	int32_t retval = 0;

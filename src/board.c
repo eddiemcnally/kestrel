@@ -41,7 +41,7 @@
 #include "hashkeys.h"
 #include "pieces.h"
 
-static struct board * get_clean_board(void);
+static void get_clean_board(struct board *brd);
 
 /*
  * Creates and initialises a new board. The default starting piece
@@ -51,11 +51,10 @@ static struct board * get_clean_board(void);
  * @return	a new board
  *
  */
-struct board * init_board(char *fen)
+void init_board(char *fen, struct board *brd)
 {
-	struct board * brd = get_clean_board();
+	get_clean_board(brd);
 	consume_fen_notation(fen, brd);
-	return brd;
 }
 
 /*
@@ -65,24 +64,14 @@ struct board * init_board(char *fen)
  * @return	ptr to a created board struct
  *
  */
-static struct board * get_clean_board(void)
+static void get_clean_board(struct board *brd)
 {
-
-	struct board * brd = malloc(sizeof(struct board));
 	memset(brd, 0, sizeof(struct board));
 
 	for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
 		brd->pieces[sq] = NO_PIECE;
 	}
-	return brd;
 }
-
-
-void dispose_board(struct board *brd){
-
-	free(brd);
-}
-
 
 // returns the count.
 uint8_t populate_pv_line(struct board *brd, uint8_t depth){

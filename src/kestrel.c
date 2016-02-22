@@ -62,19 +62,19 @@ int main(int argc, char **argv)
 	// set process pri and cpu affinity for max performance
 	set_priority_and_affinity();
 
-	struct board * brd = init_game(MATE_IN_FIVE);
-	print_board(brd);
+	struct board brd = init_game(MATE_IN_FIVE);
+	print_board(&brd);
 
 	struct search_info si = {0};
 	si.depth = 6;
-	search_positions(brd, &si, 64000000);
+	search_positions(&brd, &si, 64000000);
 	dump_search_info(&si);
 	
 	
 	printf("pv line :\t");
 	for(uint8_t i = 0; i < MAX_SEARCH_DEPTH; i++){
-		if (brd->pv_line[i] != NO_MOVE){
-			printf("%s ", print_move(brd->pv_line[i]));
+		if (brd.pv_line[i] != NO_MOVE){
+			printf("%s ", print_move(brd.pv_line[i]));
 		} else {
 			break;
 		}

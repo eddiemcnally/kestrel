@@ -271,18 +271,18 @@ void test_move_gen_depth()
 		struct EPD e = test_positions[i];
 
 		printf("Analysing FEN to depth %d : '%s'\n", depth, e.fen);
-		struct board *brd = init_game(e.fen);
+		struct board brd = init_game(e.fen);
 
 		start_time = get_time_of_day_in_millis();
 
 		////////////
 		leafNodes = 0;
-		perf_test(depth, brd);
+		perf_test(depth, &brd);
 		elapsed = get_elapsed_time_in_millis(start_time);
 
 		assert_true(leafNodes == e.depth5);
 		total_nodes += leafNodes;
-		free(brd);
+
 		//////////
 
 		total_move_time += elapsed;
@@ -424,12 +424,12 @@ uint32_t divide(int depth, struct board * brd)
 
 void bug_check(void)
 {
-	struct board *brd =
+	struct board brd =
 	    init_game
 	    ("r3k2r/p1ppqpb1/bn2pnp1/3PN3/Pp2P3/2N2Q1p/1PPBBPPP/R3K2R b KQkq a3 0 1");
 
 	leafNodes = 0;
-	divide_perft((uint8_t) 3, brd);
+	divide_perft((uint8_t) 3, &brd);
 
 	assert_true(leafNodes == 193690690);
 }

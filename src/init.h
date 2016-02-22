@@ -20,6 +20,6 @@
 
 #include "types.h"
 
-struct board * init_game(char *fen);
+struct board init_game(char *fen);
 
 

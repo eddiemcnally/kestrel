@@ -71,16 +71,6 @@ enum{
 };
 
 
-
-
-
-
-
-
-
-
-
-
 // castling permissions
 enum {
 	WKCA = 0x01,		// white, king-side
@@ -90,7 +80,7 @@ enum {
 };
 
 void dispose_board(struct board *brd);
-struct board * init_board(char *fen);
+void init_board(char *fen, struct board *brd);
 uint8_t populate_pv_line(struct board *brd, uint8_t depth);
 void set_piece_material(struct board *brd);
 uint64_t overlay_white_pieces(const struct board * brd);
