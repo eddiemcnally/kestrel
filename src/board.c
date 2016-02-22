@@ -67,9 +67,25 @@ void init_board(char *fen, struct board *brd)
 static void get_clean_board(struct board *brd)
 {
 	memset(brd, 0, sizeof(struct board));
+	
+	for(uint8_t i = 0; i < NUM_SQUARES; i++){
+		brd->pieces[i] = NO_PIECE;
+	}
+	
+	brd->king_sq[WHITE] = NO_SQUARE;
+	brd->king_sq[BLACK] = NO_SQUARE;
+	
+	brd->side_to_move = WHITE;
+	brd->en_passant = NO_SQUARE;
 
-	for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
-		brd->pieces[sq] = NO_PIECE;
+	for(uint16_t i = 0; i < MAX_SEARCH_DEPTH; i++){
+		brd->pv_line[i] = NO_MOVE;
+	}
+
+	for(uint16_t i = 0; i < MAX_GAME_MOVES; i++){
+		brd->history[i].move = NO_MOVE;
+		brd->history[i].en_passant = NO_SQUARE;
+		// other struct values are already set to zero with memset		
 	}
 }
 
