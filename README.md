@@ -1,7 +1,7 @@
 
 First attempt at a C-based chess engine.
 
-The code is developed on OpenSuSE Leap 42.1 and is compiled with gcc 4.8.5. Currently there is a dependancy on gcc built-in functions.
+The code is developed on OpenSUSE Leap 42.1 and is compiled with gcc 4.8.5. Currently there is a dependancy on gcc built-in functions.
 
 The ./test directory contains test fixtures for running unit tests (uses the 'seatest' test framework - see https://github.com/keithn/seatest).
 
