@@ -39,6 +39,7 @@
 #include "board_utils.h"
 #include "move_gen.h"
 #include "move_gen_utils.h"
+#include "uci_protocol.h"
 #include "utils.h"
 
 
@@ -77,7 +78,7 @@ void search_positions(struct board *brd, struct search_info *si, uint32_t tt_siz
 	
 	si->search_start_time = get_time_of_day_in_millis();
 	
-	assert(ASSERT_BOARD_OK(brd) == true);
+	//assert(ASSERT_BOARD_OK(brd) == true);
 
 	init_search(brd);
 	
@@ -115,7 +116,8 @@ void search_positions(struct board *brd, struct search_info *si, uint32_t tt_siz
 	uint32_t elapsed_time_in_millis = (uint32_t)(get_time_of_day_in_millis() - si->search_start_time);
 	si->nodes_per_second = (si->num_nodes * 1000) / elapsed_time_in_millis;
 	
-	//printf("bestmove %s\n", print_move(best_move));
+	uci_bestmove(best_move);
+	
 }
 
 
@@ -212,6 +214,7 @@ static int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alp
 			take_move(brd);
 					
 			if (si->search_stopped == true){
+				// timed out
 				return 0;
 			}
 										
@@ -333,6 +336,7 @@ static int32_t quiescence(struct board *brd, struct search_info *si, int32_t alp
 			take_move(brd);
 					
 			if (si->search_stopped == true){
+				// timed out
 				return 0;
 			}
 			

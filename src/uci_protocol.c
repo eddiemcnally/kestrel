@@ -25,6 +25,22 @@
  */
 #include <stdio.h>
 #include "types.h"
+#include "move_gen_utils.h"
 #include "uci_protocol.h"
 
 
+/*
+ * Prints best move in UCI format
+ */
+void uci_bestmove(mv_bitmap mv){
+	printf("bestmove %s\n", print_move(mv));
+}
+
+void uci_info_score(uint32_t best_score, uint8_t depth, uint32_t nodes, uint64_t time_in_ms, uint8_t num_pv_moves, mv_bitmap *pv_line){
+	printf("info score cp %d depth %d nodes %d time %jd ", best_score, depth, nodes,time_in_ms);
+	printf("pv ");
+	for(uint8_t i = 0; i < num_pv_moves; i++){
+		printf(" %s", print_move(pv_line[i]));
+	}
+	printf("\n");
+}
