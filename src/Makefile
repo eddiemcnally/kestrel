@@ -12,9 +12,6 @@
 				-flto \
 				-march=native \
 				-mtune=native \
-				-fsanitize=address \
-				-fstack-protector \
-				-fomit-frame-pointer \
 				--param large-function-growth=20000 \
 				--param max-inline-insns-single=90000 \
 				-Wpedantic \
@@ -35,7 +32,10 @@
 				-Wcast-qual \
 				-Wcast-align \
 				-Wmissing-include-dirs \
-				-Wpointer-arith
+				-Wpointer-arith \
+				-fstack-protector \
+				-fomit-frame-pointer
+				
 
 
 # flags for profiling code

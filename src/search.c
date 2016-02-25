@@ -97,12 +97,9 @@ void search_positions(struct board *brd, struct search_info *si, uint32_t tt_siz
 		num_moves = populate_pv_line(brd, current_depth);
 		
 		best_move = brd->pv_line[0];
-		printf("depth %d score %d best move %s, #moves %d\n", current_depth, score, print_move(best_move), num_moves);
-		printf("\t\t\tpv line :\t");
-		for(uint8_t j = 0; j < num_moves; j++){
-			printf(".......%s", print_move(brd->pv_line[j]));
-		}		
-		printf("\n");
+		uci_print_info_score(score, current_depth, si->num_nodes, 
+					(get_time_of_day_in_millis() - si->search_start_time),
+					num_moves, brd->pv_line);
 	}
 
 	// populate the best moves
@@ -116,8 +113,7 @@ void search_positions(struct board *brd, struct search_info *si, uint32_t tt_siz
 	uint32_t elapsed_time_in_millis = (uint32_t)(get_time_of_day_in_millis() - si->search_start_time);
 	si->nodes_per_second = (si->num_nodes * 1000) / elapsed_time_in_millis;
 	
-	uci_bestmove(best_move);
-	
+	uci_print_bestmove(best_move);	
 }
 
 
