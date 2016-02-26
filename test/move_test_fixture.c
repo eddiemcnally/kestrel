@@ -119,16 +119,16 @@ MoveList Total 26 Moves:
 	mv = MOVE(b4, b5, NO_PIECE, NO_PIECE, 0);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
-	mv = MOVE(b4, c5, B_PAWN, NO_PIECE, 0);
+	mv = MOVE(b4, c5, B_PAWN, NO_PIECE, MFLAG_CAPTURE);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
 	mv = MOVE(d4, d5, NO_PIECE, NO_PIECE, 0);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
-	mv = MOVE(d4, c5, B_PAWN, NO_PIECE, 0);
+	mv = MOVE(d4, c5, B_PAWN, NO_PIECE, MFLAG_CAPTURE);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
-	mv = MOVE(d4, e5, B_PAWN, NO_PIECE, 0);
+	mv = MOVE(d4, e5, B_PAWN, NO_PIECE, MFLAG_CAPTURE);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
 	mv = MOVE(f5, f6, NO_PIECE, NO_PIECE, 0);
@@ -146,16 +146,16 @@ MoveList Total 26 Moves:
 	mv = MOVE(g7, g8, NO_PIECE, W_ROOK, 0);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
-	mv = MOVE(g7, f8, B_BISHOP, W_ROOK, 0);
+	mv = MOVE(g7, f8, B_BISHOP, W_ROOK, MFLAG_CAPTURE);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
-	mv = MOVE(g7, f8, B_BISHOP, W_QUEEN, 0);
+	mv = MOVE(g7, f8, B_BISHOP, W_QUEEN, MFLAG_CAPTURE);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
-	mv = MOVE(g7, f8, B_BISHOP, W_BISHOP, 0);
+	mv = MOVE(g7, f8, B_BISHOP, W_BISHOP, MFLAG_CAPTURE);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
-	mv = MOVE(g7, f8, B_BISHOP, W_KNIGHT, 0);
+	mv = MOVE(g7, f8, B_BISHOP, W_KNIGHT, MFLAG_CAPTURE);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
 /*
@@ -167,16 +167,16 @@ Move:26 > g7h8n (score:0)
 
  */
 
-	mv = MOVE(g7, h8, B_ROOK, W_KNIGHT, 0);
+	mv = MOVE(g7, h8, B_ROOK, W_KNIGHT, MFLAG_CAPTURE);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
-	mv = MOVE(g7, h8, B_ROOK, W_BISHOP, 0);
+	mv = MOVE(g7, h8, B_ROOK, W_BISHOP, MFLAG_CAPTURE);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
-	mv = MOVE(g7, h8, B_ROOK, W_QUEEN, 0);
+	mv = MOVE(g7, h8, B_ROOK, W_QUEEN, MFLAG_CAPTURE);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
-	mv = MOVE(g7, h8, B_ROOK, W_ROOK, 0);
+	mv = MOVE(g7, h8, B_ROOK, W_ROOK, MFLAG_CAPTURE);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
 }
@@ -207,16 +207,16 @@ void test_generation_black_pawn_moves(void)
 	mv = MOVE(g2, g1, NO_PIECE, B_KNIGHT, 0);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
-	mv = MOVE(g2, h1, W_ROOK, B_KNIGHT, 0);
+	mv = MOVE(g2, h1, W_ROOK, B_KNIGHT, MFLAG_CAPTURE);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
-	mv = MOVE(g2, h1, W_ROOK, B_BISHOP, 0);
+	mv = MOVE(g2, h1, W_ROOK, B_BISHOP, MFLAG_CAPTURE);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
-	mv = MOVE(g2, h1, W_ROOK, B_ROOK, 0);
+	mv = MOVE(g2, h1, W_ROOK, B_ROOK, MFLAG_CAPTURE);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
-	mv = MOVE(g2, h1, W_ROOK, B_QUEEN, 0);
+	mv = MOVE(g2, h1, W_ROOK, B_QUEEN, MFLAG_CAPTURE);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
 	mv = MOVE(g2, g1, NO_PIECE, B_KNIGHT, 0);
@@ -288,7 +288,7 @@ void test_generation_white_knight_pawn_moves(void)
 	mv = MOVE(g5, h7, NO_PIECE, NO_PIECE, 0);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
-	mv = MOVE(g5, e6, B_KNIGHT, NO_PIECE, 0);
+	mv = MOVE(g5, e6, B_KNIGHT, NO_PIECE, MFLAG_CAPTURE);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
 }
@@ -313,16 +313,16 @@ void test_generation_black_knight_pawn_moves(void)
 	// start on b3
 	mv_bitmap mv = MOVE(b3, d2, W_PAWN, NO_PIECE, 0);
 	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(b3, c1, W_BISHOP, NO_PIECE, 0);
+	mv = MOVE(b3, c1, W_BISHOP, NO_PIECE, MFLAG_CAPTURE);
 	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(b3, a1, W_ROOK, NO_PIECE, 0);
+	mv = MOVE(b3, a1, W_ROOK, NO_PIECE, MFLAG_CAPTURE);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
-	mv = MOVE(b3, d2, W_PAWN, NO_PIECE, 0);
+	mv = MOVE(b3, d2, W_PAWN, NO_PIECE, MFLAG_CAPTURE);
 	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(b3, c1, W_BISHOP, NO_PIECE, 0);
+	mv = MOVE(b3, c1, W_BISHOP, NO_PIECE, MFLAG_CAPTURE);
 	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(b3, a1, W_ROOK, NO_PIECE, 0);
+	mv = MOVE(b3, a1, W_ROOK, NO_PIECE, MFLAG_CAPTURE);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
 	// start on d5
@@ -397,9 +397,9 @@ void test_generation_king_moves(void)
 	assert_true(TEST_is_move_in_list(mvl, mv));
 	mv = MOVE(d3, c2, NO_PIECE, NO_PIECE, 0);
 	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(d3, d2, W_PAWN, NO_PIECE, 0);
+	mv = MOVE(d3, d2, W_PAWN, NO_PIECE, MFLAG_CAPTURE);
 	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(d3, d4, W_PAWN, NO_PIECE, 0);
+	mv = MOVE(d3, d4, W_PAWN, NO_PIECE, MFLAG_CAPTURE);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 	mv = MOVE(d3, e2, NO_PIECE, NO_PIECE, 0);
 	assert_true(TEST_is_move_in_list(mvl, mv));
@@ -448,7 +448,7 @@ void test_generation_sliding_diagonal_moves(void)
 	assert_true(TEST_is_move_in_list(mvl, mv));
 	mv = MOVE(b3, c2, NO_PIECE, NO_PIECE, 0);
 	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(b3, d1, W_BISHOP, NO_PIECE, 0);
+	mv = MOVE(b3, d1, W_BISHOP, NO_PIECE, MFLAG_CAPTURE);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 	mv = MOVE(b3, a2, NO_PIECE, NO_PIECE, 0);
 	assert_true(TEST_is_move_in_list(mvl, mv));
@@ -457,9 +457,9 @@ void test_generation_sliding_diagonal_moves(void)
 
 	mv = MOVE(c1, b2, NO_PIECE, NO_PIECE, 0);
 	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(c1, a3, W_PAWN, NO_PIECE, 0);
+	mv = MOVE(c1, a3, W_PAWN, NO_PIECE, MFLAG_CAPTURE);
 	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(c1, d2, W_PAWN, NO_PIECE, 0);
+	mv = MOVE(c1, d2, W_PAWN, NO_PIECE, MFLAG_CAPTURE);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
 	assert_false(is_sq_attacked(&brd, h6, BLACK));
@@ -480,18 +480,18 @@ void test_generation_sliding_diagonal_moves(void)
 
 	mv = MOVE(d1, c2, NO_PIECE, NO_PIECE, 0);
 	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(d1, b3, B_BISHOP, NO_PIECE, 0);
+	mv = MOVE(d1, b3, B_BISHOP, NO_PIECE, MFLAG_CAPTURE);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 	mv = MOVE(d1, e2, NO_PIECE, NO_PIECE, 0);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 	mv = MOVE(d1, f3, NO_PIECE, NO_PIECE, 0);
 	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(d1, g4, B_PAWN, NO_PIECE, 0);
+	mv = MOVE(d1, g4, B_PAWN, NO_PIECE, MFLAG_CAPTURE);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
 	mv = MOVE(c7, b6, NO_PIECE, NO_PIECE, 0);
 	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(c7, a5, B_PAWN, NO_PIECE, 0);
+	mv = MOVE(c7, a5, B_PAWN, NO_PIECE, MFLAG_CAPTURE);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 	mv = MOVE(c7, d6, NO_PIECE, NO_PIECE, 0);
 	assert_true(TEST_is_move_in_list(mvl, mv));
@@ -598,7 +598,7 @@ void test_generation_sliding_horizontal_and_vertical_moves(void)
 	assert_true(TEST_is_move_in_list(mvl, mv));
 	mv = MOVE(f6, f4, NO_PIECE, NO_PIECE, 0);
 	assert_true(TEST_is_move_in_list(mvl, mv));
-	mv = MOVE(f6, f3, B_PAWN, NO_PIECE, 0);
+	mv = MOVE(f6, f3, B_PAWN, NO_PIECE, MFLAG_CAPTURE);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 
 }

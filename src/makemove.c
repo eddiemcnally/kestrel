@@ -459,3 +459,9 @@ inline void set_bit(uint64_t * brd, enum square sq)
 {
 	*brd = *brd | (uint64_t) (0x01ull << sq);
 }
+
+inline void set_bits(uint64_t * w, uint64_t bitmask)
+{
+	*w = *w | bitmask;
+}
+

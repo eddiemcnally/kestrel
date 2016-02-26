@@ -70,20 +70,22 @@ void test_move_sort_1(void){
 void test_mate_in_two()
 {
 	struct board brd = init_game(MATE_IN_TWO);
-	
+		
 	struct search_info si = {0};
 	si.depth = 4;
 	search_positions(&brd, &si, 64000000);
-	
-	// expected moves are h7h8 g7h8 h1h8
+		
 	// *** exclude the score ***
 	mv_bitmap h7h8 = get_move(MOVE(h7, h8, NO_PIECE, NO_PIECE, 0));
-	mv_bitmap g7h8 = get_move(MOVE(g7, h8, W_ROOK, NO_PIECE, 0));
-	mv_bitmap h1h8 = get_move(MOVE(h1, h8, B_BISHOP, NO_PIECE, 0));
+	mv_bitmap g7h8 = get_move(MOVE(g7, h8, W_ROOK, NO_PIECE, MFLAG_CAPTURE));
+	mv_bitmap h1h8 = get_move(MOVE(h1, h8, B_BISHOP, NO_PIECE, MFLAG_CAPTURE));
 	
 	mv_bitmap pv_line_h7h8 = get_move(brd.pv_line[0]);
 	mv_bitmap pv_line_g7h8 = get_move(brd.pv_line[1]);
 	mv_bitmap pv_line_h1h8 = get_move(brd.pv_line[2]);
+
+	printf("PV g7h8 ->%s\n", print_move(pv_line_g7h8));
+	printf("PV h1h8 ->%s\n", print_move(pv_line_h1h8));
 		
 	assert_true(h7h8 == pv_line_h7h8);
 	assert_true(g7h8 == pv_line_g7h8);

@@ -13,7 +13,6 @@
 				-flto \
 				-std=c11 \
 				-march=native \
-				-mtune=native \
 				--param large-function-growth=9000000 \
 				--param max-inline-insns-single=900000 
 #

@@ -11,7 +11,6 @@
 	CFLAGS	=	-O3 -std=iso9899:2011 \
 				-flto \
 				-march=native \
-				-mtune=native \
 				--param large-function-growth=20000 \
 				--param max-inline-insns-single=90000 \
 				-Wpedantic \
