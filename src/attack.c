@@ -218,20 +218,15 @@ static inline bool is_knight_attacking_square(const struct board *brd,
 	// this colour
 	uint64_t bb_knight = brd->bitboards[attacking_piece];
 
-	// overlay all occupancy masks into a single occupancy mask
 	uint64_t overlay_mask = 0;
 	while (bb_knight != 0) {
-		enum square att_pce_sq = pop_1st_bit(&bb_knight);
-
-		// get occupancy mask for this piece and square
-		overlay_mask |= GET_KNIGHT_OCC_MASK(att_pce_sq);
+		enum square knight_sq = pop_1st_bit(&bb_knight);
+		uint64_t msk = GET_KNIGHT_OCC_MASK(knight_sq);
+		if ((msk & sq_bb) != 0){
+			// knight is attacking square
+			return true;
+		}
 	}
-	
-	if ((overlay_mask & sq_bb) != 0) {
-		// a Knight is attacking this square
-		return true;
-	}
-	
 	return false;
 }
 
@@ -257,6 +252,8 @@ static inline bool is_attacked_horizontally_or_vertically(
 	uint64_t rook_mask = GET_ROOK_OCC_MASK(sq_one);
 
 	if (CHECK_BIT(rook_mask, sq_two)){
+		// the piece on sq_two shares a rank or file with the rook, so
+		// check if there are blocking pieces
 		uint64_t interim_squares = intervening_squares_lookup[sq_one][sq_two];
 		uint64_t pieces_on_board = brd->board;
 		
@@ -286,7 +283,8 @@ static inline bool is_attacked_diagonally(const struct board *brd,
 	uint64_t bishop_occ_mask = GET_BISHOP_OCC_MASK(attacking_sq);
 	
 	if(CHECK_BIT(bishop_occ_mask, target_sq)){
-		
+		// the piece on target_sq shares a diagonal with the bishop so
+		// check intervening squares
 		uint64_t interim_squares = intervening_squares_lookup[attacking_sq][target_sq];
 		uint64_t pieces_on_board = brd->board;
 		

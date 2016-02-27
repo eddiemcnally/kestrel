@@ -311,7 +311,7 @@ void test_generation_black_knight_pawn_moves(void)
 	assert_true(mvl->move_count == 12);
 
 	// start on b3
-	mv_bitmap mv = MOVE(b3, d2, W_PAWN, NO_PIECE, 0);
+	mv_bitmap mv = MOVE(b3, d2, W_PAWN, NO_PIECE, MFLAG_CAPTURE);
 	assert_true(TEST_is_move_in_list(mvl, mv));
 	mv = MOVE(b3, c1, W_BISHOP, NO_PIECE, MFLAG_CAPTURE);
 	assert_true(TEST_is_move_in_list(mvl, mv));

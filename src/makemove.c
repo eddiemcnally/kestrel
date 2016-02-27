@@ -178,7 +178,7 @@ bool make_move(struct board *brd, mv_bitmap mv)
 	brd->en_passant = NO_SQUARE;
 	brd->fifty_move_counter++;
 
-	if (CAPTURED_PCE(mv) != NO_PIECE) {
+	if (IS_CAPTURE_MOVE(mv)){
 		remove_piece_from_board(brd, to);
 		brd->fifty_move_counter = 0;
 	}
@@ -191,7 +191,7 @@ bool make_move(struct board *brd, mv_bitmap mv)
 	if (IS_PAWN(pce_being_moved)) {
 		brd->fifty_move_counter = 0;
 
-		if (mv & MFLAG_PAWN_START) {
+		if (IS_PAWN_START(mv)) {
 			if (side == WHITE) {
 				brd->en_passant = from + 8;
 			} else {

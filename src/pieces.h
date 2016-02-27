@@ -39,10 +39,7 @@
 #define IS_KNIGHT(pce)			((pce == W_KNIGHT) || (pce == B_KNIGHT))
 #define IS_ROOK(pce)			((pce == W_ROOK) || (pce == B_ROOK))
 #define IS_PAWN(pce)			((pce == W_PAWN) || (pce == B_PAWN))
-#define IS_KING(pce)			((pce == W_KING) || (pce == B_KING))
 
-#define IS_ROOK_OR_QUEEN(pce)	(IS_ROOK(pce) || IS_QUEEN(pce))
-#define IS_BISHOP_OR_QUEEN(pce)	(IS_BISHOP(pce) || IS_QUEEN(pce))
 
 // piece values, indexed into using the enum piece enum
 static const uint32_t piece_values[NUM_PIECES] = {

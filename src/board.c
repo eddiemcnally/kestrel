@@ -116,14 +116,14 @@ uint8_t populate_pv_line(struct board *brd, uint8_t depth){
 
 
 
-inline uint64_t overlay_white_pieces(const struct board * brd)
+inline uint64_t overlay_white_piece_bitboards(const struct board * brd)
 {
 	return brd->bitboards[W_PAWN] | brd->bitboards[W_BISHOP]
 	    | brd->bitboards[W_KNIGHT] | brd->bitboards[W_ROOK]
 	    | brd->bitboards[W_QUEEN] | brd->bitboards[W_KING];
 }
 
-inline uint64_t overlay_black_pieces(const struct board * brd)
+inline uint64_t overlay_black_piece_bitboards(const struct board * brd)
 {
 	return brd->bitboards[B_PAWN] | brd->bitboards[B_BISHOP]
 	    | brd->bitboards[B_KNIGHT] | brd->bitboards[B_ROOK]
