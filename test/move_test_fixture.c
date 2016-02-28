@@ -875,15 +875,13 @@ void test_make_move_take_move_1(void)
 		
 		generate_all_moves(&brd, &list);
 
-		struct board starting_brd;
-		clone_board(&brd, &starting_brd);
+		struct board starting_brd = clone_board(&brd);
 
 		for (int i = 0; i < list.move_count; i++) {
 			// make a move, take it back, and compare board before and after
 			mv_bitmap mv = list.moves[i];
 			
-			struct board before_move;
-			clone_board(&brd, &before_move);
+			struct board before_move = clone_board(&brd);
 			
 			bool valid_move = make_move(&brd, mv);
 			if (!valid_move){
