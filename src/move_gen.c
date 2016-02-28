@@ -1073,10 +1073,3 @@ void TEST_add_quiet_move(struct board *brd, mv_bitmap move_bitmap, struct move_l
 	add_quiet_move(brd, move_bitmap, mvlist);
 }
 
-
-
-
-struct move_list *TEST_get_empty_move_list(void)
-{
-	return get_empty_move_list();
-}

@@ -217,8 +217,6 @@ static inline bool is_knight_attacking_square(const struct board *brd,
 	// get the bitboard representing all knights on the board of
 	// this colour
 	uint64_t bb_knight = brd->bitboards[attacking_piece];
-
-	uint64_t overlay_mask = 0;
 	while (bb_knight != 0) {
 		enum square knight_sq = pop_1st_bit(&bb_knight);
 		uint64_t msk = GET_KNIGHT_OCC_MASK(knight_sq);

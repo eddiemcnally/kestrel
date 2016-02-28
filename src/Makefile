@@ -8,8 +8,8 @@
 
 # NOTE: setting the inline limit values to be obscenely high since the size of
 #		the binary isn't a concern
-	CFLAGS	=	-O3 -std=iso9899:2011 \
-				-flto \
+	CFLAGS	=	-O3 \
+				-std=c11 \
 				-march=native \
 				--param large-function-growth=20000 \
 				--param max-inline-insns-single=90000 \
@@ -34,7 +34,7 @@
 				-Wpointer-arith \
 				-fstack-protector \
 				-fomit-frame-pointer
-				
+
 
 
 # flags for profiling code

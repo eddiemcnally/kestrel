@@ -63,21 +63,6 @@ inline void add_to_score(mv_bitmap *mv, uint32_t to_add){
 	*mv |= ((uint32_t)(score) & MV_MASK_SCORE);	
 }
 
-/*
- * Returns the piece type on the given square
- *
- * name: 	get_piece_at_square
- * @param	the board container and the square to test
- * @return	the piece or NO_PIECE
- *
- */
-
-inline struct move_list *get_empty_move_list()
-{
-	struct move_list *list = malloc(sizeof(struct move_list));
-	memset(list, 0, sizeof(struct move_list));
-	return list;
-}
 
 
 /*
