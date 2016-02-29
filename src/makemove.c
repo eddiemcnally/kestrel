@@ -131,9 +131,9 @@ bool make_move(struct board *brd, mv_bitmap mv)
 
 	if (mv & MFLAG_EN_PASSANT) {
 		if (side == WHITE) {
-			remove_piece_from_board(brd, to - 8);
+			remove_piece_from_board(brd, to + SOUTH);
 		} else {
-			remove_piece_from_board(brd, to + 8);
+			remove_piece_from_board(brd, to + NORTH);
 		}
 	} else if (mv & MFLAG_CASTLE) {
 		switch (to) {
@@ -193,9 +193,9 @@ bool make_move(struct board *brd, mv_bitmap mv)
 
 		if (IS_PAWN_START(mv)) {
 			if (side == WHITE) {
-				brd->en_passant = from + 8;
+				brd->en_passant = from + NORTH;
 			} else {
-				brd->en_passant = from - 8;
+				brd->en_passant = from + SOUTH;
 			}
 			brd->board_hash ^= get_en_passant_hash(brd->en_passant);
 		}
@@ -257,9 +257,9 @@ inline void take_move(struct board *brd)
 
 	if (MFLAG_EN_PASSANT & mv) {
 		if (brd->side_to_move == WHITE) {
-			add_piece_to_board(brd, B_PAWN, to - 8);
+			add_piece_to_board(brd, B_PAWN, to + SOUTH);
 		} else {
-			add_piece_to_board(brd, W_PAWN, to + 8);
+			add_piece_to_board(brd, W_PAWN, to + NORTH);
 		}
 	} else if (MFLAG_CASTLE & mv) {
 		switch (to) {
