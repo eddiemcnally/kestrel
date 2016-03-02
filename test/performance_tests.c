@@ -253,6 +253,15 @@ struct EPD test_positions[NUM_EPD] = {
 	 3605103, 71179139},
 };
 
+
+// test data - opening position, captures for each depth
+uint64_t capture_count [] = {0 , 0, 0, 34, 1576, 82719, 2812008}
+// test data - opening position, en-passant moves for each depth
+uint64_t capture_count [] = {0 , 0, 0, 0, 0, 258, 5248}
+
+
+
+
 uint64_t leafNodes = 0;
 
 void test_move_gen_depth()
