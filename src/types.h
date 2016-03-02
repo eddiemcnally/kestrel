@@ -200,4 +200,7 @@ struct board {
 
 };
 
-
+struct perft_stats{
+	uint64_t num_ep;
+	uint64_t num_captures;
+};

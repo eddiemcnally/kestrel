@@ -36,11 +36,11 @@
 #include "move_gen_utils.h"
 
 
-void perf_test(int depth, struct board *brd);
+void perf_test(int depth, struct board *brd, struct perft_stats *p);
 void divide_perft(int depth, struct board *brd);
 uint32_t divide(int depth, struct board *brd);
 void test_move_gen_depth(void);
-void perft(int depth, struct board *brd);
+void perft(int depth, struct board *brd, struct perft_stats *pstats);
 void bug_check(void);
 
 // struct representing a line in the perftsuite.epd file
@@ -255,9 +255,9 @@ struct EPD test_positions[NUM_EPD] = {
 
 
 // test data - opening position, captures for each depth
-uint64_t capture_count [] = {0 , 0, 0, 34, 1576, 82719, 2812008}
+uint64_t capture_count [] = {0 , 0, 0, 34, 1576, 82719, 2812008};
 // test data - opening position, en-passant moves for each depth
-uint64_t capture_count [] = {0 , 0, 0, 0, 0, 258, 5248}
+uint64_t en_passant_count [] = {0 , 0, 0, 0, 0, 258, 5248};
 
 
 
@@ -274,6 +274,9 @@ void test_move_gen_depth()
 	int depth = 5;
 	
 	uint64_t total_nodes = 0;
+	
+	struct perft_stats pstats = {.num_ep = 0, .num_captures = 0};
+	
 
 	for (int i = 0; i < NUM_EPD; i++) {
 	
@@ -286,7 +289,7 @@ void test_move_gen_depth()
 
 		////////////
 		leafNodes = 0;
-		perf_test(depth, &brd);
+		perf_test(depth, &brd, &pstats);
 		elapsed = get_elapsed_time_in_millis(start_time);
 
 		assert_true(leafNodes == e.depth5);
@@ -304,7 +307,7 @@ void test_move_gen_depth()
 
 }
 
-void perf_test(int depth, struct board *brd)
+void perf_test(int depth, struct board *brd, struct perft_stats *pstats)
 {
 
 	leafNodes = 0;
@@ -321,11 +324,19 @@ void perf_test(int depth, struct board *brd)
 
 	mv_bitmap mv;
 	for (uint32_t mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
+		if (IS_EN_PASS_MOVE(mv)){
+			pstats->num_ep++;
+		}
+		if (IS_CAPTURE_MOVE(mv)){
+			pstats->num_captures++;
+		}
+		
+		
 		mv = mv_list.moves[mv_num];
 		if (!make_move(brd, mv)) {
 			continue;
 		}
-		perft(depth - 1, brd);
+		perft(depth - 1, brd, pstats);
 		take_move(brd);
 	}
 	elapsed = get_elapsed_time_in_millis(start_time);
@@ -337,7 +348,7 @@ void perf_test(int depth, struct board *brd)
 	return;
 }
 
-void perft(int depth, struct board *brd)
+void perft(int depth, struct board *brd, struct perft_stats *pstats)
 {
 
 	if (depth == 0) {
@@ -357,7 +368,7 @@ void perft(int depth, struct board *brd)
 	for (uint32_t mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
 		mv = mv_list.moves[mv_num];
 		if (make_move(brd, mv)) {
-			perft(depth - 1, brd);
+			perft(depth - 1, brd, pstats);
 			take_move(brd);
 		}
 	}
