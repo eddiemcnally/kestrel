@@ -44,3 +44,14 @@ void uci_print_info_score(int32_t best_score, uint8_t depth, uint32_t nodes, uin
 	}
 	printf("\n");
 }
+
+void uci_print_hello(){
+    printf("id name %s\n", ENGINE_NAME);
+    printf("id author %s\n", AUTHOR);
+    printf("uciok\n");
+}
+
+void uci_print_ready(){
+    printf("readyok\n");
+}
+

@@ -21,6 +21,11 @@
 #include <stdint.h>
 
 
+#define ENGINE_NAME	"Kestrel v0.9"
+#define	AUTHOR		"Eddie McNally"
+
+
+
 
 #define NUM_RANKS 	8
 #define NUM_FILES	8

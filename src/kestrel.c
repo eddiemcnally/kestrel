@@ -51,6 +51,7 @@
 
 
 
+#define INPUTBUFFER 5000
 
 
 int main(int argc, char **argv)
@@ -62,24 +63,48 @@ int main(int argc, char **argv)
 	// set process pri and cpu affinity for max performance
 	set_priority_and_affinity();
 
-	struct board brd = init_game(SAMPLE_POSITION);
-	print_board(&brd);
-
-	struct search_info si = {0};
-	si.depth = 7;
-	search_positions(&brd, &si, 64000000);
-	dump_search_info(&si);
-	
-	
-	printf("pv line :\t");
-	for(uint8_t i = 0; i < MAX_SEARCH_DEPTH; i++){
-		if (brd.pv_line[i] != NO_MOVE){
-			printf("%s ", print_move(brd.pv_line[i]));
-		} else {
-			break;
-		}
-	}		
-	printf("\n");
+	do_uci_loop();
 
 	return 0;
 }
+
+
+// code courtesy of BlueFever Software (but modified heavily)
+static void do_uci_loop(){
+	
+	setbuf(stdin, NULL);
+    setbuf(stdout, NULL);
+	
+	char line[INPUTBUFFER];
+	
+	uci_print_hello();
+    
+    
+	while (TRUE) {
+		memset(&line[0], 0, sizeof(line));
+        fflush(stdout);
+        if (!fgets(line, INPUTBUFFER, stdin))
+			continue;
+
+        if (line[0] == '\n')
+			continue;
+
+        if (!strncmp(line, "isready", 7)) {
+            uci_print_ready();
+            continue;
+        } else if (!strncmp(line, "position", 8)) {
+            ParsePosition(line, pos);
+        } else if (!strncmp(line, "ucinewgame", 10)) {
+            ParsePosition("position startpos\n", pos);
+        } else if (!strncmp(line, "go", 2)) {
+            ParseGo(line, info, pos);
+        } else if (!strncmp(line, "quit", 4)) {
+            info->quit = TRUE;
+            break;
+        } else if (!strncmp(line, "uci", 3)) {
+            uci_print_hello();
+        }
+		if(info->quit) break;
+    }
+}
+

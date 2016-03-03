@@ -324,14 +324,7 @@ void perf_test(int depth, struct board *brd, struct perft_stats *pstats)
 
 	mv_bitmap mv;
 	for (uint32_t mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
-		if (IS_EN_PASS_MOVE(mv)){
-			pstats->num_ep++;
-		}
-		if (IS_CAPTURE_MOVE(mv)){
-			pstats->num_captures++;
-		}
-		
-		
+	
 		mv = mv_list.moves[mv_num];
 		if (!make_move(brd, mv)) {
 			continue;
