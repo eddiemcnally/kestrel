@@ -51,6 +51,22 @@ void uci_print_hello(){
     printf("uciok\n");
 }
 
+// parses a uci input of the format:
+//		position fen 
+// or
+//		position startpos
+void uci_parse_position(char *input, struct board *brd){
+
+	// skip over "position "
+	input += 9;
+ 
+	if (strncmp(input, "startpos", 8) == 0){
+		init_game(
+	} else if (strncmp(input, "
+
+
+}
+
 void uci_print_ready(){
     printf("readyok\n");
 }

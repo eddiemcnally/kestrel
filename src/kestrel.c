@@ -77,6 +77,12 @@ static void do_uci_loop(){
 	
 	char line[INPUTBUFFER];
 	
+	
+	
+    init_game_no_board();
+    struct board brd;
+    struct search_info si;
+	
 	uci_print_hello();
     
     
@@ -93,7 +99,7 @@ static void do_uci_loop(){
             uci_print_ready();
             continue;
         } else if (!strncmp(line, "position", 8)) {
-            ParsePosition(line, pos);
+			uci_parse_position(line, &brd){
         } else if (!strncmp(line, "ucinewgame", 10)) {
             ParsePosition("position startpos\n", pos);
         } else if (!strncmp(line, "go", 2)) {

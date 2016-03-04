@@ -48,3 +48,12 @@ struct board init_game(char *fen)
 
 	return brd;
 }
+
+void init_game_no_board()
+{
+	init_hash_keys();
+	init_move_gen_framework();
+	init_attack_framework();	
+}
+
+
