@@ -37,9 +37,7 @@
 
 struct board init_game(char *fen)
 {
-	init_hash_keys();
-	init_move_gen_framework();
-	init_attack_framework();	
+	init_game_no_board();
 
 	struct board brd;
 	init_board(fen, &brd);

@@ -51,24 +51,28 @@
 
 
 
-#define INPUTBUFFER 5000
+// #define INPUTBUFFER 5000
 
 
 int main(int argc, char **argv)
 {
-	if (argc > 0) {
+	if (argc > 1) {
 		printf("%d", **argv);
 	}
 
 	// set process pri and cpu affinity for max performance
 	set_priority_and_affinity();
-
-	do_uci_loop();
-
+	
+	struct board brd = init_game(SAMPLE_POSITION);
+		
+	struct search_info si = {0};
+	si.depth = 4;
+	search_positions(&brd, &si, 64000000);
+		
 	return 0;
 }
 
-
+/*
 // code courtesy of BlueFever Software (but modified heavily)
 static void do_uci_loop(){
 	
@@ -114,3 +118,4 @@ static void do_uci_loop(){
     }
 }
 
+*/
