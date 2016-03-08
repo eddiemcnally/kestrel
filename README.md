@@ -16,6 +16,7 @@ Some implementation notes:
 * As mentioned above, there is an dependency on gcc builtin functions. Specifically:
   * __builtin_ctzll
   * __builtin_bswap64
+  * __builtin_popcntll
   * There is also a dependency on some gcc-specific #pragma's to disable some compiler warnings (sign conversions) in specific functions.
 
 
@@ -23,12 +24,13 @@ This is a work-in-progress. Current state:
 * Can read in FEN
 * Can generate moves (pertf tests)
 * Implements alpha-beta searching with quiescence.
-* Current state (Feb 2016) :
+* Current state (March 2016) :
     * correctly completes the 126 perft tests to a depth of 6 
     * implements alpha-beta search with principle variation  
     * implements iterative deepening
     * can solve a mate-in-3 problem
     * Contains a primative position eval function.
+    * Starting on an implementation of the UCI protocol
 * The code is unoptimised, in the sense that no explicit effort has been undertaken to profile and tune the code paths (other than some rudamentary moving of code to improve inlining, removal of debug code and assert's and tweaking the gcc compile options).
 * The main code (./src) doesn't execute any meaningful operations. It currently solves a mate-in-2. The main launch point is the test framework. To build and execute the test framework, run the following:
 	* cd ./test

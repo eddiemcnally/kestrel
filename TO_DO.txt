@@ -1,3 +1,6 @@
-- rename 'struct board' to 'struct position' (to reflect better on its function
+- rename 'struct board' to 'struct position' (to reflect better on its function)
 - move to using CMake instead of make
-- 
+- remove gcc builtin functions (to improve portability)
+- assess clang instead of gcc (last time tried, clang 3.7 was 20% slower than gcc 4.8 for move_gen)
+- break out the perft and divide into separate functions, to allow running by use of a command-line option
+- rewrite the evaluate function to remove the large number of explicit function calls (profile first, to assess impact)
