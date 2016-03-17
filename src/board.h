@@ -80,6 +80,7 @@ enum {
 };
 
 void init_board(char *fen, struct board *brd);
+void get_clean_board(struct board *brd);
 uint8_t populate_pv_line(struct board *brd, uint8_t depth);
 void set_piece_material(struct board *brd);
 uint64_t overlay_white_piece_bitboards(const struct board * brd);

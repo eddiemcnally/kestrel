@@ -24,9 +24,16 @@
  * 
  */
 #include <stdio.h>
+#include <string.h>
 #include "types.h"
+#include "fen.h"
+#include "board_utils.h"
 #include "move_gen_utils.h"
 #include "uci_protocol.h"
+
+
+// NOTE : the code in this file was taken from BlueFever Software
+// and modified/adapter. Thanks guys :-)
 
 
 /*
@@ -49,6 +56,52 @@ void uci_print_hello(){
     printf("id name %s\n", ENGINE_NAME);
     printf("id author %s\n", AUTHOR);
     printf("uciok\n");
+}
+
+// parses the UCI "position" command which is of the format
+// 		position [fen <fenstring> | startpos ]  moves <move1> .... <movei>
+// The line argument points to the start of the string, and includes 
+// the "position" characters
+void uci_parse_position(char *line, struct board *brd){
+
+	// skip over the "position "
+	line += 9;
+	char *pc = line;
+		
+	if(strncmp(line, "startpos", 8) == 0){
+        consume_fen_notation(STARTING_FEN, brd);
+    } else {
+        pc = strstr(line, "fen");
+        if(pc == NULL) {
+            consume_fen_notation(STARTING_FEN, brd);
+        } else {
+			// skip over "fen "
+            pc += 4;
+            consume_fen_notation(pc, brd);
+        }
+    }
+	
+	// now, process the moves
+	pc = strstr(line, "moves");
+	mv_bitmap mv;
+	
+	if(pc != NULL) {
+		// skip over "moves "
+        pc += 6;
+        while(*pc) {
+              mv = parse_move(pc, brd);
+			  if(mv == NO_MOVE) 
+				break;
+			  
+			  make_move(brd, mv);
+              brd->ply=0;
+              
+              while(*pc && *pc != ' ') 
+				pc++;
+              pc++;
+        }
+    }
+
 }
 
 

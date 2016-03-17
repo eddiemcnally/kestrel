@@ -41,8 +41,6 @@
 #include "hashkeys.h"
 #include "pieces.h"
 
-static void get_clean_board(struct board *brd);
-
 /*
  * Creates and initialises a new board. The default starting piece
  * positions are populated.
@@ -64,7 +62,7 @@ void init_board(char *fen, struct board *brd)
  * @return	ptr to a created board struct
  *
  */
-static void get_clean_board(struct board *brd)
+void get_clean_board(struct board *brd)
 {
 	memset(brd, 0, sizeof(struct board));
 	

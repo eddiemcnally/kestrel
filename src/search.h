@@ -30,6 +30,7 @@ struct search_info {
 	bool search_time_set;			// true => search time is set
 		
 	// ---- runtime info
+	bool stop_search;				// set to TRUE to stop searching
 	uint64_t search_expiry_time;	// time of day in millis when search expires
 	uint64_t search_start_time;		// time when search starts
 	bool search_stopped;			// set when search has stopped/expired
@@ -55,7 +56,7 @@ struct search_info {
 	
 };
 
-
+void init_search_struct(struct search_info *si);
 void search_positions(struct board *brd, struct search_info *si, uint32_t tt_size_in_bytes);
 bool is_repetition(const struct board *brd);
 void bring_best_move_to_top(uint16_t move_num, struct move_list *mvl);

@@ -40,6 +40,7 @@
 #include "search.h"
 #include "move_gen.h"
 #include "move_gen_utils.h"
+#include "uci_protocol.h"
 
 
 // sample game positions
@@ -47,12 +48,13 @@
 //#define MATE_IN_FIVE		"8/R7/4kPP1/3ppp2/3B1P2/1K1P1P2/8/8 w - - 0 1"
 //#define MATE_IN_FOUR		"k1K5/p7/P1N5/1P6/4pP2/2p1P3/pp6/r3Q3 w - - 0 1"
 //#define WAC1 				"r1b1k2r/ppppnppp/2n2q2/2b5/3NP3/2P1B3/PP3PPP/RN1QKB1R w KQkq - 0 1"
-#define SAMPLE_POSITION		"r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"
+//#define SAMPLE_POSITION		"r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"
 
 
 
-// #define INPUTBUFFER 5000
+#define INPUTBUFFER 5000
 
+static void do_uci_loop(void);
 
 int main(int argc, char **argv)
 {
@@ -62,18 +64,20 @@ int main(int argc, char **argv)
 
 	// set process pri and cpu affinity for max performance
 	set_priority_and_affinity();
-	
+/*
 	struct board brd = init_game(SAMPLE_POSITION);
 		
 	struct search_info si = {0};
 	si.depth = 4;
 	search_positions(&brd, &si, 64000000);
+*/
+	do_uci_loop();
 		
 	return 0;
 }
 
-/*
-// code courtesy of BlueFever Software (but modified heavily)
+
+// code courtesy of BlueFever Software (but modified/adapted)
 static void do_uci_loop(){
 	
 	setbuf(stdin, NULL);
@@ -84,13 +88,17 @@ static void do_uci_loop(){
 	
 	
     init_game_no_board();
+    
     struct board brd;
+    get_clean_board(&brd);
+    
     struct search_info si;
+	init_search_struct(&si);
+	
 	
 	uci_print_hello();
-    
-    
-	while (TRUE) {
+        
+	while (true) {
 		memset(&line[0], 0, sizeof(line));
         fflush(stdout);
         if (!fgets(line, INPUTBUFFER, stdin))
@@ -103,19 +111,20 @@ static void do_uci_loop(){
             uci_print_ready();
             continue;
         } else if (!strncmp(line, "position", 8)) {
-			uci_parse_position(line, &brd){
+			uci_parse_position(line, &brd);
         } else if (!strncmp(line, "ucinewgame", 10)) {
-            ParsePosition("position startpos\n", pos);
-        } else if (!strncmp(line, "go", 2)) {
-            ParseGo(line, info, pos);
+            uci_parse_position("position startpos\n", &brd);
+//        } else if (!strncmp(line, "go", 2)) {
+//            ParseGo(line, info, pos);
         } else if (!strncmp(line, "quit", 4)) {
-            info->quit = TRUE;
+            si.stop_search = true;
             break;
         } else if (!strncmp(line, "uci", 3)) {
             uci_print_hello();
         }
-		if(info->quit) break;
+		if (si.stop_search == true)
+			break;
     }
 }
 
-*/
+

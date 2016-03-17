@@ -53,6 +53,10 @@ static inline void check_search_time_limit(struct search_info *sinfo);
 #define	EXPIRY_NODE_COUNT	1024
 
 
+void init_search_struct(struct search_info *si){
+	memset(si, 0, sizeof(struct search_info));
+}
+
 
 // checks to see if most recent move is a repetition
 inline bool is_repetition(const struct board *brd)
