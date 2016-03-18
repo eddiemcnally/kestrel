@@ -32,11 +32,11 @@ This is a work-in-progress. Current state:
     * Contains a primative position eval function.
     * Starting on an implementation of the UCI protocol
 * The code is unoptimised, in the sense that no explicit effort has been undertaken to profile and tune the code paths (other than some rudamentary moving of code to improve inlining, removal of debug code and assert's and tweaking the gcc compile options).
-* The main code (./src) doesn't execute any meaningful operations. It currently solves a mate-in-2. The main launch point is the test framework. To build and execute the test framework, run the following:
+* The main code (./src) doesn't execute any meaningful operations. The main launch point is the test framework. To build and execute the test framework, run the following:
 	* cd ./test
 	* make
 	* ./test_kestrel
-* In terms of performance, does about 15x10^6 moves/sec during the perft testing. Spec of host:
+* In terms of performance, does about 12x10^6 moves/sec during the perft testing. Spec of host:
 	- Intel® Core™ i5-3337U CPU @ 1.80GHz × 4
 	- openSUSE Leap 42.1 (x86_64) 64-bit
 	- Laptop, clocked at 3592.11 Bogomips :-)
