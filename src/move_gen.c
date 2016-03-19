@@ -557,7 +557,7 @@ generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
 	uint64_t bb_black_pieces = brd->colour_bb[BLACK];
 
 	while (pawn_bb != 0) {
-		mv_bitmap mv = 0;;
+		mv_bitmap mv = 0;
 		enum square pawn_sq = pop_1st_bit(&pawn_bb);
 
 		uint8_t pawn_file = GET_FILE(pawn_sq);

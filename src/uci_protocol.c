@@ -105,6 +105,77 @@ void uci_parse_position(char *line, struct board *brd){
 }
 
 
+
+/*
+void uci_parse_go(char *line, struct search_info *si, struct board *brd){
+    
+	int depth = -1, movestogo = 30,movetime = -1;
+	int time = -1, inc = 0;
+    char *ptr = NULL;
+	info->timeset = FALSE;
+	
+	if ((ptr = strstr(line,"infinite"))) {
+		;
+	} 
+	
+	if ((ptr = strstr(line,"binc")) && pos->side == BLACK) {
+		inc = atoi(ptr + 5);
+	}
+	
+	if ((ptr = strstr(line,"winc")) && pos->side == WHITE) {
+		inc = atoi(ptr + 5);
+	} 
+	
+	if ((ptr = strstr(line,"wtime")) && pos->side == WHITE) {
+		time = atoi(ptr + 6);
+	} 
+	  
+	if ((ptr = strstr(line,"btime")) && pos->side == BLACK) {
+		time = atoi(ptr + 6);
+	} 
+	  
+	if ((ptr = strstr(line,"movestogo"))) {
+		movestogo = atoi(ptr + 10);
+	} 
+	  
+	if ((ptr = strstr(line,"movetime"))) {
+		movetime = atoi(ptr + 9);
+	}
+	  
+	if ((ptr = strstr(line,"depth"))) {
+		depth = atoi(ptr + 6);
+	} 
+	
+	if(movetime != -1) {
+		time = movetime;
+		movestogo = 1;
+	}
+	
+	info->starttime = GetTimeMs();
+	info->depth = depth;
+	
+	if(time != -1) {
+		info->timeset = TRUE;
+		time /= movestogo;
+		time -= 50;		
+		info->stoptime = info->starttime + time + inc;
+	} 
+	
+	if(depth == -1) {
+		info->depth = MAXDEPTH;
+	}
+	
+	printf("time:%d start:%d stop:%d depth:%d timeset:%d\n",
+		time,info->starttime,info->stoptime,info->depth,info->timeset);
+	SearchPosition(pos, info);
+}
+
+*/
+
+
+
+
+
 void uci_print_ready(){
     printf("readyok\n");
 }

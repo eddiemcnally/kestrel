@@ -151,7 +151,26 @@ enum pawn_shield_val{
     PAWN_SHIELD_2 	= 5		// moved off immediate rank in front of king
 };
 
+// holds all the individual elements used for evaluating the
+// position. Done mainly to allow for debugging of the 
+// individual eveluation elements and their effect on the overall
+// score.
+struct eval_info{
+	int32_t 	material[NUM_COLOURS];			// plain material count
+	int32_t		piece_position[NUM_COLOURS];	// piece position on the board
+	int32_t		knight[NUM_COLOURS];			// knight, based on # pawns present
+	int32_t		rook[NUM_COLOURS];				// rook, based on # pawns present
+	int32_t		paired_pieces[NUM_COLOURS];		// bonus based on piece pairs
+	int32_t		pawn_shield[NUM_COLOURS];		// benefits of pawn shield
+	
+};
 
+// TODO:
+// additional eval elements to be added:
+//		- mobility
+//		- adjust for middle game and end game
+// 		- # pieces attacking squares surrounding king
+// 		- blockages (eg, bad bishops)
 
 /*
  * 
