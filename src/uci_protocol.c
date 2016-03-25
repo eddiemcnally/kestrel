@@ -23,13 +23,25 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  */
+#define _GNU_SOURCE
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <signal.h>
+#include <sys/select.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
+
 #include "types.h"
 #include "fen.h"
 #include "board_utils.h"
 #include "move_gen_utils.h"
 #include "uci_protocol.h"
+#include "utils.h"
+
+struct timeval tv;
+struct timezone tz;
 
 
 // NOTE : the code in this file was taken from BlueFever Software
@@ -105,76 +117,140 @@ void uci_parse_position(char *line, struct board *brd){
 }
 
 
-
 /*
+ * Parses the "go" command.
+ * 
+ * The spec for the go command is as follows:
+ * 
+ * go
+	start calculating on the current position set up with the "position" command.
+	There are a number of commands that can follow this command, all will be sent in the same string.
+	If one command is not sent its value should be interpreted as it would not influence the search.
+	* searchmoves <move1> .... <movei>
+		restrict search to this moves only
+		Example: After "position startpos" and "go infinite searchmoves e2e4 d2d4"
+		the engine should only search the two moves e2e4 and d2d4 in the initial position.
+	* ponder
+		start searching in pondering mode.
+		Do not exit the search in ponder mode, even if it's mate!
+		This means that the last move sent in in the position string is the ponder move.
+		The engine can do what it wants to do, but after a "ponderhit" command
+		it should execute the suggested move to ponder on. This means that the ponder move sent by
+		the GUI can be interpreted as a recommendation about which move to ponder. However, if the
+		engine decides to ponder on a different move, it should not display any mainlines as they are
+		likely to be misinterpreted by the GUI because the GUI expects the engine to ponder
+	   on the suggested move.
+	* wtime <x>
+		white has x msec left on the clock
+	* btime <x>
+		black has x msec left on the clock
+	* winc <x>
+		white increment per move in mseconds if x > 0
+	* binc <x>
+		black increment per move in mseconds if x > 0
+	* movestogo <x>
+      there are x moves to the next time control,
+		this will only be sent if x > 0,
+		if you don't get this and get the wtime and btime it's sudden death
+	* depth <x>
+		search x plies only.
+	* nodes <x>
+	   search x nodes only,
+	* mate <x>
+		search for a mate in x moves
+	* movetime <x>
+		search exactly x mseconds
+	* infinite
+		search until the "stop" command. Do not exit the search without being told so in this mode!
+
+ */ 
+
 void uci_parse_go(char *line, struct search_info *si, struct board *brd){
-    
-	int depth = -1, movestogo = 30,movetime = -1;
-	int time = -1, inc = 0;
+        
+	int32_t depth = -1;
+	int32_t move_time = -1;
+	int32_t time = -1;
+	int32_t incr = -1;
+    int32_t moves_to_go = -1;
     char *ptr = NULL;
-	info->timeset = FALSE;
+    
+	si->search_time_set = false;
 	
 	if ((ptr = strstr(line,"infinite"))) {
 		;
 	} 
 	
-	if ((ptr = strstr(line,"binc")) && pos->side == BLACK) {
-		inc = atoi(ptr + 5);
+	// black incr per move in ms
+	if ((ptr = strstr(line,"binc")) && brd->side_to_move == BLACK) {
+		incr = atoi(ptr + 5);	// skip over "binc "
 	}
-	
-	if ((ptr = strstr(line,"winc")) && pos->side == WHITE) {
-		inc = atoi(ptr + 5);
+	// white incr per move in ms
+	if ((ptr = strstr(line,"winc")) && brd->side_to_move == WHITE) {
+		incr = atoi(ptr + 5);	// skip over "winc "
+	} 
+	// white's remaining time in ms
+	if ((ptr = strstr(line,"wtime")) && brd->side_to_move == WHITE) {
+		time = atoi(ptr + 6); 	// skip over "wtime "
 	} 
 	
-	if ((ptr = strstr(line,"wtime")) && pos->side == WHITE) {
-		time = atoi(ptr + 6);
-	} 
-	  
-	if ((ptr = strstr(line,"btime")) && pos->side == BLACK) {
-		time = atoi(ptr + 6);
+	// black's remaining time in ms
+	if ((ptr = strstr(line,"btime")) && brd->side_to_move == BLACK) {
+		time = atoi(ptr + 6);	// skip over "btime "
 	} 
 	  
 	if ((ptr = strstr(line,"movestogo"))) {
-		movestogo = atoi(ptr + 10);
+		moves_to_go = atoi(ptr + 10);	// skip over "movestogo "
 	} 
-	  
+	// time allowed for searching in ms
 	if ((ptr = strstr(line,"movetime"))) {
-		movetime = atoi(ptr + 9);
+		move_time = atoi(ptr + 9);		// skip over "movetime "
 	}
-	  
+	// number of plies to search
 	if ((ptr = strstr(line,"depth"))) {
-		depth = atoi(ptr + 6);
+		depth = atoi(ptr + 6);		// skip over "depth "
 	} 
 	
-	if(movetime != -1) {
-		time = movetime;
-		movestogo = 1;
+	if(move_time != -1) {
+		time = move_time;
+		moves_to_go = 1;
 	}
 	
-	info->starttime = GetTimeMs();
-	info->depth = depth;
+	si->search_start_time = get_time_of_day_in_millis();
+	si->depth = (uint8_t)depth;
 	
 	if(time != -1) {
-		info->timeset = TRUE;
-		time /= movestogo;
+		si->search_time_set = true;
+		time /= moves_to_go;
 		time -= 50;		
-		info->stoptime = info->starttime + time + inc;
+		si->search_expiry_time = si->search_start_time 
+					+ (uint64_t)time 
+					+ (uint64_t)incr;
 	} 
 	
 	if(depth == -1) {
-		info->depth = MAXDEPTH;
+		si->depth = MAX_SEARCH_DEPTH;
 	}
 	
-	printf("time:%d start:%d stop:%d depth:%d timeset:%d\n",
-		time,info->starttime,info->stoptime,info->depth,info->timeset);
-	SearchPosition(pos, info);
+	printf("time:%d start:%jd stop:%jd depth:%d timeset:%i\n",
+		time,si->search_start_time,si->search_expiry_time, si->depth,
+		(int)si->search_time_set);
+	search_positions(brd, si, 640000000);
 }
 
-*/
 
 
+// code taken from http://home.arcor.de/dreamlike/chess/
+int uci_check_input_buffer(){
 
+  fd_set readfds;
 
+  FD_ZERO (&readfds);
+  FD_SET (fileno(stdin), &readfds);
+  tv.tv_sec=0; tv.tv_usec=0;
+  select(16, &readfds, 0, 0, &tv);
+
+  return (FD_ISSET(fileno(stdin), &readfds));
+}
 
 void uci_print_ready(){
     printf("readyok\n");

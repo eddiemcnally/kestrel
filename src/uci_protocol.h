@@ -25,11 +25,14 @@
  */
 #include <stdio.h>
 #include "types.h"
+#include "search.h"
 
 void uci_print_hello(void);
 void uci_print_ready(void);
+int uci_check_input_buffer(void);
 void uci_parse_position(char *line, struct board *brd);
 void uci_print_bestmove(mv_bitmap mv);
+void uci_parse_go(char *line, struct search_info *si, struct board *brd);
 void uci_print_info_score(int32_t best_score, uint8_t depth, uint32_t nodes, 
 					uint64_t time_in_ms, uint8_t num_pv_moves, mv_bitmap *pv_line);
 
