@@ -28,6 +28,7 @@
 #include "search.h"
 
 void uci_print_hello(void);
+void read_input(struct search_info *si);
 void uci_print_ready(void);
 int uci_check_input_buffer(void);
 void uci_parse_position(char *line, struct board *brd);

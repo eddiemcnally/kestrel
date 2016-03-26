@@ -72,3 +72,4 @@ uint64_t get_elapsed_time_in_millis(uint64_t start_time)
 	uint64_t now_in_millis = get_time_of_day_in_millis();
 	return (now_in_millis - start_time);
 }
+

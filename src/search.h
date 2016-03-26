@@ -34,6 +34,7 @@ struct search_info {
 	uint64_t search_expiry_time;	// time of day in millis when search expires
 	uint64_t search_start_time;		// time when search starts
 	bool search_stopped;			// set when search has stopped/expired
+	bool exit;						// exit kestrel
 	
 		
 	// ---- search stats

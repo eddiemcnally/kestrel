@@ -116,6 +116,30 @@ void uci_parse_position(char *line, struct board *brd){
 
 }
 
+#define NUM_BYTES	256
+void read_input(struct search_info *si) {
+  ssize_t bytes;
+  
+  char input[NUM_BYTES] = "", *endc;
+
+    if (uci_check_input_buffer()) {    
+		si->stop_search = true;
+		do {
+			bytes=read(fileno(stdin),input,NUM_BYTES);
+		} while (bytes<0);
+		
+		endc = strchr(input,'\n');
+		if (endc) *endc=0;
+
+		if (strlen(input) > 0) {
+			if (!strncmp(input, "quit", 4))    {
+			  si->exit = true;
+			}
+		}
+		return;
+    }
+}
+
 
 /*
  * Parses the "go" command.
