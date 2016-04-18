@@ -95,7 +95,7 @@ inline uint8_t pop_1st_bit(uint64_t * bb)
  * @return
  *
  */
-inline uint64_t reverse_bits(uint64_t word)
+uint64_t reverse_bits(uint64_t word)
 {
 	uint64_t retval = 0;
 

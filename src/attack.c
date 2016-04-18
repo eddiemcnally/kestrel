@@ -166,7 +166,7 @@ static void populate_intervening_squares_array(void){
 	for(int fr_sq = a1; fr_sq <= h8; fr_sq++){
 		for(int to_sq = a1; to_sq <= h8; to_sq++){
 			
-			uint64_t bits = in_between(fr_sq, to_sq);
+			uint64_t bits = in_between((enum square)fr_sq, (enum square)to_sq);
 			intervening_squares_lookup[fr_sq][to_sq] = bits;
 		}
 	}

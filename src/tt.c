@@ -63,7 +63,7 @@ void create_tt_table(uint32_t size_in_bytes)
 
 
 
-inline void add_to_tt(const uint64_t board_hash, const mv_bitmap move, uint8_t depth)
+void add_to_tt(const uint64_t board_hash, const mv_bitmap move, uint8_t depth)
 {
     struct tt_entry * entry = &tt[board_hash & tt_size];
 	
@@ -78,7 +78,7 @@ inline void add_to_tt(const uint64_t board_hash, const mv_bitmap move, uint8_t d
 	entry->depth = depth;
 }
 
-inline mv_bitmap probe_tt(const uint64_t board_hash)
+mv_bitmap probe_tt(const uint64_t board_hash)
 {
     struct tt_entry * entry = &tt[board_hash & tt_size];
 

@@ -508,7 +508,7 @@ void set_dest_sq_if_valid(int rank, int file, uint64_t * brd)
 {
 	if (IS_VALID_FILE(file) && IS_VALID_RANK(rank)) {
 		int dest_sq = GET_SQUARE(rank, file);
-		set_bit(brd, dest_sq);
+		set_bit(brd, (enum square)dest_sq);
 		//printf("---- OK  rank/file (sq=%d): %d/%d\n", dest_sq, rank, file);
 	} else {
 		//printf("XXXX bad rank/file: %d/%d\n", rank, file);

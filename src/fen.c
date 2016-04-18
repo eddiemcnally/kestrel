@@ -121,7 +121,7 @@ int consume_fen_notation(const char *fen_string, struct board *board_to_setup)
 			if (piece_to_add != NO_PIECE) {
 				int sq = GET_SQUARE(rank, file);
 				add_piece_to_board(board_to_setup, piece_to_add,
-						   sq);
+						   (enum square)sq);
 			}
 			file++;
 		}

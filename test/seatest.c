@@ -116,9 +116,6 @@ void seatest_teardown(void)
 
 char *test_file_name(char *path)
 {
-	
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Werror"
 		
 	char *file = path + strlen(path);
 	while (file != path && *file != '\\')
@@ -126,8 +123,6 @@ char *test_file_name(char *path)
 	if (*file == '\\')
 		file++;
 	return file;
-#pragma GCC diagnostic pop
-
 }
 
 static int seatest_fixture_tests_run;
@@ -231,10 +226,10 @@ seatest_assert_string_equal(char *expected, char *actual,
 	if ((expected == (char *)0) && (actual == (char *)0)) {
 		sprintf(s, "Expected <NULL> but was <NULL>");
 		comparison = 1;
-	} else if ((expected == (char *)0)) {
+	} else if (expected == (char *)0) {
 		sprintf(s, "Expected <NULL> but was %s", actual);
 		comparison = 0;
-	} else if ((actual == (char *)0)) {
+	} else if (actual == (char *)0) {
 		sprintf(s, "Expected %s but was <NULL>", expected);
 		comparison = 0;
 	} else {

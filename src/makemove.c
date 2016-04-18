@@ -66,7 +66,7 @@ static const uint8_t castle_permission_mask[NUM_SQUARES] = {
 };
 
 
-inline void move_piece(struct board *brd, enum square from, enum square to)
+void move_piece(struct board *brd, enum square from, enum square to)
 {
 
 	//ASSERT_BOARD_OK(brd);
@@ -337,7 +337,7 @@ void add_piece_to_board(struct board *brd, enum piece pce, enum square sq)
 
 
 
-inline void remove_piece_from_board(struct board *brd, enum square sq)
+void remove_piece_from_board(struct board *brd, enum square sq)
 {
 	enum piece pce = brd->pieces[sq];
 	enum colour col = GET_COLOUR(pce);
@@ -371,7 +371,7 @@ inline void remove_piece_from_board(struct board *brd, enum square sq)
 
 
 
-static inline void set_up_pawn_info(struct board *brd, enum colour col, enum square sq, enum pawn_action action){
+static void set_up_pawn_info(struct board *brd, enum colour col, enum square sq, enum pawn_action action){
 
 	uint8_t file = GET_FILE(sq);
 	uint8_t rank = GET_RANK(sq);

@@ -38,7 +38,7 @@ static uint64_t generate_rand64(void);
 #define NUM_CASTLE_KEYS		16
 
 
-static struct {
+struct zobrist {
 	uint64_t piece_keys[NUM_PIECES][NUM_SQUARES];
 	uint64_t side_to_move_key;
 	// 16 combinations because of 4 bits being used for castle enum
@@ -46,8 +46,10 @@ static struct {
 	// could use FILE, but using squares means we don't have to 
 	// calc the file in order to access the key
 	uint64_t en_passant_keys[NUM_SQUARES];
-} zobrist;
+};
 
+
+static struct zobrist st_zobrist;
 
 /*
  * Initialises hashkeys with random numbers
@@ -64,18 +66,18 @@ void init_hash_keys()
 		
 	for (int pce = 0; pce < NUM_PIECES; pce++) {
 		for (int sq = 0; sq < NUM_SQUARES; sq++) {
-			zobrist.piece_keys[pce][sq] = generate_rand64();
+			st_zobrist.piece_keys[pce][sq] = generate_rand64();
 		}
 	}
 
-	zobrist.side_to_move_key = generate_rand64();
+	st_zobrist.side_to_move_key = generate_rand64();
 	
 	for (int i = 0; i < NUM_CASTLE_KEYS; i++) {
-		zobrist.castle_keys[i] = generate_rand64();
+		st_zobrist.castle_keys[i] = generate_rand64();
 	}
 	
 	for (int i = 0; i < NUM_SQUARES; i++) {
-		zobrist.en_passant_keys[i] = generate_rand64();
+		st_zobrist.en_passant_keys[i] = generate_rand64();
 	}
 	
 	
@@ -88,9 +90,9 @@ void init_hash_keys()
  * @return:	the uint64_t hashkey
  *
  */
-inline uint64_t get_castle_hash(uint8_t castle_map)
+uint64_t get_castle_hash(uint8_t castle_map)
 {
-	return zobrist.castle_keys[castle_map];
+	return st_zobrist.castle_keys[castle_map];
 }
 
 /* Returns the side hashkey
@@ -100,9 +102,9 @@ inline uint64_t get_castle_hash(uint8_t castle_map)
  * @return:	the uint64_t hashkey
  *
  */
-inline uint64_t get_side_hash(void)
+uint64_t get_side_hash(void)
 {
-	return zobrist.side_to_move_key;
+	return st_zobrist.side_to_move_key;
 }
 
 /* Returns the hashkey for a particular piece on a given square
@@ -112,14 +114,14 @@ inline uint64_t get_side_hash(void)
  * @return:	the uint64_t hashkey
  *
  */
-inline uint64_t get_piece_hash(enum piece pce, enum square sq)
+uint64_t get_piece_hash(enum piece pce, enum square sq)
 {
-	return zobrist.piece_keys[pce][sq];
+	return st_zobrist.piece_keys[pce][sq];
 }
 
-inline uint64_t get_en_passant_hash(enum square sq)
+uint64_t get_en_passant_hash(enum square sq)
 {
-	return zobrist.en_passant_keys[sq];
+	return st_zobrist.en_passant_keys[sq];
 }
 
 /*Given a board, return a positon hashkey

@@ -39,12 +39,12 @@ static const char pieceToChar[NUM_PIECES] = {
 /**
  * Takes a typed piece and returns a human-readable representation
  */
-inline char get_piece_label(enum piece pce)
+char get_piece_label(enum piece pce)
 {
 	return pieceToChar[pce];
 }
 
-inline uint32_t get_piece_value(const enum piece pce)
+uint32_t get_piece_value(const enum piece pce)
 {
 	return piece_values[pce];
 }

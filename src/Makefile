@@ -4,36 +4,33 @@
 # 'make'        build executable file 'kestrel'
 # 'make all'	makes executable file 'kestrel'
 # 'make clean'  removes all .o and executable file
-	CC	=	gcc
+	CC	=	clang
 
 # NOTE: setting the inline limit values to be obscenely high since the size of
 #		the binary isn't a concern
 	CFLAGS	=	-O3 \
-				-std=c11 \
-				-march=native \
-				--param large-function-growth=20000 \
-				--param max-inline-insns-single=90000 \
-				-Wpedantic \
-				-Wformat=2 \
-				-Wall \
-				-Wextra \
-				-Wstrict-prototypes \
-				-Wmissing-prototypes \
-				-Wswitch-default \
-				-Wunused \
-				-Wunused-macros \
-				-Werror \
-				-Wlogical-op \
-				-Wextra \
-				-Wconversion \
-				-Wsign-conversion \
-				-Wshadow \
-				-Wcast-qual \
-				-Wcast-align \
-				-Wmissing-include-dirs \
-				-Wpointer-arith \
-				-fstack-protector \
-				-fomit-frame-pointer
+			-std=c11 \
+			-march=native \
+			-Wpedantic \
+			-Wformat=2 \
+			-Wall \
+			-Wextra \
+			-Wstrict-prototypes \
+			-Wmissing-prototypes \
+			-Wswitch-default \
+			-Wunused \
+			-Wunused-macros \
+			-Werror \
+			-Wextra \
+			-Wconversion \
+			-Wsign-conversion \
+			-Wshadow \
+			-Wcast-qual \
+			-Wcast-align \
+			-Wmissing-include-dirs \
+			-Wpointer-arith \
+			-fstack-protector \
+			-fomit-frame-pointer
 
 
 
