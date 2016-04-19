@@ -5,7 +5,7 @@
 # 'make all'	makes executable file 'kestrel'
 # 'make clean'  removes all .o and executable file
 	CC	=	clang
-
+	
 # NOTE: setting the inline limit values to be obscenely high since the size of
 #		the binary isn't a concern
 	CFLAGS	=	-O3 \
