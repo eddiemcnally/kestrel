@@ -8,7 +8,7 @@
 	
 # NOTE: setting the inline limit values to be obscenely high since the size of
 #		the binary isn't a concern
-	CFLAGS	=	-O3 \
+	CFLAGS	=	-O2 \
 			-std=c11 \
 			-march=native \
 			-Wpedantic \

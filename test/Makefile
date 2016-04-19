@@ -9,10 +9,10 @@
 
 # NOTE: setting the inline limit values to be obscenely high since the size of
 #		the binary isn't a concern
-	CFLAGS	=	-O3 \
-			-std=c11 \
-			-march=native \
-			
+	CFLAGS	=	-O2 \
+				-flto \
+				-std=c11 \
+				-march=native 
 #
 # flags for profiling code
 #	CFLAGS	=	-O3 -pg -std=c11
