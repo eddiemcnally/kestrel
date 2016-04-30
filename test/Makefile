@@ -5,14 +5,15 @@
 # 'make all'	makes executable file 'test_kestrel'
 # 'make clean'  removes all .o and executable files
 #
-	CC	=	clang
+	CC	=	gcc
 
 # NOTE: setting the inline limit values to be obscenely high since the size of
 #		the binary isn't a concern
-	CFLAGS	=	-O2 \
+	CFLAGS	=	-O3 \
 				-flto \
 				-std=c11 \
-				-march=native 
+				-march=native \
+				-mtune=native
 #
 # flags for profiling code
 #	CFLAGS	=	-O3 -pg -std=c11
