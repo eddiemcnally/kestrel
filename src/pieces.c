@@ -1,11 +1,11 @@
 /*
  * pieces.c
- * 
+ *
  * ---------------------------------------------------------------------
  * DESCRIPTION: code associated with pieces on the board
  * ---------------------------------------------------------------------
- * 
- * 
+ *
+ *
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
  * kestrel is free software: you can redistribute it and/or modify it
@@ -32,7 +32,7 @@
 
 // offsets into this array are by type enum piece
 static const char pieceToChar[NUM_PIECES] = {
-	'P', 'p', 'B', 'b', 'N', 'n', 'R', 'r', 'Q', 'q', 'K', 'k'
+    'P', 'p', 'B', 'b', 'N', 'n', 'R', 'r', 'Q', 'q', 'K', 'k'
 };
 
 
@@ -41,15 +41,16 @@ static const char pieceToChar[NUM_PIECES] = {
  */
 char get_piece_label(enum piece pce)
 {
-	return pieceToChar[pce];
+    return pieceToChar[pce];
 }
 
 uint32_t get_piece_value(const enum piece pce)
 {
-	return piece_values[pce];
+    return piece_values[pce];
 }
 
-inline bool is_valid_piece(enum piece pce){
-	return IS_VALID_PIECE(pce);
+inline bool is_valid_piece(enum piece pce)
+{
+    return IS_VALID_PIECE(pce);
 }
 

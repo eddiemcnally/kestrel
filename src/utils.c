@@ -1,11 +1,11 @@
 /*
  * utils.c
- * 
+ *
  * ---------------------------------------------------------------------
  * DESCRIPTION: misc utilities for the application
  * ---------------------------------------------------------------------
- * 
- * 
+ *
+ *
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
  * kestrel is free software: you can redistribute it and/or modify it
@@ -37,39 +37,39 @@
 
 void set_priority_and_affinity(void)
 {
-	// set up CPU affinity
-	cpu_set_t my_set;
-	CPU_ZERO(&my_set);
-	CPU_SET(1, &my_set);
-	if (sched_setaffinity(0, sizeof(cpu_set_t), &my_set) > 0) {
-		printf("affinity error");
-		exit(-1);
-	}
-	// set process priority to max
-	if (setpriority(PRIO_PROCESS, 0, PRIO_MAX) != 0) {
-		printf("process priority error");
-		exit(-1);
-	}
+    // set up CPU affinity
+    cpu_set_t my_set;
+    CPU_ZERO(&my_set);
+    CPU_SET(1, &my_set);
+    if (sched_setaffinity(0, sizeof(cpu_set_t), &my_set) > 0) {
+        printf("affinity error");
+        exit(-1);
+    }
+    // set process priority to max
+    if (setpriority(PRIO_PROCESS, 0, PRIO_MAX) != 0) {
+        printf("process priority error");
+        exit(-1);
+    }
 
 }
 
 
 uint64_t get_time_of_day_in_millis(void)
 {
-	struct timeval tp;
+    struct timeval tp;
 
-	int errno = gettimeofday(&tp, NULL);
+    int errno = gettimeofday(&tp, NULL);
 
-	if (errno == 0) {
-		return (uint64_t) (tp.tv_sec * 1000 + tp.tv_usec / 1000);
-	}
+    if (errno == 0) {
+        return (uint64_t) (tp.tv_sec * 1000 + tp.tv_usec / 1000);
+    }
 
-	return 0;
+    return 0;
 }
 
 uint64_t get_elapsed_time_in_millis(uint64_t start_time)
 {
-	uint64_t now_in_millis = get_time_of_day_in_millis();
-	return (now_in_millis - start_time);
+    uint64_t now_in_millis = get_time_of_day_in_millis();
+    return (now_in_millis - start_time);
 }
 

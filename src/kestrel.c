@@ -58,60 +58,63 @@ static void do_uci_loop(void);
 
 int main(int argc, char **argv)
 {
-	if (argc > 1) {
-		printf("%d", **argv);
-	}
+    if (argc > 1) {
+        printf("%d", **argv);
+    }
 
-	// set process pri and cpu affinity for max performance
-	set_priority_and_affinity();
-/*
-	struct board brd = init_game(SAMPLE_POSITION);
-		
-	struct search_info si = {0};
-	si.depth = 4;
-	search_positions(&brd, &si, 64000000);
-*/
-	do_uci_loop();
-		
-	return 0;
+    // set process pri and cpu affinity for max performance
+    set_priority_and_affinity();
+    /*
+    	struct board brd = init_game(SAMPLE_POSITION);
+
+    	struct search_info si = {0};
+    	si.depth = 4;
+    	search_positions(&brd, &si, 64000000);
+    */
+    do_uci_loop();
+
+    return 0;
 }
 
 
 // code courtesy of BlueFever Software (but modified/adapted)
-static void do_uci_loop(){
-	
-	setbuf(stdin, NULL);
+static void do_uci_loop()
+{
+
+    setbuf(stdin, NULL);
     setbuf(stdout, NULL);
-	
-	char line[INPUTBUFFER];
-	
-	
-	
+
+    char line[INPUTBUFFER];
+
+
+
     init_game_no_board();
-    
+
     struct board brd;
     get_clean_board(&brd);
-    
-    struct search_info si;
-	init_search_struct(&si);
-	
-	
-	uci_print_hello();
-        
-	while (true) {
-		memset(&line[0], 0, sizeof(line));
-        fflush(stdout);
-        if (!fgets(line, INPUTBUFFER, stdin))
-			continue;
 
-        if (line[0] == '\n')
-			continue;
+    struct search_info si;
+    init_search_struct(&si);
+
+
+    uci_print_hello();
+
+    while (true) {
+        memset(&line[0], 0, sizeof(line));
+        fflush(stdout);
+        if (!fgets(line, INPUTBUFFER, stdin)) {
+            continue;
+        }
+
+        if (line[0] == '\n') {
+            continue;
+        }
 
         if (!strncmp(line, "isready", 7)) {
             uci_print_ready();
             continue;
         } else if (!strncmp(line, "position", 8)) {
-			uci_parse_position(line, &brd);
+            uci_parse_position(line, &brd);
         } else if (!strncmp(line, "ucinewgame", 10)) {
             uci_parse_position("position startpos\n", &brd);
 //        } else if (!strncmp(line, "go", 2)) {
@@ -122,8 +125,9 @@ static void do_uci_loop(){
         } else if (!strncmp(line, "uci", 3)) {
             uci_print_hello();
         }
-		if (si.stop_search == true)
-			break;
+        if (si.stop_search == true) {
+            break;
+        }
     }
 }
 

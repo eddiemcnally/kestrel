@@ -39,11 +39,11 @@ static void set_tt_size(uint32_t size_in_bytes);
 
 
 struct tt_entry {
-	uint64_t hashkey;
-	mv_bitmap move;
-	uint32_t score;
-	uint8_t flags;
-	uint8_t depth;
+    uint64_t hashkey;
+    mv_bitmap move;
+    uint32_t score;
+    uint8_t flags;
+    uint8_t depth;
 };
 
 static uint32_t tt_size = 0;
@@ -52,13 +52,13 @@ static struct tt_entry *tt = NULL;
 
 void create_tt_table(uint32_t size_in_bytes)
 {
-	if (tt != NULL){
-		dispose_tt_table();
-	}
-	
-	set_tt_size(size_in_bytes);
-	
-	init_table();
+    if (tt != NULL) {
+        dispose_tt_table();
+    }
+
+    set_tt_size(size_in_bytes);
+
+    init_table();
 }
 
 
@@ -66,58 +66,60 @@ void create_tt_table(uint32_t size_in_bytes)
 void add_to_tt(const uint64_t board_hash, const mv_bitmap move, uint8_t depth)
 {
     struct tt_entry * entry = &tt[board_hash & tt_size];
-	
-	if (entry->move != NO_MOVE){
-		// slot is filled, only add if depth is greater
-		if (entry->depth > depth){
-			return;
-		} 
-	}
-	entry->hashkey = board_hash;
-	entry->move = move;
-	entry->depth = depth;
+
+    if (entry->move != NO_MOVE) {
+        // slot is filled, only add if depth is greater
+        if (entry->depth > depth) {
+            return;
+        }
+    }
+    entry->hashkey = board_hash;
+    entry->move = move;
+    entry->depth = depth;
 }
 
 mv_bitmap probe_tt(const uint64_t board_hash)
 {
     struct tt_entry * entry = &tt[board_hash & tt_size];
 
-	if (entry->hashkey == board_hash){
-		return entry->move;
-	}
-	return NO_MOVE;
+    if (entry->hashkey == board_hash) {
+        return entry->move;
+    }
+    return NO_MOVE;
 }
 
 void dispose_tt_table()
 {
-	if (tt != NULL){
-		free(tt);
-	}	
+    if (tt != NULL) {
+        free(tt);
+    }
 }
 
 static inline void init_table()
 {
-	for(uint32_t i = 0; i < tt_size; i++){
-	    struct tt_entry * entry = &tt[i];
-		entry->hashkey = 0;
-		entry->move = NO_MOVE;
-		entry->score = 0;
-		entry->depth = 0;
-		entry->flags = 0;
-	}
+    for(uint32_t i = 0; i < tt_size; i++) {
+        struct tt_entry * entry = &tt[i];
+        entry->hashkey = 0;
+        entry->move = NO_MOVE;
+        entry->score = 0;
+        entry->depth = 0;
+        entry->flags = 0;
+    }
 }
 
-static void set_tt_size(uint32_t size_in_bytes) {
+static void set_tt_size(uint32_t size_in_bytes)
+{
 
-	if (tt != NULL){
-		dispose_tt_table();
-	}
+    if (tt != NULL) {
+        dispose_tt_table();
+    }
 
-	// round down to nearest power of 2
+    // round down to nearest power of 2
     if (size_in_bytes & (size_in_bytes - 1)) {
         size_in_bytes--;
-        for (int i=1; i<32; i=i*2)
+        for (int i=1; i<32; i=i*2) {
             size_in_bytes |= size_in_bytes >> i;
+        }
         size_in_bytes++;
         size_in_bytes>>=1;
     }

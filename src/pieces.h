@@ -43,18 +43,18 @@
 
 // piece values, indexed into using the enum piece enum
 static const uint32_t piece_values[NUM_PIECES] = {
-	100,			// W_PAWN
-	100,			// B_PAWN
-	325,			// W_BISHOP
-	325,			// B_BISHOP
-	325,			// W_KNIGHT
-	325,			// B_KNIGHT
-	550,			// W_ROOK
-	550,			// B_ROOK
-	1000,			// W_QUEEN
-	1000,			// B_QUEEN
-	50000,			// W_KING
-	50000			// B_KING
+    100,			// W_PAWN
+    100,			// B_PAWN
+    325,			// W_BISHOP
+    325,			// B_BISHOP
+    325,			// W_KNIGHT
+    325,			// B_KNIGHT
+    550,			// W_ROOK
+    550,			// B_ROOK
+    1000,			// W_QUEEN
+    1000,			// B_QUEEN
+    50000,			// W_KING
+    50000			// B_KING
 };
 #define INFINITE 	((int32_t)(30000))
 #define MATE 		29000

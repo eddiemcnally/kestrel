@@ -37,21 +37,21 @@
 
 struct board init_game(char *fen)
 {
-	init_game_no_board();
+    init_game_no_board();
 
-	struct board brd;
-	init_board(fen, &brd);
+    struct board brd;
+    init_board(fen, &brd);
 
-	ASSERT_BOARD_OK(&brd);
+    ASSERT_BOARD_OK(&brd);
 
-	return brd;
+    return brd;
 }
 
 void init_game_no_board()
 {
-	init_hash_keys();
-	init_move_gen_framework();
-	init_attack_framework();	
+    init_hash_keys();
+    init_move_gen_framework();
+    init_attack_framework();
 }
 
 

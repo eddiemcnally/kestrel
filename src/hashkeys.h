@@ -16,7 +16,7 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #pragma once
- 
+
 void init_hash_keys(void);
 uint64_t get_position_hash(const struct board *brd);
 uint64_t get_castle_hash(uint8_t castle_map);

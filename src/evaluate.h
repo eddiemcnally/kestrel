@@ -1,6 +1,6 @@
 /*
  * evaluate.h
- * 
+ *
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
  * kestrel is free software: you can redistribute it and/or modify it

@@ -22,8 +22,8 @@
 
 
 struct move_list {
-	mv_bitmap moves[MAX_POSITION_MOVES];	// list of moves
-	uint16_t move_count;					// #moves in list
+    mv_bitmap moves[MAX_POSITION_MOVES];	// list of moves
+    uint16_t move_count;					// #moves in list
 };
 
 // add to score so we can sort based on most important
@@ -39,31 +39,31 @@ struct move_list {
 
 
 mv_bitmap MOVE(enum square from, enum square to, enum piece capture,
-	       enum piece promote, uint64_t flags);
+               enum piece promote, uint64_t flags);
 void generate_all_moves(struct board *brd, struct move_list *mvl);
 void generate_all_capture_moves(struct board *brd, struct move_list *mvl);
 void init_move_gen_framework(void);
 bool move_exists(struct board *brd, mv_bitmap move_to_test) ;
 
 void TEST_generate_white_pawn_moves(struct board *brd,
-				    struct move_list *mvl);
+                                    struct move_list *mvl);
 void TEST_generate_black_pawn_moves(struct board *brd,
-				    struct move_list *mvl);
+                                    struct move_list *mvl);
 void TEST_generate_knight_piece_moves(struct board *brd,
-				      struct move_list *mvl, enum colour col);
+                                      struct move_list *mvl, enum colour col);
 void TEST_generate_king_moves(struct board *brd,
-			      struct move_list *mvl, enum colour col);
+                              struct move_list *mvl, enum colour col);
 void TEST_generate_castle_moves(struct board *brd,
-				struct move_list *mvl, enum colour col);
+                                struct move_list *mvl, enum colour col);
 void TEST_generate_sliding_horizontal_vertical_moves(struct board
-						     *brd,
-						     struct move_list *mvl,
-						     enum colour col);
+        *brd,
+        struct move_list *mvl,
+        enum colour col);
 void TEST_generate_sliding_diagonal_moves(struct board *brd,
-					  struct move_list *mvl,
-					  enum colour col);
+        struct move_list *mvl,
+        enum colour col);
 void TEST_generate_queen_moves(struct board *brd,
-			       struct move_list *mvl, enum piece pce);
+                               struct move_list *mvl, enum piece pce);
 bool TEST_is_move_in_list(struct move_list *mvl, mv_bitmap mv);
 void TEST_add_en_passent_move(mv_bitmap move_bitmap, struct move_list *mvlist);
 void TEST_add_quiet_move(struct board *brd, mv_bitmap move_bitmap, struct move_list *mvlist);

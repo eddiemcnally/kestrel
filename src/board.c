@@ -1,13 +1,13 @@
 /*
  * board.c
- * 
+ *
  * ---------------------------------------------------------------------
  * DESCRIPTION : Contains code for manipulating the chess board
- * --------------------------------------------------------------------- 
- * 
- * 
- * 
- * 
+ * ---------------------------------------------------------------------
+ *
+ *
+ *
+ *
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
  * kestrel is free software: you can redistribute it and/or modify it
@@ -51,8 +51,8 @@
  */
 void init_board(char *fen, struct board *brd)
 {
-	get_clean_board(brd);
-	consume_fen_notation(fen, brd);
+    get_clean_board(brd);
+    consume_fen_notation(fen, brd);
 }
 
 /*
@@ -64,82 +64,84 @@ void init_board(char *fen, struct board *brd)
  */
 void get_clean_board(struct board *brd)
 {
-	memset(brd, 0, sizeof(struct board));
-	
-	for(uint8_t i = 0; i < NUM_SQUARES; i++){
-		brd->pieces[i] = NO_PIECE;
-	}
-	
-	brd->king_sq[WHITE] = NO_SQUARE;
-	brd->king_sq[BLACK] = NO_SQUARE;
-	
-	brd->side_to_move = WHITE;
-	brd->en_passant = NO_SQUARE;
+    memset(brd, 0, sizeof(struct board));
 
-	for(uint16_t i = 0; i < MAX_SEARCH_DEPTH; i++){
-		brd->pv_line[i] = NO_MOVE;
-	}
+    for(uint8_t i = 0; i < NUM_SQUARES; i++) {
+        brd->pieces[i] = NO_PIECE;
+    }
 
-	for(uint16_t i = 0; i < MAX_GAME_MOVES; i++){
-		brd->history[i].move = NO_MOVE;
-		brd->history[i].en_passant = NO_SQUARE;
-		// other struct values are already set to zero with memset		
-	}
+    brd->king_sq[WHITE] = NO_SQUARE;
+    brd->king_sq[BLACK] = NO_SQUARE;
+
+    brd->side_to_move = WHITE;
+    brd->en_passant = NO_SQUARE;
+
+    for(uint16_t i = 0; i < MAX_SEARCH_DEPTH; i++) {
+        brd->pv_line[i] = NO_MOVE;
+    }
+
+    for(uint16_t i = 0; i < MAX_GAME_MOVES; i++) {
+        brd->history[i].move = NO_MOVE;
+        brd->history[i].en_passant = NO_SQUARE;
+        // other struct values are already set to zero with memset
+    }
 }
 
 // returns the count.
-uint8_t populate_pv_line(struct board *brd, uint8_t depth){
+uint8_t populate_pv_line(struct board *brd, uint8_t depth)
+{
 
-	mv_bitmap mv = probe_tt(brd->board_hash);
+    mv_bitmap mv = probe_tt(brd->board_hash);
 
-	uint8_t count = 0;
+    uint8_t count = 0;
 
-	while((mv != NO_MOVE) && (count < depth)){
-		
-		//assert(count < MAX_SEARCH_DEPTH);
+    while((mv != NO_MOVE) && (count < depth)) {
 
-		make_move(brd, mv);
-		brd->pv_line[count++] = mv;
-		
-		mv = probe_tt(brd->board_hash);
-	}
+        //assert(count < MAX_SEARCH_DEPTH);
 
-	// rollback moves
-	while(brd->ply > 0) {
-		take_move(brd);
-	}
-	
-	return count;
+        make_move(brd, mv);
+        brd->pv_line[count++] = mv;
+
+        mv = probe_tt(brd->board_hash);
+    }
+
+    // rollback moves
+    while(brd->ply > 0) {
+        take_move(brd);
+    }
+
+    return count;
 }
 
 
 
 inline uint64_t overlay_white_piece_bitboards(const struct board * brd)
 {
-	return brd->bitboards[W_PAWN] | brd->bitboards[W_BISHOP]
-	    | brd->bitboards[W_KNIGHT] | brd->bitboards[W_ROOK]
-	    | brd->bitboards[W_QUEEN] | brd->bitboards[W_KING];
+    return brd->bitboards[W_PAWN] | brd->bitboards[W_BISHOP]
+           | brd->bitboards[W_KNIGHT] | brd->bitboards[W_ROOK]
+           | brd->bitboards[W_QUEEN] | brd->bitboards[W_KING];
 }
 
 inline uint64_t overlay_black_piece_bitboards(const struct board * brd)
 {
-	return brd->bitboards[B_PAWN] | brd->bitboards[B_BISHOP]
-	    | brd->bitboards[B_KNIGHT] | brd->bitboards[B_ROOK]
-	    | brd->bitboards[B_QUEEN] | brd->bitboards[B_KING];
+    return brd->bitboards[B_PAWN] | brd->bitboards[B_BISHOP]
+           | brd->bitboards[B_KNIGHT] | brd->bitboards[B_ROOK]
+           | brd->bitboards[B_QUEEN] | brd->bitboards[B_KING];
 }
 
 
-inline bool is_piece_on_square(const struct board *brd, enum piece pce, enum square sq){
-	enum piece on_board = brd->pieces[sq];
-	return (pce == on_board);
+inline bool is_piece_on_square(const struct board *brd, enum piece pce, enum square sq)
+{
+    enum piece on_board = brd->pieces[sq];
+    return (pce == on_board);
 }
 
 
 inline uint64_t square_to_bitboard(enum square sq)
 {
-	uint64_t retval = 0;
-	set_bit(&retval, sq);
-	return retval;
+    uint64_t retval = 0;
+    set_bit(&retval, sq);
+    return retval;
 }
 
 
@@ -152,5 +154,5 @@ inline uint64_t square_to_bitboard(enum square sq)
  */
 inline uint8_t count_bits(uint64_t bb)
 {
-	return (uint8_t) __builtin_popcountll(bb);
+    return (uint8_t) __builtin_popcountll(bb);
 }

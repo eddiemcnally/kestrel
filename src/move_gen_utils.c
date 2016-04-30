@@ -39,28 +39,30 @@
 #define R6(n) R4(n), R4(n + 2*4 ), R4(n + 1*4 ), R4(n + 3*4 )
 
 
-static const unsigned char BitReverseTable256[256] =
-{
+static const unsigned char BitReverseTable256[256] = {
     R6(0), R6(2), R6(1), R6(3)
 };
 
 
 
 
-inline uint32_t get_score(mv_bitmap mv){
-	return (uint32_t)(mv & MV_MASK_SCORE);
+inline uint32_t get_score(mv_bitmap mv)
+{
+    return (uint32_t)(mv & MV_MASK_SCORE);
 }
 
-inline mv_bitmap get_move(mv_bitmap mv){
-	return (mv_bitmap)(mv & MV_MASK_MOVE);
+inline mv_bitmap get_move(mv_bitmap mv)
+{
+    return (mv_bitmap)(mv & MV_MASK_MOVE);
 }
 
-inline void add_to_score(mv_bitmap *mv, uint32_t to_add){
-	uint32_t score = get_score(*mv);
-	
-	score += to_add;
+inline void add_to_score(mv_bitmap *mv, uint32_t to_add)
+{
+    uint32_t score = get_score(*mv);
 
-	*mv |= ((uint32_t)(score) & MV_MASK_SCORE);	
+    score += to_add;
+
+    *mv |= ((uint32_t)(score) & MV_MASK_SCORE);
 }
 
 
@@ -76,11 +78,11 @@ inline void add_to_score(mv_bitmap *mv, uint32_t to_add){
  */
 inline uint8_t pop_1st_bit(uint64_t * bb)
 {
-	uint8_t bit = (uint8_t) __builtin_ctzll(*bb);
-	
-	// clear the bit
-	*bb = *bb & (uint64_t) (~(0x01ull << bit));
-	return bit;
+    uint8_t bit = (uint8_t) __builtin_ctzll(*bb);
+
+    // clear the bit
+    *bb = *bb & (uint64_t) (~(0x01ull << bit));
+    return bit;
 }
 
 
@@ -97,59 +99,59 @@ inline uint8_t pop_1st_bit(uint64_t * bb)
  */
 uint64_t reverse_bits(uint64_t word)
 {
-	uint64_t retval = 0;
+    uint64_t retval = 0;
 
-	uint8_t *p_in = (uint8_t *) & word;
-	uint8_t *p_out = (uint8_t *) & retval;
-	// reverse the bits in each byte
-	for (int i = 0; i < 8; i++) {
-		*p_out = (uint8_t)BitReverseTable256[*p_in];
-		p_out++;
-		p_in++;
-	}
+    uint8_t *p_in = (uint8_t *) & word;
+    uint8_t *p_out = (uint8_t *) & retval;
+    // reverse the bits in each byte
+    for (int i = 0; i < 8; i++) {
+        *p_out = (uint8_t)BitReverseTable256[*p_in];
+        p_out++;
+        p_in++;
+    }
 
-	// now reverse the bytes
-	return __builtin_bswap64(retval);
+    // now reverse the bytes
+    return __builtin_bswap64(retval);
 }
 
 
 
 inline bool is_move_in_list(struct move_list *mvl, mv_bitmap mv)
 {
-	mv_bitmap mv_no_score = mv >> MV_MASK_OFF_FROM_SQ;
+    mv_bitmap mv_no_score = mv >> MV_MASK_OFF_FROM_SQ;
 
-	for (int i = 0; i < mvl->move_count; i++) {
-		mv_bitmap temp = mvl->moves[i] >> MV_MASK_OFF_FROM_SQ;
-		
-		if (temp == mv_no_score) {
-			return true;
-		}
-	}
-	return false;
+    for (int i = 0; i < mvl->move_count; i++) {
+        mv_bitmap temp = mvl->moves[i] >> MV_MASK_OFF_FROM_SQ;
+
+        if (temp == mv_no_score) {
+            return true;
+        }
+    }
+    return false;
 }
 
 
 
 void validate_move_list(struct move_list *mvl)
 {
-	assert(mvl->move_count < MAX_POSITION_MOVES);
+    assert(mvl->move_count < MAX_POSITION_MOVES);
 
-	for (int i = 0; i < mvl->move_count; i++) {
-		mv_bitmap m = mvl->moves[i];
+    for (int i = 0; i < mvl->move_count; i++) {
+        mv_bitmap m = mvl->moves[i];
 
-		enum square from = FROMSQ(m);
-		enum square to = TOSQ(m);
-		enum piece capt = CAPTURED_PCE(m);
-		enum piece promote = PROMOTED_PCE(m);
+        enum square from = FROMSQ(m);
+        enum square to = TOSQ(m);
+        enum piece capt = CAPTURED_PCE(m);
+        enum piece promote = PROMOTED_PCE(m);
 
-		assert(is_valid_piece(capt));
-		assert(is_valid_piece(promote));
+        assert(is_valid_piece(capt));
+        assert(is_valid_piece(promote));
 
-		assert(from >= a1 && from <= h8);
-		assert(to >= a1 && to <= h8);
+        assert(from >= a1 && from <= h8);
+        assert(to >= a1 && to <= h8);
 
-		assert(get_score(m) == 0);
-	}
+        assert(get_score(m) == 0);
+    }
 }
 
 
@@ -162,55 +164,55 @@ void validate_move_list(struct move_list *mvl)
  */
 char *print_move(mv_bitmap move_bitmap)
 {
-	static char move_string[6];
+    static char move_string[6];
 
-	int from_file = GET_FILE(FROMSQ(move_bitmap));
-	int from_rank = GET_RANK(FROMSQ(move_bitmap));
+    int from_file = GET_FILE(FROMSQ(move_bitmap));
+    int from_rank = GET_RANK(FROMSQ(move_bitmap));
 
-	int to_file = GET_FILE(TOSQ(move_bitmap));
-	int to_rank = GET_RANK(TOSQ(move_bitmap));
+    int to_file = GET_FILE(TOSQ(move_bitmap));
+    int to_rank = GET_RANK(TOSQ(move_bitmap));
 
-	enum piece promoted_pce = PROMOTED_PCE(move_bitmap);
+    enum piece promoted_pce = PROMOTED_PCE(move_bitmap);
 
-	if (promoted_pce != NO_PIECE) {
-		char pchar = 'q';
-		if (IS_KNIGHT(promoted_pce)) {
-			pchar = 'n';
-		} else if (IS_ROOK(promoted_pce)) {
-			pchar = 'r';
-		} else if (IS_BISHOP(promoted_pce)) {
-			pchar = 'b';
-		}
-		sprintf(move_string, "%c%c%c%c%c", ('a' + from_file),
-			('1' + from_rank), ('a' + to_file), ('1' + to_rank),
-			pchar);
-	} else {
-		sprintf(move_string, "%c%c%c%c", ('a' + from_file),
-			('1' + from_rank), ('a' + to_file), ('1' + to_rank));
-	}
+    if (promoted_pce != NO_PIECE) {
+        char pchar = 'q';
+        if (IS_KNIGHT(promoted_pce)) {
+            pchar = 'n';
+        } else if (IS_ROOK(promoted_pce)) {
+            pchar = 'r';
+        } else if (IS_BISHOP(promoted_pce)) {
+            pchar = 'b';
+        }
+        sprintf(move_string, "%c%c%c%c%c", ('a' + from_file),
+                ('1' + from_rank), ('a' + to_file), ('1' + to_rank),
+                pchar);
+    } else {
+        sprintf(move_string, "%c%c%c%c", ('a' + from_file),
+                ('1' + from_rank), ('a' + to_file), ('1' + to_rank));
+    }
 
-	return move_string;
+    return move_string;
 }
 
 void print_move_details(mv_bitmap move_bitmap)
 {
-	int from_file = GET_FILE(FROMSQ(move_bitmap));
-	int from_rank = GET_RANK(FROMSQ(move_bitmap));
+    int from_file = GET_FILE(FROMSQ(move_bitmap));
+    int from_rank = GET_RANK(FROMSQ(move_bitmap));
 
-	int to_file = GET_FILE(TOSQ(move_bitmap));
-	int to_rank = GET_RANK(TOSQ(move_bitmap));
+    int to_file = GET_FILE(TOSQ(move_bitmap));
+    int to_rank = GET_RANK(TOSQ(move_bitmap));
 
-	enum piece captured = CAPTURED_PCE(move_bitmap);
-	enum piece promoted = PROMOTED_PCE(move_bitmap);
+    enum piece captured = CAPTURED_PCE(move_bitmap);
+    enum piece promoted = PROMOTED_PCE(move_bitmap);
 
-	char c_capt = get_piece_label(captured);
-	char c_promoted = get_piece_label(promoted);
+    char c_capt = get_piece_label(captured);
+    char c_promoted = get_piece_label(promoted);
 
-	uint32_t score = get_score(move_bitmap);
-	
-	printf("%c%c%c%c, captured '%c' promote '%c' score %d\n",
-	       ('a' + from_file), ('1' + from_rank), ('a' + to_file),
-	       ('1' + to_rank), c_capt, c_promoted, score);
+    uint32_t score = get_score(move_bitmap);
+
+    printf("%c%c%c%c, captured '%c' promote '%c' score %d\n",
+           ('a' + from_file), ('1' + from_rank), ('a' + to_file),
+           ('1' + to_rank), c_capt, c_promoted, score);
 
 }
 
@@ -225,13 +227,13 @@ void print_move_details(mv_bitmap move_bitmap)
 
 void print_move_list_details(const struct move_list *list)
 {
-	printf("MoveList Details: (%d)\n", list->move_count);
+    printf("MoveList Details: (%d)\n", list->move_count);
 
-	for (int i = 0; i < list->move_count; i++) {
-		mv_bitmap mv = list->moves[i];
-		print_move_details(mv);
-	}
-	printf("MoveList Total %d Moves:\n\n", list->move_count);
+    for (int i = 0; i < list->move_count; i++) {
+        mv_bitmap mv = list->moves[i];
+        print_move_details(mv);
+    }
+    printf("MoveList Total %d Moves:\n\n", list->move_count);
 }
 
 /*
@@ -244,14 +246,14 @@ void print_move_list_details(const struct move_list *list)
 
 void print_move_list(const struct move_list *list)
 {
-	printf("MoveList:\n");
+    printf("MoveList:\n");
 
-	for (int i = 0; i < list->move_count; i++) {
-		mv_bitmap move = list->moves[i];
+    for (int i = 0; i < list->move_count; i++) {
+        mv_bitmap move = list->moves[i];
 
-		printf("%s\n", print_move(move));
-	}
-	//printf("MoveList Total %d Moves:\n\n", list->move_count);
+        printf("%s\n", print_move(move));
+    }
+    //printf("MoveList Total %d Moves:\n\n", list->move_count);
 }
 
 
