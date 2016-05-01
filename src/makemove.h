@@ -21,7 +21,6 @@ bool make_move(struct board *brd, mv_bitmap mv);
 void take_move(struct board *brd);
 void flip_sides(struct board *brd);
 void set_bit(uint64_t * brd, enum square sq);
-void set_bits(uint64_t * brd, uint64_t bitmask);
 void clear_bit(uint64_t * brd, enum square sq);
 void move_piece(struct board *brd, enum square from, enum square to);
 
