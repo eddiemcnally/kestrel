@@ -149,9 +149,11 @@ struct board {
     // bitboard entry for each piece
     uint64_t bitboards[NUM_PIECES];
 
-    // The above array piece arrays overlayed into a single bitboard.
-    // In effect, an OR of all elements in bitboards[]
-    uint64_t board;
+    // indexed by enum colour, contains sum of all piece values
+    uint32_t material[NUM_COLOURS];
+
+    // contains the pieces on each square
+    enum piece pieces[NUM_SQUARES];
 
     // a bitboard for each colour, representing where all the pieces
     // of each colour are on the board
@@ -170,6 +172,13 @@ struct board {
 
     // the next side to move
     enum colour side_to_move;
+    
+    // The above array piece arrays overlayed into a single bitboard.
+    // In effect, an OR of all elements in bitboards[]
+    uint64_t board;
+
+    // a hash of the current board
+    uint64_t board_hash;
 
     // the square where en passent is active
     enum square en_passant;
@@ -180,11 +189,6 @@ struct board {
     uint8_t ply;
     uint8_t history_ply;
 
-    // indexed by enum colour, contains sum of all piece values
-    uint32_t material[NUM_COLOURS];
-
-    // contains the pieces on each square
-    enum piece pieces[NUM_SQUARES];
 
     // the best moves from the current position
     mv_bitmap pv_line[MAX_SEARCH_DEPTH];
@@ -194,9 +198,6 @@ struct board {
 
     // move history
     struct undo history[MAX_GAME_MOVES];
-
-    // a hash of the current board
-    uint64_t board_hash;
 
 
     // move ordering

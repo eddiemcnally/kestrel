@@ -43,11 +43,10 @@
 
 
 
-
-static inline void add_pawn_info(struct board *brd, enum colour col,
-                                    enum square sq);
-static inline void remove_pawn_info(struct board *brd, enum colour col,
-                                    enum square sq);
+static inline void add_black_pawn_info(struct board *brd, enum square sq);
+static inline void add_white_pawn_info(struct board *brd, enum square sq);
+static inline void remove_black_pawn_info(struct board *brd, enum square sq);
+static inline void remove_white_pawn_info(struct board *brd, enum square sq);
 
 
 //bit mask for castle permissions
@@ -91,8 +90,8 @@ void move_piece(struct board *brd, enum square from, enum square to)
         set_bit(&brd->colour_bb[WHITE], to);
         if(pce == W_PAWN) {
             // easiest way to move a pawn
-            remove_pawn_info(brd, WHITE, from);
-            add_pawn_info(brd, WHITE, to);
+            remove_white_pawn_info(brd, from);
+            add_white_pawn_info(brd, to);
         } else if (pce == W_KING) {
             brd->king_sq[WHITE] = to;
         }
@@ -101,8 +100,8 @@ void move_piece(struct board *brd, enum square from, enum square to)
         set_bit(&brd->colour_bb[BLACK], to);
         if(pce == B_PAWN) {
             // easiest way to move a pawn
-            remove_pawn_info(brd, BLACK, from);
-            add_pawn_info(brd, BLACK, to);
+            remove_black_pawn_info(brd, from);
+            add_black_pawn_info(brd, to);
         } else if (pce == B_KING) {
             brd->king_sq[BLACK] = to;
         }
@@ -311,7 +310,7 @@ void add_piece_to_board(struct board *brd, enum piece pce, enum square sq)
     brd->board_hash ^= get_piece_hash(pce, sq);
 
     brd->pieces[sq] = pce;
-    brd->material[col] += get_piece_value(pce);
+    brd->material[col] += GET_PIECE_VALUE(pce);
 
     // set piece on bitboards
     set_bit(&brd->bitboards[pce], sq);
@@ -320,8 +319,10 @@ void add_piece_to_board(struct board *brd, enum piece pce, enum square sq)
 
     switch (pce) {
     case W_PAWN:
+		add_white_pawn_info(brd, sq);
+		break;
     case B_PAWN:
-        add_pawn_info(brd, col, sq);
+        add_black_pawn_info(brd, sq);
         break;
     case W_KING:
     case B_KING:
@@ -344,7 +345,7 @@ void remove_piece_from_board(struct board *brd, enum square sq)
 
     brd->pieces[sq] = NO_PIECE;
 
-    brd->material[col] -= get_piece_value(pce);
+    brd->material[col] -= GET_PIECE_VALUE(pce);
 
     // remove piece from bitboards
     clear_bit(&brd->bitboards[pce], sq);
@@ -354,8 +355,10 @@ void remove_piece_from_board(struct board *brd, enum square sq)
 
     switch (pce) {
     case W_PAWN:
+        remove_white_pawn_info(brd, sq);
+        break;
     case B_PAWN:
-        remove_pawn_info(brd, col, sq);
+        remove_black_pawn_info(brd, sq);
         break;
     case W_KING:
     case B_KING:
@@ -369,95 +372,94 @@ void remove_piece_from_board(struct board *brd, enum square sq)
 
 
 
-static inline void remove_pawn_info(struct board *brd, enum colour col, enum square sq)
+static inline void remove_black_pawn_info(struct board *brd, enum square sq)
 {
-
     uint8_t file = GET_FILE(sq);
     uint8_t rank = GET_RANK(sq);
 
-    brd->pawns_on_file[col][file]--;
-    brd->pawns_on_rank[col][rank]--;
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wconversion"
-#pragma GCC diagnostic ignored "-Wsign-conversion"
+    brd->pawns_on_file[BLACK][file]--;
+    brd->pawns_on_rank[BLACK][rank]--;
 
     int32_t next_sq = 0;
-    switch (col) {
-    case WHITE:
-        if (file > FILE_A) {
-            next_sq = sq + NW;
-            brd->pawn_control[col][next_sq]--;
-        }
-        if (file < FILE_H) {
-            next_sq = sq + NE;
-            brd->pawn_control[col][next_sq]--;
-        }
-        break;
-
-    case BLACK:
-        if (file > FILE_A) {
-            next_sq = sq + SW;
-            brd->pawn_control[col][next_sq]--;
-        }
-        if (file < FILE_H) {
-            next_sq = sq + SE;
-            brd->pawn_control[col][next_sq]--;
-        }
-        break;
-    default:
-        assert(false);
-
-    }
-#pragma GCC diagnostic pop
-
+	if (file > FILE_A) {
+		next_sq = sq + SW;
+		brd->pawn_control[BLACK][next_sq]--;
+	}
+	if (file < FILE_H) {
+		next_sq = sq + SE;
+		brd->pawn_control[BLACK][next_sq]--;
+	}
 }
+
+
+
+
+static inline void remove_white_pawn_info(struct board *brd, enum square sq)
+{
+    uint8_t file = GET_FILE(sq);
+    uint8_t rank = GET_RANK(sq);
+
+    brd->pawns_on_file[WHITE][file]--;
+    brd->pawns_on_rank[WHITE][rank]--;
+
+    int32_t next_sq = 0;
+	if (file > FILE_A) {
+		next_sq = sq + NW;
+		brd->pawn_control[WHITE][next_sq]--;
+	}
+	if (file < FILE_H) {
+		next_sq = sq + NE;
+		brd->pawn_control[WHITE][next_sq]--;
+	}
+}
+
+
 
 
 // adds a pawn to the underlying board struct
-static inline void add_pawn_info(struct board *brd, enum colour col, enum square sq)
+static inline void add_black_pawn_info(struct board *brd, enum square sq)
 {
-
     uint8_t file = GET_FILE(sq);
     uint8_t rank = GET_RANK(sq);
 
-    brd->pawns_on_file[col][file]++;
-    brd->pawns_on_rank[col][rank]++;
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wconversion"
-#pragma GCC diagnostic ignored "-Wsign-conversion"
+    brd->pawns_on_file[BLACK][file]++;
+    brd->pawns_on_rank[BLACK][rank]++;
 
     int32_t next_sq = 0;
-    switch (col) {
-    case WHITE:
-        if (file > FILE_A) {
-            next_sq = sq + NW;
-            brd->pawn_control[col][next_sq]++;
-        }
-        if (file < FILE_H) {
-            next_sq = sq + NE;
-            brd->pawn_control[col][next_sq]++;
-        }
-        break;
-
-    case BLACK:
-        if (file > FILE_A) {
-            next_sq = sq + SW;
-            brd->pawn_control[col][next_sq]++;
-        }
-        if (file < FILE_H) {
-            next_sq = sq + SE;
-            brd->pawn_control[col][next_sq]++;
-        }
-        break;
-    default:
-        assert(false);
-
-    }
-#pragma GCC diagnostic pop
-
+	if (file > FILE_A) {
+		next_sq = sq + SW;
+		brd->pawn_control[BLACK][next_sq]++;
+	}
+	if (file < FILE_H) {
+		next_sq = sq + SE;
+		brd->pawn_control[BLACK][next_sq]++;
+	}
 }
+
+
+
+// adds a pawn to the underlying board struct
+static inline void add_white_pawn_info(struct board *brd, enum square sq)
+{
+    uint8_t file = GET_FILE(sq);
+    uint8_t rank = GET_RANK(sq);
+
+    brd->pawns_on_file[WHITE][file]++;
+    brd->pawns_on_rank[WHITE][rank]++;
+
+    int32_t next_sq = 0;
+	if (file > FILE_A) {
+		next_sq = sq + NW;
+		brd->pawn_control[WHITE][next_sq]++;
+	}
+	if (file < FILE_H) {
+		next_sq = sq + NE;
+		brd->pawn_control[WHITE][next_sq]++;
+	}
+}
+
+
+
 
 /*
  *

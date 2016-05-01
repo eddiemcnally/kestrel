@@ -38,39 +38,39 @@ void test_clear_MSB(void);
 void test_bit_reversal(void)
 {
 
-	uint64_t test_word = 0xFA340A7314DA;
-	uint64_t reversed = reverse_bits(test_word);
-	assert_true(reversed == 0x5B28CE502C5F0000);
+    uint64_t test_word = 0xFA340A7314DA;
+    uint64_t reversed = reverse_bits(test_word);
+    assert_true(reversed == 0x5B28CE502C5F0000);
 
-	test_word = 0x6F43DA3E2;
-	reversed = reverse_bits(test_word);
-	assert_true(reversed == 0x47C5BC2F60000000);
+    test_word = 0x6F43DA3E2;
+    reversed = reverse_bits(test_word);
+    assert_true(reversed == 0x47C5BC2F60000000);
 
-	// swap the above to confirm
-	test_word = 0x47C5BC2F60000000;
-	reversed = reverse_bits(test_word);
-	assert_true(reversed == 0x6F43DA3E2);
+    // swap the above to confirm
+    test_word = 0x47C5BC2F60000000;
+    reversed = reverse_bits(test_word);
+    assert_true(reversed == 0x6F43DA3E2);
 
-	test_word = 0x3AD1FDE008934A;
-	reversed = reverse_bits(test_word);
-	assert_true(reversed == 0x52C91007BF8B5C00);
+    test_word = 0x3AD1FDE008934A;
+    reversed = reverse_bits(test_word);
+    assert_true(reversed == 0x52C91007BF8B5C00);
 
-	test_word = 0x00000000000000AA;
-	reversed = reverse_bits(test_word);
-	assert_true(reversed == 0x5500000000000000);
+    test_word = 0x00000000000000AA;
+    reversed = reverse_bits(test_word);
+    assert_true(reversed == 0x5500000000000000);
 
 }
 
 void test_flip_side()
 {
-	enum colour fs = GET_OPPOSITE_SIDE(WHITE);
-	assert_true(fs == BLACK);
+    enum colour fs = GET_OPPOSITE_SIDE(WHITE);
+    assert_true(fs == BLACK);
 
-	fs = GET_OPPOSITE_SIDE(fs);
-	assert_true(fs == WHITE);
+    fs = GET_OPPOSITE_SIDE(fs);
+    assert_true(fs == WHITE);
 
-	fs = GET_OPPOSITE_SIDE(fs);
-	assert_true(fs == BLACK);
+    fs = GET_OPPOSITE_SIDE(fs);
+    assert_true(fs == BLACK);
 }
 
 
@@ -81,10 +81,10 @@ void test_flip_side()
 void utils_test_fixture(void)
 {
 
-	test_fixture_start();
+    test_fixture_start();
 
-	run_test(test_bit_reversal);
-	run_test(test_flip_side);
+    run_test(test_bit_reversal);
+    run_test(test_flip_side);
 
-	test_fixture_end();
+    test_fixture_end();
 }

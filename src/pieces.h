@@ -59,11 +59,13 @@ static const uint32_t piece_values[NUM_PIECES] = {
 #define INFINITE 	((int32_t)(30000))
 #define MATE 		29000
 
+#define GET_PIECE_VALUE(pce)	(piece_values[pce])
+
+
 
 
 char get_piece_label(enum piece piece);
 bool is_valid_piece(enum piece pce);
-uint32_t get_piece_value(const enum piece pce);
 
 
 

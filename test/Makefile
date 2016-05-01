@@ -16,8 +16,10 @@
 				-mtune=native
 #
 # flags for profiling code
-#	CFLAGS	=	-O3 -pg -std=c11
-
+#	CFLAGS	=	-O3 -pg -std=c11 -march=native -mtune=native
+	
+	
+#
 # more lax compiler options
 #	CFLAGS	=	-Wall -g -std=c11 -lubsan 
 
