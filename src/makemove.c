@@ -380,13 +380,13 @@ static inline void remove_black_pawn_info(struct board *brd, enum square sq)
     brd->pawns_on_file[BLACK][file]--;
     brd->pawns_on_rank[BLACK][rank]--;
 
-    int32_t next_sq = 0;
+   int32_t next_sq = 0;
 	if (file > FILE_A) {
-		next_sq = sq + SW;
+		next_sq = (int32_t)sq + SW;
 		brd->pawn_control[BLACK][next_sq]--;
 	}
 	if (file < FILE_H) {
-		next_sq = sq + SE;
+		next_sq = (int32_t)sq + SE;
 		brd->pawn_control[BLACK][next_sq]--;
 	}
 }
@@ -427,11 +427,11 @@ static inline void add_black_pawn_info(struct board *brd, enum square sq)
 
     int32_t next_sq = 0;
 	if (file > FILE_A) {
-		next_sq = sq + SW;
+		next_sq = (int32_t)sq + SW;
 		brd->pawn_control[BLACK][next_sq]++;
 	}
 	if (file < FILE_H) {
-		next_sq = sq + SE;
+		next_sq = (int32_t)sq + SE;
 		brd->pawn_control[BLACK][next_sq]++;
 	}
 }
