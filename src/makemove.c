@@ -47,6 +47,8 @@ static inline void add_black_pawn_info(struct board *brd, enum square sq);
 static inline void add_white_pawn_info(struct board *brd, enum square sq);
 static inline void remove_black_pawn_info(struct board *brd, enum square sq);
 static inline void remove_white_pawn_info(struct board *brd, enum square sq);
+static inline void update_black_pawn_control(struct board *brd, enum square sq, int val);
+static inline void update_white_pawn_control(struct board *brd, enum square sq, int val);
 
 
 //bit mask for castle permissions
@@ -380,17 +382,8 @@ static inline void remove_black_pawn_info(struct board *brd, enum square sq)
     brd->pawns_on_file[BLACK][file]--;
     brd->pawns_on_rank[BLACK][rank]--;
 
-   int32_t next_sq = 0;
-	if (file > FILE_A) {
-		next_sq = (int32_t)sq + SW;
-		brd->pawn_control[BLACK][next_sq]--;
-	}
-	if (file < FILE_H) {
-		next_sq = (int32_t)sq + SE;
-		brd->pawn_control[BLACK][next_sq]--;
-	}
+	update_black_pawn_control(brd, sq, -1);
 }
-
 
 
 
@@ -401,16 +394,9 @@ static inline void remove_white_pawn_info(struct board *brd, enum square sq)
 
     brd->pawns_on_file[WHITE][file]--;
     brd->pawns_on_rank[WHITE][rank]--;
+  
+	update_white_pawn_control(brd, sq, -1);
 
-    int32_t next_sq = 0;
-	if (file > FILE_A) {
-		next_sq = sq + NW;
-		brd->pawn_control[WHITE][next_sq]--;
-	}
-	if (file < FILE_H) {
-		next_sq = sq + NE;
-		brd->pawn_control[WHITE][next_sq]--;
-	}
 }
 
 
@@ -425,15 +411,7 @@ static inline void add_black_pawn_info(struct board *brd, enum square sq)
     brd->pawns_on_file[BLACK][file]++;
     brd->pawns_on_rank[BLACK][rank]++;
 
-    int32_t next_sq = 0;
-	if (file > FILE_A) {
-		next_sq = (int32_t)sq + SW;
-		brd->pawn_control[BLACK][next_sq]++;
-	}
-	if (file < FILE_H) {
-		next_sq = (int32_t)sq + SE;
-		brd->pawn_control[BLACK][next_sq]++;
-	}
+	update_black_pawn_control(brd, sq, 1);	
 }
 
 
@@ -447,17 +425,50 @@ static inline void add_white_pawn_info(struct board *brd, enum square sq)
     brd->pawns_on_file[WHITE][file]++;
     brd->pawns_on_rank[WHITE][rank]++;
 
-    int32_t next_sq = 0;
+	update_white_pawn_control(brd, sq, 1);
+
+}
+
+
+
+static inline void update_black_pawn_control(struct board *brd, enum square sq, int val){
+	int32_t next_sq = 0;
+	uint8_t file = GET_FILE(sq);
+    uint8_t rank = GET_RANK(sq);
+   
 	if (file > FILE_A) {
-		next_sq = sq + NW;
-		brd->pawn_control[WHITE][next_sq]++;
+		if (rank > RANK_1){
+			next_sq = (int32_t)sq + SW;
+			brd->pawn_control[BLACK][next_sq] += val;		
+		}
 	}
 	if (file < FILE_H) {
-		next_sq = sq + NE;
-		brd->pawn_control[WHITE][next_sq]++;
+		if (rank > RANK_1){
+			next_sq = (int32_t)sq + SE;
+			brd->pawn_control[BLACK][next_sq] += val;
+		}
 	}
 }
 
+static inline void update_white_pawn_control(struct board *brd, enum square sq, int val){
+
+    int32_t next_sq = 0;
+    uint8_t file = GET_FILE(sq);
+    uint8_t rank = GET_RANK(sq);
+
+	if (file > FILE_A) {
+		if (rank < RANK_8){
+			next_sq = sq + NW;
+			brd->pawn_control[WHITE][next_sq] += val;
+		}
+	}
+	if (file < FILE_H) {
+		if (rank < RANK_8){
+			next_sq = sq + NE;
+			brd->pawn_control[WHITE][next_sq] += val;
+		}
+	}
+}
 
 
 

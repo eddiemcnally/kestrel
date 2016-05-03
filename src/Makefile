@@ -12,6 +12,7 @@
 			-flto \
 			-std=c11 \
 			-march=native \
+			-mtune=native \
 			-Wpedantic \
 			-Wformat=2 \
 			-Wall \
@@ -31,6 +32,8 @@
 			-Wmissing-include-dirs \
 			-Wpointer-arith \
 			-fstack-protector \
+			-fsanitize=cfi \
+			-fsanitize=undefined \
 			-fomit-frame-pointer
 
 
