@@ -9,11 +9,14 @@
 
 # NOTE: setting the inline limit values to be obscenely high since the size of
 #		the binary isn't a concern
-	CFLAGS	=	-O2 \
-				-flto \
-				-std=c11 \
-				-march=native \
-				-mtune=native
+#	CFLAGS	=	-O2 \
+#				-flto \
+#				-std=c11 \
+#				-march=native \
+#				-mtune=native \
+#				-fsanitize=cfi \
+#				-fsanitize=undefined 
+				
 #
 # flags for profiling code
 #	CFLAGS	=	-O3 -pg -std=c11 -march=native -mtune=native
@@ -21,7 +24,7 @@
 	
 #
 # more lax compiler options
-#	CFLAGS	=	-Wall -g -std=c11 -lubsan 
+	CFLAGS	=	-Wall -g -std=c11 -fsanitize=undefined 
 
 # define any directories containing header files other than /usr/include
 #
