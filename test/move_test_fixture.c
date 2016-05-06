@@ -706,7 +706,7 @@ void test_clear_piece()
     enum piece old_pce = brd.pieces[c3];
 
     // remove the knight from c3
-    remove_piece_from_board(&brd, c3);
+    remove_piece_from_board(&brd, W_KNIGHT, c3);
 
     assert_true(old_hash != brd.board_hash);
 
