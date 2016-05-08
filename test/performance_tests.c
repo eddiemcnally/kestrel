@@ -381,6 +381,10 @@ void test_move_gen_depth()
         printf("Analysing FEN to depth %d : '%s'\n", depth, e.fen);
         struct board brd = init_game(e.fen);
 
+#ifdef ENABLE_ASSERTS
+		ASSERT_BOARD_OK(&brd);
+#endif
+
         start_time = get_time_of_day_in_millis();
 
         ////////////
@@ -416,17 +420,44 @@ void perf_test(int depth, struct board *brd, struct perft_stats *pstats)
 
     start_time = get_time_of_day_in_millis();
 
+#ifdef ENABLE_ASSERTS
+	ASSERT_BOARD_OK(brd);
+#endif
+
+
+
     generate_all_moves(brd, &mv_list);
 
     mv_bitmap mv;
     for (uint32_t mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
 
+#ifdef ENABLE_ASSERTS
+		ASSERT_BOARD_OK(brd);
+#endif
+
+
         mv = mv_list.moves[mv_num];
         if (!make_move(brd, mv)) {
             continue;
         }
+#ifdef ENABLE_ASSERTS
+		ASSERT_BOARD_OK(brd);
+#endif
+        
+        
         perft(depth - 1, brd, pstats);
+
+#ifdef ENABLE_ASSERTS
+		ASSERT_BOARD_OK(brd);
+#endif
+
+
         take_move(brd);
+#ifdef ENABLE_ASSERTS
+		ASSERT_BOARD_OK(brd);
+#endif
+
+
     }
     elapsed = get_elapsed_time_in_millis(start_time);
 
@@ -451,13 +482,42 @@ void perft(int depth, struct board *brd, struct perft_stats *pstats)
         .move_count = 0
     };
 
+#ifdef ENABLE_ASSERTS
+	ASSERT_BOARD_OK(brd);
+#endif
+
     generate_all_moves(brd, &mv_list);
+    
+#ifdef ENABLE_ASSERTS
+	ASSERT_BOARD_OK(brd);
+#endif
 
     mv_bitmap mv;
     for (uint32_t mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
         mv = mv_list.moves[mv_num];
+
+
+#ifdef ENABLE_ASSERTS
+		print_board_and_move(brd, mv);
+
+		ASSERT_BOARD_OK(brd);
+#endif
+        
+        
         if (make_move(brd, mv)) {
+
+#ifdef ENABLE_ASSERTS
+	ASSERT_BOARD_OK(brd);
+#endif
+
+
             perft(depth - 1, brd, pstats);
+
+#ifdef ENABLE_ASSERTS
+	ASSERT_BOARD_OK(brd);
+#endif
+
+
             take_move(brd);
         }
     }

@@ -66,9 +66,16 @@ static const uint8_t castle_permission_mask[NUM_SQUARES] = {
 
 
 void move_piece(struct board *brd, enum square from, enum square to)
-{
+{	
     enum piece pce = brd->pieces[from];
     enum colour pce_col = GET_COLOUR(pce);
+
+#ifdef ENABLE_ASSERTS
+	assert(pce != NO_PIECE);
+	assert(from != to);
+#endif
+
+
 
     // adjust the hash
     brd->board_hash ^= get_piece_hash(pce, from);
@@ -77,10 +84,12 @@ void move_piece(struct board *brd, enum square from, enum square to)
     // clear up the "from" resources
     brd->pieces[from] = NO_PIECE;
     clear_bit(&brd->bitboards[pce], from);
+    clear_bit(&brd->board, from);
 
     // set up the "to" resources
     brd->pieces[to] = pce;
     set_bit(&brd->bitboards[pce], to);
+    set_bit(&brd->board, to);
 
     if (pce_col == WHITE) {
         if(pce == W_PAWN) {
@@ -99,14 +108,17 @@ void move_piece(struct board *brd, enum square from, enum square to)
             brd->king_sq[BLACK] = to;
         }
     }
-
-    clear_bit(&brd->board, from);
-    set_bit(&brd->board, to);
 }
 
 // return false if move is invalid, true otherwise
 bool make_move(struct board *brd, mv_bitmap mv)
 {
+	
+#ifdef ENABLE_ASSERTS
+	ASSERT_BOARD_OK(brd);
+#endif
+	
+	
     enum square from = FROMSQ(mv);
     enum square to = TOSQ(mv);
 
@@ -208,6 +220,12 @@ bool make_move(struct board *brd, mv_bitmap mv)
     } else {
         return true;
     }
+
+#ifdef ENABLE_ASSERTS
+	ASSERT_BOARD_OK(brd);
+#endif
+
+
 }
 
 inline void take_move(struct board *brd)
@@ -297,8 +315,12 @@ inline void flip_sides(struct board *brd)
 
 void add_piece_to_board(struct board *brd, enum piece pce, enum square sq)
 {
+#ifdef ENABLE_ASSERTS
     assert(pce != NO_PIECE);
     assert(IS_VALID_PIECE(pce));
+    assert(IS_VALID_SQUARE(sq));
+#endif
+
 
     enum colour col = GET_COLOUR(pce);
     brd->board_hash ^= get_piece_hash(pce, sq);
@@ -331,8 +353,11 @@ void add_piece_to_board(struct board *brd, enum piece pce, enum square sq)
 
 void remove_piece_from_board(struct board *brd, enum piece pce_to_remove, enum square sq)
 {
+#ifdef ENABLE_ASSERTS
     assert(pce_to_remove != NO_PIECE);
     assert(IS_VALID_PIECE(pce_to_remove));
+	assert(IS_VALID_SQUARE(sq));
+#endif
 
     enum colour col = GET_COLOUR(pce_to_remove);
     brd->board_hash ^= get_piece_hash(pce_to_remove, sq);

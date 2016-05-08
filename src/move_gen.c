@@ -302,7 +302,10 @@ void generate_all_capture_moves(struct board *brd, struct move_list *mvl)
 
 static inline void do_gen_moves(struct board *brd, struct move_list *mvl, const bool captures_only)
 {
-    //ASSERT_BOARD_OK(brd);
+#ifdef ENABLE_ASSERTS
+		ASSERT_BOARD_OK(brd);
+#endif
+
     if (brd->side_to_move == WHITE) {
         generate_white_pawn_moves(brd, mvl, captures_only);
         generate_knight_piece_moves(brd, mvl, W_KNIGHT, BLACK, captures_only);
@@ -320,7 +323,10 @@ static inline void do_gen_moves(struct board *brd, struct move_list *mvl, const 
         // generate bishop and queen diagonal moves
         generate_sliding_diagonal_moves(brd, mvl, BLACK, captures_only);
     }
-    //ASSERT_BOARD_OK(brd);
+
+#ifdef ENABLE_ASSERTS
+		ASSERT_BOARD_OK(brd);
+#endif
 }
 
 
@@ -612,11 +618,6 @@ static inline void
 generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
                           const bool only_capture_moves)
 {
-
-#ifdef ENABLE_ASSERTS
-    ASSERT_BOARD_OK(brd);
-#endif
-
     // get the bitboard representing all WHITE pawns
     // on the board
     uint64_t pawn_bb = brd->bitboards[W_PAWN];

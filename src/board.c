@@ -53,6 +53,11 @@ void init_board(char *fen, struct board *brd)
 {
     get_clean_board(brd);
     consume_fen_notation(fen, brd);
+    
+#ifdef ENABLE_ASSERTS
+	ASSERT_BOARD_OK(brd);
+#endif
+
 }
 
 /*

@@ -172,7 +172,7 @@ bool ASSERT_BOARD_OK(const struct board *brd)
         conflated |= brd->bitboards[i];
     }
     assert(conflated == brd->board);
-
+    
     uint64_t wking_bb = brd->bitboards[W_KING];
     assert(count_bits(wking_bb) == 1);
     uint64_t bking_bb = brd->bitboards[B_KING];

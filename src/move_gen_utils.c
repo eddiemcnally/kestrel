@@ -32,6 +32,7 @@
 #include "types.h"
 #include "pieces.h"
 #include "board.h"
+#include "board_utils.h"
 #include "move_gen_utils.h"
 
 #define R2(n)     n,     n + 2*64,     n + 1*64,     n + 3*64
@@ -192,6 +193,13 @@ char *print_move(mv_bitmap move_bitmap)
     }
 
     return move_string;
+}
+
+
+void print_board_and_move(struct board *brd, mv_bitmap move_bitmap)
+{
+	print_board(brd);
+	print_move_details(move_bitmap);	
 }
 
 void print_move_details(mv_bitmap move_bitmap)
