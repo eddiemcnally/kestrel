@@ -201,15 +201,26 @@ bool ASSERT_BOARD_OK(const struct board *brd)
     }
 
     // check verbose representation of board
+    uint64_t black_bb = get_bitboard_for_colour(brd, BLACK);
+    uint64_t white_bb = get_bitboard_for_colour(brd, WHITE);
+
     for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
         enum piece pce = brd->pieces[sq];
         if (pce != NO_PIECE) {
-            assert(pce == brd->pieces[sq]);
+            assert(CHECK_BIT(brd->board, sq) != 0);
+
+            if (GET_COLOUR(pce) == WHITE) {
+                assert(CHECK_BIT(white_bb, sq) != 0);
+            } else {
+                assert(CHECK_BIT(black_bb, sq) != 0);
+            }
+
+            uint64_t pce_bb = brd->bitboards[pce];
+            assert(CHECK_BIT(pce_bb, sq) != 0);
         }
     }
 
-    assert(IS_VALID_SQUARE(brd->en_passant)
-           || (brd->en_passant == NO_SQUARE));
+    assert(IS_VALID_SQUARE(brd->en_passant) || (brd->en_passant == NO_SQUARE));
 
 
     assert_material_correct(brd);

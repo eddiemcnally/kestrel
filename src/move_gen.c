@@ -675,13 +675,13 @@ generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
         if (pawn_file > FILE_A) {
             enum square northwest = pawn_sq + NW;
 
-#ifdef ENABLE_ASSERTS
-            assert(IS_SQUARE_OCCUPIED(brd->board, northwest) == CHECK_BIT(brd->board, northwest));
-            assert(IS_SQUARE_OCCUPIED(bb_black_pieces, northwest) == CHECK_BIT(brd->board, northwest));
-#endif
-
-
             if (IS_SQUARE_OCCUPIED(bb_black_pieces, northwest) == true) {
+
+#ifdef ENABLE_ASSERTS
+                assert(IS_SQUARE_OCCUPIED(bb_black_pieces, northwest) == CHECK_BIT(bb_black_pieces, northwest));
+                assert(IS_SQUARE_OCCUPIED(brd->board, northwest) == CHECK_BIT(brd->board, northwest));
+                assert(IS_SQUARE_OCCUPIED(bb_black_pieces, northwest) == CHECK_BIT(brd->board, northwest));
+#endif
                 enum piece capt_pce = brd->pieces[northwest];
                 if (pawn_rank == RANK_7) {
                     // pawn can promote to 4 pieces
@@ -713,6 +713,13 @@ generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
             enum square northeast = pawn_sq + NE;
 
             if (IS_SQUARE_OCCUPIED(bb_black_pieces, northeast) == true) {
+
+#ifdef ENABLE_ASSERTS
+                assert(IS_SQUARE_OCCUPIED(bb_black_pieces, northeast) == CHECK_BIT(bb_black_pieces, northeast));
+                assert(IS_SQUARE_OCCUPIED(brd->board, northeast) == CHECK_BIT(brd->board, northeast));
+                assert(IS_SQUARE_OCCUPIED(bb_black_pieces, northeast) == CHECK_BIT(brd->board, northeast));
+#endif
+
                 enum piece capt_pce = brd->pieces[northeast];
                 if (pawn_rank == RANK_7) {
                     // pawn can promote to 4 pieces
@@ -1059,12 +1066,11 @@ inline mv_bitmap MOVE(struct board *brd, enum square from, enum square to, enum 
     assert(brd->pieces[from] != NO_PIECE);
 
     if (flags & MFLAG_CAPTURE) {
-
         assert(brd->pieces[to] != NO_PIECE);
         assert(capture != NO_PIECE);
+    } else {
+        assert(brd->pieces[to] == NO_PIECE);
     }
-
-    assert(brd->pieces[to] == NO_PIECE);
 #endif
 
     return Test_MOVE(from, to, capture, promote, flags);
