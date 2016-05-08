@@ -35,6 +35,7 @@
 #include "hashkeys.h"
 #include "board.h"
 #include "pieces.h"
+#include "utils.h"
 #include "board_utils.h"
 
 // char arrays to suport printing
@@ -210,6 +211,51 @@ bool ASSERT_BOARD_OK(const struct board *brd)
     assert(IS_VALID_SQUARE(brd->en_passant)
            || (brd->en_passant == NO_SQUARE));
 
+
+    assert_material_correct(brd);
+
+
+    // check on position key
+    assert(brd->board_hash == get_position_hash(brd));
+
+    return true;
+
+}
+
+
+inline uint64_t get_bitboard_for_colour(const struct board *brd, enum colour col)
+{
+    uint64_t retval = 0;
+    switch(col) {
+    case (WHITE):
+        retval |= brd->bitboards[W_PAWN];
+        retval |= brd->bitboards[W_BISHOP];
+        retval |= brd->bitboards[W_ROOK];
+        retval |= brd->bitboards[W_KNIGHT];
+        retval |= brd->bitboards[W_QUEEN];
+        retval |= brd->bitboards[W_KING];
+        return retval;
+    case (BLACK):
+        retval |= brd->bitboards[B_PAWN];
+        retval |= brd->bitboards[B_BISHOP];
+        retval |= brd->bitboards[B_ROOK];
+        retval |= brd->bitboards[B_KNIGHT];
+        retval |= brd->bitboards[B_QUEEN];
+        retval |= brd->bitboards[B_KING];
+        return retval;
+    default:
+        assert(false);
+        print_stacktrace();
+        exit(-1);
+    }
+}
+
+
+void assert_material_correct(const struct board *brd)
+{
+
+#ifdef ENABLE_ASSERTS
+
     // calc and verify the material count
     uint32_t local_material[NUM_COLOURS] = { 0 };
     for (enum square sq = 0; sq <= h8; sq++) {
@@ -222,13 +268,10 @@ bool ASSERT_BOARD_OK(const struct board *brd)
 
     assert(local_material[WHITE] == brd->material[WHITE]);
     assert(local_material[BLACK] == brd->material[BLACK]);
-
-    // check on position key
-    assert(brd->board_hash == get_position_hash(brd));
-
-    return true;
-
+#endif
 }
+
+
 
 /* Compares two boards and checks for equality
  *

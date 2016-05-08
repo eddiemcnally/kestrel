@@ -22,6 +22,7 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #define _GNU_SOURCE
+#include <execinfo.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -52,6 +53,28 @@ void set_priority_and_affinity(void)
     }
 
 }
+
+
+void
+print_stacktrace (void)
+{
+    void *array[10];
+    size_t size;
+    char **strings;
+    size_t i;
+
+    size = backtrace (array, 10);
+    strings = backtrace_symbols (array, size);
+
+    printf ("Obtained %zd stack frames.\n", size);
+
+    for (i = 0; i < size; i++) {
+        printf ("%s\n", strings[i]);
+    }
+
+    free (strings);
+}
+
 
 
 uint64_t get_time_of_day_in_millis(void)

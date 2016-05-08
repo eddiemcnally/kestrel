@@ -35,6 +35,7 @@
 #include "attack.h"
 #include "makemove.h"
 #include "board_utils.h"
+#include "utils.h"
 #include "move_gen.h"
 #include "move_gen_utils.h"
 #include "hashkeys.h"
@@ -66,18 +67,12 @@ static const uint8_t castle_permission_mask[NUM_SQUARES] = {
 
 void move_piece(struct board *brd, enum square from, enum square to)
 {
-
-    //ASSERT_BOARD_OK(brd);
-
     enum piece pce = brd->pieces[from];
     enum colour pce_col = GET_COLOUR(pce);
-
-    //assert(IS_VALID_PIECE(pce));
 
     // adjust the hash
     brd->board_hash ^= get_piece_hash(pce, from);
     brd->board_hash ^= get_piece_hash(pce, to);
-
 
     // clear up the "from" resources
     brd->pieces[from] = NO_PIECE;
@@ -88,8 +83,6 @@ void move_piece(struct board *brd, enum square from, enum square to)
     set_bit(&brd->bitboards[pce], to);
 
     if (pce_col == WHITE) {
-        clear_bit(&brd->colour_bb[WHITE], from);
-        set_bit(&brd->colour_bb[WHITE], to);
         if(pce == W_PAWN) {
             // easiest way to move a pawn
             remove_white_pawn_info(brd, from);
@@ -98,8 +91,6 @@ void move_piece(struct board *brd, enum square from, enum square to)
             brd->king_sq[WHITE] = to;
         }
     } else {
-        clear_bit(&brd->colour_bb[BLACK], from);
-        set_bit(&brd->colour_bb[BLACK], to);
         if(pce == B_PAWN) {
             // easiest way to move a pawn
             remove_black_pawn_info(brd, from);
@@ -109,31 +100,30 @@ void move_piece(struct board *brd, enum square from, enum square to)
         }
     }
 
-    brd->board = brd->colour_bb[WHITE] | brd->colour_bb[BLACK];
-
-    //ASSERT_BOARD_OK(brd);
-
+    clear_bit(&brd->board, from);
+    set_bit(&brd->board, to);
 }
 
 // return false if move is invalid, true otherwise
 bool make_move(struct board *brd, mv_bitmap mv)
 {
-    //ASSERT_BOARD_OK(brd);
-
     enum square from = FROMSQ(mv);
     enum square to = TOSQ(mv);
 
+    enum piece pce_being_moved = brd->pieces[from];
     enum colour side = brd->side_to_move;
 
     brd->history[brd->history_ply].board_hash = brd->board_hash;
 
-    if (mv & MFLAG_EN_PASSANT) {
+    if (IS_EN_PASS_MOVE(mv)) {
         if (side == WHITE) {
-            remove_piece_from_board(brd, to - 8);
+            // must be a bp
+            remove_piece_from_board(brd, B_PAWN, to - 8);
         } else {
-            remove_piece_from_board(brd, to + 8);
+            // must be a wp
+            remove_piece_from_board(brd, W_PAWN, to + 8);
         }
-    } else if (mv & MFLAG_CASTLE) {
+    } else if (IS_CASTLE_MOVE(mv)) {
         switch (to) {
         case c1:
             move_piece(brd, a1, d1);
@@ -152,12 +142,12 @@ bool make_move(struct board *brd, mv_bitmap mv)
             assert(false);
             break;
         }
+
     }
 
     if (brd->en_passant != NO_SQUARE) {
         brd->board_hash ^= get_en_passant_hash(brd->en_passant);
     }
-
 
     brd->board_hash ^= get_castle_hash(brd->castle_perm);
 
@@ -172,19 +162,17 @@ bool make_move(struct board *brd, mv_bitmap mv)
     brd->castle_perm &= castle_permission_mask[to];
     brd->board_hash ^= get_castle_hash(brd->castle_perm);
 
-
     brd->en_passant = NO_SQUARE;
     brd->fifty_move_counter++;
 
     if (IS_CAPTURE_MOVE(mv)) {
-        remove_piece_from_board(brd, to);
+        enum piece capt = brd->pieces[to];
+        remove_piece_from_board(brd, capt, to);
         brd->fifty_move_counter = 0;
     }
 
     brd->ply++;
     brd->history_ply++;
-
-    enum piece pce_being_moved = brd->pieces[from];
 
     if (IS_PAWN(pce_being_moved)) {
         brd->fifty_move_counter = 0;
@@ -198,14 +186,15 @@ bool make_move(struct board *brd, mv_bitmap mv)
             brd->board_hash ^= get_en_passant_hash(brd->en_passant);
         }
     }
-
     move_piece(brd, from, to);
 
     enum piece promoted = PROMOTED_PCE(mv);
     if (promoted != NO_PIECE) {
-        remove_piece_from_board(brd, to);
+        enum piece capt = brd->pieces[to];
+        remove_piece_from_board(brd, capt, to);
         add_piece_to_board(brd, promoted, to);
     }
+
     // flip side
     flip_sides(brd);
 
@@ -289,7 +278,7 @@ inline void take_move(struct board *brd)
     enum piece promoted = PROMOTED_PCE(mv);
     if (PROMOTED_PCE(mv) != NO_PIECE) {
         enum colour prom_col = GET_COLOUR(promoted);
-        remove_piece_from_board(brd, from);
+        remove_piece_from_board(brd, promoted, from);
 
         enum piece pce_to_add = (prom_col == WHITE) ? W_PAWN : B_PAWN;
         add_piece_to_board(brd, pce_to_add, from);
@@ -308,6 +297,9 @@ inline void flip_sides(struct board *brd)
 
 void add_piece_to_board(struct board *brd, enum piece pce, enum square sq)
 {
+    assert(pce != NO_PIECE);
+    assert(IS_VALID_PIECE(pce));
+
     enum colour col = GET_COLOUR(pce);
     brd->board_hash ^= get_piece_hash(pce, sq);
 
@@ -317,12 +309,11 @@ void add_piece_to_board(struct board *brd, enum piece pce, enum square sq)
     // set piece on bitboards
     set_bit(&brd->bitboards[pce], sq);
     set_bit(&brd->board, sq);
-    set_bit(&brd->colour_bb[col], sq);
 
     switch (pce) {
     case W_PAWN:
-		add_white_pawn_info(brd, sq);
-		break;
+        add_white_pawn_info(brd, sq);
+        break;
     case B_PAWN:
         add_black_pawn_info(brd, sq);
         break;
@@ -338,24 +329,21 @@ void add_piece_to_board(struct board *brd, enum piece pce, enum square sq)
 
 
 
-void remove_piece_from_board(struct board *brd, enum square sq)
+void remove_piece_from_board(struct board *brd, enum piece pce_to_remove, enum square sq)
 {
-    enum piece pce = brd->pieces[sq];
-    enum colour col = GET_COLOUR(pce);
+    assert(pce_to_remove != NO_PIECE);
+    assert(IS_VALID_PIECE(pce_to_remove));
 
-    brd->board_hash ^= get_piece_hash(pce, sq);
-
+    enum colour col = GET_COLOUR(pce_to_remove);
+    brd->board_hash ^= get_piece_hash(pce_to_remove, sq);
     brd->pieces[sq] = NO_PIECE;
-
-    brd->material[col] -= GET_PIECE_VALUE(pce);
+    brd->material[col] -= GET_PIECE_VALUE(pce_to_remove);
 
     // remove piece from bitboards
-    clear_bit(&brd->bitboards[pce], sq);
+    clear_bit(&brd->bitboards[pce_to_remove], sq);
     clear_bit(&brd->board, sq);
-    clear_bit(&brd->colour_bb[col], sq);
 
-
-    switch (pce) {
+    switch (pce_to_remove) {
     case W_PAWN:
         remove_white_pawn_info(brd, sq);
         break;
@@ -382,7 +370,7 @@ static inline void remove_black_pawn_info(struct board *brd, enum square sq)
     brd->pawns_on_file[BLACK][file]--;
     brd->pawns_on_rank[BLACK][rank]--;
 
-	update_black_pawn_control(brd, sq, -1);
+    update_black_pawn_control(brd, sq, -1);
 }
 
 
@@ -394,8 +382,8 @@ static inline void remove_white_pawn_info(struct board *brd, enum square sq)
 
     brd->pawns_on_file[WHITE][file]--;
     brd->pawns_on_rank[WHITE][rank]--;
-  
-	update_white_pawn_control(brd, sq, -1);
+
+    update_white_pawn_control(brd, sq, -1);
 
 }
 
@@ -411,7 +399,7 @@ static inline void add_black_pawn_info(struct board *brd, enum square sq)
     brd->pawns_on_file[BLACK][file]++;
     brd->pawns_on_rank[BLACK][rank]++;
 
-	update_black_pawn_control(brd, sq, 1);	
+    update_black_pawn_control(brd, sq, 1);
 }
 
 
@@ -425,49 +413,51 @@ static inline void add_white_pawn_info(struct board *brd, enum square sq)
     brd->pawns_on_file[WHITE][file]++;
     brd->pawns_on_rank[WHITE][rank]++;
 
-	update_white_pawn_control(brd, sq, 1);
+    update_white_pawn_control(brd, sq, 1);
 
 }
 
 
 
-static inline void update_black_pawn_control(struct board *brd, enum square sq, int val){
-	int32_t next_sq = 0;
-	uint8_t file = GET_FILE(sq);
+static inline void update_black_pawn_control(struct board *brd, enum square sq, int val)
+{
+    int32_t next_sq = 0;
+    uint8_t file = GET_FILE(sq);
     uint8_t rank = GET_RANK(sq);
-   
-	if (file > FILE_A) {
-		if (rank > RANK_1){
-			next_sq = (int32_t)sq + SW;
-			brd->pawn_control[BLACK][next_sq] += val;		
-		}
-	}
-	if (file < FILE_H) {
-		if (rank > RANK_1){
-			next_sq = (int32_t)sq + SE;
-			brd->pawn_control[BLACK][next_sq] += val;
-		}
-	}
+
+    if (file > FILE_A) {
+        if (rank > RANK_1) {
+            next_sq = (int32_t)sq + SW;
+            brd->pawn_control[BLACK][next_sq] += val;
+        }
+    }
+    if (file < FILE_H) {
+        if (rank > RANK_1) {
+            next_sq = (int32_t)sq + SE;
+            brd->pawn_control[BLACK][next_sq] += val;
+        }
+    }
 }
 
-static inline void update_white_pawn_control(struct board *brd, enum square sq, int val){
+static inline void update_white_pawn_control(struct board *brd, enum square sq, int val)
+{
 
     int32_t next_sq = 0;
     uint8_t file = GET_FILE(sq);
     uint8_t rank = GET_RANK(sq);
 
-	if (file > FILE_A) {
-		if (rank < RANK_8){
-			next_sq = sq + NW;
-			brd->pawn_control[WHITE][next_sq] += val;
-		}
-	}
-	if (file < FILE_H) {
-		if (rank < RANK_8){
-			next_sq = sq + NE;
-			brd->pawn_control[WHITE][next_sq] += val;
-		}
-	}
+    if (file > FILE_A) {
+        if (rank < RANK_8) {
+            next_sq = sq + NW;
+            brd->pawn_control[WHITE][next_sq] += val;
+        }
+    }
+    if (file < FILE_H) {
+        if (rank < RANK_8) {
+            next_sq = sq + NE;
+            brd->pawn_control[WHITE][next_sq] += val;
+        }
+    }
 }
 
 

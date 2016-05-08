@@ -38,7 +38,7 @@ struct move_list {
 
 
 
-mv_bitmap MOVE(enum square from, enum square to, enum piece capture,
+mv_bitmap MOVE(struct board *brd, enum square from, enum square to, enum piece capture,
                enum piece promote, uint64_t flags);
 void generate_all_moves(struct board *brd, struct move_list *mvl);
 void generate_all_capture_moves(struct board *brd, struct move_list *mvl);
@@ -66,8 +66,9 @@ void TEST_generate_queen_moves(struct board *brd,
                                struct move_list *mvl, enum piece pce);
 bool TEST_is_move_in_list(struct move_list *mvl, mv_bitmap mv);
 void TEST_add_en_passent_move(mv_bitmap move_bitmap, struct move_list *mvlist);
-void TEST_add_quiet_move(struct board *brd, mv_bitmap move_bitmap, struct move_list *mvlist);
 uint32_t TEST_get_move_score(enum piece victim, enum piece attacker);
+mv_bitmap Test_MOVE(enum square from, enum square to, enum piece capture,
+                    enum piece promote, uint64_t flags);
 
 
 #pragma once

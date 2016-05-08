@@ -155,10 +155,6 @@ struct board {
     // contains the pieces on each square
     enum piece pieces[NUM_SQUARES];
 
-    // a bitboard for each colour, representing where all the pieces
-    // of each colour are on the board
-    uint64_t colour_bb[NUM_COLOURS];
-
     // maintain separate info about the pawns to simplify the
     // evaluation of pawn structure, open files, etc
     uint8_t pawns_on_file[NUM_COLOURS][NUM_FILES];
@@ -172,7 +168,7 @@ struct board {
 
     // the next side to move
     enum colour side_to_move;
-    
+
     // The above array piece arrays overlayed into a single bitboard.
     // In effect, an OR of all elements in bitboards[]
     uint64_t board;

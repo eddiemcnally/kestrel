@@ -421,12 +421,12 @@ void perf_test(int depth, struct board *brd, struct perft_stats *pstats)
     mv_bitmap mv;
     for (uint32_t mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
 
-		mv = mv_list.moves[mv_num];
-		if (!make_move(brd, mv)) {
-			continue;
-		}
+        mv = mv_list.moves[mv_num];
+        if (!make_move(brd, mv)) {
+            continue;
+        }
         perft(depth - 1, brd, pstats);
-		take_move(brd);
+        take_move(brd);
     }
     elapsed = get_elapsed_time_in_millis(start_time);
 

@@ -23,6 +23,8 @@
 
 void print_board(const struct board *brd);
 bool ASSERT_BOARD_OK(const struct board *brd);
+void assert_material_correct(const struct board *brd);
+uint64_t get_bitboard_for_colour(const struct board *brd, enum colour col);
 char *print_square(enum square sq);
 void assert_boards_are_equal(const struct board *brd1,
                              const struct board *brd2);

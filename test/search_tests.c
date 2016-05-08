@@ -50,7 +50,7 @@ void test_move_sort_1(void)
         // interested more in the score than squares or pieces
 
         uint32_t score = start_score + (score_incr * i);
-        mv_bitmap mv = MOVE(e5, e6, NO_PIECE, NO_PIECE, MFLAG_NONE);
+        mv_bitmap mv = Test_MOVE(e5, e6, NO_PIECE, NO_PIECE, MFLAG_NONE);
         add_to_score(&mv, score);
 
         // add to move list
@@ -77,9 +77,9 @@ void test_mate_in_two()
     search_positions(&brd, &si, 64000000);
 
     // *** exclude the score ***
-    mv_bitmap h7h8 = get_move(MOVE(h7, h8, NO_PIECE, NO_PIECE, 0));
-    mv_bitmap g7h8 = get_move(MOVE(g7, h8, W_ROOK, NO_PIECE, MFLAG_CAPTURE));
-    mv_bitmap h1h8 = get_move(MOVE(h1, h8, B_BISHOP, NO_PIECE, MFLAG_CAPTURE));
+    mv_bitmap h7h8 = get_move(Test_MOVE(h7, h8, NO_PIECE, NO_PIECE, 0));
+    mv_bitmap g7h8 = get_move(Test_MOVE(g7, h8, W_ROOK, NO_PIECE, MFLAG_CAPTURE));
+    mv_bitmap h1h8 = get_move(Test_MOVE(h1, h8, B_BISHOP, NO_PIECE, MFLAG_CAPTURE));
 
     mv_bitmap pv_line_h7h8 = get_move(brd.pv_line[0]);
     mv_bitmap pv_line_g7h8 = get_move(brd.pv_line[1]);
