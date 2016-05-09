@@ -216,14 +216,23 @@ bool make_move(struct board *brd, mv_bitmap mv)
     // side is already flipped above, so use that as the attacking side
     if (is_sq_attacked(brd, king_sq, brd->side_to_move)) {
         take_move(brd);
-        return false;
-    } else {
-        return true;
-    }
+
 
 #ifdef ENABLE_ASSERTS
 	ASSERT_BOARD_OK(brd);
 #endif
+
+
+        return false;
+    } else {
+		
+
+#ifdef ENABLE_ASSERTS
+	ASSERT_BOARD_OK(brd);
+#endif
+		
+        return true;
+    }
 
 
 }
@@ -354,6 +363,7 @@ void add_piece_to_board(struct board *brd, enum piece pce, enum square sq)
 void remove_piece_from_board(struct board *brd, enum piece pce_to_remove, enum square sq)
 {
 #ifdef ENABLE_ASSERTS
+	ASSERT_BOARD_OK(brd);
     assert(pce_to_remove != NO_PIECE);
     assert(IS_VALID_PIECE(pce_to_remove));
 	assert(IS_VALID_SQUARE(sq));
@@ -382,6 +392,10 @@ void remove_piece_from_board(struct board *brd, enum piece pce_to_remove, enum s
     default:
         break;
     }
+    
+#ifdef ENABLE_ASSERTS
+	ASSERT_BOARD_OK(brd);
+#endif
 }
 
 
