@@ -218,9 +218,9 @@ void print_move_details(mv_bitmap move_bitmap)
 
     uint32_t score = get_score(move_bitmap);
 
-    printf("%c%c%c%c, captured '%c' promote '%c' score %d\n",
+    printf("%c%c%c%c, captured '%c' promote '%c' score %d IsCapt %d \n",
            ('a' + from_file), ('1' + from_rank), ('a' + to_file),
-           ('1' + to_rank), c_capt, c_promoted, score);
+           ('1' + to_rank), c_capt, c_promoted, score, IS_CAPTURE_MOVE(move_bitmap));
 
 }
 

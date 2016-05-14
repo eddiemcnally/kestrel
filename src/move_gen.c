@@ -409,11 +409,15 @@ assert_add_quiet_move(struct board *brd, mv_bitmap mv, enum piece piece_being_mo
         assert(false);
     }
 
+	enum square to_sq = TOSQ(mv);
+    enum piece pce = brd->pieces[to_sq];
+
     assert(piece_being_moved != NO_PIECE);
 
+	// quiet move, so nothing on to square
+	assert(pce == NO_PIECE);
+
     if (IS_EN_PASS_MOVE(mv) == false) {
-        enum square to_sq = TOSQ(mv);
-        enum piece pce = brd->pieces[to_sq];
         // to-square is empty
         assert(pce == NO_PIECE);
 
@@ -1072,6 +1076,21 @@ inline mv_bitmap MOVE(struct board *brd, enum square from, enum square to, enum 
     } else {
         assert(brd->pieces[to] == NO_PIECE);
     }
+    
+    if ((from == e5) && (to == c6)){
+		enum piece pce_e5 = brd->pieces[e5];
+		enum piece pce_c6 = brd->pieces[c6];
+		
+		if ((pce_e5 == W_KNIGHT) && (pce_c6 == B_PAWN))
+		{
+			if ((flags & MFLAG_CAPTURE) == 0){
+				assert(false);
+			}
+		}
+		
+	}
+    
+    
 #endif
 
     return Test_MOVE(from, to, capture, promote, flags);

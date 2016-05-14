@@ -67,6 +67,7 @@ static const uint8_t castle_permission_mask[NUM_SQUARES] = {
 
 void move_piece(struct board *brd, enum square from, enum square to)
 {	
+
     enum piece pce = brd->pieces[from];
     enum colour pce_col = GET_COLOUR(pce);
 
@@ -74,14 +75,29 @@ void move_piece(struct board *brd, enum square from, enum square to)
 	assert(pce != NO_PIECE);
 	assert(from != to);
 #endif
-
-
-
+#ifdef ENABLE_ASSERTS
+	ASSERT_BOARD_OK(brd);
+	assert_material_correct(brd);
+#endif
+	
+	//print_board(brd);
+	
+	
+#ifdef ENABLE_ASSERTS
+	assert_material_correct(brd);
+#endif
+	
+	
     // adjust the hash
     brd->board_hash ^= get_piece_hash(pce, from);
     brd->board_hash ^= get_piece_hash(pce, to);
 
     // clear up the "from" resources
+    // test
+    if (pce == NO_PIECE){
+		assert(false);
+	}
+    
     brd->pieces[from] = NO_PIECE;
     clear_bit(&brd->bitboards[pce], from);
     clear_bit(&brd->board, from);
@@ -90,6 +106,10 @@ void move_piece(struct board *brd, enum square from, enum square to)
     brd->pieces[to] = pce;
     set_bit(&brd->bitboards[pce], to);
     set_bit(&brd->board, to);
+
+#ifdef ENABLE_ASSERTS
+	assert_material_correct(brd);
+#endif
 
     if (pce_col == WHITE) {
         if(pce == W_PAWN) {
@@ -108,19 +128,36 @@ void move_piece(struct board *brd, enum square from, enum square to)
             brd->king_sq[BLACK] = to;
         }
     }
+#ifdef ENABLE_ASSERTS
+	assert_material_correct(brd);
+#endif
 }
 
 // return false if move is invalid, true otherwise
 bool make_move(struct board *brd, mv_bitmap mv)
 {
-	
-#ifdef ENABLE_ASSERTS
-	ASSERT_BOARD_OK(brd);
-#endif
-	
+
 	
     enum square from = FROMSQ(mv);
     enum square to = TOSQ(mv);
+
+	
+#ifdef ENABLE_ASSERTS
+	printf("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV\n");	
+	ASSERT_BOARD_OK(brd);
+	printf("UHUHUH - ");
+	print_move_details(mv);
+	printf("castle move = %d\n", IS_CASTLE_MOVE(mv));
+	printf("en pass move = %d\n", IS_EN_PASS_MOVE(mv));
+	printf("capture move = %d\n", IS_CAPTURE_MOVE(mv));
+
+	printf("from sq %s\n", print_square(from));
+	printf("to sq %s\n", print_square(to));
+	printf("pce on from : %c\n", get_piece_label(brd->pieces[from]));
+	printf("pce on to : %c\n", get_piece_label(brd->pieces[to]));
+#endif
+	
+
 
     enum piece pce_being_moved = brd->pieces[from];
     enum colour side = brd->side_to_move;
@@ -186,6 +223,7 @@ bool make_move(struct board *brd, mv_bitmap mv)
     brd->ply++;
     brd->history_ply++;
 
+
     if (IS_PAWN(pce_being_moved)) {
         brd->fifty_move_counter = 0;
 
@@ -198,7 +236,31 @@ bool make_move(struct board *brd, mv_bitmap mv)
             brd->board_hash ^= get_en_passant_hash(brd->en_passant);
         }
     }
+
+#ifdef ENABLE_ASSERTS
+	ASSERT_BOARD_OK(brd);
+	 
+    if ((from == e5) && (to == c6)){
+		enum piece pce_e5 = brd->pieces[e5];
+		enum piece pce_c6 = brd->pieces[c6];
+		
+		if ((pce_e5 == W_KNIGHT) && (pce_c6 == B_PAWN))
+		{
+			if (IS_CAPTURE_MOVE(mv)){
+				assert(false);
+			}
+		}
+	}
+#endif
+
+
     move_piece(brd, from, to);
+
+
+#ifdef ENABLE_ASSERTS
+	ASSERT_BOARD_OK(brd);
+#endif
+
 
     enum piece promoted = PROMOTED_PCE(mv);
     if (promoted != NO_PIECE) {
@@ -206,6 +268,12 @@ bool make_move(struct board *brd, mv_bitmap mv)
         remove_piece_from_board(brd, capt, to);
         add_piece_to_board(brd, promoted, to);
     }
+
+
+#ifdef ENABLE_ASSERTS
+	ASSERT_BOARD_OK(brd);
+#endif
+		
 
     // flip side
     flip_sides(brd);
@@ -367,6 +435,10 @@ void remove_piece_from_board(struct board *brd, enum piece pce_to_remove, enum s
     assert(pce_to_remove != NO_PIECE);
     assert(IS_VALID_PIECE(pce_to_remove));
 	assert(IS_VALID_SQUARE(sq));
+	
+	enum piece pce_on_sq = brd->pieces[sq];
+	assert(pce_on_sq == pce_to_remove);
+	
 #endif
 
     enum colour col = GET_COLOUR(pce_to_remove);
