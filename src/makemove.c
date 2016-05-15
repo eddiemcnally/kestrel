@@ -144,6 +144,7 @@ bool make_move(struct board *brd, mv_bitmap mv)
 	
 #ifdef ENABLE_ASSERTS
 	printf("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV\n");	
+	print_board(brd);
 	ASSERT_BOARD_OK(brd);
 	printf("UHUHUH - ");
 	print_move_details(mv);
@@ -165,6 +166,8 @@ bool make_move(struct board *brd, mv_bitmap mv)
     brd->history[brd->history_ply].board_hash = brd->board_hash;
 
     if (IS_EN_PASS_MOVE(mv)) {
+		printf("--- en pass move \n");
+
         if (side == WHITE) {
             // must be a bp
             remove_piece_from_board(brd, B_PAWN, to - 8);
@@ -173,6 +176,8 @@ bool make_move(struct board *brd, mv_bitmap mv)
             remove_piece_from_board(brd, W_PAWN, to + 8);
         }
     } else if (IS_CASTLE_MOVE(mv)) {
+		printf("--- castle move \n");
+
         switch (to) {
         case c1:
             move_piece(brd, a1, d1);
@@ -215,6 +220,7 @@ bool make_move(struct board *brd, mv_bitmap mv)
     brd->fifty_move_counter++;
 
     if (IS_CAPTURE_MOVE(mv)) {
+		printf("--- capt move \n");
         enum piece capt = brd->pieces[to];
         remove_piece_from_board(brd, capt, to);
         brd->fifty_move_counter = 0;

@@ -1083,7 +1083,7 @@ inline mv_bitmap MOVE(struct board *brd, enum square from, enum square to, enum 
 		
 		if ((pce_e5 == W_KNIGHT) && (pce_c6 == B_PAWN))
 		{
-			if ((flags & MFLAG_CAPTURE) == 0){
+			if ((flags & MFLAG_CAPTURE) != 0){
 				assert(false);
 			}
 		}
