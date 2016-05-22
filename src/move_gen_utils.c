@@ -213,9 +213,15 @@ void print_move_details(mv_bitmap move_bitmap)
     enum piece captured = CAPTURED_PCE(move_bitmap);
     enum piece promoted = PROMOTED_PCE(move_bitmap);
 
-    char c_capt = get_piece_label(captured);
-    char c_promoted = get_piece_label(promoted);
-
+    char c_capt = '-';
+    if (captured != NO_PIECE){
+		c_capt = get_piece_label(captured);
+	}
+    char c_promoted = '-';
+    if (promoted != NO_PIECE){
+		promoted = get_piece_label(promoted);
+	}
+	
     uint32_t score = get_score(move_bitmap);
 
     printf("%c%c%c%c, captured '%c' promote '%c' score %d IsCapt %d \n",

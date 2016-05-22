@@ -26,6 +26,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <assert.h>
 #include "types.h"
 #include "board.h"
 #include "pieces.h"
@@ -41,6 +42,7 @@ static const char pieceToChar[NUM_PIECES] = {
  */
 char get_piece_label(enum piece pce)
 {
+	assert(pce != NO_PIECE);
     return pieceToChar[pce];
 }
 

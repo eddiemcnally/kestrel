@@ -155,7 +155,11 @@ bool make_move(struct board *brd, mv_bitmap mv)
 	printf("from sq %s\n", print_square(from));
 	printf("to sq %s\n", print_square(to));
 	printf("pce on from : %c\n", get_piece_label(brd->pieces[from]));
-	printf("pce on to : %c\n", get_piece_label(brd->pieces[to]));
+	if (IS_CAPTURE_MOVE(mv)){
+		printf("pce on to : %c\n", get_piece_label(brd->pieces[to]));
+	} else{
+		printf("pce on to : - \n");
+	}
 #endif
 	
 

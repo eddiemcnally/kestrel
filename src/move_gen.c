@@ -469,10 +469,18 @@ static inline void generate_knight_piece_moves(struct board *brd,
         uint64_t opp_pieces = get_bitboard_for_colour(brd, opposite_col);
         uint64_t capture_squares = mask & opp_pieces;
 
+
         while (capture_squares != 0) {
             // loop creating capture moves
             enum square cap_sq = pop_1st_bit(&capture_squares);
             enum piece p = brd->pieces[cap_sq];
+
+#ifdef ENABLE_ASSERTS
+			if ((knight_sq == e5) && (cap_sq == c6) && (p == B_PAWN)){
+				assert(false);
+			}
+#endif
+
 
             mv_bitmap mv = MOVE(brd,knight_sq, cap_sq, p, NO_PIECE, MFLAG_CAPTURE);
             add_capture_move(brd, mv, mvl, knight, p);
@@ -1083,7 +1091,7 @@ inline mv_bitmap MOVE(struct board *brd, enum square from, enum square to, enum 
 		
 		if ((pce_e5 == W_KNIGHT) && (pce_c6 == B_PAWN))
 		{
-			if ((flags & MFLAG_CAPTURE) != 0){
+			if ((flags & MFLAG_CAPTURE) == 0){
 				assert(false);
 			}
 		}

@@ -454,11 +454,9 @@ void perft(int depth, struct board *brd, struct perft_stats *pstats)
     }
 
 
-    struct move_list mv_list = {
-        .moves = {0},
-        .move_count = 0
-    };
 
+    struct move_list mv_list = {};
+    
     generate_all_moves(brd, &mv_list);
     
     mv_bitmap mv;
@@ -466,9 +464,14 @@ void perft(int depth, struct board *brd, struct perft_stats *pstats)
         mv = mv_list.moves[mv_num];
 
 #ifdef ENABLE_ASSERTS
+	printf("-=-=-=-=-=-=-=-=-=\n");
+	print_board(brd);
 	enum square from = FROMSQ(mv);
 	enum square to = TOSQ(mv);
 
+	printf("-->from : %s\n",print_square(from));
+	printf("-->to : %s\n",print_square(to));
+	printf("is capture move : %d\n", IS_CAPTURE_MOVE(mv));
 	enum piece __pce_e5 = brd->pieces[from];
 	enum piece __pce_c6 = brd->pieces[to];
 	
