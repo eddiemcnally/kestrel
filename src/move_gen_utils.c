@@ -219,7 +219,7 @@ void print_move_details(mv_bitmap move_bitmap)
 	}
     char c_promoted = '-';
     if (promoted != NO_PIECE){
-		promoted = get_piece_label(promoted);
+		c_promoted = get_piece_label(promoted);
 	}
 	
     uint32_t score = get_score(move_bitmap);

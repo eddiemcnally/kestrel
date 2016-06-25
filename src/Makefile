@@ -32,9 +32,10 @@
 			-Wmissing-include-dirs \
 			-Wpointer-arith \
 			-fstack-protector \
-			-fsanitize=cfi \
+			-fsanitize=address \
 			-fsanitize=undefined \
-			-fomit-frame-pointer
+			-fomit-frame-pointer \
+			-DENABLE_ASSERTS=true
 
 
 

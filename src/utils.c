@@ -63,8 +63,8 @@ print_stacktrace (void)
     char **strings;
     size_t i;
 
-    size = backtrace (array, 10);
-    strings = backtrace_symbols (array, size);
+    size = (size_t)backtrace (array, 10);
+    strings = backtrace_symbols (array, (int)size);
 
     printf ("Obtained %zd stack frames.\n", size);
 

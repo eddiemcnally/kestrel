@@ -781,7 +781,7 @@ generate_black_pawn_moves(struct board *brd, struct move_list *mvl,
 
         // check for moving 1 and 2 squares forward
         //=========================================
-        enum square south_sq = pawn_sq + SOUTH;
+        enum square south_sq = pawn_sq + (enum square)SOUTH;
         if (only_capture_moves == false) {
             if (IS_SQUARE_OCCUPIED(brd->board, south_sq) == false) {
                 if (pawn_rank == RANK_2) {
@@ -802,7 +802,7 @@ generate_black_pawn_moves(struct board *brd, struct move_list *mvl,
                     add_quiet_move(brd, mv, mvl, B_PAWN);
                 }
                 if (pawn_rank == RANK_7) {
-                    enum square south_x2 = pawn_sq + SS;	// can skip down 2 ranks
+                    enum square south_x2 = pawn_sq + (enum square)SS;	// can skip down 2 ranks
 
                     bool sq_2_occupied = IS_SQUARE_OCCUPIED(brd->board, south_x2);
                     if (sq_2_occupied == false) {
@@ -816,7 +816,7 @@ generate_black_pawn_moves(struct board *brd, struct move_list *mvl,
         // check for capture left
         // ======================
         if (pawn_file > FILE_A) {
-            enum square southwest = pawn_sq + SW;
+            enum square southwest = pawn_sq + (enum square)SW;
 
             if (IS_SQUARE_OCCUPIED(bb_white_pieces, southwest) == true) {
                 enum piece capt_pce = brd->pieces[southwest];
@@ -847,7 +847,7 @@ generate_black_pawn_moves(struct board *brd, struct move_list *mvl,
         // check for capture right
         //========================
         if (pawn_file < FILE_H) {
-            enum square southeast = pawn_sq + SE;
+            enum square southeast = pawn_sq + (enum square)SE;
 
             if (IS_SQUARE_OCCUPIED(bb_white_pieces, southeast) == true) {
                 enum piece capt_pce = brd->pieces[southeast];
