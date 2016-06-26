@@ -171,6 +171,9 @@ bool ASSERT_BOARD_OK(const struct board *brd)
     for (int i = 0; i < NUM_PIECES; i++) {
         conflated |= brd->bitboards[i];
     }
+    if (conflated != brd->board){
+		printf("IJBPIUB");
+	}
     assert(conflated == brd->board);
     
     uint64_t wking_bb = brd->bitboards[W_KING];

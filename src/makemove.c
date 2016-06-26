@@ -50,6 +50,7 @@ static inline void remove_black_pawn_info(struct board *brd, enum square sq);
 static inline void remove_white_pawn_info(struct board *brd, enum square sq);
 static inline void update_black_pawn_control(struct board *brd, enum square sq, int val);
 static inline void update_white_pawn_control(struct board *brd, enum square sq, int val);
+static void assert_board_and_move(struct board *brd, mv_bitmap mv);
 
 
 //bit mask for castle permissions
@@ -133,16 +134,10 @@ void move_piece(struct board *brd, enum square from, enum square to)
 #endif
 }
 
-// return false if move is invalid, true otherwise
-bool make_move(struct board *brd, mv_bitmap mv)
-{
-
-	
+static void assert_board_and_move(struct board *brd, mv_bitmap mv){
     enum square from = FROMSQ(mv);
     enum square to = TOSQ(mv);
-
 	
-#ifdef ENABLE_ASSERTS
 	printf("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV\n");	
 	print_board(brd);
 	ASSERT_BOARD_OK(brd);
@@ -160,20 +155,36 @@ bool make_move(struct board *brd, mv_bitmap mv)
 	} else{
 		printf("pce on to : - \n");
 	}
+
+}
+
+
+// return false if move is invalid, true otherwise
+bool make_move(struct board *brd, mv_bitmap mv)
+{	
+    enum square from = FROMSQ(mv);
+    enum square to = TOSQ(mv);
+
+	
+#ifdef ENABLE_ASSERTS
+	assert_board_and_move(brd, mv);
 #endif
 	
-
-
     enum piece pce_being_moved = brd->pieces[from];
     enum colour side = brd->side_to_move;
 
     brd->history[brd->history_ply].board_hash = brd->board_hash;
 
     if (IS_EN_PASS_MOVE(mv)) {
-		printf("--- en pass move \n");
 
+#ifdef ENABLE_ASSERTS
+		printf("--- en pass move \n");
+		assert_board_and_move(brd, mv);
+		
+#endif
+	
         if (side == WHITE) {
-            // must be a bp
+	        // must be a bp
             remove_piece_from_board(brd, B_PAWN, to - 8);
         } else {
             // must be a wp
@@ -447,6 +458,11 @@ void remove_piece_from_board(struct board *brd, enum piece pce_to_remove, enum s
 	assert(IS_VALID_SQUARE(sq));
 	
 	enum piece pce_on_sq = brd->pieces[sq];
+	assert(pce_on_sq != NO_PIECE);
+	if (pce_on_sq != pce_to_remove){
+		printf("*****");
+	}
+	
 	assert(pce_on_sq == pce_to_remove);
 	
 #endif
