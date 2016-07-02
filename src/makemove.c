@@ -255,6 +255,12 @@ bool make_move(struct board *brd, mv_bitmap mv)
                 brd->en_passant = from - 8;
             }
             brd->board_hash ^= get_en_passant_hash(brd->en_passant);
+            
+#ifdef ENABLE_ASSERTS
+			enum rank r = GET_RANK(brd->en_passant);
+			assert((r == RANK_3) || (r == RANK_6));
+#endif
+            
         }
     }
 
