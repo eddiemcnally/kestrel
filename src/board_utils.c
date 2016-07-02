@@ -280,6 +280,9 @@ void assert_material_correct(const struct board *brd)
         }
     }
 
+	if (local_material[BLACK] != brd->material[BLACK])
+		printf("IUBIUB");
+
     assert(local_material[WHITE] == brd->material[WHITE]);
     assert(local_material[BLACK] == brd->material[BLACK]);
 #endif

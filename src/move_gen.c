@@ -694,6 +694,7 @@ generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
                         add_quiet_move(brd, mv, mvl, W_PAWN);
                     }
                 }
+                      
             }
         }
         // check for capture left
@@ -729,12 +730,8 @@ generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
             }
 
             if (northwest == brd->en_passant) {
-				
-                mv = MOVE(brd,pawn_sq, north_sq, B_PAWN, NO_PIECE, MFLAG_EN_PASSANT);
+                mv = MOVE(brd,pawn_sq, northwest, B_PAWN, NO_PIECE, MFLAG_EN_PASSANT);
                 add_en_passant_move(brd, mv, mvl);
-				
-  //            mv = MOVE(brd,pawn_sq, northwest, B_PAWN, NO_PIECE, MFLAG_EN_PASSANT);
-  //            add_capture_move(brd, mv, mvl, W_PAWN, B_PAWN);
             }
         }
         // check for capture right
@@ -771,12 +768,8 @@ generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
             }
 
             if (northeast == brd->en_passant) {
-                mv = MOVE(brd,pawn_sq, north_sq, B_PAWN, NO_PIECE, MFLAG_EN_PASSANT);
+                mv = MOVE(brd,pawn_sq, northeast, B_PAWN, NO_PIECE, MFLAG_EN_PASSANT);
                 add_en_passant_move(brd, mv, mvl);
-
-
-//                mv = MOVE(brd,pawn_sq, northeast, B_PAWN, NO_PIECE, MFLAG_EN_PASSANT);
-//                add_capture_move(brd, mv, mvl, W_PAWN, B_PAWN);
             }
         }
     }
@@ -831,6 +824,7 @@ generate_black_pawn_moves(struct board *brd, struct move_list *mvl,
                         add_quiet_move(brd, mv, mvl, B_PAWN);
                     }
                 }
+                
             }
         }
 
@@ -861,11 +855,8 @@ generate_black_pawn_moves(struct board *brd, struct move_list *mvl,
             }
 
             if (southwest == brd->en_passant) {
-                mv = MOVE(brd,pawn_sq, south_sq, W_PAWN, NO_PIECE, MFLAG_EN_PASSANT);
+                mv = MOVE(brd,pawn_sq, southwest, W_PAWN, NO_PIECE, MFLAG_EN_PASSANT);
                 add_en_passant_move(brd, mv, mvl);
-
-//                mv = MOVE(brd,pawn_sq, southwest, W_PAWN, NO_PIECE, MFLAG_EN_PASSANT);
-//                add_capture_move(brd, mv, mvl, B_PAWN, W_PAWN);
             }
         }
         // check for capture right
@@ -895,11 +886,8 @@ generate_black_pawn_moves(struct board *brd, struct move_list *mvl,
             }
 
             if (southeast == brd->en_passant) {
-                mv = MOVE(brd,pawn_sq, south_sq, W_PAWN, NO_PIECE, MFLAG_EN_PASSANT);
+                mv = MOVE(brd,pawn_sq, southeast, W_PAWN, NO_PIECE, MFLAG_EN_PASSANT);
                 add_en_passant_move(brd, mv, mvl);
-
-//                mv = MOVE(brd,pawn_sq, southeast, W_PAWN, NO_PIECE, MFLAG_EN_PASSANT);
-//                add_capture_move(brd, mv, mvl, B_PAWN, W_PAWN);
             }
         }
     }

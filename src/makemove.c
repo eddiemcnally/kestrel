@@ -75,19 +75,9 @@ void move_piece(struct board *brd, enum square from, enum square to)
 #ifdef ENABLE_ASSERTS
 	assert(pce != NO_PIECE);
 	assert(from != to);
-#endif
-#ifdef ENABLE_ASSERTS
 	ASSERT_BOARD_OK(brd);
 	assert_material_correct(brd);
 #endif
-	
-	//print_board(brd);
-	
-	
-#ifdef ENABLE_ASSERTS
-	assert_material_correct(brd);
-#endif
-	
 	
     // adjust the hash
     brd->board_hash ^= get_piece_hash(pce, from);
@@ -107,10 +97,6 @@ void move_piece(struct board *brd, enum square from, enum square to)
     brd->pieces[to] = pce;
     set_bit(&brd->bitboards[pce], to);
     set_bit(&brd->board, to);
-
-#ifdef ENABLE_ASSERTS
-	assert_material_correct(brd);
-#endif
 
     if (pce_col == WHITE) {
         if(pce == W_PAWN) {

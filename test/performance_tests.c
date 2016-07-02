@@ -463,25 +463,6 @@ void perft(int depth, struct board *brd, struct perft_stats *pstats)
     for (uint32_t mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
         mv = mv_list.moves[mv_num];
 
-#ifdef ENABLE_ASSERTS
-	printf("-=-=-=-=-=-=-=-=-=\n");
-	print_board(brd);
-	enum square from = FROMSQ(mv);
-	enum square to = TOSQ(mv);
-
-	printf("-->from : %s\n",print_square(from));
-	printf("-->to : %s\n",print_square(to));
-	printf("is capture move : %d\n", IS_CAPTURE_MOVE(mv));
-	enum piece __pce_e5 = brd->pieces[from];
-	enum piece __pce_c6 = brd->pieces[to];
-	
-	if ((from == e5) && (to == c6) && (__pce_e5 == W_KNIGHT) && (__pce_c6 == B_PAWN)
-		&& (IS_CAPTURE_MOVE(mv) == false)){
-			assert(false);	
-	}
-#endif
-
-
 		bool ok = make_move(brd, mv);
         if (ok) {
             perft(depth - 1, brd, pstats);
