@@ -68,9 +68,7 @@ static const uint8_t castle_permission_mask[NUM_SQUARES] = {
 
 void move_piece(struct board *brd, enum square from, enum square to)
 {	
-
     enum piece pce = brd->pieces[from];
-    enum colour pce_col = GET_COLOUR(pce);
 
 #ifdef ENABLE_ASSERTS
 	assert(pce != NO_PIECE);
@@ -83,12 +81,6 @@ void move_piece(struct board *brd, enum square from, enum square to)
     brd->board_hash ^= get_piece_hash(pce, from);
     brd->board_hash ^= get_piece_hash(pce, to);
 
-    // clear up the "from" resources
-    // test
-    if (pce == NO_PIECE){
-		assert(false);
-	}
-    
     brd->pieces[from] = NO_PIECE;
     clear_bit(&brd->bitboards[pce], from);
     clear_bit(&brd->board, from);
@@ -98,24 +90,29 @@ void move_piece(struct board *brd, enum square from, enum square to)
     set_bit(&brd->bitboards[pce], to);
     set_bit(&brd->board, to);
 
-    if (pce_col == WHITE) {
-        if(pce == W_PAWN) {
+	switch(pce){
+		case W_PAWN:
             // easiest way to move a pawn
             remove_white_pawn_info(brd, from);
             add_white_pawn_info(brd, to);
-        } else if (pce == W_KING) {
-            brd->king_sq[WHITE] = to;
-        }
-    } else {
-        if(pce == B_PAWN) {
+			break;
+		case B_PAWN:
             // easiest way to move a pawn
             remove_black_pawn_info(brd, from);
             add_black_pawn_info(brd, to);
-        } else if (pce == B_KING) {
-            brd->king_sq[BLACK] = to;
-        }
+            break;
+		case W_KING:
+            brd->king_sq[WHITE] = to;
+			break;
+		case B_KING:
+			brd->king_sq[BLACK] = to;
+			break;
+		default:
+			break;
     }
+
 #ifdef ENABLE_ASSERTS
+	ASSERT_BOARD_OK(brd);
 	assert_material_correct(brd);
 #endif
 }
@@ -162,13 +159,6 @@ bool make_move(struct board *brd, mv_bitmap mv)
     brd->history[brd->history_ply].board_hash = brd->board_hash;
 
     if (IS_EN_PASS_MOVE(mv)) {
-
-#ifdef ENABLE_ASSERTS
-		printf("--- en pass move \n");
-		assert_board_and_move(brd, mv);
-		
-#endif
-	
         if (side == WHITE) {
 	        // must be a bp
             remove_piece_from_board(brd, B_PAWN, to - 8);
@@ -177,8 +167,6 @@ bool make_move(struct board *brd, mv_bitmap mv)
             remove_piece_from_board(brd, W_PAWN, to + 8);
         }
     } else if (IS_CASTLE_MOVE(mv)) {
-		printf("--- castle move \n");
-
         switch (to) {
         case c1:
             move_piece(brd, a1, d1);
@@ -221,7 +209,6 @@ bool make_move(struct board *brd, mv_bitmap mv)
     brd->fifty_move_counter++;
 
     if (IS_CAPTURE_MOVE(mv)) {
-		printf("--- capt move \n");
         enum piece capt = brd->pieces[to];
         remove_piece_from_board(brd, capt, to);
         brd->fifty_move_counter = 0;
@@ -250,20 +237,9 @@ bool make_move(struct board *brd, mv_bitmap mv)
         }
     }
 
+
 #ifdef ENABLE_ASSERTS
 	ASSERT_BOARD_OK(brd);
-	 
-    if ((from == e5) && (to == c6)){
-		enum piece pce_e5 = brd->pieces[e5];
-		enum piece pce_c6 = brd->pieces[c6];
-		
-		if ((pce_e5 == W_KNIGHT) && (pce_c6 == B_PAWN))
-		{
-			if (IS_CAPTURE_MOVE(mv)){
-				assert(false);
-			}
-		}
-	}
 #endif
 
 
@@ -282,14 +258,13 @@ bool make_move(struct board *brd, mv_bitmap mv)
         add_piece_to_board(brd, promoted, to);
     }
 
+    // flip side
+    flip_sides(brd);
+
 
 #ifdef ENABLE_ASSERTS
 	ASSERT_BOARD_OK(brd);
 #endif
-		
-
-    // flip side
-    flip_sides(brd);
 
     // check if move is valid (ie, king in check)
     enum square king_sq = brd->king_sq[side];
@@ -297,7 +272,6 @@ bool make_move(struct board *brd, mv_bitmap mv)
     // side is already flipped above, so use that as the attacking side
     if (is_sq_attacked(brd, king_sq, brd->side_to_move)) {
         take_move(brd);
-
 
 #ifdef ENABLE_ASSERTS
 	ASSERT_BOARD_OK(brd);

@@ -191,6 +191,11 @@ bool ASSERT_BOARD_OK(const struct board *brd)
                 enum square wk_sq = pop_1st_bit(&bb_wk);
 
                 assert(sq == wk_sq);
+                
+                if (brd->king_sq[WHITE] != wk_sq){
+					printf("NUNUIN");
+				}
+                
                 assert(brd->king_sq[WHITE] == wk_sq);
             } else if (pce == B_KING) {
 
@@ -279,10 +284,6 @@ void assert_material_correct(const struct board *brd)
             local_material[col] += GET_PIECE_VALUE(pce);
         }
     }
-
-	if (local_material[BLACK] != brd->material[BLACK])
-		printf("IUBIUB");
-
     assert(local_material[WHITE] == brd->material[WHITE]);
     assert(local_material[BLACK] == brd->material[BLACK]);
 #endif
