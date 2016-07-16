@@ -22,8 +22,5 @@ void take_move(struct board *brd);
 void flip_sides(struct board *brd);
 void set_bit(uint64_t * brd, enum square sq);
 void clear_bit(uint64_t * brd, enum square sq);
-void move_piece(struct board *brd, enum square from, enum square to);
-void remove_piece_from_board(struct board *brd,  enum piece pce_to_remove, enum square sq);
-void add_piece_to_board(struct board *brd, enum piece pce, enum square sq);
 
 

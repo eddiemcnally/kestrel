@@ -22,6 +22,13 @@
 #include "types.h"
 #include "board.h"
 
+
+void move_piece(struct board *brd, enum square from, enum square to);
+void remove_piece_from_board(struct board *brd,  enum piece pce_to_remove, enum square sq);
+void add_piece_to_board(struct board *brd, enum piece pce, enum square sq);
+
+
+
 #define	BOARD_EMPTY	((uint64_t)0x0ull)
 
 #define NUM_RANKS 	8
