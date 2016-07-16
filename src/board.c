@@ -159,6 +159,41 @@ inline uint64_t square_to_bitboard(enum square sq)
     return retval;
 }
 
+uint64_t get_bitboard(const struct board *brd, enum piece pce){
+	return brd->bitboards[pce];
+}
+
+uint64_t get_bitboard_for_king(const struct board *brd, enum colour piece_col){
+	return brd->king_sq[piece_col];
+}
+
+uint64_t get_bitboard_all_pieces(const struct board *brd){
+	return brd->board;
+}
+
+
+bool is_pawn_controlling_sq(const struct board *brd, enum colour col, enum square sq){
+	return brd->pawn_control[col][sq] > 0; 
+}
+
+uint64_t get_bitboard_combined(const struct board *brd, enum piece pce_1, enum piece pce_2){
+	return brd->bitboards[pce_1] | brd->bitboards[pce_2];
+}
+
+
+int32_t get_material_value(const struct board *brd, enum colour col){
+	return brd->material[col];
+}
+
+enum colour get_side_to_move(const struct board *brd){
+	return brd->side_to_move;
+}
+
+enum square get_king_square(const struct board *brd, enum colour col){
+	return brd->king_sq[col];
+}
+
+
 
 void move_piece(struct board *brd, enum square from, enum square to)
 {	

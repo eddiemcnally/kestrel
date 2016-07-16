@@ -182,7 +182,11 @@ struct eval_info {
 int32_t evaluate_position(const struct board *brd)
 {
     // initially based on material value
-    int32_t score = (int32_t) (brd->material[WHITE] - brd->material[BLACK]);
+	int32_t white_material = get_material_value(brd, WHITE);
+	int32_t black_material = get_material_value(brd, BLACK);
+
+    int32_t score = (int32_t) (white_material - black_material);
+
 
     // NOTE: black material is -ve, white is +ve
     //
@@ -229,7 +233,7 @@ int32_t evaluate_position(const struct board *brd)
     score += eval_pawn_shield(brd, W_KING);
     score -= eval_pawn_shield(brd, B_KING);
 
-    if (brd->side_to_move == WHITE) {
+    if (get_side_to_move(brd) == WHITE) {
         return score;
     } else {
         return -score;
@@ -242,7 +246,7 @@ inline static int32_t eval_piece(const struct board *brd, enum piece pce,
 {
     int32_t score = 0;
 
-    uint64_t bb = brd->bitboards[pce];
+    uint64_t bb = get_bitboard(brd, pce);
     if (IS_BLACK(pce)) {
         while (bb != 0) {
             enum square sq = pop_1st_bit(&bb);
@@ -266,14 +270,14 @@ inline static int32_t eval_pawn_dependant_pieces(const struct board *brd,
     // for each target, adjust the score based on the number of friendly pawns
     // -------
 
-    uint64_t target_bb = brd->bitboards[target_pce];
+    uint64_t target_bb = get_bitboard(brd, target_pce);
     if (target_bb == 0) {
         // no pieces of this type, so nothing to adjust by
         return 0;
     }
     uint8_t num_targets = count_bits(target_bb);
 
-    uint64_t pawn_bb = brd->bitboards[pawn];
+    uint64_t pawn_bb = get_bitboard(brd, pawn);
     uint8_t num_pawns = count_bits(pawn_bb);
 
     int32_t adj_val = *(adj_vals + num_pawns);
@@ -289,7 +293,7 @@ inline static int32_t eval_pawn_dependant_pieces(const struct board *brd,
 
 inline static int32_t eval_paired_pieces(const struct board *brd, enum piece pce)
 {
-    uint64_t pce_bb = brd->bitboards[pce];
+    uint64_t pce_bb = get_bitboard(brd, pce);
     uint8_t num_pieces = count_bits(pce_bb);
 
     if (num_pieces <= 1) {
@@ -318,7 +322,7 @@ inline static int32_t eval_pawn_shield(const struct board *brd, enum piece king)
 
     enum colour col = GET_COLOUR(king);
 
-    enum square king_sq = brd->king_sq[col];
+    enum square king_sq = get_king_square(brd, col);
     uint8_t king_file = GET_FILE(king_sq);
 
     int32_t retval = 0;

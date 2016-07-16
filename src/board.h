@@ -26,8 +26,14 @@
 void move_piece(struct board *brd, enum square from, enum square to);
 void remove_piece_from_board(struct board *brd,  enum piece pce_to_remove, enum square sq);
 void add_piece_to_board(struct board *brd, enum piece pce, enum square sq);
-
-
+uint64_t get_bitboard(const struct board *brd, enum piece pce);
+uint64_t get_bitboard_for_king(const struct board *brd, enum colour piece_col);
+uint64_t get_bitboard_all_pieces(const struct board *brd);
+uint64_t get_bitboard_combined(const struct board *brd, enum piece piece_1, enum piece piece_2);
+int32_t get_material_value(const struct board *brd, enum colour col);
+enum square get_king_square(const struct board *brd, enum colour col);
+enum colour get_side_to_move(const struct board *brd);
+bool is_pawn_controlling_sq(const struct board *brd, enum colour col, enum square sq);
 
 #define	BOARD_EMPTY	((uint64_t)0x0ull)
 

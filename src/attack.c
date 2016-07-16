@@ -59,10 +59,6 @@ static void populate_intervening_squares_array(void);
 static uint64_t intervening_squares_lookup[NUM_SQUARES][NUM_SQUARES];
 
 
-///////////////////////////////////////////////////////
-
-
-
 
 void init_attack_framework(void)
 {
@@ -94,22 +90,18 @@ bool is_sq_attacked(const struct board *brd, enum square sq,
             return true;
         }
         // white pawn controls this square?
-        if (brd->pawn_control[WHITE][sq] > 0) {
+        if (is_pawn_controlling_sq(brd, WHITE, sq)) {
             return true;
         }
 
         // get the bitboard for rook and queen
-        uint64_t rq_bb = 0;
-        rq_bb = brd->bitboards[W_ROOK];
-        rq_bb |= brd->bitboards[W_QUEEN];
+        uint64_t rq_bb = get_bitboard_combined(brd, W_ROOK, W_QUEEN);
         if (is_rook_or_queen_attacking_square(brd, sq, rq_bb)) {
             return true;
         }
 
         // get the bitboard for bishop and queen
-        uint64_t bq_bb = 0;
-        bq_bb = brd->bitboards[W_BISHOP];
-        bq_bb |= brd->bitboards[W_QUEEN];
+        uint64_t bq_bb = get_bitboard_combined(brd, W_BISHOP, W_QUEEN);
         if (is_bishop_or_queen_attacking_square(brd, sq, bq_bb)) {
             return true;
         }
@@ -124,21 +116,17 @@ bool is_sq_attacked(const struct board *brd, enum square sq,
             return true;
         }
         // Black pawn controls this square?
-        if (brd->pawn_control[BLACK][sq] > 0) {
+		if (is_pawn_controlling_sq(brd, BLACK, sq)) {
             return true;
         }
 
         // get the bitboard for rook and queen
-        uint64_t rq_bb = 0;
-        rq_bb = brd->bitboards[B_ROOK];
-        rq_bb |= brd->bitboards[B_QUEEN];
+        uint64_t rq_bb = get_bitboard_combined(brd, B_ROOK, B_QUEEN);
         if (is_rook_or_queen_attacking_square(brd, sq, rq_bb)) {
             return true;
         }
         // get the bitboard for bishop and queen
-        uint64_t rq_bq = 0;
-        rq_bq = brd->bitboards[B_BISHOP];
-        rq_bq |= brd->bitboards[B_QUEEN];
+        uint64_t rq_bq = get_bitboard_combined(brd, B_BISHOP, B_QUEEN);
         if (is_bishop_or_queen_attacking_square(brd, sq, rq_bq)) {
             return true;
         }
@@ -208,7 +196,7 @@ static inline bool is_knight_attacking_square(const struct board *brd,
 {
     // get the bitboard representing all knights on the board of
     // this colour
-    uint64_t bb_knight = brd->bitboards[attacking_piece];
+    uint64_t bb_knight = get_bitboard(brd, attacking_piece);
     while (bb_knight != 0) {
         enum square knight_sq = pop_1st_bit(&bb_knight);
         uint64_t msk = GET_KNIGHT_OCC_MASK(knight_sq);
@@ -226,7 +214,7 @@ static inline bool is_king_attacking_square(const struct board *brd,
 {
     // get the bitboard representing the king on the board of
     // this colour
-    enum square att_pce_sq = brd->king_sq[col];
+    enum square att_pce_sq = get_bitboard_for_king(brd, col);
 
     // get occupancy mask for this square
     uint64_t mask = GET_KING_OCC_MASK(att_pce_sq);
@@ -245,7 +233,7 @@ static inline bool is_attacked_horizontally_or_vertically(
         // the piece on sq_two shares a rank or file with the rook, so
         // check if there are blocking pieces
         uint64_t interim_squares = intervening_squares_lookup[sq_one][sq_two];
-        uint64_t pieces_on_board = brd->board;
+        uint64_t pieces_on_board = get_bitboard_all_pieces(brd);
 
         if ((interim_squares & pieces_on_board) == 0) {
             // no intervening/blocking pieces
@@ -276,7 +264,7 @@ static inline bool is_attacked_diagonally(const struct board *brd,
         // the piece on target_sq shares a diagonal with the bishop so
         // check intervening squares
         uint64_t interim_squares = intervening_squares_lookup[attacking_sq][target_sq];
-        uint64_t pieces_on_board = brd->board;
+        uint64_t pieces_on_board = get_bitboard_all_pieces(brd);
 
         if ((interim_squares & pieces_on_board) == 0) {
             // no intervening/blocking pieces
@@ -342,11 +330,11 @@ bool TEST_is_pawn_attacking_square(const struct board * brd,
                                    enum square sq, enum colour attacking_side)
 {
     if (attacking_side == WHITE) {
-        if (brd->pawn_control[WHITE][sq] > 0) {
+        if (is_pawn_controlling_sq(brd, WHITE, sq)) {
             return true;
         }
     } else {
-        if (brd->pawn_control[BLACK][sq] > 0) {
+        if (is_pawn_controlling_sq(brd, BLACK, sq)) {
             return true;
         }
     }
