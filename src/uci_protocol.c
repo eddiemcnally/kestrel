@@ -58,12 +58,12 @@ void uci_print_bestmove(mv_bitmap mv)
 
 void uci_print_info_score(int32_t best_score, uint8_t depth, uint32_t nodes, uint64_t time_in_ms, uint8_t num_pv_moves, mv_bitmap *pv_line)
 {
-    printf("info score cp %d depth %d nodes %d time %jd ", best_score, depth, nodes,time_in_ms);
-    printf("pv ");
-    for(uint8_t i = 0; i < num_pv_moves; i++) {
-        printf(" %s", print_move(pv_line[i]));
-    }
-    printf("\n");
+    //printf("info score cp %d depth %d nodes %d time %jd ", best_score, depth, nodes,time_in_ms);
+    //printf("pv ");
+    //for(uint8_t i = 0; i < num_pv_moves; i++) {
+    //    printf(" %s", print_move(pv_line[i]));
+   // }
+    //printf("\n");
 }
 
 void uci_print_hello()

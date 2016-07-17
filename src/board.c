@@ -100,6 +100,8 @@ void get_clean_board(struct board *brd)
         brd->history[i].en_passant = NO_SQUARE;
         // other struct values are already set to zero with memset
     }
+    
+    brd->castle_perm = NONE;
 }
 
 // returns the count.

@@ -74,6 +74,7 @@ enum {
 
 // castling permissions
 enum castle_perm {
+	NONE = 0,
     WKCA = 0x01,		// white, king-side
     WQCA = 0x02,		// white, queen-side
     BKCA = 0x04,		// black, king-side

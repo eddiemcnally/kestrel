@@ -90,75 +90,75 @@ void test_generation_white_pawn_moves(void)
     char *test_fen =
         "rnbqkb1r/pp1p1pPp/8/2p1pP2/1P1P4/3P3P/P1P1P3/RNBQKBNR w KQkq e6 0 1";
 
-    struct board brd = init_game(test_fen);
+    struct board *brd = init_game(test_fen);
 
     struct move_list mvl = {
         .moves = {0},
         .move_count = 0
     };
-    TEST_generate_white_pawn_moves(&brd, &mvl);
+    TEST_generate_white_pawn_moves(brd, &mvl);
 
     assert_true(mvl.move_count == 26);
 
-    mv_bitmap mv = MOVE(&brd,a2, a3, NO_PIECE, NO_PIECE, 0);
+    mv_bitmap mv = MOVE(brd,a2, a3, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,a2, a4, NO_PIECE, NO_PIECE, MFLAG_PAWN_START);
+    mv = MOVE(brd,a2, a4, NO_PIECE, NO_PIECE, MFLAG_PAWN_START);
     //print_move_details(mv);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,c2, c3, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,c2, c3, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,e2, e3, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,e2, e3, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,e2, e4, NO_PIECE, NO_PIECE, MFLAG_PAWN_START);
+    mv = MOVE(brd,e2, e4, NO_PIECE, NO_PIECE, MFLAG_PAWN_START);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,h3, h4, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,h3, h4, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,b4, b5, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,b4, b5, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,b4, c5, B_PAWN, NO_PIECE, MFLAG_CAPTURE);
+    mv = MOVE(brd,b4, c5, B_PAWN, NO_PIECE, MFLAG_CAPTURE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,d4, d5, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,d4, d5, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,d4, c5, B_PAWN, NO_PIECE, MFLAG_CAPTURE);
+    mv = MOVE(brd,d4, c5, B_PAWN, NO_PIECE, MFLAG_CAPTURE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,d4, e5, B_PAWN, NO_PIECE, MFLAG_CAPTURE);
+    mv = MOVE(brd,d4, e5, B_PAWN, NO_PIECE, MFLAG_CAPTURE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,f5, f6, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,f5, f6, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,g7, g8, NO_PIECE, W_QUEEN, 0);
+    mv = MOVE(brd,g7, g8, NO_PIECE, W_QUEEN, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,g7, g8, NO_PIECE, W_KNIGHT, 0);
+    mv = MOVE(brd,g7, g8, NO_PIECE, W_KNIGHT, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,g7, g8, NO_PIECE, W_BISHOP, 0);
+    mv = MOVE(brd,g7, g8, NO_PIECE, W_BISHOP, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,g7, g8, NO_PIECE, W_ROOK, 0);
+    mv = MOVE(brd,g7, g8, NO_PIECE, W_ROOK, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,g7, f8, B_BISHOP, W_ROOK, MFLAG_CAPTURE);
+    mv = MOVE(brd,g7, f8, B_BISHOP, W_ROOK, MFLAG_CAPTURE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,g7, f8, B_BISHOP, W_QUEEN, MFLAG_CAPTURE);
+    mv = MOVE(brd,g7, f8, B_BISHOP, W_QUEEN, MFLAG_CAPTURE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,g7, f8, B_BISHOP, W_BISHOP, MFLAG_CAPTURE);
+    mv = MOVE(brd,g7, f8, B_BISHOP, W_BISHOP, MFLAG_CAPTURE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,g7, f8, B_BISHOP, W_KNIGHT, MFLAG_CAPTURE);
+    mv = MOVE(brd,g7, f8, B_BISHOP, W_KNIGHT, MFLAG_CAPTURE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
     /*
@@ -170,16 +170,16 @@ void test_generation_white_pawn_moves(void)
 
      */
 
-    mv = MOVE(&brd,g7, h8, B_ROOK, W_KNIGHT, MFLAG_CAPTURE);
+    mv = MOVE(brd,g7, h8, B_ROOK, W_KNIGHT, MFLAG_CAPTURE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,g7, h8, B_ROOK, W_BISHOP, MFLAG_CAPTURE);
+    mv = MOVE(brd,g7, h8, B_ROOK, W_BISHOP, MFLAG_CAPTURE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,g7, h8, B_ROOK, W_QUEEN, MFLAG_CAPTURE);
+    mv = MOVE(brd,g7, h8, B_ROOK, W_QUEEN, MFLAG_CAPTURE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,g7, h8, B_ROOK, W_ROOK, MFLAG_CAPTURE);
+    mv = MOVE(brd,g7, h8, B_ROOK, W_ROOK, MFLAG_CAPTURE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
 }
@@ -190,60 +190,60 @@ void test_generation_black_pawn_moves(void)
     char *test_fen =
         "rnbqkbnr/p1p1p3/3p3p/1p1p4/2P1Pp2/8/PP1P1PpP/RNBQKB1R b KQkq e3 0 1";
 
-    struct board brd = init_game(test_fen);
+    struct board *brd = init_game(test_fen);
 
     struct move_list mvl = {
         .moves = {0},
         .move_count = 0
     };
-    TEST_generate_black_pawn_moves(&brd, &mvl);
+    TEST_generate_black_pawn_moves(brd, &mvl);
 
     // test
     assert_true(mvl.move_count == 26);
 
-    mv_bitmap mv = MOVE(&brd,g2, g1, NO_PIECE, B_ROOK, 0);
+    mv_bitmap mv = MOVE(brd,g2, g1, NO_PIECE, B_ROOK, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,g2, g1, NO_PIECE, B_QUEEN, 0);
+    mv = MOVE(brd,g2, g1, NO_PIECE, B_QUEEN, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,g2, g1, NO_PIECE, B_BISHOP, 0);
+    mv = MOVE(brd,g2, g1, NO_PIECE, B_BISHOP, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,g2, g1, NO_PIECE, B_KNIGHT, 0);
+    mv = MOVE(brd,g2, g1, NO_PIECE, B_KNIGHT, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,g2, h1, W_ROOK, B_KNIGHT, MFLAG_CAPTURE);
+    mv = MOVE(brd,g2, h1, W_ROOK, B_KNIGHT, MFLAG_CAPTURE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,g2, h1, W_ROOK, B_BISHOP, MFLAG_CAPTURE);
+    mv = MOVE(brd,g2, h1, W_ROOK, B_BISHOP, MFLAG_CAPTURE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,g2, h1, W_ROOK, B_ROOK, MFLAG_CAPTURE);
+    mv = MOVE(brd,g2, h1, W_ROOK, B_ROOK, MFLAG_CAPTURE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,g2, h1, W_ROOK, B_QUEEN, MFLAG_CAPTURE);
+    mv = MOVE(brd,g2, h1, W_ROOK, B_QUEEN, MFLAG_CAPTURE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,g2, g1, NO_PIECE, B_KNIGHT, 0);
+    mv = MOVE(brd,g2, g1, NO_PIECE, B_KNIGHT, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,g2, g1, NO_PIECE, B_BISHOP, 0);
+    mv = MOVE(brd,g2, g1, NO_PIECE, B_BISHOP, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,g2, g1, NO_PIECE, B_ROOK, 0);
+    mv = MOVE(brd,g2, g1, NO_PIECE, B_ROOK, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,g2, g1, NO_PIECE, B_QUEEN, 0);
+    mv = MOVE(brd,g2, g1, NO_PIECE, B_QUEEN, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,f4, f3, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,f4, f3, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,b5, b4, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,b5, b4, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,d5, d4, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,d5, d4, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
 }
@@ -253,13 +253,13 @@ void test_generation_white_knight_pawn_moves(void)
     // setup
     char *test_fen = "5k2/1n6/4n3/6N1/8/3N4/8/5K2 w - - 0 1";
 
-    struct board brd = init_game(test_fen);
+    struct board *brd = init_game(test_fen);
 
     struct move_list mvl = {
         .moves = {0},
         .move_count = 0
     };
-    TEST_generate_knight_piece_moves(&brd, &mvl, WHITE);
+    TEST_generate_knight_piece_moves(brd, &mvl, WHITE);
 
     //printf("move count %d\n", mvl.move_count);
     //print_move_list_details(mvl);
@@ -268,36 +268,36 @@ void test_generation_white_knight_pawn_moves(void)
     assert_true(mvl.move_count == 14);
 
     // check moves from d3
-    mv_bitmap mv = MOVE(&brd,d3, f2, NO_PIECE, NO_PIECE, 0);
+    mv_bitmap mv = MOVE(brd,d3, f2, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,d3, e1, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,d3, e1, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,d3, c1, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,d3, c1, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,d3, b2, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,d3, b2, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,d3, b4, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,d3, b4, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,d3, c5, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,d3, c5, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,d3, e5, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,d3, e5, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,d3, f4, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,d3, f4, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
     // check moves from g5
-    mv = MOVE(&brd,g5, h3, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,g5, h3, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,g5, f3, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,g5, f3, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,g5, e4, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,g5, e4, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,g5, f7, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,g5, f7, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,g5, h7, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,g5, h7, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,g5, e6, B_KNIGHT, NO_PIECE, MFLAG_CAPTURE);
+    mv = MOVE(brd,g5, e6, B_KNIGHT, NO_PIECE, MFLAG_CAPTURE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
 }
@@ -308,13 +308,13 @@ void test_generation_black_knight_pawn_moves(void)
     char *test_fen =
         "r1bqkb1r/pppppppp/2N5/3n1N2/8/1n6/PPPPPPPP/R1BQKB1R b KQkq - 0 1";
 
-    struct board brd = init_game(test_fen);
+    struct board *brd = init_game(test_fen);
 
     struct move_list mvl = {
         .moves = {0},
         .move_count = 0
     };
-    TEST_generate_knight_piece_moves(&brd, &mvl, BLACK);
+    TEST_generate_knight_piece_moves(brd, &mvl, BLACK);
 
     //printf("move count %d\n", mvl.move_count);
     //print_move_list_details(mvl);
@@ -323,33 +323,33 @@ void test_generation_black_knight_pawn_moves(void)
     assert_true(mvl.move_count == 12);
 
     // start on b3
-    mv_bitmap mv = MOVE(&brd,b3, d2, W_PAWN, NO_PIECE, MFLAG_CAPTURE);
+    mv_bitmap mv = MOVE(brd,b3, d2, W_PAWN, NO_PIECE, MFLAG_CAPTURE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,b3, c1, W_BISHOP, NO_PIECE, MFLAG_CAPTURE);
+    mv = MOVE(brd,b3, c1, W_BISHOP, NO_PIECE, MFLAG_CAPTURE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,b3, a1, W_ROOK, NO_PIECE, MFLAG_CAPTURE);
+    mv = MOVE(brd,b3, a1, W_ROOK, NO_PIECE, MFLAG_CAPTURE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,b3, d2, W_PAWN, NO_PIECE, MFLAG_CAPTURE);
+    mv = MOVE(brd,b3, d2, W_PAWN, NO_PIECE, MFLAG_CAPTURE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,b3, c1, W_BISHOP, NO_PIECE, MFLAG_CAPTURE);
+    mv = MOVE(brd,b3, c1, W_BISHOP, NO_PIECE, MFLAG_CAPTURE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,b3, a1, W_ROOK, NO_PIECE, MFLAG_CAPTURE);
+    mv = MOVE(brd,b3, a1, W_ROOK, NO_PIECE, MFLAG_CAPTURE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
     // start on d5
 
-    mv = MOVE(&brd,d5, f4, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,d5, f4, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,d5, e3, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,d5, e3, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,d5, c3, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,d5, c3, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,d5, b4, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,d5, b4, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,d5, b6, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,d5, b6, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,d5, f6, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,d5, f6, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
 }
@@ -360,38 +360,38 @@ void test_generation_king_moves(void)
     char *test_fen =
         "8/p1P4p/R3p2P/P1pP1q2/PRP1p1P1/3Qprr1/kp1p3P/7K w - - 0 1";
 
-    struct board brd = init_game(test_fen);
+    struct board *brd = init_game(test_fen);
     struct move_list mvl = {
         .moves = {0},
         .move_count = 0
     };
-    TEST_generate_king_moves(&brd, &mvl, BLACK);
+    TEST_generate_king_moves(brd, &mvl, BLACK);
 
     assert_true(mvl.move_count == 4);
 
     // black king on a2
-    mv_bitmap mv = MOVE(&brd,a2, a3, NO_PIECE, NO_PIECE, 0);
+    mv_bitmap mv = MOVE(brd,a2, a3, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,a2, b3, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,a2, b3, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,a2, b1, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,a2, b1, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,a2, a1, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,a2, a1, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
     // reset things and check for white king
     brd = init_game(test_fen);
 
     memset(&mvl, 0, sizeof(struct move_list));
-    TEST_generate_king_moves(&brd, &mvl, WHITE);
+    TEST_generate_king_moves(brd, &mvl, WHITE);
 
     assert_true(mvl.move_count == 2);
 
     // black king on h1
-    mv = MOVE(&brd,h1, g2, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,h1, g2, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,h1, g1, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,h1, g1, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
     //=======================
@@ -401,42 +401,42 @@ void test_generation_king_moves(void)
 
     brd = init_game(test_fen);
     memset(&mvl, 0, sizeof(struct move_list));
-    TEST_generate_king_moves(&brd, &mvl, BLACK);
+    TEST_generate_king_moves(brd, &mvl, BLACK);
 
     assert_true(mvl.move_count == 6);
 
     // black king on d3
-    mv = MOVE(&brd,d3, c4, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,d3, c4, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,d3, c3, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,d3, c3, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,d3, c2, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,d3, c2, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,d3, d2, W_PAWN, NO_PIECE, MFLAG_CAPTURE);
+    mv = MOVE(brd,d3, d2, W_PAWN, NO_PIECE, MFLAG_CAPTURE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,d3, d4, W_PAWN, NO_PIECE, MFLAG_CAPTURE);
+    mv = MOVE(brd,d3, d4, W_PAWN, NO_PIECE, MFLAG_CAPTURE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,d3, e2, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,d3, e2, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
     // reset things and check for white king
     brd = init_game(test_fen);
 
     memset(&mvl, 0, sizeof(struct move_list));
-    TEST_generate_king_moves(&brd, &mvl, WHITE);
+    TEST_generate_king_moves(brd, &mvl, WHITE);
 
     assert_true(mvl.move_count == 5);
 
     // black king on c7
-    mv = MOVE(&brd,c7, b6, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,c7, b6, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,c7, b7, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,c7, b7, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,c7, b8, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,c7, b8, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,c7, c8, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,c7, c8, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,c7, d8, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,c7, d8, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
 }
@@ -446,7 +446,7 @@ void test_generation_sliding_diagonal_moves(void)
 
     char *sliding_test =
         "8/2B1p2P/4PppK/p2pP1P1/1P4pp/Pb2p3/3P1Pk1/2bB4 w - - 0 1";
-    struct board brd = init_game(sliding_test);
+    struct board *brd = init_game(sliding_test);
 
     struct move_list mvl = {
         .moves = {0},
@@ -456,31 +456,31 @@ void test_generation_sliding_diagonal_moves(void)
     //print_board(brd);
 
     // black bishops
-    TEST_generate_sliding_diagonal_moves(&brd, &mvl, BLACK);
+    TEST_generate_sliding_diagonal_moves(brd, &mvl, BLACK);
 
     //print_move_list_details(mvl);
 
     assert_true(mvl.move_count == 8);
 
-    mv_bitmap mv = MOVE(&brd,b3, a4, NO_PIECE, NO_PIECE, 0);
+    mv_bitmap mv = MOVE(brd,b3, a4, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,b3, c2, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,b3, c2, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,b3, d1, W_BISHOP, NO_PIECE, MFLAG_CAPTURE);
+    mv = MOVE(brd,b3, d1, W_BISHOP, NO_PIECE, MFLAG_CAPTURE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,b3, a2, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,b3, a2, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,b3, c4, NO_PIECE, NO_PIECE, 0);
-    assert_true(TEST_is_move_in_list(&mvl, mv));
-
-    mv = MOVE(&brd,c1, b2, NO_PIECE, NO_PIECE, 0);
-    assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,c1, a3, W_PAWN, NO_PIECE, MFLAG_CAPTURE);
-    assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,c1, d2, W_PAWN, NO_PIECE, MFLAG_CAPTURE);
+    mv = MOVE(brd,b3, c4, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    assert_false(is_sq_attacked(&brd, h6, BLACK));
+    mv = MOVE(brd,c1, b2, NO_PIECE, NO_PIECE, 0);
+    assert_true(TEST_is_move_in_list(&mvl, mv));
+    mv = MOVE(brd,c1, a3, W_PAWN, NO_PIECE, MFLAG_CAPTURE);
+    assert_true(TEST_is_move_in_list(&mvl, mv));
+    mv = MOVE(brd,c1, d2, W_PAWN, NO_PIECE, MFLAG_CAPTURE);
+    assert_true(TEST_is_move_in_list(&mvl, mv));
+
+    assert_false(is_sq_attacked(brd, h6, BLACK));
 
 ///////////////////////////////////////////////////
     // now look at white bishops
@@ -490,31 +490,31 @@ void test_generation_sliding_diagonal_moves(void)
 
     //print_board(brd);
 
-    TEST_generate_sliding_diagonal_moves(&brd, &mvl, WHITE);
+    TEST_generate_sliding_diagonal_moves(brd, &mvl, WHITE);
     assert_true(mvl.move_count == 10);
 
     //print_move_list_details(mvl);
 
-    mv = MOVE(&brd,d1, c2, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,d1, c2, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,d1, b3, B_BISHOP, NO_PIECE, MFLAG_CAPTURE);
+    mv = MOVE(brd,d1, b3, B_BISHOP, NO_PIECE, MFLAG_CAPTURE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,d1, e2, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,d1, e2, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,d1, f3, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,d1, f3, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,d1, g4, B_PAWN, NO_PIECE, MFLAG_CAPTURE);
+    mv = MOVE(brd,d1, g4, B_PAWN, NO_PIECE, MFLAG_CAPTURE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,c7, b6, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,c7, b6, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,c7, a5, B_PAWN, NO_PIECE, MFLAG_CAPTURE);
+    mv = MOVE(brd,c7, a5, B_PAWN, NO_PIECE, MFLAG_CAPTURE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,c7, d6, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,c7, d6, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,c7, b8, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,c7, b8, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,c7, d8, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,c7, d8, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
 }
@@ -523,7 +523,7 @@ void test_generation_sliding_horizontal_and_vertical_moves(void)
 {
 
     char *sliding_test = "K7/1rp5/5R1P/6p1/7P/1k3p1P/1P1p2r1/4R3 w - - 0 1";
-    struct board brd = init_game(sliding_test);
+    struct board *brd = init_game(sliding_test);
 
     struct move_list mvl = {
         .moves = {0},
@@ -531,32 +531,32 @@ void test_generation_sliding_horizontal_and_vertical_moves(void)
     };
     memset(&mvl, 0, sizeof(struct move_list));
 
-    TEST_generate_sliding_horizontal_vertical_moves(&brd, &mvl, BLACK);
+    TEST_generate_sliding_horizontal_vertical_moves(brd, &mvl, BLACK);
 
     assert_true(mvl.move_count == 11);
 
-    mv_bitmap mv = MOVE(&brd,g2, e2, NO_PIECE, NO_PIECE, 0);
+    mv_bitmap mv = MOVE(brd,g2, e2, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,g2, f2, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,g2, f2, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,g2, h2, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,g2, h2, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,g2, g1, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,g2, g1, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,g2, g3, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,g2, g3, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,g2, g4, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,g2, g4, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,b7, b8, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,b7, b8, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,b7, a7, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,b7, a7, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,b7, b6, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,b7, b6, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,b7, b5, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,b7, b5, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,b7, b4, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,b7, b4, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
     // check the white rooks
@@ -564,60 +564,60 @@ void test_generation_sliding_horizontal_and_vertical_moves(void)
 
     memset(&mvl, 0, sizeof(struct move_list));
 
-    TEST_generate_sliding_horizontal_vertical_moves(&brd, &mvl, WHITE);
+    TEST_generate_sliding_horizontal_vertical_moves(brd, &mvl, WHITE);
 
     assert_true(mvl.move_count == 25);
 
-    mv = MOVE(&brd,e1, d1, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,e1, d1, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,e1, c1, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,e1, c1, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,e1, b1, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,e1, b1, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,e1, a1, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,e1, a1, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,e1, f1, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,e1, f1, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,e1, g1, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,e1, g1, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,e1, h1, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,e1, h1, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,e1, e2, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,e1, e2, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,e1, e3, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,e1, e3, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,e1, e4, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,e1, e4, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,e1, e5, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,e1, e5, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,e1, e6, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,e1, e6, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,e1, e7, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,e1, e7, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,e1, e8, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,e1, e8, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    mv = MOVE(&brd,f6, f7, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,f6, f7, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,f6, f8, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,f6, f8, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,f6, g6, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,f6, g6, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,f6, a6, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,f6, a6, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,f6, b6, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,f6, b6, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,f6, c6, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,f6, c6, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,f6, d6, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,f6, d6, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,f6, e6, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,f6, e6, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,f6, f5, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,f6, f5, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,f6, f4, NO_PIECE, NO_PIECE, 0);
+    mv = MOVE(brd,f6, f4, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,f6, f3, B_PAWN, NO_PIECE, MFLAG_CAPTURE);
+    mv = MOVE(brd,f6, f3, B_PAWN, NO_PIECE, MFLAG_CAPTURE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
 }
@@ -625,47 +625,47 @@ void test_generation_sliding_horizontal_and_vertical_moves(void)
 void test_king_castling_moves(void)
 {
     char *sliding_test = "r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1";
-    struct board brd = init_game(sliding_test);
+    struct board *brd = init_game(sliding_test);
 
     struct move_list mvl = {
         .moves = {0},
         .move_count = 0
     };
 
-    TEST_generate_castle_moves(&brd, &mvl, WHITE);
+    TEST_generate_castle_moves(brd, &mvl, WHITE);
 
     assert_true(mvl.move_count == 2);
-    mv_bitmap mv = MOVE(&brd,e1, g1, NO_PIECE, NO_PIECE, MFLAG_CASTLE);
+    mv_bitmap mv = MOVE(brd,e1, g1, NO_PIECE, NO_PIECE, MFLAG_CASTLE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,e1, c1, NO_PIECE, NO_PIECE, MFLAG_CASTLE);
+    mv = MOVE(brd,e1, c1, NO_PIECE, NO_PIECE, MFLAG_CASTLE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
     brd = init_game(sliding_test);
     memset(&mvl, 0, sizeof(struct move_list));
 
-    TEST_generate_castle_moves(&brd, &mvl, BLACK);
+    TEST_generate_castle_moves(brd, &mvl, BLACK);
 
     assert_true(mvl.move_count == 2);
-    mv = MOVE(&brd,e8, g8, NO_PIECE, NO_PIECE, MFLAG_CASTLE);
+    mv = MOVE(brd,e8, g8, NO_PIECE, NO_PIECE, MFLAG_CASTLE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    mv = MOVE(&brd,e8, c8, NO_PIECE, NO_PIECE, MFLAG_CASTLE);
+    mv = MOVE(brd,e8, c8, NO_PIECE, NO_PIECE, MFLAG_CASTLE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
     sliding_test = "3rk2r/8/8/8/8/8/6p1/R3K2R b KQk - 0 1";
     brd = init_game(sliding_test);
     memset(&mvl, 0, sizeof(struct move_list));
 
-    TEST_generate_castle_moves(&brd, &mvl, WHITE);
+    TEST_generate_castle_moves(brd, &mvl, WHITE);
 
     assert_true(mvl.move_count == 0);
 
     brd = init_game(sliding_test);
     memset(&mvl, 0, sizeof(struct move_list));
 
-    TEST_generate_castle_moves(&brd, &mvl, BLACK);
+    TEST_generate_castle_moves(brd, &mvl, BLACK);
     assert_true(mvl.move_count == 1);
 
-    mv = MOVE(&brd,e8, g8, NO_PIECE, NO_PIECE, MFLAG_CASTLE);
+    mv = MOVE(brd,e8, g8, NO_PIECE, NO_PIECE, MFLAG_CASTLE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
 }
@@ -675,14 +675,14 @@ void test_sample_board_position()
 
     char *sample_position =
         "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1";
-    struct board brd = init_game(sample_position);
+    struct board *brd = init_game(sample_position);
 
     struct move_list mvl = {
         .moves = {0},
         .move_count = 0
     };
 
-    generate_all_moves(&brd, &mvl);
+    generate_all_moves(brd, &mvl);
 
     assert_true(mvl.move_count == 48);
 }
@@ -695,29 +695,29 @@ void test_clear_piece()
     //
     char *sample_position =
         "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1";
-    struct board brd = init_game(sample_position);
+    struct board *brd = init_game(sample_position);
 
-    assert_true(CHECK_BIT(brd.board, c3) == true);
-    assert_true(CHECK_BIT(brd.bitboards[W_KNIGHT], c3) == true);
+    assert_true(CHECK_BIT(brd->board, c3) == true);
+    assert_true(CHECK_BIT(brd->bitboards[W_KNIGHT], c3) == true);
 
     // save some info before the move for comparison
-    uint64_t old_hash = brd.board_hash;
-    uint32_t old_material = brd.material[WHITE];
-    enum piece old_pce = brd.pieces[c3];
+    uint64_t old_hash = brd->board_hash;
+    uint32_t old_material = brd->material[WHITE];
+    enum piece old_pce = brd->pieces[c3];
 
     // remove the knight from c3
-    remove_piece_from_board(&brd, W_KNIGHT, c3);
+    remove_piece_from_board(brd, W_KNIGHT, c3);
 
-    assert_true(old_hash != brd.board_hash);
+    assert_true(old_hash != brd->board_hash);
 
-    uint32_t new_material = brd.material[WHITE] + GET_PIECE_VALUE(W_KNIGHT);
+    uint32_t new_material = brd->material[WHITE] + GET_PIECE_VALUE(W_KNIGHT);
     assert_true(new_material == old_material);
 
     assert_true(old_pce == W_KNIGHT);
-    assert_true(brd.pieces[c3] == NO_PIECE);
+    assert_true(brd->pieces[c3] == NO_PIECE);
 
-    assert_true(CHECK_BIT(brd.board, c3) == false);
-    assert_true(CHECK_BIT(brd.bitboards[W_KNIGHT], c3) == false);
+    assert_true(CHECK_BIT(brd->board, c3) == false);
+    assert_true(CHECK_BIT(brd->bitboards[W_KNIGHT], c3) == false);
 
 }
 
@@ -729,27 +729,27 @@ void test_add_piece()
     //
     char *sample_position =
         "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1";
-    struct board brd = init_game(sample_position);
+    struct board *brd = init_game(sample_position);
 
-    assert_true(CHECK_BIT(brd.board, c4) == false);
-    assert_true(CHECK_BIT(brd.bitboards[W_KNIGHT], c4) == false);
-    assert_true(count_bits(brd.bitboards[W_KNIGHT]) == 2);
+    assert_true(CHECK_BIT(brd->board, c4) == false);
+    assert_true(CHECK_BIT(brd->bitboards[W_KNIGHT], c4) == false);
+    assert_true(count_bits(brd->bitboards[W_KNIGHT]) == 2);
 
     // save some info before the move for comparison
-    uint64_t old_hash = brd.board_hash;
-    uint32_t old_material = brd.material[WHITE];
+    uint64_t old_hash = brd->board_hash;
+    uint32_t old_material = brd->material[WHITE];
 
     // add a white knight to c4
-    add_piece_to_board(&brd, W_KNIGHT, c4);
+    add_piece_to_board(brd, W_KNIGHT, c4);
 
-    assert_true(old_hash != brd.board_hash);
-    uint32_t new_material = brd.material[WHITE];
+    assert_true(old_hash != brd->board_hash);
+    uint32_t new_material = brd->material[WHITE];
     assert_true(new_material == (old_material + GET_PIECE_VALUE(W_KNIGHT)));
 
-    assert_true(brd.pieces[c4] == W_KNIGHT);
+    assert_true(brd->pieces[c4] == W_KNIGHT);
 
-    assert_true(CHECK_BIT(brd.board, c4) == true);
-    assert_true(CHECK_BIT(brd.bitboards[W_KNIGHT], c4) == true);
+    assert_true(CHECK_BIT(brd->board, c4) == true);
+    assert_true(CHECK_BIT(brd->bitboards[W_KNIGHT], c4) == true);
 
 }
 
@@ -770,30 +770,30 @@ void test_add_piece()
  */
 void test_en_passant(void)
 {
-    struct board brd = init_game("4k3/2p5/8/3P4/8/8/8/4K3 b - - 0 1");
+    struct board *brd = init_game("4k3/2p5/8/3P4/8/8/8/4K3 b - - 0 1");
 
-    mv_bitmap mv = MOVE(&brd,c7, c5, NO_PIECE, NO_PIECE, MFLAG_PAWN_START);
-    make_move(&brd, mv);
+    mv_bitmap mv = MOVE(brd,c7, c5, NO_PIECE, NO_PIECE, MFLAG_PAWN_START);
+    make_move(brd, mv);
 
     // make sure all other pieces are as expected
-    assert_true(brd.pieces[e8] == B_KING);
-    assert_true(brd.pieces[c5] == B_PAWN);
-    assert_true(brd.pieces[d5] == W_PAWN);
-    assert_true(brd.pieces[e1] == W_KING);
+    assert_true(brd->pieces[e8] == B_KING);
+    assert_true(brd->pieces[c5] == B_PAWN);
+    assert_true(brd->pieces[d5] == W_PAWN);
+    assert_true(brd->pieces[e1] == W_KING);
     // 4 pieces on the board
-    assert_true(count_bits(brd.board) == 4);
-    assert_true(brd.en_passant == c6);
+    assert_true(count_bits(brd->board) == 4);
+    assert_true(brd->en_passant == c6);
 
     // now, make the en passant move
-    mv = MOVE(&brd,d5, c6, NO_PIECE, NO_PIECE, MFLAG_EN_PASSANT);
-    make_move(&brd, mv);
+    mv = MOVE(brd,d5, c6, NO_PIECE, NO_PIECE, MFLAG_EN_PASSANT);
+    make_move(brd, mv);
 
     // make sure all other pieces are as expected
-    assert_true(brd.pieces[e8] == B_KING);
-    assert_true(brd.pieces[c6] == W_PAWN);
-    assert_true(brd.pieces[e1] == W_KING);
+    assert_true(brd->pieces[e8] == B_KING);
+    assert_true(brd->pieces[c6] == W_PAWN);
+    assert_true(brd->pieces[e1] == W_KING);
     // 4 pieces on the board
-    assert_true(count_bits(brd.board) == 3);
+    assert_true(count_bits(brd->board) == 3);
 
 }
 
@@ -805,31 +805,31 @@ void test_move_piece()
     //
     char *sample_position =
         "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1";
-    struct board brd = init_game(sample_position);
+    struct board *brd = init_game(sample_position);
 
-    assert_true(CHECK_BIT(brd.board, e5) == true);
-    assert_true(CHECK_BIT(brd.bitboards[W_KNIGHT], e5) == true);
-    assert_true(count_bits(brd.bitboards[W_KNIGHT]) == 2);
+    assert_true(CHECK_BIT(brd->board, e5) == true);
+    assert_true(CHECK_BIT(brd->bitboards[W_KNIGHT], e5) == true);
+    assert_true(count_bits(brd->bitboards[W_KNIGHT]) == 2);
 
     // save some info before the move for comparison
-    uint64_t old_hash = brd.board_hash;
-    uint32_t old_material = brd.material[WHITE];
+    uint64_t old_hash = brd->board_hash;
+    uint32_t old_material = brd->material[WHITE];
 
     // add a white knight from e4 to d3
-    move_piece(&brd, e5, d3);
+    move_piece(brd, e5, d3);
 
-    assert_true(old_hash != brd.board_hash);
+    assert_true(old_hash != brd->board_hash);
 
-    uint32_t new_material = brd.material[WHITE];
+    uint32_t new_material = brd->material[WHITE];
     assert_true(new_material == old_material);
 
-    assert_true(brd.pieces[d3] == W_KNIGHT);
-    assert_true(brd.pieces[e5] == NO_PIECE);
+    assert_true(brd->pieces[d3] == W_KNIGHT);
+    assert_true(brd->pieces[e5] == NO_PIECE);
 
-    assert_true(CHECK_BIT(brd.board, d3) == true);
-    assert_true(CHECK_BIT(brd.board, e5) == false);
+    assert_true(CHECK_BIT(brd->board, d3) == true);
+    assert_true(CHECK_BIT(brd->board, e5) == false);
 
-    assert_true(CHECK_BIT(brd.bitboards[W_KNIGHT], d3) == true);
+    assert_true(CHECK_BIT(brd->bitboards[W_KNIGHT], d3) == true);
 
 }
 
@@ -865,7 +865,7 @@ void test_make_move_take_move_1(void)
 
         //printf("processing FEN %s\n", sample_position);
 
-        struct board brd = init_game(sample_position);
+        struct board *brd = init_game(sample_position);
 
         struct move_list list = {
             .moves = {0},
@@ -873,27 +873,29 @@ void test_make_move_take_move_1(void)
         };
 
 
-        generate_all_moves(&brd, &list);
+        generate_all_moves(brd, &list);
 
-        struct board starting_brd = clone_board(&brd);
+        struct board starting_brd;
+        clone_board(brd, &starting_brd);
 
         for (int i = 0; i < list.move_count; i++) {
             // make a move, take it back, and compare board before and after
             mv_bitmap mv = list.moves[i];
 
-            struct board before_move = clone_board(&brd);
+            struct board before_move;
+            clone_board(brd, &before_move);
 
-            bool valid_move = make_move(&brd, mv);
+            bool valid_move = make_move(brd, mv);
             if (!valid_move) {
                 continue;
             }
 
-            take_move(&brd);
+            take_move(brd);
 
-            assert_boards_are_equal(&brd, &before_move);
+            assert_boards_are_equal(brd, &before_move);
         }
 
-        assert_boards_are_equal(&brd, &starting_brd);
+        assert_boards_are_equal(brd, &starting_brd);
     }
 }
 
@@ -906,18 +908,18 @@ void test_zobrist_hashing_makemove_takemove(void)
     // =======================
     char *enpass_pos = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
-    struct board brd = init_game(enpass_pos);
+    struct board *brd = init_game(enpass_pos);
 
-    uint64_t pre_ep_hash = brd.board_hash;
+    uint64_t pre_ep_hash = brd->board_hash;
 
     // make move to cause enpassant on e3
-    mv_bitmap mv = MOVE(&brd,e2, e4, NO_PIECE, NO_PIECE, MFLAG_PAWN_START);
-    make_move(&brd, mv);
+    mv_bitmap mv = MOVE(brd,e2, e4, NO_PIECE, NO_PIECE, MFLAG_PAWN_START);
+    make_move(brd, mv);
     // check hash has changed
-    assert_true(pre_ep_hash != brd.board_hash);
-    take_move(&brd);
+    assert_true(pre_ep_hash != brd->board_hash);
+    take_move(brd);
     // check hash is back to original
-    assert_true(brd.board_hash == pre_ep_hash);
+    assert_true(brd->board_hash == pre_ep_hash);
 
     // check castle hashing
     // ====================
@@ -925,16 +927,16 @@ void test_zobrist_hashing_makemove_takemove(void)
 
     brd = init_game(castle_pos);
 
-    uint64_t pre_castle_hash = brd.board_hash;
+    uint64_t pre_castle_hash = brd->board_hash;
 
     // make castle move
-    mv = MOVE(&brd,e1, g1, NO_PIECE, NO_PIECE, MFLAG_CASTLE);
-    make_move(&brd, mv);
+    mv = MOVE(brd,e1, g1, NO_PIECE, NO_PIECE, MFLAG_CASTLE);
+    make_move(brd, mv);
     // check hash has changed
-    assert_true(pre_castle_hash != brd.board_hash);
-    take_move(&brd);
+    assert_true(pre_castle_hash != brd->board_hash);
+    take_move(brd);
     // check hash is back to original
-    assert_true(brd.board_hash == pre_castle_hash);
+    assert_true(brd->board_hash == pre_castle_hash);
 
 
     // check side-to-move hashing
@@ -943,17 +945,17 @@ void test_zobrist_hashing_makemove_takemove(void)
 
     brd = init_game(side_to_move_pos);
 
-    uint64_t pre_swap_hash = brd.board_hash;
+    uint64_t pre_swap_hash = brd->board_hash;
 
     // flip sides
-    flip_sides(&brd);
+    flip_sides(brd);
 
     // check hash has changed
-    assert_true(pre_swap_hash != brd.board_hash);
+    assert_true(pre_swap_hash != brd->board_hash);
 
     // flip back and check hash is back to original
-    flip_sides(&brd);
-    assert_true(brd.board_hash == pre_swap_hash);
+    flip_sides(brd);
+    assert_true(brd->board_hash == pre_swap_hash);
 
 
 }
@@ -962,14 +964,14 @@ void test_zobrist_hashing_makemove_takemove(void)
 
 void test_capture_move_gen_1(void)
 {
-    struct board brd = init_game(STARTING_FEN);
+    struct board *brd = init_game(STARTING_FEN);
 
     struct move_list list = {
         .moves = {0},
         .move_count = 0
     };
 
-    generate_all_capture_moves(&brd, &list);
+    generate_all_capture_moves(brd, &list);
 
     assert_true(list.move_count == 0);
 
@@ -977,12 +979,12 @@ void test_capture_move_gen_1(void)
 
 void test_capture_move_gen_2(void)
 {
-    struct board brd = init_game("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
+    struct board *brd = init_game("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
     struct move_list list = {
         .moves = {0},
         .move_count = 0
     };
-    generate_all_capture_moves(&brd, &list);
+    generate_all_capture_moves(brd, &list);
 
     assert_true(list.move_count == 8);
 
@@ -997,14 +999,14 @@ void test_capture_move_gen_2(void)
 
 void test_capture_move_gen_3(void)
 {
-    struct board brd = init_game("6r1/1b2npb1/1p2P3/1PPBpnR1/Pk1PpPpQ/N1qP1rp1/3P1Npp/BK1R4 w - - 0 1");
+    struct board *brd = init_game("6r1/1b2npb1/1p2P3/1PPBpnR1/Pk1PpPpQ/N1qP1rp1/3P1Npp/BK1R4 w - - 0 1");
 
     struct move_list list = {
         .moves = {0},
         .move_count = 0
     };
 
-    generate_all_capture_moves(&brd, &list);
+    generate_all_capture_moves(brd, &list);
 
     assert_true(list.move_count == 17);
 

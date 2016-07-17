@@ -132,7 +132,7 @@ int consume_fen_notation(const char *fen_string, struct board *brd)
     if (*fen_string == 'w') {
 		set_side_to_move(brd, WHITE);
     } else {
-		set_side_to_move(brd, WHITE);
+		set_side_to_move(brd, BLACK);
     }
 
     // skip 'w' or 'b', and the next space

@@ -20,7 +20,7 @@
 
 #include "types.h"
 
-struct board init_game(char *fen);
+struct board* init_game(char *fen);
 void init_game_no_board(void);
 
 

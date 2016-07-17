@@ -53,61 +53,61 @@ void board_test_fixture(void);
 void test_initial_board_placement()
 {
     init_hash_keys();
-    struct board brd = init_game(STARTING_FEN);
+    struct board *brd = init_game(STARTING_FEN);
 
-    assert_true(W_ROOK == brd.pieces[a1]);
-    assert_true(W_KNIGHT == brd.pieces[b1]);
-    assert_true(W_BISHOP == brd.pieces[c1]);
-    assert_true(W_QUEEN == brd.pieces[d1]);
-    assert_true(W_KING == brd.pieces[e1]);
-    assert_true(W_BISHOP == brd.pieces[f1]);
-    assert_true(W_KNIGHT == brd.pieces[g1]);
-    assert_true(W_ROOK == brd.pieces[h1]);
+    assert_true(W_ROOK == brd->pieces[a1]);
+    assert_true(W_KNIGHT == brd->pieces[b1]);
+    assert_true(W_BISHOP == brd->pieces[c1]);
+    assert_true(W_QUEEN == brd->pieces[d1]);
+    assert_true(W_KING == brd->pieces[e1]);
+    assert_true(W_BISHOP == brd->pieces[f1]);
+    assert_true(W_KNIGHT == brd->pieces[g1]);
+    assert_true(W_ROOK == brd->pieces[h1]);
 
-    assert_true(W_PAWN == brd.pieces[a2]);
-    assert_true(W_PAWN == brd.pieces[b2]);
-    assert_true(W_PAWN == brd.pieces[c2]);
-    assert_true(W_PAWN == brd.pieces[d2]);
-    assert_true(W_PAWN == brd.pieces[e2]);
-    assert_true(W_PAWN == brd.pieces[f2]);
-    assert_true(W_PAWN == brd.pieces[g2]);
-    assert_true(W_PAWN == brd.pieces[h2]);
+    assert_true(W_PAWN == brd->pieces[a2]);
+    assert_true(W_PAWN == brd->pieces[b2]);
+    assert_true(W_PAWN == brd->pieces[c2]);
+    assert_true(W_PAWN == brd->pieces[d2]);
+    assert_true(W_PAWN == brd->pieces[e2]);
+    assert_true(W_PAWN == brd->pieces[f2]);
+    assert_true(W_PAWN == brd->pieces[g2]);
+    assert_true(W_PAWN == brd->pieces[h2]);
 
-    assert_true(B_PAWN == brd.pieces[a7]);
-    assert_true(B_PAWN == brd.pieces[b7]);
-    assert_true(B_PAWN == brd.pieces[c7]);
-    assert_true(B_PAWN == brd.pieces[d7]);
-    assert_true(B_PAWN == brd.pieces[e7]);
-    assert_true(B_PAWN == brd.pieces[f7]);
-    assert_true(B_PAWN == brd.pieces[g7]);
-    assert_true(B_PAWN == brd.pieces[h7]);
+    assert_true(B_PAWN == brd->pieces[a7]);
+    assert_true(B_PAWN == brd->pieces[b7]);
+    assert_true(B_PAWN == brd->pieces[c7]);
+    assert_true(B_PAWN == brd->pieces[d7]);
+    assert_true(B_PAWN == brd->pieces[e7]);
+    assert_true(B_PAWN == brd->pieces[f7]);
+    assert_true(B_PAWN == brd->pieces[g7]);
+    assert_true(B_PAWN == brd->pieces[h7]);
 
-    assert_true(B_ROOK == brd.pieces[a8]);
-    assert_true(B_KNIGHT == brd.pieces[b8]);
-    assert_true(B_BISHOP == brd.pieces[c8]);
-    assert_true(B_QUEEN == brd.pieces[d8]);
-    assert_true(B_KING == brd.pieces[e8]);
-    assert_true(B_BISHOP == brd.pieces[f8]);
-    assert_true(B_KNIGHT == brd.pieces[g8]);
-    assert_true(B_ROOK == brd.pieces[h8]);
+    assert_true(B_ROOK == brd->pieces[a8]);
+    assert_true(B_KNIGHT == brd->pieces[b8]);
+    assert_true(B_BISHOP == brd->pieces[c8]);
+    assert_true(B_QUEEN == brd->pieces[d8]);
+    assert_true(B_KING == brd->pieces[e8]);
+    assert_true(B_BISHOP == brd->pieces[f8]);
+    assert_true(B_KNIGHT == brd->pieces[g8]);
+    assert_true(B_ROOK == brd->pieces[h8]);
 
     // no piece present
     for (int i = a3; i < h6; i++) {
-        assert_true(brd.pieces[i] == NO_PIECE);
+        assert_true(brd->pieces[i] == NO_PIECE);
     }
 
     // now verify remainder of struct is populated
-    assert_true(brd.side_to_move == WHITE);
+    assert_true(brd->side_to_move == WHITE);
 
-    assert_true(brd.en_passant == NO_SQUARE);
+    assert_true(brd->en_passant == NO_SQUARE);
 
-    assert_true(brd.fifty_move_counter == 0);
-    assert_true(brd.ply == 0);
-    assert_true(brd.history_ply == 0);
+    assert_true(brd->fifty_move_counter == 0);
+    assert_true(brd->ply == 0);
+    assert_true(brd->history_ply == 0);
 
-    assert_true(brd.castle_perm == (WQCA | WKCA | BQCA | BKCA));
+    assert_true(brd->castle_perm == (WQCA | WKCA | BQCA | BKCA));
 
-    assert_true(brd.board_hash != 0);
+    assert_true(brd->board_hash != 0);
 
 }
 
@@ -118,80 +118,78 @@ void test_fen_parsing_initial_board_layout(void)
     char *test_fen =
         "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
-    struct board brd = init_game(test_fen);
+    struct board *brd = init_game(test_fen);
 
     //print_board(brd);
 
     // verify the board
-    assert_true(W_ROOK == brd.pieces[a1]);
-    assert_true(W_KNIGHT == brd.pieces[b1]);
-    assert_true(W_BISHOP == brd.pieces[c1]);
-    assert_true(W_QUEEN == brd.pieces[d1]);
-    assert_true(W_KING == brd.pieces[e1]);
-    assert_true(W_BISHOP == brd.pieces[f1]);
-    assert_true(W_KNIGHT == brd.pieces[g1]);
-    assert_true(W_ROOK == brd.pieces[h1]);
+    assert_true(W_ROOK == brd->pieces[a1]);
+    assert_true(W_KNIGHT == brd->pieces[b1]);
+    assert_true(W_BISHOP == brd->pieces[c1]);
+    assert_true(W_QUEEN == brd->pieces[d1]);
+    assert_true(W_KING == brd->pieces[e1]);
+    assert_true(W_BISHOP == brd->pieces[f1]);
+    assert_true(W_KNIGHT == brd->pieces[g1]);
+    assert_true(W_ROOK == brd->pieces[h1]);
 
-    assert_true(W_PAWN == brd.pieces[a2]);
-    assert_true(W_PAWN == brd.pieces[b2]);
-    assert_true(W_PAWN == brd.pieces[c2]);
-    assert_true(W_PAWN == brd.pieces[d2]);
-    assert_true(W_PAWN == brd.pieces[e2]);
-    assert_true(W_PAWN == brd.pieces[f2]);
-    assert_true(W_PAWN == brd.pieces[g2]);
-    assert_true(W_PAWN == brd.pieces[h2]);
+    assert_true(W_PAWN == brd->pieces[a2]);
+    assert_true(W_PAWN == brd->pieces[b2]);
+    assert_true(W_PAWN == brd->pieces[c2]);
+    assert_true(W_PAWN == brd->pieces[d2]);
+    assert_true(W_PAWN == brd->pieces[e2]);
+    assert_true(W_PAWN == brd->pieces[f2]);
+    assert_true(W_PAWN == brd->pieces[g2]);
+    assert_true(W_PAWN == brd->pieces[h2]);
 
-    assert_true(B_PAWN == brd.pieces[a7]);
-    assert_true(B_PAWN == brd.pieces[b7]);
-    assert_true(B_PAWN == brd.pieces[c7]);
-    assert_true(B_PAWN == brd.pieces[d7]);
-    assert_true(B_PAWN == brd.pieces[e7]);
-    assert_true(B_PAWN == brd.pieces[f7]);
-    assert_true(B_PAWN == brd.pieces[g7]);
-    assert_true(B_PAWN == brd.pieces[h7]);
+    assert_true(B_PAWN == brd->pieces[a7]);
+    assert_true(B_PAWN == brd->pieces[b7]);
+    assert_true(B_PAWN == brd->pieces[c7]);
+    assert_true(B_PAWN == brd->pieces[d7]);
+    assert_true(B_PAWN == brd->pieces[e7]);
+    assert_true(B_PAWN == brd->pieces[f7]);
+    assert_true(B_PAWN == brd->pieces[g7]);
+    assert_true(B_PAWN == brd->pieces[h7]);
 
-    assert_true(B_ROOK == brd.pieces[a8]);
-    assert_true(B_KNIGHT == brd.pieces[b8]);
-    assert_true(B_BISHOP == brd.pieces[c8]);
-    assert_true(B_QUEEN == brd.pieces[d8]);
-    assert_true(B_KING == brd.pieces[e8]);
-    assert_true(B_BISHOP == brd.pieces[f8]);
-    assert_true(B_KNIGHT == brd.pieces[g8]);
-    assert_true(B_ROOK == brd.pieces[h8]);
+    assert_true(B_ROOK == brd->pieces[a8]);
+    assert_true(B_KNIGHT == brd->pieces[b8]);
+    assert_true(B_BISHOP == brd->pieces[c8]);
+    assert_true(B_QUEEN == brd->pieces[d8]);
+    assert_true(B_KING == brd->pieces[e8]);
+    assert_true(B_BISHOP == brd->pieces[f8]);
+    assert_true(B_KNIGHT == brd->pieces[g8]);
+    assert_true(B_ROOK == brd->pieces[h8]);
 
     // no piece present
     for (int i = a3; i < h6; i++) {
-        assert_true(NO_PIECE == brd.pieces[i]);
+        assert_true(NO_PIECE == brd->pieces[i]);
     }
 
-    assert_true(brd.side_to_move == WHITE);
+    assert_true(brd->side_to_move == WHITE);
 
-    assert_true(brd.castle_perm == (WKCA | WQCA | BKCA | BQCA));
+    assert_true(brd->castle_perm == (WKCA | WQCA | BKCA | BQCA));
 
-    assert_true(brd.en_passant == NO_SQUARE);
+    assert_true(brd->en_passant == NO_SQUARE);
 
 }
 
 void test_fen_parsing_general_layout_1()
 {
-
-    // this is the initial board setup
     char *test_fen = "k7/8/8/4N3/8/8/8/3K4 b - - 13 56";
 
-    struct board brd = init_game(test_fen);
+    struct board *brd = init_game(test_fen);
 
     //print_board(brd);
 
     // verify the board
-    assert_true(B_KING == brd.pieces[a8]);
-    assert_true(W_KNIGHT == brd.pieces[e5]);
-    assert_true(W_KING == brd.pieces[d1]);
+    assert_true(B_KING == brd->pieces[a8]);
+    assert_true(W_KNIGHT == brd->pieces[e5]);
+    assert_true(W_KING == brd->pieces[d1]);
 
-    assert_true(brd.side_to_move == BLACK);
+    assert_true(brd->side_to_move == BLACK);
 
-    assert_true(brd.castle_perm == 0);
+    assert_true(brd->castle_perm == 0);
 
-    assert_true(brd.en_passant == NO_SQUARE);
+    assert_true(brd->en_passant == NO_SQUARE);
 }
 
 void test_fen_parsing_general_layout_2()
@@ -201,81 +199,81 @@ void test_fen_parsing_general_layout_2()
     char *test_fen =
         "rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2";
 
-    struct board brd = init_game(test_fen);
+    struct board *brd = init_game(test_fen);
 
     //print_board(brd);
 
     // verify the board
-    assert_true(W_ROOK == brd.pieces[a1]);
-    assert_true(W_KNIGHT == brd.pieces[b1]);
-    assert_true(W_BISHOP == brd.pieces[c1]);
-    assert_true(W_QUEEN == brd.pieces[d1]);
-    assert_true(W_KING == brd.pieces[e1]);
-    assert_true(W_BISHOP == brd.pieces[f1]);
+    assert_true(W_ROOK == brd->pieces[a1]);
+    assert_true(W_KNIGHT == brd->pieces[b1]);
+    assert_true(W_BISHOP == brd->pieces[c1]);
+    assert_true(W_QUEEN == brd->pieces[d1]);
+    assert_true(W_KING == brd->pieces[e1]);
+    assert_true(W_BISHOP == brd->pieces[f1]);
 
-    assert_true(W_ROOK == brd.pieces[h1]);
+    assert_true(W_ROOK == brd->pieces[h1]);
 
-    assert_true(W_PAWN == brd.pieces[a2]);
-    assert_true(W_PAWN == brd.pieces[b2]);
-    assert_true(W_PAWN == brd.pieces[d2]);
-    assert_true(W_PAWN == brd.pieces[f2]);
-    assert_true(W_PAWN == brd.pieces[g2]);
-    assert_true(W_PAWN == brd.pieces[h2]);
+    assert_true(W_PAWN == brd->pieces[a2]);
+    assert_true(W_PAWN == brd->pieces[b2]);
+    assert_true(W_PAWN == brd->pieces[d2]);
+    assert_true(W_PAWN == brd->pieces[f2]);
+    assert_true(W_PAWN == brd->pieces[g2]);
+    assert_true(W_PAWN == brd->pieces[h2]);
 
-    assert_true(B_PAWN == brd.pieces[a7]);
-    assert_true(B_PAWN == brd.pieces[b7]);
-    assert_true(B_PAWN == brd.pieces[d7]);
-    assert_true(B_PAWN == brd.pieces[f7]);
-    assert_true(B_PAWN == brd.pieces[g7]);
-    assert_true(B_PAWN == brd.pieces[h7]);
+    assert_true(B_PAWN == brd->pieces[a7]);
+    assert_true(B_PAWN == brd->pieces[b7]);
+    assert_true(B_PAWN == brd->pieces[d7]);
+    assert_true(B_PAWN == brd->pieces[f7]);
+    assert_true(B_PAWN == brd->pieces[g7]);
+    assert_true(B_PAWN == brd->pieces[h7]);
 
-    assert_true(B_ROOK == brd.pieces[a8]);
-    assert_true(B_KNIGHT == brd.pieces[b8]);
-    assert_true(B_BISHOP == brd.pieces[c8]);
-    assert_true(B_QUEEN == brd.pieces[d8]);
-    assert_true(B_KING == brd.pieces[e8]);
-    assert_true(B_BISHOP == brd.pieces[f8]);
-    assert_true(B_ROOK == brd.pieces[h8]);
+    assert_true(B_ROOK == brd->pieces[a8]);
+    assert_true(B_KNIGHT == brd->pieces[b8]);
+    assert_true(B_BISHOP == brd->pieces[c8]);
+    assert_true(B_QUEEN == brd->pieces[d8]);
+    assert_true(B_KING == brd->pieces[e8]);
+    assert_true(B_BISHOP == brd->pieces[f8]);
+    assert_true(B_ROOK == brd->pieces[h8]);
 
-    assert_true(brd.side_to_move == BLACK);
+    assert_true(brd->side_to_move == BLACK);
 
-    assert_true(brd.castle_perm == (WKCA | WQCA | BKCA | BQCA));
+    assert_true(brd->castle_perm == (WKCA | WQCA | BKCA | BQCA));
 
-    assert_true(brd.en_passant == NO_SQUARE);
+    assert_true(brd->en_passant == NO_SQUARE);
 
 
     // test pawn positions
     for(int f = FILE_A; f <= FILE_H; f++) {
-        assert_true(brd.pawns_on_file[WHITE][f] == 1);
-        assert_true(brd.pawns_on_file[BLACK][f] == 1);
+        assert_true(brd->pawns_on_file[WHITE][f] == 1);
+        assert_true(brd->pawns_on_file[BLACK][f] == 1);
     }
-    assert_true(brd.pawns_on_rank[WHITE][RANK_2] == 7);
-    assert_true(brd.pawns_on_rank[WHITE][RANK_4] == 1);
+    assert_true(brd->pawns_on_rank[WHITE][RANK_2] == 7);
+    assert_true(brd->pawns_on_rank[WHITE][RANK_4] == 1);
 
-    assert_true(brd.pawns_on_rank[BLACK][RANK_7] == 7);
-    assert_true(brd.pawns_on_rank[BLACK][RANK_5] == 1);
+    assert_true(brd->pawns_on_rank[BLACK][RANK_7] == 7);
+    assert_true(brd->pawns_on_rank[BLACK][RANK_5] == 1);
 
-    assert_true(brd.pawn_control[WHITE][a3] == 1);
-    assert_true(brd.pawn_control[WHITE][b3] == 2);
-    assert_true(brd.pawn_control[WHITE][c3] == 2);
-    assert_true(brd.pawn_control[WHITE][d3] == 1);
-    assert_true(brd.pawn_control[WHITE][e3] == 2);
-    assert_true(brd.pawn_control[WHITE][f3] == 1);
-    assert_true(brd.pawn_control[WHITE][g3] == 2);
-    assert_true(brd.pawn_control[WHITE][h3] == 1);
-    assert_true(brd.pawn_control[WHITE][d5] == 1);
-    assert_true(brd.pawn_control[WHITE][f5] == 1);
+    assert_true(brd->pawn_control[WHITE][a3] == 1);
+    assert_true(brd->pawn_control[WHITE][b3] == 2);
+    assert_true(brd->pawn_control[WHITE][c3] == 2);
+    assert_true(brd->pawn_control[WHITE][d3] == 1);
+    assert_true(brd->pawn_control[WHITE][e3] == 2);
+    assert_true(brd->pawn_control[WHITE][f3] == 1);
+    assert_true(brd->pawn_control[WHITE][g3] == 2);
+    assert_true(brd->pawn_control[WHITE][h3] == 1);
+    assert_true(brd->pawn_control[WHITE][d5] == 1);
+    assert_true(brd->pawn_control[WHITE][f5] == 1);
 
-    assert_true(brd.pawn_control[BLACK][a6] == 1);
-    assert_true(brd.pawn_control[BLACK][b6] == 1);
-    assert_true(brd.pawn_control[BLACK][c6] == 2);
-    assert_true(brd.pawn_control[BLACK][d6] == 1);
-    assert_true(brd.pawn_control[BLACK][e6] == 2);
-    assert_true(brd.pawn_control[BLACK][f6] == 2);
-    assert_true(brd.pawn_control[BLACK][g6] == 2);
-    assert_true(brd.pawn_control[BLACK][h6] == 1);
-    assert_true(brd.pawn_control[BLACK][b4] == 1);
-    assert_true(brd.pawn_control[BLACK][d4] == 1);
+    assert_true(brd->pawn_control[BLACK][a6] == 1);
+    assert_true(brd->pawn_control[BLACK][b6] == 1);
+    assert_true(brd->pawn_control[BLACK][c6] == 2);
+    assert_true(brd->pawn_control[BLACK][d6] == 1);
+    assert_true(brd->pawn_control[BLACK][e6] == 2);
+    assert_true(brd->pawn_control[BLACK][f6] == 2);
+    assert_true(brd->pawn_control[BLACK][g6] == 2);
+    assert_true(brd->pawn_control[BLACK][h6] == 1);
+    assert_true(brd->pawn_control[BLACK][b4] == 1);
+    assert_true(brd->pawn_control[BLACK][d4] == 1);
 
 
 }
@@ -288,14 +286,14 @@ void test_fen_parsing_general_layout_3()
     // this is the initial board setup
     char *test_fen = "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 1";
 
-    struct board brd = init_game(test_fen);
+    struct board *brd = init_game(test_fen);
 
     //print_board(brd);
 
-    assert_true(brd.side_to_move == WHITE);
-    assert_true(brd.castle_perm == (WKCA | WQCA | BKCA | BQCA));
+    assert_true(brd->side_to_move == WHITE);
+    assert_true(brd->castle_perm == (WKCA | WQCA | BKCA | BQCA));
 
-    assert_true(brd.en_passant == c6);
+    assert_true(brd->en_passant == c6);
 }
 
 

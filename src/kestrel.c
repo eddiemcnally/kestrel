@@ -64,13 +64,7 @@ int main(int argc, char **argv)
 
     // set process pri and cpu affinity for max performance
     set_priority_and_affinity();
-    /*
-    	struct board brd = init_game(SAMPLE_POSITION);
 
-    	struct search_info si = {0};
-    	si.depth = 4;
-    	search_positions(&brd, &si, 64000000);
-    */
     do_uci_loop();
 
     return 0;
