@@ -23,18 +23,6 @@
 #include "board.h"
 
 
-void move_piece(struct board *brd, enum square from, enum square to);
-void remove_piece_from_board(struct board *brd,  enum piece pce_to_remove, enum square sq);
-void add_piece_to_board(struct board *brd, enum piece pce, enum square sq);
-uint64_t get_bitboard(const struct board *brd, enum piece pce);
-uint64_t get_bitboard_for_king(const struct board *brd, enum colour piece_col);
-uint64_t get_bitboard_all_pieces(const struct board *brd);
-uint64_t get_bitboard_combined(const struct board *brd, enum piece piece_1, enum piece piece_2);
-int32_t get_material_value(const struct board *brd, enum colour col);
-enum square get_king_square(const struct board *brd, enum colour col);
-enum colour get_side_to_move(const struct board *brd);
-bool is_pawn_controlling_sq(const struct board *brd, enum colour col, enum square sq);
-
 #define	BOARD_EMPTY	((uint64_t)0x0ull)
 
 #define NUM_RANKS 	8
@@ -85,12 +73,42 @@ enum {
 
 
 // castling permissions
-enum {
+enum castle_perm {
     WKCA = 0x01,		// white, king-side
     WQCA = 0x02,		// white, queen-side
     BKCA = 0x04,		// black, king-side
     BQCA = 0x08			// black, queen-side
 };
+
+
+
+
+void move_piece(struct board *brd, enum square from, enum square to);
+void remove_piece_from_board(struct board *brd,  enum piece pce_to_remove, enum square sq);
+void add_piece_to_board(struct board *brd, enum piece pce, enum square sq);
+uint64_t get_bitboard(const struct board *brd, enum piece pce);
+uint64_t get_bitboard_for_king(const struct board *brd, enum colour piece_col);
+uint64_t get_bitboard_all_pieces(const struct board *brd);
+uint64_t get_bitboard_combined(const struct board *brd, enum piece piece_1, enum piece piece_2);
+int32_t get_material_value(const struct board *brd, enum colour col);
+enum square get_king_square(const struct board *brd, enum colour col);
+
+enum colour get_side_to_move(const struct board *brd);
+void set_side_to_move(struct board *brd, enum colour side);
+
+void set_castle_permission(struct board *brd, enum castle_perm perm);
+
+void set_en_passant_sq(struct board *brd, enum square sq);
+enum square get_en_passant_sq(const struct board *brd);
+
+void update_board_hash(struct board *brd);
+
+enum piece get_piece_on_square(const struct board *brd, enum square sq);
+
+void push_history(struct board *brd, mv_bitmap move);
+mv_bitmap pop_history(struct board *brd);
+
+bool is_pawn_controlling_sq(const struct board *brd, enum colour col, enum square sq);
 
 void init_board(char *fen, struct board *brd);
 void get_clean_board(struct board *brd);
@@ -102,4 +120,6 @@ void overlay_boards(struct board *the_board);
 uint8_t count_bits(uint64_t bb);
 uint64_t square_to_bitboard(enum square sq);
 bool is_piece_on_square(const struct board *brd, enum piece pce, enum square sq);
+
+
 

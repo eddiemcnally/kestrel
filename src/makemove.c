@@ -94,8 +94,8 @@ bool make_move(struct board *brd, mv_bitmap mv)
 	assert_board_and_move(brd, mv);
 #endif
 	
-    enum piece pce_being_moved = brd->pieces[from];
-    enum colour side = brd->side_to_move;
+    enum piece pce_being_moved = get_piece_on_square(brd, from);
+    enum colour side = get_side_to_move(brd);
 
     brd->history[brd->history_ply].board_hash = brd->board_hash;
 

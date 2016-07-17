@@ -145,6 +145,23 @@ inline uint64_t overlay_black_piece_bitboards(const struct board * brd)
 }
 
 
+void update_board_hash(struct board *brd){
+	brd->board_hash = get_position_hash(brd);
+}
+
+enum piece get_piece_on_square(const struct board *brd, enum square sq){
+	return brd->pieces[sq];
+}
+
+void set_en_passant_sq(struct board *brd, enum square sq){
+	brd->en_passant = sq;
+}
+
+enum square get_en_passant_sq(const struct board *brd){
+	return brd->en_passant;
+}
+
+
 inline bool is_piece_on_square(const struct board *brd, enum piece pce, enum square sq)
 {
     enum piece on_board = brd->pieces[sq];
@@ -189,10 +206,46 @@ enum colour get_side_to_move(const struct board *brd){
 	return brd->side_to_move;
 }
 
+void set_side_to_move(struct board *brd, enum colour side){
+	brd->side_to_move = side;
+}
+
+void set_castle_permission(struct board *brd, enum castle_perm perm){
+	brd->castle_perm |= perm;
+}
+
+
+
 enum square get_king_square(const struct board *brd, enum colour col){
 	return brd->king_sq[col];
 }
 
+
+
+void push_history(struct board *brd, mv_bitmap move){
+    // set up history
+    brd->history[brd->history_ply].move = move;
+    brd->history[brd->history_ply].fifty_move_counter = brd->fifty_move_counter;
+    brd->history[brd->history_ply].en_passant = brd->en_passant;
+    brd->history[brd->history_ply].castle_perm = brd->castle_perm;
+    brd->history[brd->history_ply].board_hash = brd->board_hash;
+
+    brd->ply++;
+    brd->history_ply++;
+}
+
+mv_bitmap pop_history(struct board *brd){
+
+    brd->ply--;
+    brd->history_ply--;
+
+    brd->fifty_move_counter = brd->history[brd->history_ply].fifty_move_counter;
+    brd->en_passant = brd->history[brd->history_ply].en_passant;
+    brd->castle_perm = brd->history[brd->history_ply].castle_perm;
+    brd->board_hash = brd->history[brd->history_ply].board_hash;
+
+	return brd->history[brd->history_ply].move;
+}
 
 
 void move_piece(struct board *brd, enum square from, enum square to)

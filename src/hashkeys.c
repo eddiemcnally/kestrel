@@ -31,6 +31,7 @@
 #include <time.h>
 #include <assert.h>
 #include "types.h"
+#include "board.h"
 #include "hashkeys.h"
 
 
@@ -137,17 +138,17 @@ uint64_t get_position_hash(const struct board * brd)
     uint64_t retval = 0;
 
     for (enum square sq = a1; sq <= h8; sq++) {
-        enum piece pce = brd->pieces[sq];
+        enum piece pce = get_piece_on_square(brd, sq);
         if (pce != NO_PIECE) {
             retval ^= get_piece_hash(pce, sq);
         }
     }
 
-    if (brd->side_to_move == WHITE) {
+    if (get_side_to_move(brd) == WHITE) {
         retval ^= get_side_hash();
     }
 
-    if (brd->en_passant != NO_SQUARE) {
+    if (get_en_passant_sq(brd) != NO_SQUARE) {
         retval ^= get_en_passant_hash(brd->en_passant);
     }
 

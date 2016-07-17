@@ -45,7 +45,7 @@
  * Thanks for BlueFever Software for his youtube videos and this code
  */
 
-int consume_fen_notation(const char *fen_string, struct board *board_to_setup)
+int consume_fen_notation(const char *fen_string, struct board *brd)
 {
 
     int rank = RANK_8;
@@ -120,7 +120,7 @@ int consume_fen_notation(const char *fen_string, struct board *board_to_setup)
         for (int i = 0; i < count; i++) {
             if (piece_to_add != NO_PIECE) {
                 int sq = GET_SQUARE(rank, file);
-                add_piece_to_board(board_to_setup, piece_to_add,
+                add_piece_to_board(brd, piece_to_add,
                                    (enum square)sq);
             }
             file++;
@@ -130,9 +130,9 @@ int consume_fen_notation(const char *fen_string, struct board *board_to_setup)
 
     assert((*fen_string == 'w') || (*fen_string == 'b'));
     if (*fen_string == 'w') {
-        board_to_setup->side_to_move = WHITE;
+		set_side_to_move(brd, WHITE);
     } else {
-        board_to_setup->side_to_move = BLACK;
+		set_side_to_move(brd, WHITE);
     }
 
     // skip 'w' or 'b', and the next space
@@ -145,16 +145,16 @@ int consume_fen_notation(const char *fen_string, struct board *board_to_setup)
 
         switch (*fen_string) {
         case 'K':
-            board_to_setup->castle_perm |= WKCA;
+			set_castle_permission(brd, WKCA);
             break;
         case 'Q':
-            board_to_setup->castle_perm |= WQCA;
+			set_castle_permission(brd, WQCA);
             break;
         case 'k':
-            board_to_setup->castle_perm |= BKCA;
+			set_castle_permission(brd, BKCA);
             break;
         case 'q':
-            board_to_setup->castle_perm |= BQCA;
+			set_castle_permission(brd, BQCA);
             break;
         default:
             break;
@@ -164,8 +164,6 @@ int consume_fen_notation(const char *fen_string, struct board *board_to_setup)
 
     fen_string++;
 
-    assert(board_to_setup->castle_perm <= 15);
-
     if (*fen_string != '-') {
         // en passant square present
         file = fen_string[0] - 'a';
@@ -174,12 +172,12 @@ int consume_fen_notation(const char *fen_string, struct board *board_to_setup)
         assert(IS_VALID_FILE(file));
         assert(IS_VALID_RANK(rank));
 
-        board_to_setup->en_passant = GET_SQUARE(rank, file);
+		set_en_passant_sq(brd, GET_SQUARE(rank, file));
     } else {
-        board_to_setup->en_passant = NO_SQUARE;
+		set_en_passant_sq(brd, NO_SQUARE);
     }
 
-    board_to_setup->board_hash = get_position_hash(board_to_setup);
-
+	update_board_hash(brd);
+	
     return 0;
 }
