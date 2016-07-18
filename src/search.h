@@ -59,7 +59,6 @@ struct search_info {
 
 void init_search_struct(struct search_info *si);
 void search_positions(struct board *brd, struct search_info *si, uint32_t tt_size_in_bytes);
-bool is_repetition(const struct board *brd);
 void bring_best_move_to_top(uint16_t move_num, struct move_list *mvl);
 void dump_search_info(struct search_info *si);
 

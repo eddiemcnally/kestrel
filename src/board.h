@@ -123,5 +123,5 @@ uint8_t count_bits(uint64_t bb);
 uint64_t square_to_bitboard(enum square sq);
 bool is_piece_on_square(const struct board *brd, enum piece pce, enum square sq);
 
-
+bool is_repetition(const struct board *brd);
 

@@ -344,6 +344,24 @@ void add_piece_to_board(struct board *brd, enum piece pce, enum square sq)
 
 }
 
+// checks to see if most recent move is a repetition
+inline bool is_repetition(const struct board *brd)
+{
+    // the 50move counter is reset when a pawn moves or piece taken
+    // (these are moves that can't be repeated), so we only need to
+    // search the history from the last time the counter was reset
+
+    int start = brd->history_ply - brd->fifty_move_counter;
+
+    for (int i = start; i < brd->history_ply-1; i++) {
+        if (brd->board_hash == brd->history[i].board_hash) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
 
 
 void remove_piece_from_board(struct board *brd, enum piece pce_to_remove, enum square sq)

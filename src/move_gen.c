@@ -307,7 +307,7 @@ static inline void do_gen_moves(struct board *brd, struct move_list *mvl, const 
 		ASSERT_BOARD_OK(brd);
 #endif
 
-    if (brd->side_to_move == WHITE) {
+    if (get_side_to_move(brd) == WHITE) {
         generate_white_pawn_moves(brd, mvl, captures_only);
         generate_knight_piece_moves(brd, mvl, W_KNIGHT, BLACK, captures_only);
         generate_king_moves(brd, mvl, WHITE, W_KING, BLACK, captures_only);
@@ -611,7 +611,7 @@ static inline void generate_white_castle_moves(struct board *brd,
 static inline void generate_black_castle_moves(struct board *brd,
         struct move_list *mvl)
 {
-    if (brd->castle_perm & BKCA) {
+    if (get_castle_permissions(brd) & BKCA) {
 		uint64_t brd_bb= get_bitboard_all_pieces(brd);
 		
         bool f8_occupied = IS_SQUARE_OCCUPIED(brd_bb, f8);
@@ -628,7 +628,7 @@ static inline void generate_black_castle_moves(struct board *brd,
         }
     }
 
-    if (brd->castle_perm & BQCA) {
+    if (get_castle_permissions(brd) & BQCA) {
 		uint64_t brd_bb= get_bitboard_all_pieces(brd);
 
         bool d8_occupied = IS_SQUARE_OCCUPIED(brd_bb, d8);
