@@ -24,9 +24,9 @@
 	
 #
 # more lax compiler options
-#	CFLAGS	=	-Wall -g -std=c11 -fsanitize=address -DENABLE_ASSERTS=TRUE
+	CFLAGS	=	-Wall -g -std=c11 -fsanitize=address -DENABLE_ASSERTS=TRUE
 
-	CFLAGS	=	-Wall -g -std=c11 -fsanitize=address 
+#	CFLAGS	=	-Wall -g -std=c11 -fsanitize=address 
 
 # define any directories containing header files other than /usr/include
 #

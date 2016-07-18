@@ -101,7 +101,7 @@ void get_clean_board(struct board *brd)
         // other struct values are already set to zero with memset
     }
     
-    brd->castle_perm = NONE;
+    set_castle_permission(brd, CASTLE_PERM_NONE);
 }
 
 // returns the count.
@@ -214,6 +214,10 @@ void set_side_to_move(struct board *brd, enum colour side){
 
 void set_castle_permission(struct board *brd, enum castle_perm perm){
 	brd->castle_perm |= perm;
+}
+
+enum castle_perm get_castle_permissions(struct board *brd){
+	return brd->castle_perm;
 }
 
 

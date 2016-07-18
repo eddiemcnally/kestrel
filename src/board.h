@@ -74,7 +74,7 @@ enum {
 
 // castling permissions
 enum castle_perm {
-	NONE = 0,
+	CASTLE_PERM_NONE = 0,
     WKCA = 0x01,		// white, king-side
     WQCA = 0x02,		// white, queen-side
     BKCA = 0x04,		// black, king-side
@@ -98,6 +98,7 @@ enum colour get_side_to_move(const struct board *brd);
 void set_side_to_move(struct board *brd, enum colour side);
 
 void set_castle_permission(struct board *brd, enum castle_perm perm);
+enum castle_perm get_castle_permissions(struct board *brd);
 
 void set_en_passant_sq(struct board *brd, enum square sq);
 enum square get_en_passant_sq(const struct board *brd);
