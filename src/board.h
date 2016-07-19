@@ -116,6 +116,8 @@ void set_ply(struct board *brd, uint8_t ply);
 
 
 mv_bitmap get_best_pvline(struct board *brd);
+mv_bitmap get_pvline(struct board *brd, uint8_t search_depth);
+void set_pvline(struct board *brd, uint8_t search_depth, mv_bitmap move);
 
 
 uint8_t get_fifty_move_counter(struct board *brd);

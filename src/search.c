@@ -97,7 +97,7 @@ void search_positions(struct board *brd, struct search_info *si, uint32_t tt_siz
             continue;
         }
 
-        brd->pv_line[i] = NO_MOVE;
+        set_pvline(brd, (uint8_t)i, NO_MOVE);
     }
     // update search stats
     uint32_t elapsed_time_in_millis = (uint32_t)(get_time_of_day_in_millis() - si->search_start_time);
@@ -112,7 +112,7 @@ static void init_search(struct board *brd)
 {
 
     for(int i = 0; i < MAX_SEARCH_DEPTH; i++) {
-        brd->pv_line[i] = NO_MOVE;
+        set_pvline(brd, (uint8_t)i, NO_MOVE);
     }
 
     for(int i = 0; i < NUM_PIECES; i++) {
@@ -233,7 +233,7 @@ static int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alp
                     enum square from_sq = FROMSQ(best_move);
                     enum square to_sq = TOSQ(best_move);
 
-                    enum piece pce = brd->pieces[from_sq];
+                    enum piece pce = get_piece_on_square(brd, from_sq);
                     brd->search_history[pce][to_sq] += depth;
                 }
 
@@ -248,8 +248,10 @@ static int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alp
         si->zero_legal_moves++;
         //printf("***no legal moves left\n");
         // no legal moves....must be mate or draw
-        enum square king_sq = brd->king_sq[brd->side_to_move];
-        enum colour opposite_side = GET_OPPOSITE_SIDE(brd->side_to_move);
+        enum colour side_to_move = get_side_to_move(brd);
+        
+        enum square king_sq = get_king_square(brd, side_to_move);
+        enum colour opposite_side = GET_OPPOSITE_SIDE(side_to_move);
 
         if (is_sq_attacked(brd, king_sq, opposite_side)) {
             si->mates_detected++;
@@ -262,7 +264,8 @@ static int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alp
 
     if (alpha != old_alpha) {
         // improved alpha, so add to tt
-        add_to_tt(brd->board_hash, best_move, depth);
+        uint64_t board_hash = get_board_hash(brd);
+        add_to_tt(board_hash, best_move, depth);
 
         // search stats
         si->added_to_tt++;

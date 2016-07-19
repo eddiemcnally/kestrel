@@ -132,7 +132,15 @@ uint8_t populate_pv_line(struct board *brd, uint8_t depth)
 
 
 mv_bitmap get_best_pvline(struct board *brd){
-	return brd->pv_line[0];
+	return get_pvline(brd, 0);
+}
+
+mv_bitmap get_pvline(struct board *brd, uint8_t search_depth){
+	return brd->pv_line[search_depth];
+}
+
+void set_pvline(struct board *brd, uint8_t search_depth, mv_bitmap move){
+	brd->pv_line[search_depth] = move;
 }
 
 
