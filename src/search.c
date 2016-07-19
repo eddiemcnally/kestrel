@@ -85,7 +85,7 @@ void search_positions(struct board *brd, struct search_info *si, uint32_t tt_siz
         }
         num_moves = populate_pv_line(brd, current_depth);
 
-        best_move = brd->pv_line[0];
+        best_move = get_best_pvline(brd);
         uci_print_info_score(score, current_depth, si->num_nodes,
                              (get_time_of_day_in_millis() - si->search_start_time),
                              num_moves, brd->pv_line);
@@ -127,7 +127,7 @@ static void init_search(struct board *brd)
         }
     }
 
-    brd->ply = 0;
+    set_ply(brd, 0);
 
 }
 
@@ -150,12 +150,12 @@ static int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alp
         return 0; // a draw
     }
 
-    if (brd->fifty_move_counter >= 100) {
+    if (get_fifty_move_counter(brd) >= 100) {
         si->fifty_move_rule++;
         return 0; // a draw
     }
 
-    if (brd->ply > MAX_SEARCH_DEPTH - 1) {
+    if (get_ply(brd) > MAX_SEARCH_DEPTH - 1) {
         si->max_depth_reached++;
         return evaluate_position(brd);
     }
@@ -171,7 +171,7 @@ static int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alp
     generate_all_moves(brd, &mvl);
 
     // check is position already in PV table
-    mv_bitmap pv_move = probe_tt(brd->board_hash);
+    mv_bitmap pv_move = probe_tt(get_board_hash(brd));
     if (pv_move != NO_MOVE) {
         // prioritise
         for(uint16_t i = 0; i < mvl.move_count; i++) {
@@ -217,8 +217,8 @@ static int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alp
                     if (IS_CAPTURE_MOVE(mv) == false) {
                         si->killer_moves++;
                         // shuffle down killers
-                        brd->search_killers[1][brd->ply] = brd->search_killers[0][brd->ply];
-                        brd->search_killers[0][brd->ply] = mv;
+                        brd->search_killers[1][get_ply(brd)] = brd->search_killers[0][get_ply(brd)];
+                        brd->search_killers[0][get_ply(brd)] = mv;
                     }
 
                     return beta;
@@ -253,7 +253,7 @@ static int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alp
 
         if (is_sq_attacked(brd, king_sq, opposite_side)) {
             si->mates_detected++;
-            return -MATE + brd->ply;
+            return -MATE + get_ply(brd);
         } else {
             // draw
             return 0;
@@ -282,12 +282,12 @@ static int32_t quiescence(struct board *brd, struct search_info *si, int32_t alp
     }
     si->num_nodes++;
 
-    if (is_repetition(brd) || brd->fifty_move_counter > 100) {
+    if (is_repetition(brd) || get_fifty_move_counter(brd) > 100) {
         // draw
         return 0;
     }
 
-    if (brd->ply > MAX_SEARCH_DEPTH - 1) {
+    if (get_ply(brd) > MAX_SEARCH_DEPTH - 1) {
         return evaluate_position(brd);
     }
 

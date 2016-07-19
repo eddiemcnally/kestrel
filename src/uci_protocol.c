@@ -38,6 +38,7 @@
 #include "board_utils.h"
 #include "move_gen_utils.h"
 #include "uci_protocol.h"
+#include "board.h"
 #include "utils.h"
 
 struct timeval tv;
@@ -215,20 +216,20 @@ void uci_parse_go(char *line, struct search_info *si, struct board *brd)
     }
 
     // black incr per move in ms
-    if ((ptr = strstr(line,"binc")) && brd->side_to_move == BLACK) {
+    if ((ptr = strstr(line,"binc")) && get_side_to_move(brd) == BLACK) {
         incr = atoi(ptr + 5);	// skip over "binc "
     }
     // white incr per move in ms
-    if ((ptr = strstr(line,"winc")) && brd->side_to_move == WHITE) {
+    if ((ptr = strstr(line,"winc")) && get_side_to_move(brd) == WHITE) {
         incr = atoi(ptr + 5);	// skip over "winc "
     }
     // white's remaining time in ms
-    if ((ptr = strstr(line,"wtime")) && brd->side_to_move == WHITE) {
+    if ((ptr = strstr(line,"wtime")) && get_side_to_move(brd) == WHITE) {
         time = atoi(ptr + 6); 	// skip over "wtime "
     }
 
     // black's remaining time in ms
-    if ((ptr = strstr(line,"btime")) && brd->side_to_move == BLACK) {
+    if ((ptr = strstr(line,"btime")) && get_side_to_move(brd) == BLACK) {
         time = atoi(ptr + 6);	// skip over "btime "
     }
 

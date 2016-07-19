@@ -104,11 +104,22 @@ void set_en_passant_sq(struct board *brd, enum square sq);
 enum square get_en_passant_sq(const struct board *brd);
 
 void update_board_hash(struct board *brd);
+uint64_t get_board_hash(struct board *brd);
 
 enum piece get_piece_on_square(const struct board *brd, enum square sq);
 
 void push_history(struct board *brd, mv_bitmap move);
 mv_bitmap pop_history(struct board *brd);
+
+uint8_t get_ply(struct board *brd);
+void set_ply(struct board *brd, uint8_t ply);
+
+
+mv_bitmap get_best_pvline(struct board *brd);
+
+
+uint8_t get_fifty_move_counter(struct board *brd);
+
 
 bool is_pawn_controlling_sq(const struct board *brd, enum colour col, enum square sq);
 

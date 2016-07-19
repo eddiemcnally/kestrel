@@ -131,6 +131,11 @@ uint8_t populate_pv_line(struct board *brd, uint8_t depth)
 }
 
 
+mv_bitmap get_best_pvline(struct board *brd){
+	return brd->pv_line[0];
+}
+
+
 
 inline uint64_t overlay_white_piece_bitboards(const struct board * brd)
 {
@@ -151,6 +156,10 @@ void update_board_hash(struct board *brd){
 	brd->board_hash = get_position_hash(brd);
 }
 
+uint64_t get_board_hash(struct board *brd){
+	return brd->board_hash;
+}
+
 enum piece get_piece_on_square(const struct board *brd, enum square sq){
 	return brd->pieces[sq];
 }
@@ -161,6 +170,21 @@ void set_en_passant_sq(struct board *brd, enum square sq){
 
 enum square get_en_passant_sq(const struct board *brd){
 	return brd->en_passant;
+}
+
+
+
+
+uint8_t get_fifty_move_counter(struct board *brd){
+	return brd->fifty_move_counter;
+}
+
+uint8_t get_ply(struct board *brd){
+	return brd->ply;
+}
+
+void set_ply(struct board *brd, uint8_t ply){
+	brd->ply = ply;
 }
 
 
