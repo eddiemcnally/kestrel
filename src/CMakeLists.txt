@@ -1,3 +1,6 @@
+#
+# Generates the build env for the kestrel engine
+#
 project(kestrel)
 cmake_minimum_required(VERSION 2.8)
 aux_source_directory(. SRC_LIST)
