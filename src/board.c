@@ -47,8 +47,7 @@ static inline void add_black_pawn_info(struct board *brd, enum square sq);
 static inline void add_white_pawn_info(struct board *brd, enum square sq);
 static inline void remove_black_pawn_info(struct board *brd, enum square sq);
 static inline void remove_white_pawn_info(struct board *brd, enum square sq);
-static inline void update_black_pawn_control(struct board *brd, enum square sq, int val);
-static inline void update_white_pawn_control(struct board *brd, enum square sq, int val);
+static inline void update_pawn_control(struct board* brd, const enum colour col, const enum square sq, int8_t val);
 
 
 /*
@@ -233,7 +232,7 @@ uint64_t get_bitboard_combined(const struct board *brd, enum piece pce_1, enum p
 
 
 int32_t get_material_value(const struct board *brd, enum colour col){
-	return brd->material[col];
+	return (int32_t)brd->material[col];
 }
 
 enum colour get_side_to_move(const struct board *brd){
@@ -245,10 +244,10 @@ void set_side_to_move(struct board *brd, enum colour side){
 }
 
 void set_castle_permission(struct board *brd, enum castle_perm perm){
-	brd->castle_perm |= perm;
+	brd->castle_perm |= (uint8_t)perm;
 }
 
-enum castle_perm get_castle_permissions(struct board *brd){
+enum castle_perm get_castle_permissions(const struct board *brd){
 	return brd->castle_perm;
 }
 
@@ -454,7 +453,7 @@ static inline void remove_black_pawn_info(struct board *brd, enum square sq)
     brd->pawns_on_file[BLACK][file]--;
     brd->pawns_on_rank[BLACK][rank]--;
 
-    update_black_pawn_control(brd, sq, -1);
+    update_pawn_control(brd, sq, BLACK, -1);
 }
 
 
@@ -467,7 +466,7 @@ static inline void remove_white_pawn_info(struct board *brd, enum square sq)
     brd->pawns_on_file[WHITE][file]--;
     brd->pawns_on_rank[WHITE][rank]--;
 
-    update_white_pawn_control(brd, sq, -1);
+    update_pawn_control(brd, sq, WHITE, -1);
 
 }
 
@@ -483,7 +482,7 @@ static inline void add_black_pawn_info(struct board *brd, enum square sq)
     brd->pawns_on_file[BLACK][file]++;
     brd->pawns_on_rank[BLACK][rank]++;
 
-    update_black_pawn_control(brd, sq, 1);
+    update_pawn_control(brd, sq, BLACK, 1);
 }
 
 
@@ -497,49 +496,28 @@ static inline void add_white_pawn_info(struct board *brd, enum square sq)
     brd->pawns_on_file[WHITE][file]++;
     brd->pawns_on_rank[WHITE][rank]++;
 
-    update_white_pawn_control(brd, sq, 1);
+    update_pawn_control(brd, sq, WHITE, 1);
 
 }
 
 
-
-static inline void update_black_pawn_control(struct board *brd, enum square sq, int val)
-{
-    int32_t next_sq = 0;
-    uint8_t file = GET_FILE(sq);
-    uint8_t rank = GET_RANK(sq);
-
-    if (file > FILE_A) {
-        if (rank > RANK_1) {
-            next_sq = (int32_t)sq + SW;
-            brd->pawn_control[BLACK][next_sq] += val;
-        }
-    }
-    if (file < FILE_H) {
-        if (rank > RANK_1) {
-            next_sq = (int32_t)sq + SE;
-            brd->pawn_control[BLACK][next_sq] += val;
-        }
-    }
-}
-
-static inline void update_white_pawn_control(struct board *brd, enum square sq, int val)
+static inline void update_pawn_control(struct board* brd, const enum colour col, const enum square sq, int8_t val)
 {
 
-    int32_t next_sq = 0;
+    int8_t next_sq = 0;
     uint8_t file = GET_FILE(sq);
     uint8_t rank = GET_RANK(sq);
 
     if (file > FILE_A) {
         if (rank < RANK_8) {
-            next_sq = sq + NW;
-            brd->pawn_control[WHITE][next_sq] += val;
+            next_sq = (int8_t)(sq + NW);
+            brd->pawn_control[col][next_sq] += val;
         }
     }
     if (file < FILE_H) {
         if (rank < RANK_8) {
-            next_sq = sq + NE;
-            brd->pawn_control[WHITE][next_sq] += val;
+            next_sq = (int8_t)(sq + NE);
+            brd->pawn_control[col][next_sq] += val;
         }
     }
 }

@@ -455,7 +455,10 @@ void perft(int depth, struct board *brd, struct perft_stats *pstats)
 
 
 
-    struct move_list mv_list = {};
+    struct move_list mv_list = {
+      .moves={0},
+      .move_count = 0
+    };
     
     generate_all_moves(brd, &mv_list);
     

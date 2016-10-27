@@ -157,9 +157,9 @@ struct board {
 
     // maintain separate info about the pawns to simplify the
     // evaluation of pawn structure, open files, etc
-    uint8_t pawns_on_file[NUM_COLOURS][NUM_FILES];
-    uint8_t pawns_on_rank[NUM_COLOURS][NUM_RANKS];
-    uint8_t pawn_control[NUM_COLOURS][NUM_SQUARES];
+    int8_t pawns_on_file[NUM_COLOURS][NUM_FILES];
+    int8_t pawns_on_rank[NUM_COLOURS][NUM_RANKS];
+    int8_t pawn_control[NUM_COLOURS][NUM_SQUARES];
 
     // we need to look up the king position very frequently,
     // so save it for a quick lookup, rather than extracting it

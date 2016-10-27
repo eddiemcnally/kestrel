@@ -98,7 +98,7 @@ enum colour get_side_to_move(const struct board *brd);
 void set_side_to_move(struct board *brd, enum colour side);
 
 void set_castle_permission(struct board *brd, enum castle_perm perm);
-enum castle_perm get_castle_permissions(struct board *brd);
+enum castle_perm get_castle_permissions(const struct board *brd);
 
 void set_en_passant_sq(struct board *brd, enum square sq);
 enum square get_en_passant_sq(const struct board *brd);
