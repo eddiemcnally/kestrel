@@ -1,5 +1,0 @@
-#!/bin/bash
-
-# sets up CMake to use Clang
-
-cmake -DCMAKE_C_COMPILER="/usr/bin/clang" -DCMAKE_C_FLAGS="-std=c11 -march=native -mtune=native -Wall -Wextra" -DENABLE_ASSERTS=true

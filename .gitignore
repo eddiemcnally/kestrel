@@ -1,26 +1,5 @@
-# CMake artifacts in src directory
-src/CMakeCache.txt
-src/CMakeFiles/*
-src/cmake_install.cmake
-src/Makefile
-# engine executable
-src/kestrel
-
-# CMake artifacts in the test directory
-test/CMakeCache.txt
-test/CMakeFiles/*
-test/cmake_install.cmake
-test/Makefile
-# test executable
-test/test_kestrel
-
-# misc files
 *.bak
 *.c~
 *.h~
 gmon.out
-src/build
-test/build
-.kdev4
-src.kdev4
-test.kdev4
+_build
