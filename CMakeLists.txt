@@ -2,8 +2,14 @@ cmake_minimum_required(VERSION 3.0)
 
 project(kestrel)
 
+set(CMAKE_C_COMPILER "/usr/bin/clang")
+
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11")
 
+#
+# sources and headers shared between the main (kestrel) binary
+# and the test runner binary
+#
 set(COMMON_SOURCES  
 		src/occupancy_mask.c
      		src/occupancy_mask.h
@@ -39,8 +45,16 @@ set(COMMON_SOURCES
      		src/utils.c
      		src/utils.h)
 
+
+#
+# main entry point for kestrel engine
+#
 set(TARGET_SOURCES src/kestrel.c)
 
+
+#
+# source and header files for the test runner
+#
 set(TEST_SOURCES 
 		test/all_tests.c
 		test/attack_test_fixture.c
@@ -68,6 +82,9 @@ set(TEST_SOURCES
 add_executable(kestrel ${COMMON_SOURCES} ${TARGET_SOURCES})
 add_executable(test_kestrel ${COMMON_SOURCES} ${TEST_SOURCES})
 
-
+#
+# set up so the test runner app sees the header files in 
+# the main src directory
+#
 target_include_directories(test_kestrel BEFORE PUBLIC src)
 
