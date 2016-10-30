@@ -313,7 +313,7 @@ static inline void do_gen_moves(struct board *brd, struct move_list *mvl, const 
         generate_king_moves(brd, mvl, WHITE, W_KING, BLACK, captures_only);
         // generate rook and queen horizontal moves
         generate_sliding_horizontal_vertical_moves(brd, mvl, WHITE, captures_only);
-        // generate bishop and queen diagonal moves
+        // generate bishop and queen diagonal moves
         generate_sliding_diagonal_moves(brd, mvl, WHITE, captures_only);
     } else {
         generate_black_pawn_moves(brd, mvl, captures_only);
@@ -321,7 +321,7 @@ static inline void do_gen_moves(struct board *brd, struct move_list *mvl, const 
         generate_king_moves(brd, mvl,BLACK, B_KING, WHITE, captures_only);
         // generate rook and queen horizontal moves
         generate_sliding_horizontal_vertical_moves(brd, mvl, BLACK, captures_only);
-        // generate bishop and queen diagonal moves
+        // generate bishop and queen diagonal moves
         generate_sliding_diagonal_moves(brd, mvl, BLACK, captures_only);
     }
 
@@ -475,7 +475,7 @@ static inline void generate_knight_piece_moves(struct board *brd,
         enum square knight_sq = pop_1st_bit(&knight_bb);
 
         // get occupancy mask for knight at this square
-        uint64_t mask = GET_KNIGHT_OCC_MASK(knight_sq);
+        uint64_t mask = get_knight_occ_mask(knight_sq);
 
         // AND'ing with opposite colour pieces, will give all
         // pieces that can be captured
@@ -530,7 +530,7 @@ static inline void generate_king_moves(struct board *brd,
     enum square king_sq = get_king_square(brd, col);
 
     // get occupancy mask for this piece and square
-    uint64_t mask = GET_KING_OCC_MASK(king_sq);
+    uint64_t mask = get_king_occ_mask(king_sq);
 
     // AND'ing with opposite colour pieces, will give all
     // pieces that can be captured

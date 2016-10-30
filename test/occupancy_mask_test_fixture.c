@@ -50,7 +50,7 @@ void test_king_occupancy_mask(void)
 //              08 09 10 11 12 13 14 15
 //              00 01 02 03 40 05 06 07
 
-    uint64_t mask = GET_KING_OCC_MASK(a3);
+    uint64_t mask = get_king_occ_mask(a3);
     assert_true(CHECK_BIT(mask, a4));
     assert_true(CHECK_BIT(mask, a2));
     assert_true(CHECK_BIT(mask, b2));
@@ -58,13 +58,13 @@ void test_king_occupancy_mask(void)
     assert_true(CHECK_BIT(mask, b4));
     assert_true(5 == count_bits(mask));
 
-    mask = GET_KING_OCC_MASK(h1);
+    mask = get_king_occ_mask(h1);
     assert_true(CHECK_BIT(mask, g1));
     assert_true(CHECK_BIT(mask, g2));
     assert_true(CHECK_BIT(mask, h2));
     assert_true(3 == count_bits(mask));
 
-    mask = GET_KING_OCC_MASK(d1);
+    mask = get_king_occ_mask(d1);
     assert_true(CHECK_BIT(mask, c1));
     assert_true(CHECK_BIT(mask, e1));
     assert_true(CHECK_BIT(mask, c2));
@@ -72,7 +72,7 @@ void test_king_occupancy_mask(void)
     assert_true(CHECK_BIT(mask, e2));
     assert_true(5 == count_bits(mask));
 
-    mask = GET_KING_OCC_MASK(d5);
+    mask = get_king_occ_mask(d5);
     assert_true(CHECK_BIT(mask, c4));
     assert_true(CHECK_BIT(mask, d4));
     assert_true(CHECK_BIT(mask, e4));
@@ -83,13 +83,13 @@ void test_king_occupancy_mask(void)
     assert_true(CHECK_BIT(mask, e6));
     assert_true(8 == count_bits(mask));
 
-    mask = GET_KING_OCC_MASK(a8);
+    mask = get_king_occ_mask(a8);
     assert_true(CHECK_BIT(mask, a7));
     assert_true(CHECK_BIT(mask, b7));
     assert_true(CHECK_BIT(mask, b8));
     assert_true(3 == count_bits(mask));
 
-    mask = GET_KING_OCC_MASK(h8);
+    mask = get_king_occ_mask(h8);
     assert_true(CHECK_BIT(mask, g7));
     assert_true(CHECK_BIT(mask, h7));
     assert_true(CHECK_BIT(mask, g8));
@@ -108,7 +108,7 @@ void test_rook_occupancy_mask(void)
 //              08 09 10 11 12 13 14 15
 //              00 01 02 03 40 05 06 07
 
-    uint64_t mask = GET_ROOK_OCC_MASK(a1);
+    uint64_t mask = get_rook_occ_mask(a1);
     //printf("0x%016llx\n", mask);
     assert_true(CHECK_BIT(mask, a2));
     assert_true(CHECK_BIT(mask, a3));
@@ -126,7 +126,7 @@ void test_rook_occupancy_mask(void)
     assert_true(CHECK_BIT(mask, h1));
     assert_true(14 == count_bits(mask));
 
-    mask = GET_ROOK_OCC_MASK(h1);
+    mask = get_rook_occ_mask(h1);
     assert_true(CHECK_BIT(mask, h2));
     assert_true(CHECK_BIT(mask, h3));
     assert_true(CHECK_BIT(mask, h4));
@@ -143,7 +143,7 @@ void test_rook_occupancy_mask(void)
     assert_true(CHECK_BIT(mask, g1));
     assert_true(14 == count_bits(mask));
 
-    mask = GET_ROOK_OCC_MASK(d5);
+    mask = get_rook_occ_mask(d5);
     assert_true(CHECK_BIT(mask, a5));
     assert_true(CHECK_BIT(mask, b5));
     assert_true(CHECK_BIT(mask, c5));
@@ -175,24 +175,24 @@ void test_knight_occupancy_mask(void)
 //              08 09 10 11 12 13 14 15
 //              00 01 02 03 40 05 06 07
 
-    uint64_t mask = GET_KNIGHT_OCC_MASK(a1);
+    uint64_t mask = get_knight_occ_mask(a1);
     assert_true(CHECK_BIT(mask, c2));
     assert_true(CHECK_BIT(mask, b3));
     assert_true(2 == count_bits(mask));
 
-    mask = GET_KNIGHT_OCC_MASK(d1);
+    mask = get_knight_occ_mask(d1);
     assert_true(CHECK_BIT(mask, b2));
     assert_true(CHECK_BIT(mask, c3));
     assert_true(CHECK_BIT(mask, e3));
     assert_true(CHECK_BIT(mask, f2));
     assert_true(4 == count_bits(mask));
 
-    mask = GET_KNIGHT_OCC_MASK(h1);
+    mask = get_knight_occ_mask(h1);
     assert_true(CHECK_BIT(mask, f2));
     assert_true(CHECK_BIT(mask, g3));
     assert_true(2 == count_bits(mask));
 
-    mask = GET_KNIGHT_OCC_MASK(d5);
+    mask = get_knight_occ_mask(d5);
     assert_true(CHECK_BIT(mask, c3));
     assert_true(CHECK_BIT(mask, b4));
     assert_true(CHECK_BIT(mask, b6));
@@ -203,12 +203,12 @@ void test_knight_occupancy_mask(void)
     assert_true(CHECK_BIT(mask, f4));
     assert_true(8 == count_bits(mask));
 
-    mask = GET_KNIGHT_OCC_MASK(a8);
+    mask = get_knight_occ_mask(a8);
     assert_true(CHECK_BIT(mask, b6));
     assert_true(CHECK_BIT(mask, c7));
     assert_true(2 == count_bits(mask));
 
-    mask = GET_KNIGHT_OCC_MASK(h8);
+    mask = get_knight_occ_mask(h8);
     assert_true(CHECK_BIT(mask, f7));
     assert_true(CHECK_BIT(mask, g6));
     assert_true(2 == count_bits(mask));
@@ -226,7 +226,7 @@ void test_queen_occupancy_mask(void)
 //              08 09 10 11 12 13 14 15
 //              00 01 02 03 40 05 06 07
 
-    uint64_t mask = GET_QUEEN_OCC_MASK(h8);
+    uint64_t mask = get_queen_occ_mask(h8);
     assert_true(CHECK_BIT(mask, h7));
     assert_true(CHECK_BIT(mask, h6));
     assert_true(CHECK_BIT(mask, h5));
@@ -264,7 +264,7 @@ void test_bishop_occupancy_mask(void)
 //              08 09 10 11 12 13 14 15
 //              00 01 02 03 40 05 06 07
 
-    uint64_t mask = GET_BISHOP_OCC_MASK(h8);
+    uint64_t mask = get_bishop_occ_mask(h8);
     assert_true(CHECK_BIT(mask, g7));
     assert_true(CHECK_BIT(mask, f6));
     assert_true(CHECK_BIT(mask, e5));
@@ -274,7 +274,7 @@ void test_bishop_occupancy_mask(void)
     assert_true(CHECK_BIT(mask, a1));
     assert_true(7 == count_bits(mask));
 
-    mask = GET_BISHOP_OCC_MASK(d5);
+    mask = get_bishop_occ_mask(d5);
     assert_true(CHECK_BIT(mask, c4));
     assert_true(CHECK_BIT(mask, b3));
     assert_true(CHECK_BIT(mask, a2));

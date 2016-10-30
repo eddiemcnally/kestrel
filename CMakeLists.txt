@@ -32,6 +32,8 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 \
 # and the test runner binary ("test_kestrel")
 #
 set(COMMON_SOURCES  
+		src/occupancy_mask_gen.c
+     		src/occupancy_mask_gen.h
 		src/occupancy_mask.c
      		src/occupancy_mask.h
      		src/board.c
