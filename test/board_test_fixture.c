@@ -375,17 +375,15 @@ void test_clearing_bits_in_a_board()
 
 void test_checking_bits_in_a_board(void)
 {
-
     uint64_t test_brd = 0;
 
-    for (int i = 0; i < NUM_SQUARES; i++) {
-        set_bit(&test_brd, i);
-        assert_true(CHECK_BIT(test_brd, i));
+    for (enum square sq = a1; sq <= h8; sq++) {
+        set_bit(&test_brd, sq);
+        assert_true(CHECK_BIT(test_brd, sq));
 
-        clear_bit(&test_brd, i);
-        assert_false(CHECK_BIT(test_brd, i));
+        clear_bit(&test_brd, sq);
+        assert_false(CHECK_BIT(test_brd, sq));
     }
-
 }
 
 void test_bit_counting(void)

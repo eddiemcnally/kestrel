@@ -34,6 +34,7 @@
 void test_bit_reversal(void);
 void utils_test_fixture(void);
 void test_clear_MSB(void);
+void test_flip_side(void);
 
 void test_bit_reversal(void)
 {
@@ -61,7 +62,7 @@ void test_bit_reversal(void)
 
 }
 
-void test_flip_side()
+void test_flip_side(void)
 {
     enum colour fs = GET_OPPOSITE_SIDE(WHITE);
     assert_true(fs == BLACK);

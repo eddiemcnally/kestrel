@@ -3,6 +3,7 @@
 #ifdef WIN32
 #include "windows.h"
 
+
 int seatest_is_string_equal_i(const char *s1, const char *s2)
 {
 #pragma warning(disable: 4996)
@@ -31,6 +32,8 @@ int seatest_is_string_equal_i(const char *s1, const char *s2)
 static int sea_test_last_passed = 0;
 #endif
 
+
+
 typedef enum {
     SEATEST_DISPLAY_TESTS,
     SEATEST_RUN_TESTS,
@@ -58,6 +61,23 @@ static seatest_void_void seatest_suite_setup_func = 0;
 static seatest_void_void seatest_suite_teardown_func = 0;
 static seatest_void_void seatest_fixture_setup = 0;
 static seatest_void_void seatest_fixture_teardown = 0;
+
+
+char *test_file_name(char *path);
+void seatest_header_printer(char *s, int length, char f);
+void set_magic_marker(char *marker);
+void seatest_display_test(char *fixture_name, char *test_name);
+void seatest_show_help(void);
+int seatest_commandline_has_value_after(seatest_testrunner_t * runner, int arg);
+int seatest_parse_commandline_option_with_value(seatest_testrunner_t *
+        runner, int arg,
+        char *option,
+        seatest_void_string setter);
+void seatest_interpret_commandline(seatest_testrunner_t * runner);
+void seatest_testrunner_create(seatest_testrunner_t * runner, int argc, char **argv);
+
+
+
 
 void (*seatest_simple_test_result) (int passed, char *reason,
                                     const char *function,

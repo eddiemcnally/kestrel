@@ -44,6 +44,7 @@ void test_is_square_under_attack(void);
 void test_is_blocked_up_or_down(void);
 void test_is_blocked_diagonally(void);
 void test_inbetween_bits(void);
+void debug_move(void);
 
 void test_is_square_being_attacked_by_knight(void)
 {
@@ -369,7 +370,7 @@ void test_is_square_under_attack(void)
 
 }
 
-void debug_move()
+void debug_move(void)
 {
     char *test_fen =
         "2Q3qb/pN3P1p/P4qr1/1KP1BnP1/1p2pPNp/2rkP3/pP3npP/4QbRB w - - 0 1";

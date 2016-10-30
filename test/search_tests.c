@@ -32,6 +32,7 @@
 
 void test_mate_in_two(void);
 void test_move_sort_1(void);
+void search_test_fixture(void);
 
 
 void test_move_sort_1(void)
@@ -72,7 +73,10 @@ void test_mate_in_two()
 {
     struct board *brd = init_game(MATE_IN_TWO);
 
-    struct search_info si = {0};
+    struct search_info si;
+
+    memset(&si, 0, sizeof(struct search_info));
+
     si.depth = 4;
     search_positions(brd, &si, 64000000);
 

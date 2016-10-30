@@ -51,6 +51,9 @@ void test_capture_move_gen_1(void);
 void test_capture_move_gen_2(void);
 void test_capture_move_gen_3(void);
 void test_zobrist_hashing_makemove_takemove(void);
+void test_en_passant(void);
+void move_test_fixture(void);
+void test_make_move_take_move_1(void);
 
 
 

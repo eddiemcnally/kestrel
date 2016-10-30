@@ -4,11 +4,35 @@ project(kestrel)
 
 set(CMAKE_C_COMPILER "/usr/bin/clang")
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 \
+				-O3 \
+				-flto \
+				-march=native \
+				-mtune=native \
+				-Wpedantic \
+				-Wall \
+				-Wextra \
+				-Wstrict-prototypes \
+				-Wmissing-prototypes \
+				-Wswitch-default \
+				-Wunused-macros \
+				-Wextra \
+				-Wconversion \
+				-Wsign-conversion \
+				-Wshadow \
+				-Wcast-qual \
+				-Wcast-align \
+				-Wmissing-include-dirs \
+				-Wpointer-arith \
+				-fstack-protector \
+				-fsanitize=address \
+				-fsanitize=undefined \
+				-fomit-frame-pointer \
+				-DENABLE_ASSERTS=true")
 
 #
-# sources and headers shared between the main (kestrel) binary
-# and the test runner binary
+# sources and headers shared between the main binary ("kestrel")
+# and the test runner binary ("test_kestrel")
 #
 set(COMMON_SOURCES  
 		src/occupancy_mask.c

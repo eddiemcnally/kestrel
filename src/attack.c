@@ -212,12 +212,10 @@ static inline bool is_king_attacking_square(const struct board *brd,
         uint64_t sq_bb,
         enum colour col)
 {
-    // get the bitboard representing the king on the board of
-    // this colour
-    enum square att_pce_sq = get_bitboard_for_king(brd, col);
+    enum square king_sq = brd->king_sq[col];
 
     // get occupancy mask for this square
-    uint64_t mask = GET_KING_OCC_MASK(att_pce_sq);
+    uint64_t mask = GET_KING_OCC_MASK(king_sq);
     return ((mask & sq_bb) != 0);
 }
 

@@ -42,6 +42,8 @@ uint32_t divide(int depth, struct board *brd);
 void test_move_gen_depth(void);
 void perft(int depth, struct board *brd, struct perft_stats *pstats);
 void bug_check(void);
+void perf_test_fixture(void);
+
 
 // struct representing a line in the perftsuite.epd file
 typedef struct EPD {

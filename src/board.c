@@ -453,7 +453,7 @@ static inline void remove_black_pawn_info(struct board *brd, enum square sq)
     brd->pawns_on_file[BLACK][file]--;
     brd->pawns_on_rank[BLACK][rank]--;
 
-    update_pawn_control(brd, sq, BLACK, -1);
+    update_pawn_control(brd, BLACK, sq, -1);
 }
 
 
@@ -466,7 +466,7 @@ static inline void remove_white_pawn_info(struct board *brd, enum square sq)
     brd->pawns_on_file[WHITE][file]--;
     brd->pawns_on_rank[WHITE][rank]--;
 
-    update_pawn_control(brd, sq, WHITE, -1);
+    update_pawn_control(brd, WHITE, sq, -1);
 
 }
 
@@ -482,7 +482,7 @@ static inline void add_black_pawn_info(struct board *brd, enum square sq)
     brd->pawns_on_file[BLACK][file]++;
     brd->pawns_on_rank[BLACK][rank]++;
 
-    update_pawn_control(brd, sq, BLACK, 1);
+    update_pawn_control(brd, BLACK, sq, 1);
 }
 
 
@@ -496,7 +496,7 @@ static inline void add_white_pawn_info(struct board *brd, enum square sq)
     brd->pawns_on_file[WHITE][file]++;
     brd->pawns_on_rank[WHITE][rank]++;
 
-    update_pawn_control(brd, sq, WHITE, 1);
+    update_pawn_control(brd, WHITE, sq, 1);
 
 }
 
