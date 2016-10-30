@@ -5,7 +5,7 @@ project(kestrel)
 set(CMAKE_C_COMPILER "/usr/bin/clang")
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 \
-				-O3 \
+                                -O2 \
 				-flto \
 				-march=native \
 				-mtune=native \
@@ -24,10 +24,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 \
 				-Wcast-align \
 				-Wmissing-include-dirs \
 				-Wpointer-arith \
-				-fstack-protector \
-				-fsanitize=address \
-				-fsanitize=undefined \
-				-fomit-frame-pointer \
+                                -fomit-frame-pointer \
 				-DENABLE_ASSERTS=true")
 
 #
