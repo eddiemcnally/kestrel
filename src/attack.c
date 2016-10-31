@@ -39,10 +39,6 @@
 #include "utils.h"
 #include "occupancy_mask.h"
 
-static bool is_attacked_horizontally_or_vertically(const struct board *brd, enum square sq_one, enum square sq_two);
-static bool is_attacked_diagonally(const struct board *brd, enum square attacking_sq, enum square target_sq);
-static bool is_knight_attacking_square(const struct board *brd, uint64_t sq_bb, enum piece attacking_piece);
-static bool is_king_attacking_square(const struct board *brd, uint64_t sq_bb, enum colour col);
 static bool is_rook_or_queen_attacking_square(const struct board *brd, enum square sq, uint64_t rq_bb);
 static bool is_bishop_or_queen_attacking_square(const struct board *brd, enum square sq, uint64_t bq_bb);
 static uint64_t in_between(enum square sq1, enum square sq2);
@@ -56,7 +52,7 @@ static void populate_intervening_squares_array(void);
 // since there is a commutative property associated with to/from squares
 // when identifying intervening squares, it's irrelevent whether you index using
 // [from][to] or [to][from]
-static uint64_t intervening_squares_lookup[NUM_SQUARES][NUM_SQUARES];
+uint64_t intervening_squares_lookup[NUM_SQUARES][NUM_SQUARES];
 
 
 
@@ -116,7 +112,7 @@ bool is_sq_attacked(const struct board *brd, enum square sq,
             return true;
         }
         // Black pawn controls this square?
-		if (is_pawn_controlling_sq(brd, BLACK, sq)) {
+        if (is_pawn_controlling_sq(brd, BLACK, sq)) {
             return true;
         }
 
@@ -190,7 +186,7 @@ static inline bool is_bishop_or_queen_attacking_square(const struct board
     return false;
 }
 
-static inline bool is_knight_attacking_square(const struct board *brd,
+inline bool is_knight_attacking_square(const struct board *brd,
         uint64_t sq_bb,
         enum piece attacking_piece)
 {
@@ -208,7 +204,7 @@ static inline bool is_knight_attacking_square(const struct board *brd,
     return false;
 }
 
-static inline bool is_king_attacking_square(const struct board *brd,
+inline bool is_king_attacking_square(const struct board *brd,
         uint64_t sq_bb,
         enum colour col)
 {
@@ -219,7 +215,7 @@ static inline bool is_king_attacking_square(const struct board *brd,
     return ((mask & sq_bb) != 0);
 }
 
-static inline bool is_attacked_horizontally_or_vertically(
+inline bool is_attacked_horizontally_or_vertically(
     const struct board *brd,
     enum square sq_one,
     enum square sq_two)
@@ -252,7 +248,7 @@ static inline bool is_attacked_horizontally_or_vertically(
  * @return : true if attack is possible, false otherwise
  *
  */
-static inline bool is_attacked_diagonally(const struct board *brd,
+inline bool is_attacked_diagonally(const struct board *brd,
         enum square attacking_sq,
         enum square target_sq)
 {
@@ -305,55 +301,3 @@ static uint64_t in_between(enum square sq1, enum square sq2)
 }
 
 
-
-
-/**
- * Test wrapper functions.
- * These wrapper functions provide access for the unit test framework while
- * allowing the functions themselves to be static to this file and inline-able
- */
-bool TEST_is_knight_attacking_square(const struct board * brd,
-                                     enum square sq, enum colour attacking_side)
-{
-    enum piece pce;
-    if (attacking_side == WHITE) {
-        pce = W_KNIGHT;
-    } else {
-        pce = B_KNIGHT;
-    }
-    return is_knight_attacking_square(brd, square_to_bitboard(sq), pce);
-}
-
-bool TEST_is_pawn_attacking_square(const struct board * brd,
-                                   enum square sq, enum colour attacking_side)
-{
-    if (attacking_side == WHITE) {
-        if (is_pawn_controlling_sq(brd, WHITE, sq)) {
-            return true;
-        }
-    } else {
-        if (is_pawn_controlling_sq(brd, BLACK, sq)) {
-            return true;
-        }
-    }
-    return false;
-}
-
-bool TEST_is_king_attacking_square(const struct board * brd,
-                                   enum square sq, enum colour attacking_side)
-{
-    return is_king_attacking_square(brd, square_to_bitboard(sq), attacking_side);
-}
-
-bool TEST_is_attacked_horizontally_or_vertically(const struct board * brd,
-        enum square sq_one,
-        enum square sq_two)
-{
-    return is_attacked_horizontally_or_vertically(brd, sq_one, sq_two);
-}
-
-bool TEST_is_attacked_diagonally(const struct board * brd,
-                                 enum square sq_one, enum square sq_two)
-{
-    return is_attacked_diagonally(brd, sq_one, sq_two);
-}

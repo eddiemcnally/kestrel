@@ -45,6 +45,29 @@ void test_is_blocked_up_or_down(void);
 void test_is_blocked_diagonally(void);
 void test_inbetween_bits(void);
 void debug_move(void);
+bool TEST_is_bishop_attacking_square(const struct board *brd,
+                                     enum square sq,
+                                     enum colour attacking_side);
+bool TEST_is_knight_attacking_square(const struct board *brd,
+                                     enum square sq,
+                                     enum colour attacking_side);
+bool TEST_is_pawn_attacking_square(const struct board *brd, enum square sq,
+                                   enum colour attacking_side);
+bool TEST_is_king_attacking_square(const struct board *brd, enum square sq,
+                                   enum colour attacking_side);
+bool TEST_is_rook_attacking_square(const struct board *brd, enum square sq,
+                                   enum colour attacking_side);
+bool TEST_is_queen_attacking_square(const struct board *brd,
+                                    enum square sq, enum colour attacking_side);
+bool TEST_is_attacked_horizontally_or_vertically(const struct board *brd,
+        enum square sq_one,
+        enum square sq_two);
+bool TEST_is_attacked_diagonally(const struct board *brd,
+                                 enum square sq_one, enum square sq_two);
+
+
+
+
 
 void test_is_square_being_attacked_by_knight(void)
 {
@@ -381,6 +404,60 @@ void debug_move(void)
     assert_true(is_sq_attacked(brd, e6, WHITE) == true);
     assert_true(is_sq_attacked(brd, g7, WHITE) == false);
 }
+
+
+
+/**
+ * Test wrapper functions.
+ * These wrapper functions provide access for the unit test framework while
+ * allowing the functions themselves to be static to this file and inline-able
+ */
+bool TEST_is_knight_attacking_square(const struct board * brd,
+                                     enum square sq, enum colour attacking_side)
+{
+    enum piece pce;
+    if (attacking_side == WHITE) {
+        pce = W_KNIGHT;
+    } else {
+        pce = B_KNIGHT;
+    }
+    return is_knight_attacking_square(brd, square_to_bitboard(sq), pce);
+}
+
+bool TEST_is_pawn_attacking_square(const struct board * brd,
+                                   enum square sq, enum colour attacking_side)
+{
+    if (attacking_side == WHITE) {
+        if (is_pawn_controlling_sq(brd, WHITE, sq)) {
+            return true;
+        }
+    } else {
+        if (is_pawn_controlling_sq(brd, BLACK, sq)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool TEST_is_king_attacking_square(const struct board * brd,
+                                   enum square sq, enum colour attacking_side)
+{
+    return is_king_attacking_square(brd, square_to_bitboard(sq), attacking_side);
+}
+
+bool TEST_is_attacked_horizontally_or_vertically(const struct board * brd,
+        enum square sq_one,
+        enum square sq_two)
+{
+    return is_attacked_horizontally_or_vertically(brd, sq_one, sq_two);
+}
+
+bool TEST_is_attacked_diagonally(const struct board * brd,
+                                 enum square sq_one, enum square sq_two)
+{
+    return is_attacked_diagonally(brd, sq_one, sq_two);
+}
+
 
 
 void attack_test_fixture(void)
