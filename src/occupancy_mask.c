@@ -376,7 +376,7 @@ const uint64_t rook_occupancy_masks[NUM_SQUARES] = {
 
 
 inline uint64_t get_knight_occ_mask(enum square sq){
-    return king_occupancy_masks[sq];
+    return knight_occupancy_masks[sq];
 }
 
 inline uint64_t get_bishop_occ_mask(enum square sq){
@@ -394,7 +394,3 @@ inline uint64_t get_queen_occ_mask(enum square sq){
 inline uint64_t get_rook_occ_mask(enum square sq){
     return rook_occupancy_masks[sq];
 }
-
-
-
-

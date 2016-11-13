@@ -488,13 +488,6 @@ static inline void generate_knight_piece_moves(struct board *brd,
             enum square cap_sq = pop_1st_bit(&capture_squares);
             enum piece p = get_piece_on_square(brd, cap_sq);
 
-#ifdef ENABLE_ASSERTS
-			//if ((knight_sq == e5) && (cap_sq == c6) && (p == B_PAWN)){				
-			//	assert(false);
-			//}
-#endif
-
-
             mv_bitmap mv = MOVE(brd,knight_sq, cap_sq, p, NO_PIECE, MFLAG_CAPTURE);
             add_capture_move(brd, mv, mvl, knight, p);
         }
@@ -1223,4 +1216,3 @@ bool TEST_is_move_in_list(struct move_list *mvl, mv_bitmap mv)
 {
     return is_move_in_list(mvl, mv);
 }
-
