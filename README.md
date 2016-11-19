@@ -10,7 +10,14 @@ The ./src directory contains the main source code for the engine.
 The ./debug directory contains some Python 3 code that was developed to help parse and analyse log files when debugging move generation.
 
 
-The build environment is CMake (with some wrapper bash scripts in the src and test directories for running CMake with the relevant compiler options.
+The build environment is CMake.
+
+To compile:
+
+mkdir build
+cd build
+cmake .. -G "Unix Makefiles"
+
 
 There is a single build variable ENABLE_ASSERTS which will enable various asserts in the code as part of the debug stage. 
 
