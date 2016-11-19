@@ -14,9 +14,11 @@ The build environment is CMake.
 
 To compile:
 
-mkdir build
-cd build
-cmake .. -G "Unix Makefiles"
+	mkdir build
+
+	cd build
+
+	cmake .. -G "Unix Makefiles"
 
 
 There is a single build variable ENABLE_ASSERTS which will enable various asserts in the code as part of the debug stage. 
