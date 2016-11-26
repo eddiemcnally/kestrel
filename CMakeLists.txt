@@ -9,10 +9,10 @@ set(CMAKE_C_COMPILER "/usr/bin/clang")
 #
 # debug compile
 #
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} \
--g \
--std=c11 \
--DENABLE_ASSERTS=true")
+#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} \
+#-g \
+#-std=c11 \
+#-DENABLE_ASSERTS=true")
 
 
 
@@ -21,30 +21,31 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} \
 #
 # optimised compile
 #
-#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} \
-#-g \
-#-std=c11 \
-#-O2 \
-#-flto \
-#-march=native \
-#-mtune=native \
-#-Wpedantic \
-#-Wall \
-#-Wextra \
-#-Wstrict-prototypes \
-#-Wmissing-prototypes \
-#-Wswitch-default \
-#-Wunused-macros \
-#-Wextra \
-#-Wconversion \
-#-Wsign-conversion \
-#-Wshadow \
-#-Wcast-qual \
-#-Wcast-align \
-#-Wmissing-include-dirs \
-#-Wpointer-arith \
-#-fomit-frame-pointer \
-#-DENABLE_ASSERTS=true")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} \
+-g \
+-std=c11 \
+-O2 \
+-flto \
+-march=native \
+-mtune=native \
+-Wpedantic \
+-Wall \
+-Wextra \
+-fsanitize=undefined \
+-Wstrict-prototypes \
+-Wmissing-prototypes \
+-Wswitch-default \
+-Wunused-macros \
+-Wextra \
+-Wconversion \
+-Wsign-conversion \
+-Wshadow \
+-Wcast-qual \
+-Wcast-align \
+-Wmissing-include-dirs \
+-Wpointer-arith \
+-fomit-frame-pointer \
+-DENABLE_ASSERTS=true")
 
 #
 # sources and headers shared between the main binary ("kestrel")
