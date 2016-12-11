@@ -21,8 +21,18 @@ To compile:
 	cmake .. -G "Unix Makefiles"
 
 
-There is a single build variable ENABLE_ASSERTS which will enable various asserts in the code as part of the debug stage. 
+Notes:
+Use of LLVM LTO
+- The cmake files are set up to use LLVM/Clang LTO (see http://llvm.org/docs/LinkTimeOptimization.html).
+- For the link to succeed, you need ensure that the "gold" linker is used, as follows:
 
+	$ update-alternatives --install "/usr/bin/ld" "ld" "/usr/bin/ld.gold" 20
+	
+	$ update-alternatives --install "/usr/bin/ld" "ld" "/usr/bin/ld.bfd" 10
+
+
+Runtime Asserts
+- To aid debugging, there is a single compile-time variable called ENABLE_ASSERTS. Compiling with this set will enable various runtime checker code and asserts.
 
 
 Some implementation notes:
