@@ -289,14 +289,6 @@ void move_piece(struct board *brd, enum square from, enum square to)
 {	
     enum piece pce = brd->pieces[from];
 
-#ifdef ENABLE_ASSERTS
-	assert(pce != NO_PIECE);
-	printf("------------_> pce = %c\n", get_piece_label(pce));
-	assert(from != to);
-	ASSERT_BOARD_OK(brd);
-	assert_material_correct(brd);
-#endif
-	
     // adjust the hash
     brd->board_hash ^= get_piece_hash(pce, from);
     brd->board_hash ^= get_piece_hash(pce, to);
@@ -330,24 +322,12 @@ void move_piece(struct board *brd, enum square from, enum square to)
 		default:
 			break;
     }
-
-#ifdef ENABLE_ASSERTS
-	ASSERT_BOARD_OK(brd);
-	assert_material_correct(brd);
-#endif
 }
 
 
 
 void add_piece_to_board(struct board *brd, enum piece pce, enum square sq)
 {
-#ifdef ENABLE_ASSERTS
-    assert(pce != NO_PIECE);
-    assert(IS_VALID_PIECE(pce));
-    assert(IS_VALID_SQUARE(sq));
-#endif
-
-
     enum colour col = GET_COLOUR(pce);
     brd->board_hash ^= get_piece_hash(pce, sq);
 
@@ -397,22 +377,6 @@ inline bool is_repetition(const struct board *brd)
 
 void remove_piece_from_board(struct board *brd, enum piece pce_to_remove, enum square sq)
 {
-#ifdef ENABLE_ASSERTS
-	ASSERT_BOARD_OK(brd);
-    assert(pce_to_remove != NO_PIECE);
-    assert(IS_VALID_PIECE(pce_to_remove));
-	assert(IS_VALID_SQUARE(sq));
-	
-	enum piece pce_on_sq = brd->pieces[sq];
-	assert(pce_on_sq != NO_PIECE);
-	if (pce_on_sq != pce_to_remove){
-		printf("*****");
-	}
-	
-	assert(pce_on_sq == pce_to_remove);
-	
-#endif
-
     enum colour col = GET_COLOUR(pce_to_remove);
     brd->board_hash ^= get_piece_hash(pce_to_remove, sq);
     brd->pieces[sq] = NO_PIECE;
@@ -436,10 +400,6 @@ void remove_piece_from_board(struct board *brd, enum piece pce_to_remove, enum s
     default:
         break;
     }
-    
-#ifdef ENABLE_ASSERTS
-	ASSERT_BOARD_OK(brd);
-#endif
 }
 
 
@@ -508,18 +468,33 @@ static inline void update_pawn_control(struct board* brd, const enum colour col,
     uint8_t file = GET_FILE(sq);
     uint8_t rank = GET_RANK(sq);
 
-    if (file > FILE_A) {
-        if (rank < RANK_8) {
-            next_sq = (int8_t)(sq + NW);
-            brd->pawn_control[col][next_sq] += val;
-        }
-    }
-    if (file < FILE_H) {
-        if (rank < RANK_8) {
-            next_sq = (int8_t)(sq + NE);
-            brd->pawn_control[col][next_sq] += val;
-        }
-    }
+	if (col == WHITE){
+		if (file > FILE_A) {
+			if (rank < RANK_8) {
+				next_sq = (int8_t)(sq + NW);
+				brd->pawn_control[col][next_sq] += val;
+			}
+		}
+		if (file < FILE_H) {
+			if (rank < RANK_8) {
+				next_sq = (int8_t)(sq + NE);
+				brd->pawn_control[col][next_sq] += val;
+			}
+		}
+	} else {
+		if (file > FILE_A) {
+			if (rank < RANK_8) {
+				next_sq = (int8_t)(sq + SW);
+				brd->pawn_control[col][next_sq] += val;
+			}
+		}
+		if (file < FILE_H) {
+			if (rank < RANK_8) {
+				next_sq = (int8_t)(sq + SE);
+				brd->pawn_control[col][next_sq] += val;
+			}
+		}
+	}
 }
 
 

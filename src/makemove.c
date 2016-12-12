@@ -88,11 +88,6 @@ bool make_move(struct board *brd, mv_bitmap mv)
 {	
     enum square from = FROMSQ(mv);
     enum square to = TOSQ(mv);
-
-	
-#ifdef ENABLE_ASSERTS
-	assert_board_and_move(brd, mv);
-#endif
 	
     enum piece pce_being_moved = get_piece_on_square(brd, from);
     enum colour side = get_side_to_move(brd);
@@ -169,28 +164,10 @@ bool make_move(struct board *brd, mv_bitmap mv)
                 brd->en_passant = from - 8;
             }
             brd->board_hash ^= get_en_passant_hash(brd->en_passant);
-            
-#ifdef ENABLE_ASSERTS
-			enum rank r = GET_RANK(brd->en_passant);
-			assert((r == RANK_3) || (r == RANK_6));
-#endif
-            
         }
     }
 
-
-#ifdef ENABLE_ASSERTS
-	ASSERT_BOARD_OK(brd);
-#endif
-
-
     move_piece(brd, from, to);
-
-
-#ifdef ENABLE_ASSERTS
-	ASSERT_BOARD_OK(brd);
-#endif
-
 
     enum piece promoted = PROMOTED_PCE(mv);
     if (promoted != NO_PIECE) {
@@ -202,31 +179,14 @@ bool make_move(struct board *brd, mv_bitmap mv)
     // flip side
     flip_sides(brd);
 
-
-#ifdef ENABLE_ASSERTS
-	ASSERT_BOARD_OK(brd);
-#endif
-
     // check if move is valid (ie, king in check)
     enum square king_sq = brd->king_sq[side];
 
     // side is already flipped above, so use that as the attacking side
     if (is_sq_attacked(brd, king_sq, brd->side_to_move)) {
         take_move(brd);
-
-#ifdef ENABLE_ASSERTS
-	ASSERT_BOARD_OK(brd);
-#endif
-
-
         return false;
     } else {
-		
-
-#ifdef ENABLE_ASSERTS
-	ASSERT_BOARD_OK(brd);
-#endif
-		
         return true;
     }
 

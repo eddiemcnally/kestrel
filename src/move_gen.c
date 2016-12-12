@@ -303,10 +303,6 @@ void generate_all_capture_moves(struct board *brd, struct move_list *mvl)
 
 static inline void do_gen_moves(struct board *brd, struct move_list *mvl, const bool captures_only)
 {
-#ifdef ENABLE_ASSERTS
-		ASSERT_BOARD_OK(brd);
-#endif
-
     if (get_side_to_move(brd) == WHITE) {
         generate_white_pawn_moves(brd, mvl, captures_only);
         generate_knight_piece_moves(brd, mvl, W_KNIGHT, BLACK, captures_only);
@@ -324,10 +320,6 @@ static inline void do_gen_moves(struct board *brd, struct move_list *mvl, const 
         // generate bishop and queen diagonal moves
         generate_sliding_diagonal_moves(brd, mvl, BLACK, captures_only);
     }
-
-#ifdef ENABLE_ASSERTS
-		ASSERT_BOARD_OK(brd);
-#endif
 }
 
 
@@ -351,6 +343,9 @@ add_capture_move(struct board *brd, mv_bitmap mv, struct move_list *mvlist, enum
     assert_add_capture_move(brd, mv);
 #endif
 
+	if (victim == 15 || attacker == 15){
+		printf("JJJ");
+	}
 
     // add mvv-lva assessment of score
     uint32_t mvvlva = mvv_lva_score[victim][attacker];
