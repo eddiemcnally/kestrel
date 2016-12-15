@@ -463,7 +463,6 @@ static inline void add_white_pawn_info(struct board *brd, enum square sq)
 
 static inline void update_pawn_control(struct board* brd, const enum colour col, const enum square sq, int8_t val)
 {
-
     int8_t next_sq = 0;
     uint8_t file = GET_FILE(sq);
     uint8_t rank = GET_RANK(sq);
@@ -471,10 +470,10 @@ static inline void update_pawn_control(struct board* brd, const enum colour col,
 	if (col == WHITE){
 		if (file > FILE_A) {
 			if (rank < RANK_8) {
-				next_sq = (int8_t)(sq + NW);
+				next_sq = (int8_t)(sq + NW);				
 				brd->pawn_control[col][next_sq] += val;
 			}
-		}
+		} 
 		if (file < FILE_H) {
 			if (rank < RANK_8) {
 				next_sq = (int8_t)(sq + NE);
@@ -483,13 +482,13 @@ static inline void update_pawn_control(struct board* brd, const enum colour col,
 		}
 	} else {
 		if (file > FILE_A) {
-			if (rank < RANK_8) {
+			if (rank > RANK_1) {
 				next_sq = (int8_t)(sq + SW);
 				brd->pawn_control[col][next_sq] += val;
 			}
-		}
+		} 
 		if (file < FILE_H) {
-			if (rank < RANK_8) {
+			if (rank > RANK_1) {
 				next_sq = (int8_t)(sq + SE);
 				brd->pawn_control[col][next_sq] += val;
 			}

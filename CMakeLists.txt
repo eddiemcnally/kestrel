@@ -6,7 +6,9 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_C_COMPILER "/usr/bin/clang")
 
 
+# debug options
 set(debug ON)
+add_definitions(-DENABLE_ASSERTS=1)
 
 
 if(debug)
@@ -34,7 +36,7 @@ if(debug)
 		-Wcast-align \
 		-Wmissing-include-dirs \
 		-Wpointer-arith \
-		-fomit-frame-pointer" )
+		-fomit-frame-pointer")
 	 
 else()
 

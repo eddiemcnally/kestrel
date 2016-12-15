@@ -341,11 +341,9 @@ add_capture_move(struct board *brd, mv_bitmap mv, struct move_list *mvlist, enum
 {
 #ifdef ENABLE_ASSERTS
     assert_add_capture_move(brd, mv);
+    assert(attacker != NO_PIECE);
+	assert(victim != NO_PIECE);
 #endif
-
-	if (victim == 15 || attacker == 15){
-		printf("JJJ");
-	}
 
     // add mvv-lva assessment of score
     uint32_t mvvlva = mvv_lva_score[victim][attacker];

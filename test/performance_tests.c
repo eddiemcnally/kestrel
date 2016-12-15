@@ -545,26 +545,13 @@ uint32_t divide(int depth, struct board * brd)
     return nodes;
 }
 
-void bug_check(void)
-{
-    struct board *brd =
-            init_game
-        ("r3k2r/p1ppqpb1/bn2pnp1/3PN3/Pp2P3/2N2Q1p/1PPBBPPP/R3K2R b KQkq a3 0 1");
 
-    leafNodes = 0;
-    divide_perft((uint8_t) 3, brd);
-
-    assert_true(leafNodes == 193690690);
-}
 
 void perf_test_fixture(void)
 {
     test_fixture_start();	// starts a fixture
 
     run_test(test_move_gen_depth);
-
-
-    //run_test(bug_check);
 
     test_fixture_end();	// ends a fixture
 }
