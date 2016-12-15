@@ -35,23 +35,23 @@ void test_rank_file_macros(void)
 {
 
     // offsets into ranks enum
-    assert_true(0 == GET_RANK(a1));
-    assert_true(1 == GET_RANK(a2));
-    assert_true(7 == GET_RANK(a8));
-    assert_true(7 == GET_RANK(h8));
+    assert_true(0 == get_rank(a1));
+    assert_true(1 == get_rank(a2));
+    assert_true(7 == get_rank(a8));
+    assert_true(7 == get_rank(h8));
 
     // offsets into files enum
-    assert_true(0 == GET_FILE(a1));
-    assert_true(0 == GET_FILE(a2));
-    assert_true(2 == GET_FILE(c3));
-    assert_true(7 == GET_FILE(h8));
+    assert_true(0 == get_file(a1));
+    assert_true(0 == get_file(a2));
+    assert_true(2 == get_file(c3));
+    assert_true(7 == get_file(h8));
 
 
     // check on square derived from rank/file
-    assert_true(a1 == GET_SQUARE(RANK_1, FILE_A));
-    assert_true(a8 == GET_SQUARE(RANK_8, FILE_A));
-    assert_true(h1 == GET_SQUARE(RANK_1, FILE_H));
-    assert_true(h8 == GET_SQUARE(RANK_8, FILE_H));
+    assert_true(a1 == get_square(RANK_1, FILE_A));
+    assert_true(a8 == get_square(RANK_8, FILE_A));
+    assert_true(h1 == get_square(RANK_1, FILE_H));
+    assert_true(h8 == get_square(RANK_8, FILE_H));
 }
 
 

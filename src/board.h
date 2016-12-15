@@ -38,14 +38,11 @@ enum file {
 
 #define GET_PIECE_MASK(square)		((uint64_t)(0x01ull << (int)(square)))
 
-// zero-based
-#define GET_RANK(square)			((uint8_t)((square) >> 3))
-#define GET_FILE(square)			((uint8_t)((square) % 8))
-#define GET_SQUARE(RANK, FILE)		((uint8_t)((RANK << 3) + FILE))
-
 #define IS_VALID_RANK(rank)		((rank >= RANK_1) && (rank <= RANK_8))
 #define IS_VALID_FILE(file)		((file >= FILE_A) && (file <= FILE_H))
 #define IS_VALID_SQUARE(sq)		((sq >= a1) && (sq <= h8))
+
+
 
 
 
@@ -135,6 +132,9 @@ void overlay_boards(struct board *the_board);
 uint8_t count_bits(uint64_t bb);
 uint64_t square_to_bitboard(enum square sq);
 bool is_piece_on_square(const struct board *brd, enum piece pce, enum square sq);
-
+bool is_square_occupied(uint64_t bitboard, enum square sq);
 bool is_repetition(const struct board *brd);
 
+uint8_t get_rank(enum square sq);
+uint8_t get_file(enum square sq);
+enum square get_square(uint8_t rank, uint8_t file);

@@ -57,10 +57,10 @@ void print_board(const struct board *the_board)
 {
     printf("\nGame Board:\n\n");
 
-    for (int rank = RANK_8; rank >= RANK_1; rank--) {
+    for (uint8_t rank = RANK_8; rank >= RANK_1; rank--) {
         printf("%d  ", rank + 1);	// enum is zero-based
-        for (int file = FILE_A; file <= FILE_H; file++) {
-            enum square sq = GET_SQUARE(rank, file);
+        for (uint8_t file = FILE_A; file <= FILE_H; file++) {
+            enum square sq = get_square(rank, file);
             enum piece pce = the_board->pieces[sq];
             if (pce != NO_PIECE) {
                 char c = get_piece_label(pce);
@@ -88,8 +88,8 @@ void print_board(const struct board *the_board)
     if (the_board->en_passant == NO_SQUARE) {
         printf("enPas:\t-\n");
     } else {
-        uint32_t rank = GET_RANK(the_board->en_passant);
-        int file = GET_FILE(the_board->en_passant);
+        uint32_t rank = get_rank(the_board->en_passant);
+        int file = get_file(the_board->en_passant);
         printf("enPas:\t%c%c\n", files[file], ranks[rank]);
     }
 
@@ -129,8 +129,8 @@ char *print_square(enum square sq)
 {
     char *square_text = (char *)malloc(3 * sizeof(char));
 
-    int file = GET_FILE(sq);
-    int rank = GET_RANK(sq);
+    int file = get_file(sq);
+    int rank = get_rank(sq);
 
     sprintf(square_text, "%c%c", ('a' + file), ('1' + rank));
 
@@ -213,16 +213,16 @@ bool ASSERT_BOARD_OK(const struct board *brd)
     for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
         enum piece pce = brd->pieces[sq];
         if (pce != NO_PIECE) {
-            assert(CHECK_BIT(brd->board, sq) != 0);
+            assert(is_square_occupied(brd->board, sq) != 0);
 
             if (GET_COLOUR(pce) == WHITE) {
-                assert(CHECK_BIT(white_bb, sq) != 0);
+                assert(is_square_occupied(white_bb, sq) != 0);
             } else {
-                assert(CHECK_BIT(black_bb, sq) != 0);
+                assert(is_square_occupied(black_bb, sq) != 0);
             }
 
             uint64_t pce_bb = brd->bitboards[pce];
-            assert(CHECK_BIT(pce_bb, sq) != 0);
+            assert(is_square_occupied(pce_bb, sq) != 0);
         }
     }
 
@@ -381,8 +381,8 @@ mv_bitmap parse_move(char *ip_move, struct board * brd)
     uint8_t to_file = (uint8_t) (ip_move[2] - 'a');
     uint8_t to_rank = (uint8_t) (ip_move[3] - '1');
 
-    enum square from = GET_SQUARE(from_rank, from_file);
-    enum square to = GET_SQUARE(to_rank, to_file);
+    enum square from = get_square(from_rank, from_file);
+    enum square to = get_square(to_rank, to_file);
 
     // create ampty move list
     struct move_list mv_list = {

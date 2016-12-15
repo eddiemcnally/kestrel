@@ -44,7 +44,7 @@ void generate_queen_occupancy_masks(uint64_t * occ_mask_array);
 void generate_white_pawn_occupancy_masks(uint64_t * occ_mask_array);
 void generate_black_pawn_occupancy_masks(uint64_t * occ_mask_array);
 void print_out_masks(const uint64_t * masks);
-void set_dest_sq_if_valid(int rank, int file, uint64_t * brd);
+void set_dest_sq_if_valid(uint8_t rank, uint8_t file, uint64_t * brd);
 uint64_t get_occupancy_mask(enum piece pce, enum square sq);
 
 
@@ -91,21 +91,21 @@ void generate_rank_and_file_masks(void)
     uint64_t r_masks[8] = { 0 };
     uint64_t f_masks[8] = { 0 };
 
-    for (int i = RANK_1; i <= RANK_8; i++) {
+    for (uint8_t i = RANK_1; i <= RANK_8; i++) {
         uint64_t mask = 0;
-        for (int j = FILE_A; j <= FILE_H; j++) {
+        for (uint8_t j = FILE_A; j <= FILE_H; j++) {
 
-            enum square sq = GET_SQUARE(i, j);
+            enum square sq = get_square(i, j);
             set_bit(&mask, sq);
         }
         r_masks[i] = mask;
     }
 
-    for (int i = FILE_A; i <= FILE_H; i++) {
+    for (uint8_t i = FILE_A; i <= FILE_H; i++) {
         uint64_t mask = 0;
-        for (int j = RANK_1; j <= RANK_8; j++) {
+        for (uint8_t j = RANK_1; j <= RANK_8; j++) {
 
-            enum square sq = GET_SQUARE(j, i);
+            enum square sq = get_square(j, i);
             set_bit(&mask, sq);
         }
         f_masks[i] = mask;
@@ -148,11 +148,11 @@ void generate_king_occupancy_masks(uint64_t * occ_mask_array)
         //      (+1, -1),       (+1, 0),        (+1, +1)
         //  (0, -1),    XXX,            (0, +1)
         // etc
-        int dest_rank = 0;
-        int dest_file = 0;
+        uint8_t dest_rank = 0;
+        uint8_t dest_file = 0;
 
-        int rank = GET_RANK(sq);
-        int file = GET_FILE(sq);
+        uint8_t rank = get_rank(sq);
+        uint8_t file = get_file(sq);
 
         uint64_t b = 0;
 
@@ -235,8 +235,8 @@ void generate_knight_occupancy_masks(uint64_t * occ_mask_array)
         //
         // converting to ranks and files, we get:
         //  (left 2 files, up 1 rank), ( left 2 files, down 1 rank), etc
-        int rank = GET_RANK(sq);
-        int file = GET_FILE(sq);
+        int rank = get_rank(sq);
+        int file = get_file(sq);
 
         //printf("rank/file: %d/%d\n", rank, file);
 
@@ -335,8 +335,8 @@ void generate_white_pawn_occupancy_masks(uint64_t * occ_mask_array)
         //
         // converting to ranks and files, we get:
         //  (left 1 file, up 1 rank), ( right 1 file, up 1 rank)
-        int rank = GET_RANK(sq);
-        int file = GET_FILE(sq);
+        int rank = get_rank(sq);
+        int file = get_file(sq);
 
         uint64_t b = 0;
 
@@ -385,8 +385,8 @@ void generate_black_pawn_occupancy_masks(uint64_t * occ_mask_array)
         //
         // converting to ranks and files, we get:
         //  (left 1 file, down 1 rank), ( right 1 file, down 1 rank)
-        int rank = GET_RANK(sq);
-        int file = GET_FILE(sq);
+        int rank = get_rank(sq);
+        int file = get_file(sq);
 
         uint64_t b = 0;
 
@@ -418,8 +418,8 @@ void generate_rook_occupancy_masks(uint64_t * occ_mask_array)
 
     for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
 
-        int rank = GET_RANK(sq);
-        int file = GET_FILE(sq);
+        int rank = get_rank(sq);
+        int file = get_file(sq);
 
         uint64_t b = 0;
 
@@ -469,8 +469,8 @@ void generate_bishop_occupancy_masks(uint64_t * occ_mask_array)
 
     for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
 
-        int rank = GET_RANK(sq);
-        int file = GET_FILE(sq);
+        int rank = get_rank(sq);
+        int file = get_file(sq);
 
         //printf("rank/file : %d/%d\n", rank, file);
 
@@ -521,10 +521,10 @@ void generate_bishop_occupancy_masks(uint64_t * occ_mask_array)
     }
 }
 
-void set_dest_sq_if_valid(int rank, int file, uint64_t * brd)
+void set_dest_sq_if_valid(uint8_t rank, uint8_t file, uint64_t * brd)
 {
     if (IS_VALID_FILE(file) && IS_VALID_RANK(rank)) {
-        int dest_sq = GET_SQUARE(rank, file);
+        enum square dest_sq = get_square(rank, file);
         set_bit(brd, (enum square)dest_sq);
         //printf("---- OK  rank/file (sq=%d): %d/%d\n", dest_sq, rank, file);
     } else {
@@ -593,8 +593,8 @@ void generate_diagonal_occupancy_masks(void)
 
     for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
 
-        int rank = GET_RANK(sq);
-        int file = GET_FILE(sq);
+        int rank = get_rank(sq);
+        int file = get_file(sq);
 
         //printf("rank/file : %d/%d\n", rank, file);
 
@@ -668,11 +668,11 @@ void generate_diagonal_occupancy_masks(void)
 void print_mask_as_board(const uint64_t * mask)
 {
     uint64_t m = *mask;
-    for (int rank = RANK_8; rank >= RANK_1; rank--) {
+    for (uint8_t rank = RANK_8; rank >= RANK_1; rank--) {
         printf("%d  ", rank + 1);	// enum is zero-based
-        for (int file = FILE_A; file <= FILE_H; file++) {
-            enum square sq = GET_SQUARE(rank, file);
-            if (CHECK_BIT(m, sq)) {
+        for (uint8_t file = FILE_A; file <= FILE_H; file++) {
+            enum square sq = get_square(rank, file);
+            if (is_square_occupied(m, sq)) {
                 // attack square
                 printf("  X");
             } else {

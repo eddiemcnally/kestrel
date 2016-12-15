@@ -562,8 +562,8 @@ static inline void generate_white_castle_moves(struct board *brd,
     if (get_castle_permissions(brd) & WKCA) {
 		uint64_t brd_bb= get_bitboard_all_pieces(brd);
 		
-		bool f1_occupied = IS_SQUARE_OCCUPIED(brd_bb, f1);
-        bool g1_occupied = IS_SQUARE_OCCUPIED(brd_bb, g1);
+		bool f1_occupied = is_square_occupied(brd_bb, f1);
+        bool g1_occupied = is_square_occupied(brd_bb, g1);
 
         if (!f1_occupied && !g1_occupied) {
             if (!is_sq_attacked(brd, e1, BLACK)
@@ -578,9 +578,9 @@ static inline void generate_white_castle_moves(struct board *brd,
 
     if (get_castle_permissions(brd) & WQCA) {
  		uint64_t brd_bb= get_bitboard_all_pieces(brd);
-        bool d1_occupied = IS_SQUARE_OCCUPIED(brd_bb, d1);
-        bool c1_occupied = IS_SQUARE_OCCUPIED(brd_bb, c1);
-        bool b1_occupied = IS_SQUARE_OCCUPIED(brd_bb, b1);
+        bool d1_occupied = is_square_occupied(brd_bb, d1);
+        bool c1_occupied = is_square_occupied(brd_bb, c1);
+        bool b1_occupied = is_square_occupied(brd_bb, b1);
 
         if (!d1_occupied && !c1_occupied && !b1_occupied) {
             if (!is_sq_attacked(brd, e1, BLACK)
@@ -600,8 +600,8 @@ static inline void generate_black_castle_moves(struct board *brd,
     if (get_castle_permissions(brd) & BKCA) {
 		uint64_t brd_bb= get_bitboard_all_pieces(brd);
 		
-        bool f8_occupied = IS_SQUARE_OCCUPIED(brd_bb, f8);
-        bool g8_occupied = IS_SQUARE_OCCUPIED(brd_bb, g8);
+        bool f8_occupied = is_square_occupied(brd_bb, f8);
+        bool g8_occupied = is_square_occupied(brd_bb, g8);
 
         if (!f8_occupied && !g8_occupied) {
             if (!is_sq_attacked(brd, e8, WHITE)
@@ -617,9 +617,9 @@ static inline void generate_black_castle_moves(struct board *brd,
     if (get_castle_permissions(brd) & BQCA) {
 		uint64_t brd_bb= get_bitboard_all_pieces(brd);
 
-        bool d8_occupied = IS_SQUARE_OCCUPIED(brd_bb, d8);
-        bool c8_occupied = IS_SQUARE_OCCUPIED(brd_bb, c8);
-        bool b8_occupied = IS_SQUARE_OCCUPIED(brd_bb, b8);
+        bool d8_occupied = is_square_occupied(brd_bb, d8);
+        bool c8_occupied = is_square_occupied(brd_bb, c8);
+        bool b8_occupied = is_square_occupied(brd_bb, b8);
 
         if (!d8_occupied && !c8_occupied && !b8_occupied) {
             if (!is_sq_attacked(brd, e8, WHITE)
@@ -646,12 +646,12 @@ generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
         mv_bitmap mv = 0;
         enum square pawn_sq = pop_1st_bit(&pawn_bb);
 
-        uint8_t pawn_file = GET_FILE(pawn_sq);
-        uint8_t pawn_rank = GET_RANK(pawn_sq);
+        uint8_t pawn_file = get_file(pawn_sq);
+        uint8_t pawn_rank = get_rank(pawn_sq);
         enum square north_sq = pawn_sq + NORTH;
 
 #ifdef ENABLE_ASSERTS
-        assert(IS_SQUARE_OCCUPIED(get_bitboard_all_pieces(brd), pawn_sq) == CHECK_BIT(get_bitboard_all_pieces(brd), pawn_sq));
+        assert(is_square_occupied(get_bitboard_all_pieces(brd), pawn_sq) == is_square_occupied(get_bitboard_all_pieces(brd), pawn_sq));
 
 #endif
 
@@ -661,7 +661,7 @@ generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
         // check for moving 1 and 2 squares forward
         // ========================================
         if (only_capture_moves == false) {
-            if (IS_SQUARE_OCCUPIED(get_bitboard_all_pieces(brd), north_sq) == false) {
+            if (is_square_occupied(get_bitboard_all_pieces(brd), north_sq) == false) {
                 if (pawn_rank == RANK_7) {
                     // pawn can promote to 4 pieces
                     mv = MOVE(brd,pawn_sq, north_sq, NO_PIECE, W_QUEEN, MFLAG_NONE);
@@ -682,7 +682,7 @@ generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
 
                 if (pawn_rank == RANK_2) {
                     enum square north_x2 = pawn_sq + NN;
-                    if (IS_SQUARE_OCCUPIED(get_bitboard_all_pieces(brd), north_x2) == false) {
+                    if (is_square_occupied(get_bitboard_all_pieces(brd), north_x2) == false) {
                         mv = MOVE(brd,pawn_sq, north_x2, NO_PIECE, NO_PIECE, MFLAG_PAWN_START);
                         add_quiet_move(brd, mv, mvl, W_PAWN);
                     }
@@ -695,12 +695,11 @@ generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
         if (pawn_file > FILE_A) {
             enum square northwest = pawn_sq + NW;
 
-            if (IS_SQUARE_OCCUPIED(bb_black_pieces, northwest) == true) {
+            if (is_square_occupied(bb_black_pieces, northwest) == true) {
 
 #ifdef ENABLE_ASSERTS
-                assert(IS_SQUARE_OCCUPIED(bb_black_pieces, northwest) == CHECK_BIT(bb_black_pieces, northwest));
-                assert(IS_SQUARE_OCCUPIED(get_bitboard_all_pieces(brd), northwest) == CHECK_BIT(get_bitboard_all_pieces(brd), northwest));
-                assert(IS_SQUARE_OCCUPIED(bb_black_pieces, northwest) == CHECK_BIT(get_bitboard_all_pieces(brd), northwest));
+                assert(is_square_occupied(bb_black_pieces, northwest) == is_square_occupied(bb_black_pieces, northwest));
+                assert(is_square_occupied(bb_black_pieces, northwest) == is_square_occupied(get_bitboard_all_pieces(brd), northwest));
 #endif
                 enum piece capt_pce = get_piece_on_square(brd, northwest);
                 if (pawn_rank == RANK_7) {
@@ -732,12 +731,12 @@ generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
         if (pawn_file < FILE_H) {
             enum square northeast = pawn_sq + NE;
 
-            if (IS_SQUARE_OCCUPIED(bb_black_pieces, northeast) == true) {
+            if (is_square_occupied(bb_black_pieces, northeast) == true) {
 
 #ifdef ENABLE_ASSERTS
-                assert(IS_SQUARE_OCCUPIED(bb_black_pieces, northeast) == CHECK_BIT(bb_black_pieces, northeast));
-                assert(IS_SQUARE_OCCUPIED(get_bitboard_all_pieces(brd), northeast) == CHECK_BIT(get_bitboard_all_pieces(brd), northeast));
-                assert(IS_SQUARE_OCCUPIED(bb_black_pieces, northeast) == CHECK_BIT(get_bitboard_all_pieces(brd), northeast));
+                assert(is_square_occupied(bb_black_pieces, northeast) == is_square_occupied(bb_black_pieces, northeast));
+                assert(is_square_occupied(get_bitboard_all_pieces(brd), northeast) == is_square_occupied(get_bitboard_all_pieces(brd), northeast));
+                assert(is_square_occupied(bb_black_pieces, northeast) == is_square_occupied(get_bitboard_all_pieces(brd), northeast));
 #endif
 
                 enum piece capt_pce = get_piece_on_square(brd, northeast);
@@ -783,14 +782,14 @@ generate_black_pawn_moves(struct board *brd, struct move_list *mvl,
         mv_bitmap mv = 0;
         enum square pawn_sq = pop_1st_bit(&pawn_bb);
 
-        int pawn_file = GET_FILE(pawn_sq);
-        int pawn_rank = GET_RANK(pawn_sq);
+        int pawn_file = get_file(pawn_sq);
+        int pawn_rank = get_rank(pawn_sq);
 
         // check for moving 1 and 2 squares forward
         //=========================================
         enum square south_sq = pawn_sq + (enum square)SOUTH;
         if (only_capture_moves == false) {
-            if (IS_SQUARE_OCCUPIED(get_bitboard_all_pieces(brd), south_sq) == false) {
+            if (is_square_occupied(get_bitboard_all_pieces(brd), south_sq) == false) {
                 if (pawn_rank == RANK_2) {
                     // pawn can promote to 4 pieces
                     mv = MOVE(brd,pawn_sq, south_sq, NO_PIECE, B_QUEEN, MFLAG_NONE);
@@ -811,7 +810,7 @@ generate_black_pawn_moves(struct board *brd, struct move_list *mvl,
                 if (pawn_rank == RANK_7) {
                     enum square south_x2 = pawn_sq + (enum square)SS;	// can skip down 2 ranks
 
-                    bool sq_2_occupied = IS_SQUARE_OCCUPIED(get_bitboard_all_pieces(brd), south_x2);
+                    bool sq_2_occupied = is_square_occupied(get_bitboard_all_pieces(brd), south_x2);
                     if (sq_2_occupied == false) {
                         mv = MOVE(brd,pawn_sq, south_x2,NO_PIECE, NO_PIECE,MFLAG_PAWN_START);
                         add_quiet_move(brd, mv, mvl, B_PAWN);
@@ -826,7 +825,7 @@ generate_black_pawn_moves(struct board *brd, struct move_list *mvl,
         if (pawn_file > FILE_A) {
             enum square southwest = pawn_sq + (enum square)SW;
 
-            if (IS_SQUARE_OCCUPIED(bb_white_pieces, southwest) == true) {
+            if (is_square_occupied(bb_white_pieces, southwest) == true) {
                 enum piece capt_pce = get_piece_on_square(brd, southwest);
                 if (pawn_rank == RANK_2) {
                     // pawn can promote to 4 pieces
@@ -857,7 +856,7 @@ generate_black_pawn_moves(struct board *brd, struct move_list *mvl,
         if (pawn_file < FILE_H) {
             enum square southeast = pawn_sq + (enum square)SE;
 
-            if (IS_SQUARE_OCCUPIED(bb_white_pieces, southeast) == true) {
+            if (is_square_occupied(bb_white_pieces, southeast) == true) {
                 enum piece capt_pce = get_piece_on_square(brd, southeast);
                 if (pawn_rank == RANK_2) {
                     // pawn can promote to 4 pieces

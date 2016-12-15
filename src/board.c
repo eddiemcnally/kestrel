@@ -258,6 +258,23 @@ enum square get_king_square(const struct board *brd, enum colour col){
 }
 
 
+inline bool is_square_occupied(uint64_t bitboard, enum square sq){
+	return ((bitboard >> sq) & 0x01ull) != 0;
+}
+
+inline uint8_t get_rank(enum square sq){
+	return (uint8_t)(sq >> 3);
+}
+
+inline uint8_t get_file(enum square sq){
+	return (uint8_t)(sq % 8);
+}
+
+inline enum square get_square(uint8_t rank, uint8_t file){
+	return (enum square)((rank << 3) + file);
+}
+
+
 
 void push_history(struct board *brd, mv_bitmap move){
     // set up history
@@ -407,8 +424,8 @@ void remove_piece_from_board(struct board *brd, enum piece pce_to_remove, enum s
 
 static inline void remove_black_pawn_info(struct board *brd, enum square sq)
 {
-    uint8_t file = GET_FILE(sq);
-    uint8_t rank = GET_RANK(sq);
+    uint8_t file = get_file(sq);
+    uint8_t rank = get_rank(sq);
 
     brd->pawns_on_file[BLACK][file]--;
     brd->pawns_on_rank[BLACK][rank]--;
@@ -420,8 +437,8 @@ static inline void remove_black_pawn_info(struct board *brd, enum square sq)
 
 static inline void remove_white_pawn_info(struct board *brd, enum square sq)
 {
-    uint8_t file = GET_FILE(sq);
-    uint8_t rank = GET_RANK(sq);
+    uint8_t file = get_file(sq);
+    uint8_t rank = get_rank(sq);
 
     brd->pawns_on_file[WHITE][file]--;
     brd->pawns_on_rank[WHITE][rank]--;
@@ -436,8 +453,8 @@ static inline void remove_white_pawn_info(struct board *brd, enum square sq)
 // adds a pawn to the underlying board struct
 static inline void add_black_pawn_info(struct board *brd, enum square sq)
 {
-    uint8_t file = GET_FILE(sq);
-    uint8_t rank = GET_RANK(sq);
+    uint8_t file = get_file(sq);
+    uint8_t rank = get_rank(sq);
 
     brd->pawns_on_file[BLACK][file]++;
     brd->pawns_on_rank[BLACK][rank]++;
@@ -450,8 +467,8 @@ static inline void add_black_pawn_info(struct board *brd, enum square sq)
 // adds a pawn to the underlying board struct
 static inline void add_white_pawn_info(struct board *brd, enum square sq)
 {
-    uint8_t file = GET_FILE(sq);
-    uint8_t rank = GET_RANK(sq);
+    uint8_t file = get_file(sq);
+    uint8_t rank = get_rank(sq);
 
     brd->pawns_on_file[WHITE][file]++;
     brd->pawns_on_rank[WHITE][rank]++;
@@ -464,8 +481,8 @@ static inline void add_white_pawn_info(struct board *brd, enum square sq)
 static inline void update_pawn_control(struct board* brd, const enum colour col, const enum square sq, int8_t val)
 {
     int8_t next_sq = 0;
-    uint8_t file = GET_FILE(sq);
-    uint8_t rank = GET_RANK(sq);
+    uint8_t file = get_file(sq);
+    uint8_t rank = get_rank(sq);
 
 	if (col == WHITE){
 		if (file > FILE_A) {

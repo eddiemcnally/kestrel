@@ -223,7 +223,7 @@ inline bool is_attacked_horizontally_or_vertically(
 
     uint64_t rook_mask = get_rook_occ_mask(sq_one);
 
-    if (CHECK_BIT(rook_mask, sq_two)) {
+    if (is_square_occupied(rook_mask, sq_two)) {
         // the piece on sq_two shares a rank or file with the rook, so
         // check if there are blocking pieces
         uint64_t interim_squares = intervening_squares_lookup[sq_one][sq_two];
@@ -254,7 +254,7 @@ inline bool is_attacked_diagonally(const struct board *brd,
 {
     uint64_t bishop_occ_mask = get_bishop_occ_mask(attacking_sq);
 
-    if(CHECK_BIT(bishop_occ_mask, target_sq)) {
+    if(is_square_occupied(bishop_occ_mask, target_sq)) {
         // the piece on target_sq shares a diagonal with the bishop so
         // check intervening squares
         uint64_t interim_squares = intervening_squares_lookup[attacking_sq][target_sq];

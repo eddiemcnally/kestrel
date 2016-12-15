@@ -167,11 +167,11 @@ char *print_move(mv_bitmap move_bitmap)
 {
     static char move_string[6];
 
-    int from_file = GET_FILE(FROMSQ(move_bitmap));
-    int from_rank = GET_RANK(FROMSQ(move_bitmap));
+    int from_file = get_file(FROMSQ(move_bitmap));
+    int from_rank = get_rank(FROMSQ(move_bitmap));
 
-    int to_file = GET_FILE(TOSQ(move_bitmap));
-    int to_rank = GET_RANK(TOSQ(move_bitmap));
+    int to_file = get_file(TOSQ(move_bitmap));
+    int to_rank = get_rank(TOSQ(move_bitmap));
 
     enum piece promoted_pce = PROMOTED_PCE(move_bitmap);
 
@@ -204,11 +204,11 @@ void print_board_and_move(struct board *brd, mv_bitmap move_bitmap)
 
 void print_move_details(mv_bitmap move_bitmap)
 {
-    int from_file = GET_FILE(FROMSQ(move_bitmap));
-    int from_rank = GET_RANK(FROMSQ(move_bitmap));
+    int from_file = get_file(FROMSQ(move_bitmap));
+    int from_rank = get_rank(FROMSQ(move_bitmap));
 
-    int to_file = GET_FILE(TOSQ(move_bitmap));
-    int to_rank = GET_RANK(TOSQ(move_bitmap));
+    int to_file = get_file(TOSQ(move_bitmap));
+    int to_rank = get_rank(TOSQ(move_bitmap));
 
     enum piece captured = CAPTURED_PCE(move_bitmap);
     enum piece promoted = PROMOTED_PCE(move_bitmap);

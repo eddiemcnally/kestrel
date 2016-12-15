@@ -216,67 +216,67 @@ void test_fen_parsing_general_layout_2()
     // verify the board
     assert_true(W_ROOK == brd->pieces[a1]);
     assert_true(get_piece_on_square(brd, a1) == W_ROOK);
-	assert_true(IS_SQUARE_OCCUPIED(white_bb, a1));
+	assert_true(is_square_occupied(white_bb, a1));
 	assert_true(is_piece_on_square(brd, W_ROOK, a1));
     
     assert_true(W_KNIGHT == brd->pieces[b1]);
     assert_true(get_piece_on_square(brd, b1) == W_KNIGHT);
-	assert_true(IS_SQUARE_OCCUPIED(white_bb, b1));
+	assert_true(is_square_occupied(white_bb, b1));
 	assert_true(is_piece_on_square(brd, W_KNIGHT, b1));
     
     assert_true(W_BISHOP == brd->pieces[c1]);
     assert_true(get_piece_on_square(brd, c1) == W_BISHOP);
-   	assert_true(IS_SQUARE_OCCUPIED(white_bb, c1));
+   	assert_true(is_square_occupied(white_bb, c1));
 	assert_true(is_piece_on_square(brd, W_BISHOP, c1));
 
     assert_true(W_QUEEN == brd->pieces[d1]);
     assert_true(get_piece_on_square(brd, d1) == W_QUEEN);
-	assert_true(IS_SQUARE_OCCUPIED(white_bb, d1));
+	assert_true(is_square_occupied(white_bb, d1));
 	assert_true(is_piece_on_square(brd, W_QUEEN, d1));
 
     assert_true(W_KING == brd->pieces[e1]);
     assert_true(get_piece_on_square(brd, e1) == W_KING);
-	assert_true(IS_SQUARE_OCCUPIED(white_bb, e1));
+	assert_true(is_square_occupied(white_bb, e1));
 	assert_true(is_piece_on_square(brd, W_KING, e1));
 
     assert_true(W_BISHOP == brd->pieces[f1]);
     assert_true(get_piece_on_square(brd, f1) == W_BISHOP);
-	assert_true(IS_SQUARE_OCCUPIED(white_bb, f1));
+	assert_true(is_square_occupied(white_bb, f1));
 	assert_true(is_piece_on_square(brd, W_BISHOP, f1));
 
     assert_true(W_ROOK == brd->pieces[h1]);
     assert_true(get_piece_on_square(brd, h1) == W_ROOK);
-	assert_true(IS_SQUARE_OCCUPIED(white_bb, h1));
+	assert_true(is_square_occupied(white_bb, h1));
 	assert_true(is_piece_on_square(brd, W_ROOK, h1));
 
     assert_true(W_PAWN == brd->pieces[a2]);
     assert_true(get_piece_on_square(brd, a2) == W_PAWN);
-	assert_true(IS_SQUARE_OCCUPIED(white_bb, a2));
+	assert_true(is_square_occupied(white_bb, a2));
 	assert_true(is_piece_on_square(brd, W_PAWN, a2));
 
     assert_true(W_PAWN == brd->pieces[b2]);
     assert_true(get_piece_on_square(brd, b2) == W_PAWN);
-	assert_true(IS_SQUARE_OCCUPIED(white_bb, b2));
+	assert_true(is_square_occupied(white_bb, b2));
 	assert_true(is_piece_on_square(brd, W_PAWN, b2));
 
     assert_true(W_PAWN == brd->pieces[d2]);
     assert_true(get_piece_on_square(brd, d2) == W_PAWN);
-	assert_true(IS_SQUARE_OCCUPIED(white_bb, d2));
+	assert_true(is_square_occupied(white_bb, d2));
 	assert_true(is_piece_on_square(brd, W_PAWN, d2));
 
     assert_true(W_PAWN == brd->pieces[f2]);
     assert_true(get_piece_on_square(brd, f2) == W_PAWN);
-	assert_true(IS_SQUARE_OCCUPIED(white_bb, f2));
+	assert_true(is_square_occupied(white_bb, f2));
 	assert_true(is_piece_on_square(brd, W_PAWN, f2));
 
     assert_true(W_PAWN == brd->pieces[g2]);
     assert_true(get_piece_on_square(brd, g2) == W_PAWN);
-	assert_true(IS_SQUARE_OCCUPIED(white_bb, g2));
+	assert_true(is_square_occupied(white_bb, g2));
 	assert_true(is_piece_on_square(brd, W_PAWN, g2));
 
     assert_true(W_PAWN == brd->pieces[h2]);
     assert_true(get_piece_on_square(brd, h2) == W_PAWN);
-	assert_true(IS_SQUARE_OCCUPIED(white_bb, h2));
+	assert_true(is_square_occupied(white_bb, h2));
 	assert_true(is_piece_on_square(brd, W_PAWN, h2));
 
 
@@ -284,74 +284,74 @@ void test_fen_parsing_general_layout_2()
 
     assert_true(B_PAWN == brd->pieces[a7]);
     assert_true(get_piece_on_square(brd, a7) == B_PAWN);
-	assert_true(IS_SQUARE_OCCUPIED(black_bb, a7));
+	assert_true(is_square_occupied(black_bb, a7));
 	assert_true(is_piece_on_square(brd, B_PAWN, a7));
 
 
 
     assert_true(B_PAWN == brd->pieces[b7]);
     assert_true(get_piece_on_square(brd, b7) == B_PAWN);
-	assert_true(IS_SQUARE_OCCUPIED(black_bb, b7));
+	assert_true(is_square_occupied(black_bb, b7));
 	assert_true(is_piece_on_square(brd, B_PAWN, b7));
 
 
     assert_true(B_PAWN == brd->pieces[d7]);
     assert_true(get_piece_on_square(brd, d7) == B_PAWN);
-	assert_true(IS_SQUARE_OCCUPIED(black_bb, d7));
+	assert_true(is_square_occupied(black_bb, d7));
 	assert_true(is_piece_on_square(brd, B_PAWN, d7));
 
 
 
     assert_true(B_PAWN == brd->pieces[f7]);
     assert_true(get_piece_on_square(brd, f7) == B_PAWN);
-	assert_true(IS_SQUARE_OCCUPIED(black_bb, f7));
+	assert_true(is_square_occupied(black_bb, f7));
 	assert_true(is_piece_on_square(brd, B_PAWN, f7));
 
     assert_true(B_PAWN == brd->pieces[g7]);
     assert_true(get_piece_on_square(brd, g7) == B_PAWN);
-	assert_true(IS_SQUARE_OCCUPIED(black_bb, g7));
+	assert_true(is_square_occupied(black_bb, g7));
 	assert_true(is_piece_on_square(brd, B_PAWN, g7));
 
 
     assert_true(B_PAWN == brd->pieces[h7]);
     assert_true(get_piece_on_square(brd, h7) == B_PAWN);
-	assert_true(IS_SQUARE_OCCUPIED(black_bb, h7));
+	assert_true(is_square_occupied(black_bb, h7));
 	assert_true(is_piece_on_square(brd, B_PAWN, h7));
 
 
     assert_true(B_ROOK == brd->pieces[a8]);
     assert_true(get_piece_on_square(brd, a8) == B_ROOK);
-	assert_true(IS_SQUARE_OCCUPIED(black_bb, a8));
+	assert_true(is_square_occupied(black_bb, a8));
 	assert_true(is_piece_on_square(brd, B_ROOK, a8));
 
     assert_true(B_KNIGHT == brd->pieces[b8]);
     assert_true(get_piece_on_square(brd, b8) == B_KNIGHT);
-   	assert_true(IS_SQUARE_OCCUPIED(black_bb, b8));
+   	assert_true(is_square_occupied(black_bb, b8));
 	assert_true(is_piece_on_square(brd, B_KNIGHT, b8));
 
     assert_true(B_BISHOP == brd->pieces[c8]);
     assert_true(get_piece_on_square(brd, c8) == B_BISHOP);
-	assert_true(IS_SQUARE_OCCUPIED(black_bb, c8));
+	assert_true(is_square_occupied(black_bb, c8));
 	assert_true(is_piece_on_square(brd, B_BISHOP, c8));
 
     assert_true(B_QUEEN == brd->pieces[d8]);
     assert_true(get_piece_on_square(brd, d8) == B_QUEEN);
-	assert_true(IS_SQUARE_OCCUPIED(black_bb, d8));
+	assert_true(is_square_occupied(black_bb, d8));
 	assert_true(is_piece_on_square(brd, B_QUEEN, d8));
 
     assert_true(B_KING == brd->pieces[e8]);
     assert_true(get_piece_on_square(brd, b8) == B_KNIGHT);
-	assert_true(IS_SQUARE_OCCUPIED(black_bb, b8));
+	assert_true(is_square_occupied(black_bb, b8));
 	assert_true(is_piece_on_square(brd, B_KNIGHT, b8));
 
     assert_true(B_BISHOP == brd->pieces[f8]);
     assert_true(get_piece_on_square(brd, f8) == B_BISHOP);
-	assert_true(IS_SQUARE_OCCUPIED(black_bb, f8));
+	assert_true(is_square_occupied(black_bb, f8));
 	assert_true(is_piece_on_square(brd, B_BISHOP, f8));
 
     assert_true(B_ROOK == brd->pieces[h8]);
     assert_true(get_piece_on_square(brd, h8) == B_ROOK);
-	assert_true(IS_SQUARE_OCCUPIED(black_bb, h8));
+	assert_true(is_square_occupied(black_bb, h8));
 	assert_true(is_piece_on_square(brd, B_ROOK, h8));
 
 
@@ -471,10 +471,10 @@ void test_clearing_bits_in_a_board()
     set_bit(&test_brd, 22);
     set_bit(&test_brd, 23);
     assert_true(2 == count_bits(test_brd));
-    assert_true(CHECK_BIT(test_brd, 22));
-    assert_true(CHECK_BIT(test_brd, 23));
+    assert_true(is_square_occupied(test_brd, 22));
+    assert_true(is_square_occupied(test_brd, 23));
     clear_bit(&test_brd, 22);
-    assert_true(CHECK_BIT(test_brd, 23));
+    assert_true(is_square_occupied(test_brd, 23));
     assert_true(1 == count_bits(test_brd));
 
     test_brd = 0;
@@ -504,10 +504,10 @@ void test_checking_bits_in_a_board(void)
 
     for (enum square sq = a1; sq <= h8; sq++) {
         set_bit(&test_brd, sq);
-        assert_true(CHECK_BIT(test_brd, sq));
+        assert_true(is_square_occupied(test_brd, sq));
 
         clear_bit(&test_brd, sq);
-        assert_false(CHECK_BIT(test_brd, sq));
+        assert_false(is_square_occupied(test_brd, sq));
     }
 }
 
@@ -538,7 +538,7 @@ void test_LSB_clear(void)
     uint8_t cleared_bit = pop_1st_bit(&brd);
 
     assert_true(cleared_bit == a1);
-    assert_false(CHECK_BIT(brd, a1));
+    assert_false(is_square_occupied(brd, a1));
 }
 
 void board_test_fixture(void)
