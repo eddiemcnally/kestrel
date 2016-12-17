@@ -400,6 +400,12 @@ void test_move_gen_depth()
         //////////
 
         total_move_time += elapsed;
+
+#ifdef ENABLE_ASSERTS
+		ASSERT_BOARD_OK(brd);
+#endif
+
+
     }
 
     double moves_per_sec = ((double)total_nodes / ((double)total_move_time / 1000));
@@ -422,6 +428,12 @@ void perf_test(int depth, struct board *brd, struct perft_stats *pstats)
 
     start_time = get_time_of_day_in_millis();
 
+#ifdef ENABLE_ASSERTS
+		ASSERT_BOARD_OK(brd);
+#endif
+
+
+
     generate_all_moves(brd, &mv_list);
 
     mv_bitmap mv;
@@ -439,6 +451,12 @@ void perf_test(int depth, struct board *brd, struct perft_stats *pstats)
     }
 
     elapsed = get_elapsed_time_in_millis(start_time);
+
+
+#ifdef ENABLE_ASSERTS
+		ASSERT_BOARD_OK(brd);
+#endif
+
 
     double nps = ((double)leafNodes / ((double)elapsed / 1000));
 

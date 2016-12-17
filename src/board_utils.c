@@ -210,6 +210,9 @@ bool ASSERT_BOARD_OK(const struct board *brd)
     uint64_t black_bb = get_bitboard_for_colour(brd, BLACK);
     uint64_t white_bb = get_bitboard_for_colour(brd, WHITE);
 
+	assert(conflated == (black_bb | white_bb));
+
+
     for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
         enum piece pce = brd->pieces[sq];
         if (pce != NO_PIECE) {

@@ -8,8 +8,6 @@ set(CMAKE_C_COMPILER "/usr/bin/clang")
 
 # debug options
 set(debug ON)
-add_definitions(-DENABLE_ASSERTS=1)
-
 
 if(debug)
 	# 
@@ -144,9 +142,12 @@ set(TEST_SOURCES
         test/utils_test_feature.h
 )
 
-
 add_executable(kestrel ${COMMON_SOURCES} ${TARGET_SOURCES})
 add_executable(test_kestrel ${COMMON_SOURCES} ${TEST_SOURCES})
+
+# enable runtime asserts
+set_target_properties(test_kestrel PROPERTIES COMPILE_DEFINITIONS "ENABLE_ASSERTS=1")
+
 
 #
 # set up so the test runner app sees the header files in
