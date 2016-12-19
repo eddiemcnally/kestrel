@@ -224,8 +224,8 @@ void generate_knight_occupancy_masks(uint64_t * occ_mask_array)
 //              00 01 02 03 40 05 06 07
 
     for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
-        int dest_rank = 0;
-        int dest_file = 0;
+        uint8_t dest_rank = 0;
+        uint8_t dest_file = 0;
 
         // 8 destination squares are:
         // (-2 +8), (-1 + 16), (+1 + 16) (+2 + 8),
@@ -235,8 +235,8 @@ void generate_knight_occupancy_masks(uint64_t * occ_mask_array)
         //
         // converting to ranks and files, we get:
         //  (left 2 files, up 1 rank), ( left 2 files, down 1 rank), etc
-        int rank = get_rank(sq);
-        int file = get_file(sq);
+        uint8_t rank = get_rank(sq);
+        uint8_t file = get_file(sq);
 
         //printf("rank/file: %d/%d\n", rank, file);
 
@@ -326,8 +326,8 @@ void generate_white_pawn_occupancy_masks(uint64_t * occ_mask_array)
     for (enum square sq = a2; sq < a8; sq++) {
         // a2 n=> start at 2nd rank and ignore the 8th rank
 
-        int dest_rank = 0;
-        int dest_file = 0;
+        uint8_t dest_rank = 0;
+        uint8_t dest_file = 0;
 
         // 2 destination squares are:
         // (-1 +1), (+1 +1)
@@ -335,8 +335,8 @@ void generate_white_pawn_occupancy_masks(uint64_t * occ_mask_array)
         //
         // converting to ranks and files, we get:
         //  (left 1 file, up 1 rank), ( right 1 file, up 1 rank)
-        int rank = get_rank(sq);
-        int file = get_file(sq);
+        uint8_t rank = get_rank(sq);
+        uint8_t file = get_file(sq);
 
         uint64_t b = 0;
 
@@ -376,8 +376,8 @@ void generate_black_pawn_occupancy_masks(uint64_t * occ_mask_array)
     for (enum square sq = h7; sq >= a2; sq--) {
         // ignore top and bottom rank
 
-        int dest_rank = 0;
-        int dest_file = 0;
+        uint8_t dest_rank = 0;
+        uint8_t dest_file = 0;
 
         // 2 destination squares are:
         // (-1 11), (+1 +1)
@@ -385,8 +385,8 @@ void generate_black_pawn_occupancy_masks(uint64_t * occ_mask_array)
         //
         // converting to ranks and files, we get:
         //  (left 1 file, down 1 rank), ( right 1 file, down 1 rank)
-        int rank = get_rank(sq);
-        int file = get_file(sq);
+        uint8_t rank = get_rank(sq);
+        uint8_t file = get_file(sq);
 
         uint64_t b = 0;
 
@@ -418,18 +418,18 @@ void generate_rook_occupancy_masks(uint64_t * occ_mask_array)
 
     for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
 
-        int rank = get_rank(sq);
-        int file = get_file(sq);
+        uint8_t rank = get_rank(sq);
+        uint8_t file = get_file(sq);
 
         uint64_t b = 0;
 
         // move up the ranks of this file
-        for (int i = RANK_1; i <= RANK_8; i++) {
+        for (uint8_t i = RANK_1; i <= RANK_8; i++) {
             set_dest_sq_if_valid(i, file, &b);
         }
 
         // move along the files of this rank
-        for (int i = FILE_A; i <= FILE_H; i++) {
+        for (uint8_t i = FILE_A; i <= FILE_H; i++) {
             set_dest_sq_if_valid(rank, i, &b);
         }
 
@@ -450,7 +450,7 @@ void generate_queen_occupancy_masks(uint64_t * occ_mask_array)
     generate_rook_occupancy_masks(temp_rook_mask);
 
     // combine masks
-    for (int i = 0; i < NUM_SQUARES; i++) {
+    for (uint8_t i = 0; i < NUM_SQUARES; i++) {
         occ_mask_array[i] = temp_bishop_mask[i] | temp_rook_mask[i];
     }
 }
@@ -469,13 +469,13 @@ void generate_bishop_occupancy_masks(uint64_t * occ_mask_array)
 
     for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
 
-        int rank = get_rank(sq);
-        int file = get_file(sq);
+        uint8_t rank = get_rank(sq);
+        uint8_t file = get_file(sq);
 
         //printf("rank/file : %d/%d\n", rank, file);
 
-        int dest_rank = 0;
-        int dest_file = 0;
+        uint8_t dest_rank = 0;
+        uint8_t dest_file = 0;
         uint64_t b = 0;
 
         // move left and down
@@ -593,13 +593,13 @@ void generate_diagonal_occupancy_masks(void)
 
     for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
 
-        int rank = get_rank(sq);
-        int file = get_file(sq);
+        uint8_t rank = get_rank(sq);
+        uint8_t file = get_file(sq);
 
         //printf("rank/file : %d/%d\n", rank, file);
 
-        int dest_rank = 0;
-        int dest_file = 0;
+        uint8_t dest_rank = 0;
+        uint8_t dest_file = 0;
         uint64_t b = 0;
 
         // move SW
