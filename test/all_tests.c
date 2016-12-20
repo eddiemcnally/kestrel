@@ -40,6 +40,7 @@ int main_do_it_myself_really_simply(int argc, char **argv);
 void all_tests(void)
 {
 	
+	
     set_priority_and_affinity();
 
     // add new test fixtures here.

@@ -245,6 +245,14 @@ static const uint64_t negative_diagonal_masks[] = {
 
 ////////////////////////////////////////////////
 
+// a mask for the B1, C1 and D1 squares
+const uint64_t B1C1D1_MASK 	= 0x000000000000000E;
+const uint64_t B8C8D8_MASK 	= 0x0E00000000000000;
+
+const uint64_t F8G8_MASK 	= 0x6000000000000000;
+const uint64_t F1G1_MASK 	= 0x0000000000000060;
+
+
 
 // using BleuFever's approach for now
 // TODO : look at alternative approach (eg, (v << 8 | a)
@@ -556,10 +564,9 @@ static inline void generate_white_castle_moves(struct board *brd,
     if (get_castle_permissions(brd) & WKCA) {
 		uint64_t brd_bb= get_bitboard_all_pieces(brd);
 		
-		bool f1_occupied = is_square_occupied(brd_bb, f1);
-        bool g1_occupied = is_square_occupied(brd_bb, g1);
-
-        if (!f1_occupied && !g1_occupied) {
+		bool f1g1_occupied = ((brd_bb & F1G1_MASK) != 0);
+		
+        if (!f1g1_occupied) {
             if (!is_sq_attacked(brd, e1, BLACK)
                     && !is_sq_attacked(brd, f1, BLACK)) {
 
@@ -572,11 +579,10 @@ static inline void generate_white_castle_moves(struct board *brd,
 
     if (get_castle_permissions(brd) & WQCA) {
  		uint64_t brd_bb= get_bitboard_all_pieces(brd);
-        bool d1_occupied = is_square_occupied(brd_bb, d1);
-        bool c1_occupied = is_square_occupied(brd_bb, c1);
-        bool b1_occupied = is_square_occupied(brd_bb, b1);
+ 		
+		bool b1c1d1_occupied = ((brd_bb & B1C1D1_MASK) != 0);
 
-        if (!d1_occupied && !c1_occupied && !b1_occupied) {
+        if (!b1c1d1_occupied) {
             if (!is_sq_attacked(brd, e1, BLACK)
                     && !is_sq_attacked(brd, d1, BLACK)) {
 
@@ -594,10 +600,9 @@ static inline void generate_black_castle_moves(struct board *brd,
     if (get_castle_permissions(brd) & BKCA) {
 		uint64_t brd_bb= get_bitboard_all_pieces(brd);
 		
-        bool f8_occupied = is_square_occupied(brd_bb, f8);
-        bool g8_occupied = is_square_occupied(brd_bb, g8);
-
-        if (!f8_occupied && !g8_occupied) {
+		bool f8g8_occupied = ((brd_bb & F8G8_MASK) != 0);
+		
+        if (!f8g8_occupied) {
             if (!is_sq_attacked(brd, e8, WHITE)
                     && !is_sq_attacked(brd, f8, WHITE)) {
 
@@ -611,11 +616,9 @@ static inline void generate_black_castle_moves(struct board *brd,
     if (get_castle_permissions(brd) & BQCA) {
 		uint64_t brd_bb= get_bitboard_all_pieces(brd);
 
-        bool d8_occupied = is_square_occupied(brd_bb, d8);
-        bool c8_occupied = is_square_occupied(brd_bb, c8);
-        bool b8_occupied = is_square_occupied(brd_bb, b8);
+		bool b8c8d8_not_occupied = ((brd_bb & B8C8D8_MASK) == 0);
 
-        if (!d8_occupied && !c8_occupied && !b8_occupied) {
+        if (b8c8d8_not_occupied) {
             if (!is_sq_attacked(brd, e8, WHITE)
                     && !is_sq_attacked(brd, d8, WHITE)) {
 
