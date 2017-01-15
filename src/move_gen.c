@@ -633,6 +633,8 @@ static inline void
 generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
                           const bool only_capture_moves)
 {
+	print_board(brd);
+	
     // get the bitboard representing all WHITE pawns
     // on the board
     uint64_t pawn_bb = get_bitboard(brd, W_PAWN);
@@ -646,11 +648,6 @@ generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
         uint8_t pawn_file = get_file(pawn_sq);
         uint8_t pawn_rank = get_rank(pawn_sq);
         enum square north_sq = pawn_sq + NORTH;
-
-#ifdef ENABLE_ASSERTS
-        assert(is_square_occupied(get_bitboard_all_pieces(brd), pawn_sq) == is_square_occupied(get_bitboard_all_pieces(brd), pawn_sq));
-
-#endif
 
 
 

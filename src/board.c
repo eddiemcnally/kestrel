@@ -146,16 +146,16 @@ void set_pvline(struct board *brd, uint8_t search_depth, mv_bitmap move){
 
 inline uint64_t overlay_white_piece_bitboards(const struct board * brd)
 {
-    return brd->bitboards[W_PAWN] | brd->bitboards[W_BISHOP]
-           | brd->bitboards[W_KNIGHT] | brd->bitboards[W_ROOK]
-           | brd->bitboards[W_QUEEN] | brd->bitboards[W_KING];
+    return brd->bitboards.pieces[W_PAWN] | brd->bitboards.pieces[W_BISHOP]
+           | brd->bitboards.pieces[W_KNIGHT] | brd->bitboards.pieces[W_ROOK]
+           | brd->bitboards.pieces[W_QUEEN] | brd->bitboards.pieces[W_KING];
 }
 
 inline uint64_t overlay_black_piece_bitboards(const struct board * brd)
 {
-    return brd->bitboards[B_PAWN] | brd->bitboards[B_BISHOP]
-           | brd->bitboards[B_KNIGHT] | brd->bitboards[B_ROOK]
-           | brd->bitboards[B_QUEEN] | brd->bitboards[B_KING];
+    return brd->bitboards.pieces[B_PAWN] | brd->bitboards.pieces[B_BISHOP]
+           | brd->bitboards.pieces[B_KNIGHT] | brd->bitboards.pieces[B_ROOK]
+           | brd->bitboards.pieces[B_QUEEN] | brd->bitboards.pieces[B_KING];
 }
 
 
@@ -210,7 +210,7 @@ inline uint64_t square_to_bitboard(enum square sq)
 }
 
 uint64_t get_bitboard(const struct board *brd, enum piece pce){
-	return brd->bitboards[pce];
+	return brd->bitboards.pieces[pce];
 }
 
 uint64_t get_bitboard_for_king(const struct board *brd, enum colour piece_col){
@@ -218,7 +218,7 @@ uint64_t get_bitboard_for_king(const struct board *brd, enum colour piece_col){
 }
 
 uint64_t get_bitboard_all_pieces(const struct board *brd){
-	return brd->board;
+	return brd->bitboards.board;
 }
 
 
@@ -227,7 +227,7 @@ bool is_pawn_controlling_sq(const struct board *brd, enum colour col, enum squar
 }
 
 uint64_t get_bitboard_combined(const struct board *brd, enum piece pce_1, enum piece pce_2){
-	return brd->bitboards[pce_1] | brd->bitboards[pce_2];
+	return brd->bitboards.pieces[pce_1] | brd->bitboards.pieces[pce_2];
 }
 
 
@@ -311,13 +311,13 @@ void move_piece(struct board *brd, enum square from, enum square to)
     brd->board_hash ^= get_piece_hash(pce, to);
 
     brd->pieces[from] = NO_PIECE;
-    clear_bit(&brd->bitboards[pce], from);
-    clear_bit(&brd->board, from);
+    clear_bit(&brd->bitboards.pieces[pce], from);
+    clear_bit(&brd->bitboards.board, from);
 
     // set up the "to" resources
     brd->pieces[to] = pce;
-    set_bit(&brd->bitboards[pce], to);
-    set_bit(&brd->board, to);
+    set_bit(&brd->bitboards.pieces[pce], to);
+    set_bit(&brd->bitboards.board, to);
 
 	switch(pce){
 		case W_PAWN:
@@ -352,8 +352,8 @@ void add_piece_to_board(struct board *brd, enum piece pce, enum square sq)
     brd->material[col] += GET_PIECE_VALUE(pce);
 
     // set piece on bitboards
-    set_bit(&brd->bitboards[pce], sq);
-    set_bit(&brd->board, sq);
+    set_bit(&brd->bitboards.pieces[pce], sq);
+    set_bit(&brd->bitboards.board, sq);
 
     switch (pce) {
     case W_PAWN:
@@ -400,8 +400,8 @@ void remove_piece_from_board(struct board *brd, enum piece pce_to_remove, enum s
     brd->material[col] -= GET_PIECE_VALUE(pce_to_remove);
 
     // remove piece from bitboards
-    clear_bit(&brd->bitboards[pce_to_remove], sq);
-    clear_bit(&brd->board, sq);
+    clear_bit(&brd->bitboards.pieces[pce_to_remove], sq);
+    clear_bit(&brd->bitboards.board, sq);
 
     switch (pce_to_remove) {
     case W_PAWN:

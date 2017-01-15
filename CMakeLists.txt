@@ -16,8 +16,6 @@ if(debug)
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} \
 		-g \
 		-std=c11 \
-		-march=native \
-		-mtune=native \
 		-Wpedantic \
 		-Wall \
 		-Wextra \
@@ -33,8 +31,7 @@ if(debug)
 		-Wcast-qual \
 		-Wcast-align \
 		-Wmissing-include-dirs \
-		-Wpointer-arith \
-		-fomit-frame-pointer")
+		-Wpointer-arith")
 	 
 else()
 

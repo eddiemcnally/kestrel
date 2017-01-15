@@ -690,6 +690,30 @@ void test_sample_board_position()
     assert_true(mvl.move_count == 48);
 }
 
+void test_generate_all_moves_level_1(){
+char *sample_position =
+        "r2q1rk1/2p1pppp/p1n2n2/1p1p4/1PbP2b1/B1N1PN2/P1P1BPPP/R2QK2R w KQ - 0 1\n";
+    struct board *brd = init_game(sample_position);
+
+    struct move_list mvl = {
+        .moves = {0},
+        .move_count = 0
+    };
+
+    generate_all_moves(brd, &mvl);
+
+    assert_true(mvl.move_count == 48);
+
+	// generate list of all valid moves and compare with those generated
+
+
+
+	
+}
+
+
+
+
 void test_clear_piece()
 {
 
@@ -700,8 +724,8 @@ void test_clear_piece()
         "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1\n";
     struct board *brd = init_game(sample_position);
 
-    assert_true(is_square_occupied(brd->board, c3) == true);
-    assert_true(is_square_occupied(brd->bitboards[W_KNIGHT], c3) == true);
+    assert_true(is_square_occupied(brd->bitboards.board, c3) == true);
+    assert_true(is_square_occupied(brd->bitboards.pieces[W_KNIGHT], c3) == true);
 
     // save some info before the move for comparison
     uint64_t old_hash = brd->board_hash;
@@ -719,8 +743,8 @@ void test_clear_piece()
     assert_true(old_pce == W_KNIGHT);
     assert_true(brd->pieces[c3] == NO_PIECE);
 
-    assert_true(is_square_occupied(brd->board, c3) == false);
-    assert_true(is_square_occupied(brd->bitboards[W_KNIGHT], c3) == false);
+    assert_true(is_square_occupied(brd->bitboards.board, c3) == false);
+    assert_true(is_square_occupied(brd->bitboards.pieces[W_KNIGHT], c3) == false);
 
 }
 
@@ -734,9 +758,9 @@ void test_add_piece()
         "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1\n";
     struct board *brd = init_game(sample_position);
 
-    assert_true(is_square_occupied(brd->board, c4) == false);
-    assert_true(is_square_occupied(brd->bitboards[W_KNIGHT], c4) == false);
-    assert_true(count_bits(brd->bitboards[W_KNIGHT]) == 2);
+    assert_true(is_square_occupied(brd->bitboards.board, c4) == false);
+    assert_true(is_square_occupied(brd->bitboards.pieces[W_KNIGHT], c4) == false);
+    assert_true(count_bits(brd->bitboards.pieces[W_KNIGHT]) == 2);
 
     // save some info before the move for comparison
     uint64_t old_hash = brd->board_hash;
@@ -751,8 +775,8 @@ void test_add_piece()
 
     assert_true(brd->pieces[c4] == W_KNIGHT);
 
-    assert_true(is_square_occupied(brd->board, c4) == true);
-    assert_true(is_square_occupied(brd->bitboards[W_KNIGHT], c4) == true);
+    assert_true(is_square_occupied(brd->bitboards.board, c4) == true);
+    assert_true(is_square_occupied(brd->bitboards.pieces[W_KNIGHT], c4) == true);
 
 }
 
@@ -784,7 +808,7 @@ void test_en_passant(void)
     assert_true(brd->pieces[d5] == W_PAWN);
     assert_true(brd->pieces[e1] == W_KING);
     // 4 pieces on the board
-    assert_true(count_bits(brd->board) == 4);
+    assert_true(count_bits(brd->bitboards.board) == 4);
     assert_true(brd->en_passant == c6);
 
     // now, make the en passant move
@@ -796,7 +820,7 @@ void test_en_passant(void)
     assert_true(brd->pieces[c6] == W_PAWN);
     assert_true(brd->pieces[e1] == W_KING);
     // 4 pieces on the board
-    assert_true(count_bits(brd->board) == 3);
+    assert_true(count_bits(brd->bitboards.board) == 3);
 
 }
 
@@ -810,9 +834,9 @@ void test_move_piece()
         "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1\n";
     struct board *brd = init_game(sample_position);
 
-    assert_true(is_square_occupied(brd->board, e5) == true);
-    assert_true(is_square_occupied(brd->bitboards[W_KNIGHT], e5) == true);
-    assert_true(count_bits(brd->bitboards[W_KNIGHT]) == 2);
+    assert_true(is_square_occupied(brd->bitboards.board, e5) == true);
+    assert_true(is_square_occupied(brd->bitboards.pieces[W_KNIGHT], e5) == true);
+    assert_true(count_bits(brd->bitboards.pieces[W_KNIGHT]) == 2);
 
     // save some info before the move for comparison
     uint64_t old_hash = brd->board_hash;
@@ -829,10 +853,10 @@ void test_move_piece()
     assert_true(brd->pieces[d3] == W_KNIGHT);
     assert_true(brd->pieces[e5] == NO_PIECE);
 
-    assert_true(is_square_occupied(brd->board, d3) == true);
-    assert_true(is_square_occupied(brd->board, e5) == false);
+    assert_true(is_square_occupied(brd->bitboards.board, d3) == true);
+    assert_true(is_square_occupied(brd->bitboards.board, e5) == false);
 
-    assert_true(is_square_occupied(brd->bitboards[W_KNIGHT], d3) == true);
+    assert_true(is_square_occupied(brd->bitboards.pieces[W_KNIGHT], d3) == true);
 
 }
 

@@ -302,6 +302,3 @@ inline void set_bit(uint64_t * brd, enum square sq)
 {
     *brd = *brd | (uint64_t) (0x01ull << sq);
 }
-
-
-

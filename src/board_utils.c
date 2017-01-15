@@ -169,14 +169,14 @@ bool ASSERT_BOARD_OK(const struct board *brd)
     uint64_t conflated = 0;
 
     for (int i = 0; i < NUM_PIECES; i++) {
-        conflated |= brd->bitboards[i];
+        conflated |= brd->bitboards.pieces[i];
     }
 
-    assert(conflated == brd->board);
+    assert(conflated == brd->bitboards.board);
     
-    uint64_t wking_bb = brd->bitboards[W_KING];
+    uint64_t wking_bb = brd->bitboards.pieces[W_KING];
     assert(count_bits(wking_bb) == 1);
-    uint64_t bking_bb = brd->bitboards[B_KING];
+    uint64_t bking_bb = brd->bitboards.pieces[B_KING];
     assert(count_bits(bking_bb) == 1);
 
     // check where Kings are
@@ -185,7 +185,7 @@ bool ASSERT_BOARD_OK(const struct board *brd)
         if (pce != NO_PIECE) {
             if (pce == W_KING) {
 
-                uint64_t bb_wk = brd->bitboards[W_KING];
+                uint64_t bb_wk = brd->bitboards.pieces[W_KING];
                 enum square wk_sq = pop_1st_bit(&bb_wk);
 
                 assert(sq == wk_sq);
@@ -197,7 +197,7 @@ bool ASSERT_BOARD_OK(const struct board *brd)
                 assert(brd->king_sq[WHITE] == wk_sq);
             } else if (pce == B_KING) {
 
-                uint64_t bb_bk = brd->bitboards[B_KING];
+                uint64_t bb_bk = brd->bitboards.pieces[B_KING];
                 enum square bk_sq = pop_1st_bit(&bb_bk);
 
                 assert(sq == bk_sq);
@@ -216,7 +216,7 @@ bool ASSERT_BOARD_OK(const struct board *brd)
     for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
         enum piece pce = brd->pieces[sq];
         if (pce != NO_PIECE) {
-            assert(is_square_occupied(brd->board, sq) != 0);
+            assert(is_square_occupied(brd->bitboards.board, sq) != 0);
 
             if (GET_COLOUR(pce) == WHITE) {
                 assert(is_square_occupied(white_bb, sq) != 0);
@@ -224,7 +224,7 @@ bool ASSERT_BOARD_OK(const struct board *brd)
                 assert(is_square_occupied(black_bb, sq) != 0);
             }
 
-            uint64_t pce_bb = brd->bitboards[pce];
+            uint64_t pce_bb = brd->bitboards.pieces[pce];
             assert(is_square_occupied(pce_bb, sq) != 0);
         }
     }
@@ -248,20 +248,20 @@ inline uint64_t get_bitboard_for_colour(const struct board *brd, enum colour col
     uint64_t retval = 0;
     switch(col) {
     case (WHITE):
-        retval |= brd->bitboards[W_PAWN];
-        retval |= brd->bitboards[W_BISHOP];
-        retval |= brd->bitboards[W_ROOK];
-        retval |= brd->bitboards[W_KNIGHT];
-        retval |= brd->bitboards[W_QUEEN];
-        retval |= brd->bitboards[W_KING];
+        retval |= brd->bitboards.pieces[W_PAWN];
+        retval |= brd->bitboards.pieces[W_BISHOP];
+        retval |= brd->bitboards.pieces[W_ROOK];
+        retval |= brd->bitboards.pieces[W_KNIGHT];
+        retval |= brd->bitboards.pieces[W_QUEEN];
+        retval |= brd->bitboards.pieces[W_KING];
         return retval;
     case (BLACK):
-        retval |= brd->bitboards[B_PAWN];
-        retval |= brd->bitboards[B_BISHOP];
-        retval |= brd->bitboards[B_ROOK];
-        retval |= brd->bitboards[B_KNIGHT];
-        retval |= brd->bitboards[B_QUEEN];
-        retval |= brd->bitboards[B_KING];
+        retval |= brd->bitboards.pieces[B_PAWN];
+        retval |= brd->bitboards.pieces[B_BISHOP];
+        retval |= brd->bitboards.pieces[B_ROOK];
+        retval |= brd->bitboards.pieces[B_KNIGHT];
+        retval |= brd->bitboards.pieces[B_QUEEN];
+        retval |= brd->bitboards.pieces[B_KING];
         return retval;
     default:
         assert(false);
@@ -309,10 +309,10 @@ void assert_boards_are_equal(const struct board *brd1, const struct board *brd2)
 {
 
     for (int i = 0; i < NUM_PIECES; i++) {
-        assert(brd1->bitboards[i] == brd2->bitboards[i]);
+        assert(brd1->bitboards.pieces[i] == brd2->bitboards.pieces[i]);
     }
 
-    assert(brd1->board == brd2->board);
+    assert(brd1->bitboards.board == brd2->bitboards.board);
 
     assert(brd1->side_to_move == brd2->side_to_move);
 
