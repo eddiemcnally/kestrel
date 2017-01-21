@@ -32,7 +32,6 @@
 #include "board.h"
 #include "pieces.h"
 #include "utils.h"
-#include "makemove.h"
 #include "occupancy_mask_gen.h"
 #include "occupancy_mask.h"
 

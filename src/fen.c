@@ -30,7 +30,6 @@
 #include "pieces.h"
 #include "board.h"
 #include "hashkeys.h"
-#include "makemove.h"
 #include "board_utils.h"
 #include "fen.h"
 

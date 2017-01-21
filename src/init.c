@@ -35,17 +35,17 @@
 #include "init.h"
 #include "board_utils.h"
 
-static struct board the_board;
+struct board *pBrd;
 
 struct board * init_game(char *fen)
 {
     init_game_no_board();
 
-    init_board(fen, &the_board);
+    init_board(fen, pBrd);
 
-    ASSERT_BOARD_OK(&the_board);
+    ASSERT_BOARD_OK(pBrd);
 
-    return &the_board;
+    return pBrd;
 }
 
 void init_game_no_board()
@@ -54,5 +54,3 @@ void init_game_no_board()
     init_move_gen_framework();
     init_attack_framework();
 }
-
-

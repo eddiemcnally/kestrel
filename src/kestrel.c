@@ -29,7 +29,6 @@
 #include "types.h"
 #include "board.h"
 #include "evaluate.h"
-#include "makemove.h"
 #include "board_utils.h"
 #include "hashkeys.h"
 #include "init.h"
@@ -124,5 +123,3 @@ static void do_uci_loop()
         }
     }
 }
-
-

@@ -81,6 +81,8 @@ enum castle_perm {
 
 
 
+
+
 void move_piece(struct board *brd, enum square from, enum square to);
 void remove_piece_from_board(struct board *brd,  enum piece pce_to_remove, enum square sq);
 void add_piece_to_board(struct board *brd, enum piece pce, enum square sq);
@@ -101,24 +103,33 @@ void set_en_passant_sq(struct board *brd, enum square sq);
 enum square get_en_passant_sq(const struct board *brd);
 
 void update_board_hash(struct board *brd);
-uint64_t get_board_hash(struct board *brd);
+uint64_t get_board_hash(const struct board *brd);
 
 enum piece get_piece_on_square(const struct board *brd, enum square sq);
 
 void push_history(struct board *brd, mv_bitmap move);
 mv_bitmap pop_history(struct board *brd);
 
-uint8_t get_ply(struct board *brd);
+uint8_t get_ply(const struct board *brd);
 void set_ply(struct board *brd, uint8_t ply);
 
+uint8_t get_history_ply(const struct board *brd);
+void set_history_ply(struct board *brd, uint8_t hist_ply);
 
-mv_bitmap get_best_pvline(struct board *brd);
-mv_bitmap get_pvline(struct board *brd, uint8_t search_depth);
+void assert_boards_are_equal(const struct board *brd1, const struct board *brd2);
+
+mv_bitmap get_best_pvline(const struct board *brd);
+mv_bitmap get_pvline(const struct board *brd, uint8_t search_depth);
 void set_pvline(struct board *brd, uint8_t search_depth, mv_bitmap move);
 
 
-uint8_t get_fifty_move_counter(struct board *brd);
+uint8_t get_fifty_move_counter(const struct board *brd);
 
+bool make_move(struct board *brd, mv_bitmap mv);
+void take_move(struct board *brd);
+void flip_sides(struct board *brd);
+void set_bit(uint64_t * brd, enum square sq);
+void clear_bit(uint64_t * brd, enum square sq);
 
 bool is_pawn_controlling_sq(const struct board *brd, enum colour col, enum square sq);
 
@@ -138,3 +149,4 @@ bool is_repetition(const struct board *brd);
 uint8_t get_rank(enum square sq);
 uint8_t get_file(enum square sq);
 enum square get_square(uint8_t rank, uint8_t file);
+void clone_board(const struct board *board_to_clone, struct board *cloned);

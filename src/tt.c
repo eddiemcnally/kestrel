@@ -26,7 +26,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "types.h"
-#include "makemove.h"
+#include "board.h"
 #include "move_gen.h"
 #include "move_gen_utils.h"
 #include "tt.h"
@@ -131,5 +131,3 @@ static void set_tt_size(uint32_t size_in_bytes)
     tt_size = (uint32_t)((size_in_bytes / sizeof(struct tt_entry)) -1);
     tt = (struct tt_entry *) malloc(size_in_bytes);
 }
-
-

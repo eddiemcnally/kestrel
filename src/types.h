@@ -143,76 +143,7 @@ struct undo {
 #define NUM_KILLER_MOVES	2
 
 
-
-struct bitboards{
-	// bitboard entry for each piece
-    uint64_t pieces[NUM_PIECES];
-
-    // The above array piece arrays overlayed into a single bitboard.
-    // In effect, an bitwise OR of all elements in pieces[]
-    uint64_t board;
-};
-
-/**
-/**
- * A container for holding a specific position
- */
-struct board {
-
-	// bitboards
-	struct bitboards bitboards;
-    
-    // indexed by enum colour, contains sum of all piece values
-    uint32_t material[NUM_COLOURS];
-
-    // contains the pieces on each square
-    enum piece pieces[NUM_SQUARES];
-
-    
-    // we need to look up the king position very frequently,
-    // so save it for a quick lookup, rather than extracting it
-    // from a bitboard each time
-    enum square king_sq[NUM_COLOURS];
-
-	// maintain separate info about the pawns to simplify the
-    // evaluation of pawn structure, open files, etc
-    int8_t pawns_on_file[NUM_COLOURS][NUM_FILES];
-    int8_t pawns_on_rank[NUM_COLOURS][NUM_RANKS];
-    int8_t pawn_control[NUM_COLOURS][NUM_SQUARES];
-
-
-    // the next side to move
-    enum colour side_to_move;
-
-    // a hash of the current board
-    uint64_t board_hash;
-
-    // the square where en passent is active
-    enum square en_passant;
-
-    uint8_t fifty_move_counter;
-
-    // keeping track of ply
-    uint8_t ply;
-    uint8_t history_ply;
-
-
-    // the best moves from the current position
-    mv_bitmap pv_line[MAX_SEARCH_DEPTH];
-
-    // castling permissions
-    uint8_t castle_perm;
-
-    // move history
-    struct undo history[MAX_GAME_MOVES];
-
-
-    // move ordering
-    uint32_t search_history[NUM_PIECES][NUM_SQUARES];
-    mv_bitmap search_killers[NUM_KILLER_MOVES][MAX_SEARCH_DEPTH];
-
-};
-
+struct board;
 
 struct perft_stats {
     uint64_t num_ep;

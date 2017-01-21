@@ -24,7 +24,6 @@
 #include "init.h"
 #include "hashkeys.h"
 #include "board_utils.h"
-#include "makemove.h"
 #include "board.h"
 #include "fen.h"
 #include "move_gen.h"

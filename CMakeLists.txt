@@ -87,8 +87,6 @@ set(COMMON_SOURCES
             src/init.h
             src/attack.c
             src/attack.h
-            src/makemove.c
-            src/makemove.h
             src/move_gen.c
             src/move_gen.h
             src/move_gen_utils.c

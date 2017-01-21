@@ -33,7 +33,6 @@
 #include "board_utils.h"
 #include "move_gen.h"
 #include "move_gen_utils.h"
-#include "makemove.h"
 #include "attack.h"
 #include "pieces.h"
 #include "utils.h"
@@ -208,7 +207,7 @@ inline bool is_king_attacking_square(const struct board *brd,
         uint64_t sq_bb,
         enum colour col)
 {
-    enum square king_sq = brd->king_sq[col];
+    enum square king_sq = get_king_square(brd, col);
 
     // get occupancy mask for this square
     uint64_t mask = get_king_occ_mask(king_sq);
@@ -299,5 +298,3 @@ static uint64_t in_between(enum square sq1, enum square sq2)
 
     return line & btwn;   /* return the bits on that line in-between */
 }
-
-

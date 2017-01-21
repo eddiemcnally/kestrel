@@ -18,9 +18,9 @@
 #pragma once
 
 #include <stdbool.h>
-#include "types.h"
 #include "move_gen.h"
-#include "makemove.h"
+#include "types.h"
+#include "board.h"
 
 uint32_t get_score(mv_bitmap mv);
 mv_bitmap get_move(mv_bitmap mv);
@@ -38,6 +38,3 @@ void print_move_details(mv_bitmap move_bitmap);
 void print_move_list(const struct move_list *list);
 void print_move_list_details(const struct move_list *list);
 void print_board_and_move(struct board *brd, mv_bitmap move_bitmap);
-
-
-

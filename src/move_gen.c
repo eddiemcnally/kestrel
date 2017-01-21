@@ -35,7 +35,6 @@
 #include "attack.h"
 #include "board_utils.h"
 #include "pieces.h"
-#include "makemove.h"
 #include "occupancy_mask.h"
 #include "move_gen.h"
 #include "move_gen_utils.h"

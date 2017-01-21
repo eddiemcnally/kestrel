@@ -34,7 +34,6 @@
 #include "evaluate.h"
 #include "board.h"
 #include "pieces.h"
-#include "makemove.h"
 #include "tt.h"
 #include "board_utils.h"
 #include "move_gen.h"
@@ -398,5 +397,3 @@ void dump_search_info(struct search_info *si)
     printf("\tstand-pat beta cutoff.....%d\n", si->stand_pat_cutoff);
     printf("\tstand-pat improvement.....%d\n", si->stand_pat_improvement);
 }
-
-
