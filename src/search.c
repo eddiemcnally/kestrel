@@ -87,7 +87,7 @@ void search_positions(struct board *brd, struct search_info *si, uint32_t tt_siz
         best_move = get_best_pvline(brd);
         uci_print_info_score(score, current_depth, si->num_nodes,
                              (get_time_of_day_in_millis() - si->search_start_time),
-                             num_moves, brd->pv_line);
+                             num_moves, get_best_pvline(brd));
     }
 
     // populate the best moves
@@ -114,17 +114,9 @@ static void init_search(struct board *brd)
         set_pvline(brd, (uint8_t)i, NO_MOVE);
     }
 
-    for(int i = 0; i < NUM_PIECES; i++) {
-        for(int j = 0; j < NUM_SQUARES; j++) {
-            brd->search_history[i][j] = NO_MOVE;
-        }
-    }
-
-    for(int i = 0; i < NUM_KILLER_MOVES; i++) {
-        for(int j = 0; j < MAX_SEARCH_DEPTH; j++) {
-            brd->search_killers[i][j] = NO_MOVE;
-        }
-    }
+	init_search_history(brd);
+	
+	init_search_killers(brd);
 
     set_ply(brd, 0);
 
@@ -216,8 +208,7 @@ static int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alp
                     if (IS_CAPTURE_MOVE(mv) == false) {
                         si->killer_moves++;
                         // shuffle down killers
-                        brd->search_killers[1][get_ply(brd)] = brd->search_killers[0][get_ply(brd)];
-                        brd->search_killers[0][get_ply(brd)] = mv;
+                        shuffle_search_killers(brd, mv)
                     }
 
                     return beta;

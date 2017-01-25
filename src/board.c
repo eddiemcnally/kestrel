@@ -189,6 +189,27 @@ void get_clean_board(struct board *brd)
     set_castle_permission(brd, CASTLE_PERM_NONE);
 }
 
+
+void init_search_history(struct board *brd){
+
+    for(int i = 0; i < NUM_PIECES; i++) {
+        for(int j = 0; j < NUM_SQUARES; j++) {
+            brd->search_history[i][j] = NO_MOVE;
+        }
+    }
+}
+
+
+void init_search_killers(struct board *brd){
+
+    for(int i = 0; i < NUM_KILLER_MOVES; i++) {
+        for(int j = 0; j < MAX_SEARCH_DEPTH; j++) {
+            brd->search_killers[i][j] = NO_MOVE;
+        }
+    }
+}
+
+
 // returns the count.
 uint8_t populate_pv_line(struct board *brd, uint8_t depth)
 {
@@ -289,6 +310,15 @@ void set_history_ply(struct board *brd, uint8_t hist_ply){
 
 
 
+void shuffle_search_killers(struct board *brd, mv_bitmap mv){
+
+	brd->search_killers[1][brd->ply] = brd->search_killers[0][brd->ply];
+    brd->search_killers[0][brd->ply] = mv;
+
+}
+
+
+
 /* Compares two boards and checks for equality
  *
  * name: assert_boards_are_equal
@@ -338,6 +368,15 @@ void assert_boards_are_equal(const struct board *brd1, const struct board *brd2)
 
     assert(get_board_hash(brd1) == get_board_hash(brd2));
 
+}
+
+
+mv_bitmap get_search_killer(struct board *brd, uint8_t killer_move_num, uint8_t ply){
+	return brd->search_killers[killer_move_num][ply];
+} 
+
+mv_bitmap get_search_history(struct board *brd, enum piece pce, enum square sq){
+	return brd->search_history[pce][sq];
 }
 
 

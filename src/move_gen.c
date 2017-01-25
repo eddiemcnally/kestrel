@@ -394,14 +394,14 @@ add_quiet_move(struct board *brd,
 #endif
 
     // adjust score by killer moves and search history
-    if(brd->search_killers[0][brd->ply] == mv) {
+    if(get_search_killer(brd, 0, get_ply(brd)) == mv) {
         add_to_score(&mv, MOVE_ORDER_WEIGHT_KILLER_0);
-    } else if(brd->search_killers[1][brd->ply] == mv) {
+    } else if(get_search_killer(brd, 1, get_ply(brd)) == mv) {
         add_to_score(&mv, MOVE_ORDER_WEIGHT_KILLER_1);
     } else {
         enum square to_sq = TOSQ(mv);
 
-        add_to_score(&mv, brd->search_history[piece_being_moved][to_sq]);
+        add_to_score(&mv, get_search_history(brd, piece_being_moved, to_sq));
     }
 
     mvlist->moves[mvlist->move_count] = mv;

@@ -146,6 +146,16 @@ bool is_piece_on_square(const struct board *brd, enum piece pce, enum square sq)
 bool is_square_occupied(uint64_t bitboard, enum square sq);
 bool is_repetition(const struct board *brd);
 
+void init_search_history(struct board *brd);
+void init_search_killers(struct board *brd);
+
+mv_bitmap get_search_killer(struct board *brd, uint8_t killer_move_num, uint8_t ply); 
+mv_bitmap get_search_history(struct board *brd, enum piece pce, enum square sq); 
+
+void shuffle_search_killers(struct board *brd, mv_bitmap mv);
+
+
+
 uint8_t get_rank(enum square sq);
 uint8_t get_file(enum square sq);
 enum square get_square(uint8_t rank, uint8_t file);
