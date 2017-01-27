@@ -317,6 +317,9 @@ void shuffle_search_killers(struct board *brd, mv_bitmap mv){
 
 }
 
+void add_to_search_history(struct board *brd, enum piece pce, enum square to_sq, uint8_t depth){
+	brd->search_history[pce][to_sq] += depth;
+}
 
 
 /* Compares two boards and checks for equality
@@ -330,7 +333,7 @@ void assert_boards_are_equal(const struct board *brd1, const struct board *brd2)
 {
 
     for (int i = 0; i < NUM_PIECES; i++) {
-        assert(get_bitboard(brd1, i) == get_bitboard(brd2, i));
+        assert(get_bitboard(brd1, (enum piece)i) == get_bitboard(brd2, (enum piece)i));
     }
 
     assert(get_bitboard_all_pieces(brd1) == get_bitboard_all_pieces(brd2));
@@ -347,8 +350,8 @@ void assert_boards_are_equal(const struct board *brd1, const struct board *brd2)
     assert(get_material_value(brd1, WHITE) == get_material_value(brd2, WHITE));
     assert(get_material_value(brd1, BLACK) == get_material_value(brd2, BLACK));
 
-    for (int i = 0; i < NUM_SQUARES; i++) {
-        assert(get_piece_on_square(brd1, i) == get_piece_on_square(brd2, i));
+    for (enum square sq = a1; sq < NUM_SQUARES; sq++) {
+        assert(get_piece_on_square(brd1, sq) == get_piece_on_square(brd2, sq));
     }
 
     assert(get_castle_permissions(brd1) == get_castle_permissions(brd2));
@@ -375,7 +378,7 @@ mv_bitmap get_search_killer(struct board *brd, uint8_t killer_move_num, uint8_t 
 	return brd->search_killers[killer_move_num][ply];
 } 
 
-mv_bitmap get_search_history(struct board *brd, enum piece pce, enum square sq){
+uint32_t get_search_history(struct board *brd, enum piece pce, enum square sq){
 	return brd->search_history[pce][sq];
 }
 

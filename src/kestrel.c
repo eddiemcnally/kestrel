@@ -83,8 +83,8 @@ static void do_uci_loop()
 
     init_game_no_board();
 
-    struct board brd;
-    get_clean_board(&brd);
+    struct board *brd;
+    get_clean_board(brd);
 
     struct search_info si;
     init_search_struct(&si);
@@ -109,7 +109,7 @@ static void do_uci_loop()
         } else if (!strncmp(line, "position", 8)) {
             uci_parse_position(line, &brd);
         } else if (!strncmp(line, "ucinewgame", 10)) {
-            uci_parse_position("position startpos\n", &brd);
+            uci_parse_position("position startpos\n", brd);
 //        } else if (!strncmp(line, "go", 2)) {
 //            ParseGo(line, info, pos);
         } else if (!strncmp(line, "quit", 4)) {

@@ -112,7 +112,7 @@ void uci_parse_position(char *line, struct board *brd)
             }
 
             make_move(brd, mv);
-            brd->ply=0;
+            set_ply(brd, 0);
 
             while(*pc && *pc != ' ') {
                 pc++;

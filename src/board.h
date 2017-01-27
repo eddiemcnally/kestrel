@@ -150,7 +150,10 @@ void init_search_history(struct board *brd);
 void init_search_killers(struct board *brd);
 
 mv_bitmap get_search_killer(struct board *brd, uint8_t killer_move_num, uint8_t ply); 
-mv_bitmap get_search_history(struct board *brd, enum piece pce, enum square sq); 
+uint32_t get_search_history(struct board *brd, enum piece pce, enum square sq); 
+void add_to_search_history(struct board *brd, enum piece pce, enum square to_sq, uint8_t depth);
+
+
 
 void shuffle_search_killers(struct board *brd, mv_bitmap mv);
 

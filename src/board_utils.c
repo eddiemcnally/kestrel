@@ -279,7 +279,7 @@ void assert_material_correct(const struct board *brd)
 #ifdef ENABLE_ASSERTS
 
     // calc and verify the material count
-    uint32_t local_material[NUM_COLOURS] = {0, 0};
+    int32_t local_material[NUM_COLOURS] = {0, 0};
     
     for (enum square sq = a1; sq <= h8; sq++) {
         enum piece pce = get_piece_on_square(brd, sq);
@@ -288,13 +288,13 @@ void assert_material_correct(const struct board *brd)
             local_material[col] += GET_PIECE_VALUE(pce);
         }
     }
-    assert(local_material[WHITE] == get_material_value(brd, WHITE);
+    assert(local_material[WHITE] == get_material_value(brd, WHITE));
 
 	if (local_material[BLACK] != get_material_value(brd, BLACK))
 		printf("NININ");
 
 
-    assert(local_material[BLACK] == get_material_value(brd, BLACK);
+    assert(local_material[BLACK] == get_material_value(brd, BLACK));
 #endif
 }
 
