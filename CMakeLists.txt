@@ -83,8 +83,6 @@ set(COMMON_SOURCES
             src/pieces.c
             src/pieces.h
             src/types.h
-            src/init.c
-            src/init.h
             src/attack.c
             src/attack.h
             src/move_gen.c

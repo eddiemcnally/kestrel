@@ -118,9 +118,8 @@ int consume_fen_notation(const char *fen_string, struct board *brd)
 
         for (int i = 0; i < count; i++) {
             if (piece_to_add != NO_PIECE) {
-                int sq = get_square(rank, file);
-                add_piece_to_board(brd, piece_to_add,
-                                   (enum square)sq);
+                enum square sq = get_square((enum rank)rank, (enum file)file);
+                add_piece_to_board(brd, piece_to_add, sq);
             }
             file++;
         }
@@ -171,7 +170,7 @@ int consume_fen_notation(const char *fen_string, struct board *brd)
         assert(IS_VALID_FILE(file));
         assert(IS_VALID_RANK(rank));
 
-		set_en_passant_sq(brd, get_square(rank, file));
+		set_en_passant_sq(brd, get_square((enum rank)rank, (enum file)file));
     } else {
 		set_en_passant_sq(brd, NO_SQUARE);
     }

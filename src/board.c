@@ -98,9 +98,9 @@ struct board {
 
 	// maintain separate info about the pawns to simplify the
     // evaluation of pawn structure, open files, etc
-    int8_t pawns_on_file[NUM_COLOURS][NUM_FILES];
-    int8_t pawns_on_rank[NUM_COLOURS][NUM_RANKS];
-    int8_t pawn_control[NUM_COLOURS][NUM_SQUARES];
+    uint8_t pawns_on_file[NUM_COLOURS][NUM_FILES];
+    uint8_t pawns_on_rank[NUM_COLOURS][NUM_RANKS];
+    uint8_t pawn_control[NUM_COLOURS][NUM_SQUARES];
 
 
     // the next side to move
@@ -136,6 +136,18 @@ struct board {
 };
 
 
+
+struct board* allocate_board(void){
+	return (struct board *)calloc(1, sizeof(struct board));
+}
+
+void free_board(struct board *brd){
+	free(brd);
+}
+
+
+
+
 /*
  * Creates and initialises a new board. The default starting piece
  * positions are populated.
@@ -153,6 +165,25 @@ void init_board(char *fen, struct board *brd)
 	ASSERT_BOARD_OK(brd);
 #endif
 
+}
+
+
+struct board * init_game(char *fen)
+{
+    init_game_no_board();
+
+    init_board(fen, pBrd);
+
+    ASSERT_BOARD_OK(pBrd);
+
+    return pBrd;
+}
+
+void init_game_no_board()
+{
+    init_hash_keys();
+    init_move_gen_framework();
+    init_attack_framework();
 }
 
 /*
@@ -479,6 +510,18 @@ inline enum square get_square(uint8_t rank, uint8_t file){
 }
 
 
+uint8_t get_num_pawns_on_rank(const struct board *brd, enum colour col, enum rank rank){
+	return brd->pawns_on_rank[col][rank];
+}
+
+uint8_t get_num_pawns_on_file(const struct board *brd, enum colour col, enum file file){
+	return brd->pawns_on_file[col][file];
+}
+
+uint8_t get_num_squares_under_pawn_ctl(const struct board *brd, enum colour col, enum square sq){
+	return brd->pawn_control[col][sq]; 
+}
+
 
 void push_history(struct board *brd, mv_bitmap move){
     // set up history
@@ -704,13 +747,13 @@ static inline void update_pawn_control(struct board* brd, const enum colour col,
 	} else {
 		if (file > FILE_A) {
 			if (rank > RANK_1) {
-				next_sq = (int8_t)(sq + SW);
+				next_sq = (int8_t)((int8_t)sq + (int8_t)SW);
 				brd->pawn_control[col][next_sq] += val;
 			}
 		} 
 		if (file < FILE_H) {
 			if (rank > RANK_1) {
-				next_sq = (int8_t)(sq + SE);
+				next_sq = (int8_t)((int8_t)sq + (int8_t)SE);
 				brd->pawn_control[col][next_sq] += val;
 			}
 		}

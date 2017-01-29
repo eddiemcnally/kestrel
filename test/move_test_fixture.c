@@ -53,6 +53,7 @@ void test_zobrist_hashing_makemove_takemove(void);
 void test_en_passant(void);
 void move_test_fixture(void);
 void test_make_move_take_move_1(void);
+void test_generate_all_moves_level_1(void);
 
 
 
@@ -723,27 +724,27 @@ void test_clear_piece()
         "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1\n";
     struct board *brd = init_game(sample_position);
 
-    assert_true(is_square_occupied(brd->bitboards.board, c3) == true);
-    assert_true(is_square_occupied(brd->bitboards.pieces[W_KNIGHT], c3) == true);
+    assert_true(is_square_occupied(get_bitboard_all_pieces(brd), c3) == true);
+    assert_true(is_square_occupied(get_bitboard(brd, W_KNIGHT), c3) == true);
 
     // save some info before the move for comparison
-    uint64_t old_hash = brd->board_hash;
-    uint32_t old_material = brd->material[WHITE];
-    enum piece old_pce = brd->pieces[c3];
+    uint64_t old_hash = get_board_hash(brd);
+    int32_t old_material = get_material_value(brd, WHITE);
+    enum piece old_pce = get_piece_on_square(brd, c3);
 
     // remove the knight from c3
     remove_piece_from_board(brd, W_KNIGHT, c3);
 
-    assert_true(old_hash != brd->board_hash);
+    assert_true(old_hash != get_board_hash(brd));
 
-    uint32_t new_material = brd->material[WHITE] + GET_PIECE_VALUE(W_KNIGHT);
+    int32_t new_material = get_material_value(brd, WHITE) + (int32_t)GET_PIECE_VALUE(W_KNIGHT);
     assert_true(new_material == old_material);
 
     assert_true(old_pce == W_KNIGHT);
-    assert_true(brd->pieces[c3] == NO_PIECE);
+    assert_true(get_piece_on_square(brd, c3) == NO_PIECE);
 
-    assert_true(is_square_occupied(brd->bitboards.board, c3) == false);
-    assert_true(is_square_occupied(brd->bitboards.pieces[W_KNIGHT], c3) == false);
+    assert_true(is_square_occupied(get_bitboard_all_pieces(brd), c3) == false);
+    assert_true(is_square_occupied(get_bitboard(brd, W_KNIGHT), c3) == false);
 
 }
 
@@ -757,25 +758,25 @@ void test_add_piece()
         "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1\n";
     struct board *brd = init_game(sample_position);
 
-    assert_true(is_square_occupied(brd->bitboards.board, c4) == false);
-    assert_true(is_square_occupied(brd->bitboards.pieces[W_KNIGHT], c4) == false);
-    assert_true(count_bits(brd->bitboards.pieces[W_KNIGHT]) == 2);
+    assert_true(is_square_occupied(get_bitboard_all_pieces(brd), c4) == false);
+    assert_true(is_square_occupied(get_bitboard(brd, W_KNIGHT), c4) == false);
+    assert_true(count_bits(get_bitboard(brd, W_KNIGHT)) == 2);
 
     // save some info before the move for comparison
-    uint64_t old_hash = brd->board_hash;
-    uint32_t old_material = brd->material[WHITE];
+    uint64_t old_hash = get_board_hash(brd);
+    int32_t old_material = get_material_value(brd, WHITE);
 
     // add a white knight to c4
     add_piece_to_board(brd, W_KNIGHT, c4);
 
-    assert_true(old_hash != brd->board_hash);
-    uint32_t new_material = brd->material[WHITE];
-    assert_true(new_material == (old_material + GET_PIECE_VALUE(W_KNIGHT)));
+    assert_true(old_hash != get_board_hash(brd));
+    int32_t new_material = get_material_value(brd, WHITE);
+    assert_true(new_material == (old_material + (int32_t)GET_PIECE_VALUE(W_KNIGHT)));
 
-    assert_true(brd->pieces[c4] == W_KNIGHT);
+    assert_true(get_piece_on_square(brd, c4) == W_KNIGHT);
 
-    assert_true(is_square_occupied(brd->bitboards.board, c4) == true);
-    assert_true(is_square_occupied(brd->bitboards.pieces[W_KNIGHT], c4) == true);
+    assert_true(is_square_occupied(get_bitboard_all_pieces(brd), c4) == true);
+    assert_true(is_square_occupied(get_bitboard(brd, W_KNIGHT), c4) == true);
 
 }
 
@@ -802,24 +803,24 @@ void test_en_passant(void)
     make_move(brd, mv);
 
     // make sure all other pieces are as expected
-    assert_true(brd->pieces[e8] == B_KING);
-    assert_true(brd->pieces[c5] == B_PAWN);
-    assert_true(brd->pieces[d5] == W_PAWN);
-    assert_true(brd->pieces[e1] == W_KING);
+    assert_true(get_piece_on_square(brd, e8) == B_KING);
+    assert_true(get_piece_on_square(brd, c5) == B_PAWN);
+    assert_true(get_piece_on_square(brd, d5) == W_PAWN);
+    assert_true(get_piece_on_square(brd, e1) == W_KING);
     // 4 pieces on the board
-    assert_true(count_bits(brd->bitboards.board) == 4);
-    assert_true(brd->en_passant == c6);
+    assert_true(count_bits(get_bitboard_all_pieces(brd)) == 4);
+    assert_true(get_en_passant_sq(brd) == c6);
 
     // now, make the en passant move
     mv = MOVE(d5, c6, NO_PIECE, NO_PIECE, MFLAG_EN_PASSANT);
     make_move(brd, mv);
 
     // make sure all other pieces are as expected
-    assert_true(brd->pieces[e8] == B_KING);
-    assert_true(brd->pieces[c6] == W_PAWN);
-    assert_true(brd->pieces[e1] == W_KING);
+    assert_true(get_piece_on_square(brd, e8) == B_KING);
+    assert_true(get_piece_on_square(brd, c6) == W_PAWN);
+    assert_true(get_piece_on_square(brd, e1) == W_KING);
     // 4 pieces on the board
-    assert_true(count_bits(brd->bitboards.board) == 3);
+    assert_true(count_bits(get_bitboard_all_pieces(brd)) == 3);
 
 }
 
@@ -833,29 +834,29 @@ void test_move_piece()
         "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1\n";
     struct board *brd = init_game(sample_position);
 
-    assert_true(is_square_occupied(brd->bitboards.board, e5) == true);
-    assert_true(is_square_occupied(brd->bitboards.pieces[W_KNIGHT], e5) == true);
-    assert_true(count_bits(brd->bitboards.pieces[W_KNIGHT]) == 2);
+    assert_true(is_square_occupied(get_bitboard_all_pieces(brd), e5) == true);
+    assert_true(is_square_occupied(get_bitboard(brd, W_KNIGHT), e5) == true);
+    assert_true(count_bits(get_bitboard(brd, W_KNIGHT)) == 2);
 
     // save some info before the move for comparison
-    uint64_t old_hash = brd->board_hash;
-    uint32_t old_material = brd->material[WHITE];
+    uint64_t old_hash = get_board_hash(brd);
+    int32_t old_material = get_material_value(brd, WHITE);
 
     // add a white knight from e4 to d3
     move_piece(brd, e5, d3);
 
-    assert_true(old_hash != brd->board_hash);
+    assert_true(old_hash != get_board_hash(brd));
 
-    uint32_t new_material = brd->material[WHITE];
+    int32_t new_material = get_material_value(brd, WHITE);
     assert_true(new_material == old_material);
 
-    assert_true(brd->pieces[d3] == W_KNIGHT);
-    assert_true(brd->pieces[e5] == NO_PIECE);
+    assert_true(get_piece_on_square(brd, d3) == W_KNIGHT);
+    assert_true(get_piece_on_square(brd, e5) == NO_PIECE);
 
-    assert_true(is_square_occupied(brd->bitboards.board, d3) == true);
-    assert_true(is_square_occupied(brd->bitboards.board, e5) == false);
+    assert_true(is_square_occupied(get_bitboard_all_pieces(brd), d3) == true);
+    assert_true(is_square_occupied(get_bitboard_all_pieces(brd), e5) == false);
 
-    assert_true(is_square_occupied(brd->bitboards.pieces[W_KNIGHT], d3) == true);
+    assert_true(is_square_occupied(get_bitboard(brd, W_KNIGHT), d3) == true);
 
 }
 
@@ -901,8 +902,8 @@ void test_make_move_take_move_1(void)
 
         generate_all_moves(brd, &list);
 
-        struct board starting_brd;
-        clone_board(brd, &starting_brd);
+        struct board *starting_brd = calloc(sizeof(struct board), 0);
+        clone_board(brd, starting_brd);
 
         for (int i = 0; i < list.move_count; i++) {
             // make a move, take it back, and compare board before and after
@@ -921,7 +922,7 @@ void test_make_move_take_move_1(void)
             assert_boards_are_equal(brd, &before_move);
         }
 
-        assert_boards_are_equal(brd, &starting_brd);
+        assert_boards_are_equal(brd, starting_brd);
     }
 }
 
@@ -936,16 +937,16 @@ void test_zobrist_hashing_makemove_takemove(void)
 
     struct board *brd = init_game(enpass_pos);
 
-    uint64_t pre_ep_hash = brd->board_hash;
+    uint64_t pre_ep_hash = get_board_hash(brd);
 
     // make move to cause enpassant on e3
     mv_bitmap mv = MOVE(e2, e4, NO_PIECE, NO_PIECE, MFLAG_PAWN_START);
     make_move(brd, mv);
     // check hash has changed
-    assert_true(pre_ep_hash != brd->board_hash);
+    assert_true(pre_ep_hash != get_board_hash(brd));
     take_move(brd);
     // check hash is back to original
-    assert_true(brd->board_hash == pre_ep_hash);
+    assert_true(get_board_hash(brd) == pre_ep_hash);
 
     // check castle hashing
     // ====================
@@ -953,16 +954,16 @@ void test_zobrist_hashing_makemove_takemove(void)
 
     brd = init_game(castle_pos);
 
-    uint64_t pre_castle_hash = brd->board_hash;
+    uint64_t pre_castle_hash = get_board_hash(brd);
 
     // make castle move
     mv = MOVE(e1, g1, NO_PIECE, NO_PIECE, MFLAG_CASTLE);
     make_move(brd, mv);
     // check hash has changed
-    assert_true(pre_castle_hash != brd->board_hash);
+    assert_true(pre_castle_hash != get_board_hash(brd));
     take_move(brd);
     // check hash is back to original
-    assert_true(brd->board_hash == pre_castle_hash);
+    assert_true(get_board_hash(brd) == pre_castle_hash);
 
 
     // check side-to-move hashing
@@ -971,17 +972,17 @@ void test_zobrist_hashing_makemove_takemove(void)
 
     brd = init_game(side_to_move_pos);
 
-    uint64_t pre_swap_hash = brd->board_hash;
+    uint64_t pre_swap_hash = get_board_hash(brd);
 
     // flip sides
     flip_sides(brd);
 
     // check hash has changed
-    assert_true(pre_swap_hash != brd->board_hash);
+    assert_true(pre_swap_hash != get_board_hash(brd);
 
     // flip back and check hash is back to original
     flip_sides(brd);
-    assert_true(brd->board_hash == pre_swap_hash);
+    assert_true(get_board_hash(brd) == pre_swap_hash);
 
 
 }

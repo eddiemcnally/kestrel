@@ -94,21 +94,21 @@ void test_initial_board_placement()
 
     // no piece present
     for (int i = a3; i < h6; i++) {
-        assert_true(get_piece_on_square(brd, i) == NO_PIECE);
+        assert_true(get_piece_on_square(brd, (enum square)i) == NO_PIECE);
     }
 
     // now verify remainder of struct is populated
-    assert_true(brd->side_to_move == WHITE);
+    assert_true(get_side_to_move(brd) == WHITE);
 
-    assert_true(brd->en_passant == NO_SQUARE);
+    assert_true(get_en_passant_sq(brd) == NO_SQUARE);
 
-    assert_true(brd->fifty_move_counter == 0);
-    assert_true(brd->ply == 0);
-    assert_true(brd->history_ply == 0);
+    assert_true(get_fifty_move_counter(brd) == 0);
+    assert_true(get_ply(brd) == 0);
+    assert_true(get_history_ply(brd) == 0);
 
-    assert_true(brd->castle_perm == (WQCA | WKCA | BQCA | BKCA));
+    assert_true(get_castle_permissions(brd) == (WQCA | WKCA | BQCA | BKCA));
 
-    assert_true(brd->board_hash != 0);
+    assert_true(get_board_hash(brd) != 0);
 
 }
 
@@ -164,14 +164,14 @@ void test_fen_parsing_initial_board_layout(void)
 
     // no piece present
     for (int i = a3; i < h6; i++) {
-        assert_true(NO_PIECE == get_piece_on_square(brd, i));
+        assert_true(NO_PIECE == get_piece_on_square(brd, (enum square)i));
     }
 
-    assert_true(brd->side_to_move == WHITE);
+    assert_true(get_side_to_move(brd) == WHITE);
 
-    assert_true(brd->castle_perm == (WKCA | WQCA | BKCA | BQCA));
+    assert_true(get_castle_permissions(brd) == (WKCA | WQCA | BKCA | BQCA));
 
-    assert_true(brd->en_passant == NO_SQUARE);
+    assert_true(get_en_passant_sq(brd) == NO_SQUARE);
 
 }
 
@@ -190,11 +190,11 @@ void test_fen_parsing_general_layout_1()
     assert_true(W_KNIGHT == get_piece_on_square(brd, e5));
     assert_true(W_KING == get_piece_on_square(brd, d1));
 
-    assert_true(brd->side_to_move == BLACK);
+    assert_true(get_side_to_move(brd) == BLACK);
 
-    assert_true(brd->castle_perm == 0);
+    assert_true(get_castle_permissions(brd) == 0);
 
-    assert_true(brd->en_passant == NO_SQUARE);
+    assert_true(get_en_passant_sq(brd) == NO_SQUARE);
 }
 
 void test_fen_parsing_general_layout_2()
@@ -353,10 +353,6 @@ void test_fen_parsing_general_layout_2()
 	assert_true(is_square_occupied(black_bb, h8));
 	assert_true(is_piece_on_square(brd, B_ROOK, h8));
 
-
-
-
-
     assert_true(get_side_to_move(brd) == BLACK);
 
     assert_true(get_castle_permissions(brd) == (WKCA | WQCA | BKCA | BQCA));
@@ -366,36 +362,36 @@ void test_fen_parsing_general_layout_2()
 
     // test pawn positions
     for(int f = FILE_A; f <= FILE_H; f++) {
-        assert_true(brd->pawns_on_file[WHITE][f] == 1);
-        assert_true(brd->pawns_on_file[BLACK][f] == 1);
+        assert_true(get_num_pawns_on_rank(brd,WHITE, (enum rank)f) == 1);
+        assert_true(get_num_pawns_on_rank(brd,BLACK, (enum rank)f) == 1);
     }
-    assert_true(brd->pawns_on_rank[WHITE][RANK_2] == 7);
-    assert_true(brd->pawns_on_rank[WHITE][RANK_4] == 1);
+    assert_true(get_num_pawns_on_rank(brd,WHITE, RANK_2) == 7);
+    assert_true(get_num_pawns_on_rank(brd,WHITE, RANK_4) == 1);
 
-    assert_true(brd->pawns_on_rank[BLACK][RANK_7] == 7);
-    assert_true(brd->pawns_on_rank[BLACK][RANK_5] == 1);
+    assert_true(get_num_pawns_on_rank(brd,BLACK,RANK_7) == 7);
+    assert_true(get_num_pawns_on_rank(brd,BLACK,RANK_5) == 1);
 
-    assert_true(brd->pawn_control[WHITE][a3] == 1);
-    assert_true(brd->pawn_control[WHITE][b3] == 2);
-    assert_true(brd->pawn_control[WHITE][c3] == 2);
-    assert_true(brd->pawn_control[WHITE][d3] == 1);
-    assert_true(brd->pawn_control[WHITE][e3] == 2);
-    assert_true(brd->pawn_control[WHITE][f3] == 1);
-    assert_true(brd->pawn_control[WHITE][g3] == 2);
-    assert_true(brd->pawn_control[WHITE][h3] == 1);
-    assert_true(brd->pawn_control[WHITE][d5] == 1);
-    assert_true(brd->pawn_control[WHITE][f5] == 1);
+    assert_true(get_num_squares_under_pawn_ctl(brd,WHITE,a3) == 1);
+    assert_true(get_num_squares_under_pawn_ctl(brd,WHITE,b3) == 2);
+    assert_true(get_num_squares_under_pawn_ctl(brd,WHITE,c3) == 2);
+    assert_true(get_num_squares_under_pawn_ctl(brd,WHITE,d3) == 1);
+    assert_true(get_num_squares_under_pawn_ctl(brd,WHITE,e3) == 2);
+    assert_true(get_num_squares_under_pawn_ctl(brd,WHITE,f3) == 1);
+    assert_true(get_num_squares_under_pawn_ctl(brd,WHITE,g3) == 2);
+    assert_true(get_num_squares_under_pawn_ctl(brd,WHITE,h3) == 1);
+    assert_true(get_num_squares_under_pawn_ctl(brd,WHITE,d5) == 1);
+    assert_true(get_num_squares_under_pawn_ctl(brd,WHITE,f5) == 1);
 
-    assert_true(brd->pawn_control[BLACK][a6] == 1);
-    assert_true(brd->pawn_control[BLACK][b6] == 1);
-    assert_true(brd->pawn_control[BLACK][c6] == 2);
-    assert_true(brd->pawn_control[BLACK][d6] == 1);
-    assert_true(brd->pawn_control[BLACK][e6] == 2);
-    assert_true(brd->pawn_control[BLACK][f6] == 2);
-    assert_true(brd->pawn_control[BLACK][g6] == 2);
-    assert_true(brd->pawn_control[BLACK][h6] == 1);
-    assert_true(brd->pawn_control[BLACK][b4] == 1);
-    assert_true(brd->pawn_control[BLACK][d4] == 1);
+    assert_true(get_num_squares_under_pawn_ctl(brd,BLACK,a6) == 1);
+    assert_true(get_num_squares_under_pawn_ctl(brd,BLACK,b6) == 1);
+    assert_true(get_num_squares_under_pawn_ctl(brd,BLACK,c6) == 2);
+    assert_true(get_num_squares_under_pawn_ctl(brd,BLACK,d6) == 1);
+    assert_true(get_num_squares_under_pawn_ctl(brd,BLACK,e6) == 2);
+    assert_true(get_num_squares_under_pawn_ctl(brd,BLACK,f6) == 2);
+    assert_true(get_num_squares_under_pawn_ctl(brd,BLACK,g6) == 2);
+    assert_true(get_num_squares_under_pawn_ctl(brd,BLACK,h6) == 1);
+    assert_true(get_num_squares_under_pawn_ctl(brd,BLACK,b4) == 1);
+    assert_true(get_num_squares_under_pawn_ctl(brd,BLACK,d4) == 1);
 
 
 }
@@ -414,10 +410,10 @@ void test_fen_parsing_general_layout_3()
 	
     //print_board(brd);
 
-    assert_true(brd->side_to_move == WHITE);
-    assert_true(brd->castle_perm == (WKCA | WQCA | BKCA | BQCA));
+    assert_true(get_side_to_move(brd) == WHITE);
+    assert_true(get_castle_permissions(brd) == (WKCA | WQCA | BKCA | BQCA));
 
-    assert_true(brd->en_passant == c6);
+    assert_true(get_en_passant_sq(brd) == c6);
 }
 
 

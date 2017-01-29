@@ -175,9 +175,9 @@ bool ASSERT_BOARD_OK(const struct board *brd)
 
     assert(conflated == get_bitboard_all_pieces(brd));
     
-    uint64_t wking_bb = get_bitboard_for_king(brd, W_KING);
+    uint64_t wking_bb = get_bitboard_for_king(brd, WHITE);
     assert(count_bits(wking_bb) == 1);
-    uint64_t bking_bb = get_bitboard_for_king(brd, B_KING);
+    uint64_t bking_bb = get_bitboard_for_king(brd, BLACK);
     assert(count_bits(bking_bb) == 1);
 
     // check where Kings are
@@ -186,7 +186,7 @@ bool ASSERT_BOARD_OK(const struct board *brd)
         if (pce != NO_PIECE) {
             if (pce == W_KING) {
 
-                uint64_t bb_wk = get_bitboard_for_king(brd, W_KING);
+                uint64_t bb_wk = get_bitboard_for_king(brd, WHITE);
                 enum square wk_sq = pop_1st_bit(&bb_wk);
 
                 assert(sq == wk_sq);

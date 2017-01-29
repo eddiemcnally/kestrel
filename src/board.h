@@ -81,8 +81,6 @@ enum castle_perm {
 
 
 
-
-
 void move_piece(struct board *brd, enum square from, enum square to);
 void remove_piece_from_board(struct board *brd,  enum piece pce_to_remove, enum square sq);
 void add_piece_to_board(struct board *brd, enum piece pce, enum square sq);
@@ -132,6 +130,11 @@ void set_bit(uint64_t * brd, enum square sq);
 void clear_bit(uint64_t * brd, enum square sq);
 
 bool is_pawn_controlling_sq(const struct board *brd, enum colour col, enum square sq);
+uint8_t get_num_pawns_on_rank(const struct board *brd, enum colour col, enum rank rank);
+uint8_t get_num_pawns_on_file(const struct board *brd, enum colour col, enum file file);
+uint8_t get_num_squares_under_pawn_ctl(const struct board *brd, enum colour col, enum square sq);
+
+
 
 void init_board(char *fen, struct board *brd);
 void get_clean_board(struct board *brd);
@@ -156,6 +159,13 @@ void add_to_search_history(struct board *brd, enum piece pce, enum square to_sq,
 
 
 void shuffle_search_killers(struct board *brd, mv_bitmap mv);
+
+
+struct board* init_game(char *fen);
+void init_game_no_board(void);
+
+struct board* allocate_board(void);
+void free_board(struct board *brd);
 
 
 
