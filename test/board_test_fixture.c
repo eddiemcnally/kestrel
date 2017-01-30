@@ -21,7 +21,6 @@
 #include <stdlib.h>
 #include "seatest.h"
 #include "types.h"
-#include "init.h"
 #include "hashkeys.h"
 #include "board_utils.h"
 #include "board.h"
@@ -52,7 +51,9 @@ void board_test_fixture(void);
 void test_initial_board_placement()
 {
     init_hash_keys();
-    struct board *brd = init_game(STARTING_FEN);
+    struct board *brd = allocate_board();
+    consume_fen_notation(STARTING_FEN, brd);
+
     
    	ASSERT_BOARD_OK(brd);
 
@@ -110,6 +111,7 @@ void test_initial_board_placement()
 
     assert_true(get_board_hash(brd) != 0);
 
+	free_board(brd);
 }
 
 void test_fen_parsing_initial_board_layout(void)
@@ -119,7 +121,8 @@ void test_fen_parsing_initial_board_layout(void)
     char *test_fen =
         "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
-    struct board *brd = init_game(test_fen);
+    struct board *brd = allocate_board();
+    consume_fen_notation(test_fen, brd);
 
 	ASSERT_BOARD_OK(brd);
 	
@@ -173,13 +176,15 @@ void test_fen_parsing_initial_board_layout(void)
 
     assert_true(get_en_passant_sq(brd) == NO_SQUARE);
 
+	free_board(brd);
 }
 
 void test_fen_parsing_general_layout_1()
 {
     char *test_fen = "k7/8/8/4N3/8/8/8/3K4 b - - 13 56";
 
-    struct board *brd = init_game(test_fen);
+    struct board *brd = allocate_board();
+    consume_fen_notation(test_fen, brd);
 
 	ASSERT_BOARD_OK(brd);
 	
@@ -195,6 +200,8 @@ void test_fen_parsing_general_layout_1()
     assert_true(get_castle_permissions(brd) == 0);
 
     assert_true(get_en_passant_sq(brd) == NO_SQUARE);
+
+	free_board(brd);
 }
 
 void test_fen_parsing_general_layout_2()
@@ -204,7 +211,8 @@ void test_fen_parsing_general_layout_2()
     char *test_fen =
         "rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2";
 
-    struct board *brd = init_game(test_fen);
+    struct board *brd = allocate_board();
+    consume_fen_notation(test_fen, brd);
 
 	ASSERT_BOARD_OK(brd);
 
@@ -393,6 +401,7 @@ void test_fen_parsing_general_layout_2()
     assert_true(get_num_squares_under_pawn_ctl(brd,BLACK,b4) == 1);
     assert_true(get_num_squares_under_pawn_ctl(brd,BLACK,d4) == 1);
 
+	free_board(brd);
 
 }
 
@@ -404,7 +413,8 @@ void test_fen_parsing_general_layout_3()
     // this is the initial board setup
     char *test_fen = "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 1";
 
-    struct board *brd = init_game(test_fen);
+    struct board *brd = allocate_board();
+    consume_fen_notation(test_fen, brd);
 
 	ASSERT_BOARD_OK(brd);
 	
@@ -414,6 +424,8 @@ void test_fen_parsing_general_layout_3()
     assert_true(get_castle_permissions(brd) == (WKCA | WQCA | BKCA | BQCA));
 
     assert_true(get_en_passant_sq(brd) == c6);
+
+	free_board(brd);
 }
 
 

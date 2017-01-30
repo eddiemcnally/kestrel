@@ -119,6 +119,9 @@ void assert_boards_are_equal(const struct board *brd1, const struct board *brd2)
 mv_bitmap get_best_pvline(const struct board *brd);
 mv_bitmap get_pvline(const struct board *brd, uint8_t search_depth);
 void set_pvline(struct board *brd, uint8_t search_depth, mv_bitmap move);
+uint8_t populate_pv_line(struct board *brd, uint8_t depth);
+
+
 
 
 uint8_t get_fifty_move_counter(const struct board *brd);
@@ -136,9 +139,9 @@ uint8_t get_num_squares_under_pawn_ctl(const struct board *brd, enum colour col,
 
 
 
-void init_board(char *fen, struct board *brd);
-void get_clean_board(struct board *brd);
-uint8_t populate_pv_line(struct board *brd, uint8_t depth);
+
+
+
 void set_piece_material(struct board *brd);
 uint64_t overlay_white_piece_bitboards(const struct board * brd);
 uint64_t overlay_black_piece_bitboards(const struct board * brd);
@@ -162,7 +165,6 @@ void shuffle_search_killers(struct board *brd, mv_bitmap mv);
 
 
 struct board* init_game(char *fen);
-void init_game_no_board(void);
 
 struct board* allocate_board(void);
 void free_board(struct board *brd);

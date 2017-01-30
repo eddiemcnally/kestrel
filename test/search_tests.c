@@ -22,7 +22,6 @@
 #include <string.h>
 #include <time.h>
 #include "seatest.h"
-#include "init.h"
 #include "types.h"
 #include "search.h"
 #include "move_gen_utils.h"
@@ -50,7 +49,7 @@ void test_move_sort_1(void)
     for(int32_t i = 0; i < 20; i++) {
         // interested more in the score than squares or pieces
 
-        uint32_t score = start_score + (score_incr * i);
+        uint32_t score = start_score + (uint32_t)(score_incr * i);
         mv_bitmap mv = MOVE(e5, e6, NO_PIECE, NO_PIECE, MFLAG_NONE);
         add_to_score(&mv, score);
 
@@ -85,9 +84,9 @@ void test_mate_in_two()
     mv_bitmap g7h8 = get_move(MOVE(g7, h8, W_ROOK, NO_PIECE, MFLAG_CAPTURE));
     mv_bitmap h1h8 = get_move(MOVE(h1, h8, B_BISHOP, NO_PIECE, MFLAG_CAPTURE));
 
-    mv_bitmap pv_line_h7h8 = get_move(brd->pv_line[0]);
-    mv_bitmap pv_line_g7h8 = get_move(brd->pv_line[1]);
-    mv_bitmap pv_line_h1h8 = get_move(brd->pv_line[2]);
+    mv_bitmap pv_line_h7h8 = get_move(get_pvline(brd, 0));
+    mv_bitmap pv_line_g7h8 = get_move(get_pvline(brd, 1));
+    mv_bitmap pv_line_h1h8 = get_move(get_pvline(brd, 2));
 
     //printf("PV g7h8 ->%s\n", print_move(pv_line_g7h8));
     //printf("PV h1h8 ->%s\n", print_move(pv_line_h1h8));

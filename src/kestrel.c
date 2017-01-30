@@ -31,7 +31,6 @@
 #include "evaluate.h"
 #include "board_utils.h"
 #include "hashkeys.h"
-#include "init.h"
 #include "occupancy_mask.h"
 #include "fen.h"
 #include "utils.h"
@@ -80,11 +79,7 @@ static void do_uci_loop()
     char line[INPUTBUFFER];
 
 
-
-    init_game_no_board();
-
-    struct board *brd;
-    get_clean_board(brd);
+	struct board *brd = allocate_board();
 
     struct search_info si;
     init_search_struct(&si);
@@ -122,4 +117,5 @@ static void do_uci_loop()
             break;
         }
     }
+    free_board(brd);
 }

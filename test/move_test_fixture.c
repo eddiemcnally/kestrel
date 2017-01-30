@@ -24,7 +24,6 @@
 #include "types.h"
 #include "attack.h"
 #include "fen.h"
-#include "init.h"
 #include "board.h"
 #include "pieces.h"
 #include "utils.h"
@@ -93,7 +92,8 @@ void test_generation_white_pawn_moves(void)
     char *test_fen =
         "rnbqkb1r/pp1p1pPp/8/2p1pP2/1P1P4/3P3P/P1P1P3/RNBQKBNR w KQkq e6 0 1";
 
-    struct board *brd = init_game(test_fen);
+    struct board *brd = allocate_board();
+    consume_fen_notation(test_fen, brd);
 
     struct move_list mvl = {
         .moves = {0},
@@ -185,6 +185,7 @@ void test_generation_white_pawn_moves(void)
     mv = MOVE(g7, h8, B_ROOK, W_ROOK, MFLAG_CAPTURE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
+	free_board(brd);
 }
 
 void test_generation_black_pawn_moves(void)
@@ -192,8 +193,8 @@ void test_generation_black_pawn_moves(void)
     // setup
     char *test_fen =
         "rnbqkbnr/p1p1p3/3p3p/1p1p4/2P1Pp2/8/PP1P1PpP/RNBQKB1R b KQkq e3 0 1";
-
-    struct board *brd = init_game(test_fen);
+    struct board *brd = allocate_board();
+    consume_fen_notation(test_fen, brd);
 
     struct move_list mvl = {
         .moves = {0},
@@ -248,6 +249,8 @@ void test_generation_black_pawn_moves(void)
 
     mv = MOVE(d5, d4, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
+    
+    free_board(brd);
 
 }
 
@@ -256,7 +259,8 @@ void test_generation_white_knight_pawn_moves(void)
     // setup
     char *test_fen = "5k2/1n6/4n3/6N1/8/3N4/8/5K2 w - - 0 1";
 
-    struct board *brd = init_game(test_fen);
+    struct board *brd = allocate_board();
+    consume_fen_notation(test_fen, brd);
 
     struct move_list mvl = {
         .moves = {0},
@@ -303,6 +307,7 @@ void test_generation_white_knight_pawn_moves(void)
     mv = MOVE(g5, e6, B_KNIGHT, NO_PIECE, MFLAG_CAPTURE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
+	free_board(brd);
 }
 
 void test_generation_black_knight_pawn_moves(void)
@@ -311,7 +316,8 @@ void test_generation_black_knight_pawn_moves(void)
     char *test_fen =
         "r1bqkb1r/pppppppp/2N5/3n1N2/8/1n6/PPPPPPPP/R1BQKB1R b KQkq - 0 1";
 
-    struct board *brd = init_game(test_fen);
+    struct board *brd = allocate_board();
+    consume_fen_notation(test_fen, brd);
 
     struct move_list mvl = {
         .moves = {0},
@@ -355,6 +361,7 @@ void test_generation_black_knight_pawn_moves(void)
     mv = MOVE(d5, f6, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
+	free_board(brd);
 }
 
 void test_generation_king_moves(void)
@@ -363,7 +370,8 @@ void test_generation_king_moves(void)
     char *test_fen =
         "8/p1P4p/R3p2P/P1pP1q2/PRP1p1P1/3Qprr1/kp1p3P/7K w - - 0 1";
 
-    struct board *brd = init_game(test_fen);
+    struct board *brd = allocate_board();
+    consume_fen_notation(test_fen, brd);
     struct move_list mvl = {
         .moves = {0},
         .move_count = 0
@@ -442,6 +450,7 @@ void test_generation_king_moves(void)
     mv = MOVE(c7, d8, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
+	free_board(brd);
 }
 
 void test_generation_sliding_diagonal_moves(void)
@@ -449,7 +458,9 @@ void test_generation_sliding_diagonal_moves(void)
 
     char *sliding_test =
         "8/2B1p2P/4PppK/p2pP1P1/1P4pp/Pb2p3/3P1Pk1/2bB4 w - - 0 1";
-    struct board *brd = init_game(sliding_test);
+    struct board *brd = allocate_board();
+    consume_fen_notation(sliding_test, brd);
+
 
     struct move_list mvl = {
         .moves = {0},
@@ -485,9 +496,11 @@ void test_generation_sliding_diagonal_moves(void)
 
     assert_false(is_sq_attacked(brd, h6, BLACK));
 
+	free_board(brd);
 ///////////////////////////////////////////////////
     // now look at white bishops
-    brd = init_game(sliding_test);
+    brd = allocate_board();
+    consume_fen_notation(sliding_test, brd);
 
     memset(&mvl, 0, sizeof(struct move_list));
 
@@ -520,13 +533,15 @@ void test_generation_sliding_diagonal_moves(void)
     mv = MOVE(c7, d8, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
+	free_board(brd);
 }
 
 void test_generation_sliding_horizontal_and_vertical_moves(void)
 {
 
     char *sliding_test = "K7/1rp5/5R1P/6p1/7P/1k3p1P/1P1p2r1/4R3 w - - 0 1";
-    struct board *brd = init_game(sliding_test);
+    consume_fen_notation(sliding_test, brd);
+
 
     struct move_list mvl = {
         .moves = {0},
@@ -562,8 +577,11 @@ void test_generation_sliding_horizontal_and_vertical_moves(void)
     mv = MOVE(b7, b4, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
+	free_board(brd);
+	
     // check the white rooks
-    brd = init_game(sliding_test);
+    brd = allocate_board();
+    consume_fen_notation(sliding_test, brd);
 
     memset(&mvl, 0, sizeof(struct move_list));
 
@@ -623,12 +641,14 @@ void test_generation_sliding_horizontal_and_vertical_moves(void)
     mv = MOVE(f6, f3, B_PAWN, NO_PIECE, MFLAG_CAPTURE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
+	free_board(brd);
 }
 
 void test_king_castling_moves(void)
 {
     char *sliding_test = "r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1\n";
-    struct board *brd = init_game(sliding_test);
+    struct board *brd = allocate_board();
+    consume_fen_notation(sliding_test, brd);
 
     struct move_list mvl = {
         .moves = {0},
@@ -654,15 +674,23 @@ void test_king_castling_moves(void)
     mv = MOVE(e8, c8, NO_PIECE, NO_PIECE, MFLAG_CASTLE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
+	free_board(brd);
+
     sliding_test = "3rk2r/8/8/8/8/8/6p1/R3K2R b KQk - 0 1";
-    brd = init_game(sliding_test);
+    brd = allocate_board();
+    consume_fen_notation(sliding_test, brd);
+
     memset(&mvl, 0, sizeof(struct move_list));
 
     TEST_generate_castle_moves(brd, &mvl, WHITE);
 
     assert_true(mvl.move_count == 0);
-
-    brd = init_game(sliding_test);
+	free_board(brd);
+	
+	
+	///////////////////////////////////////////////
+    brd = allocate_board();
+    consume_fen_notation(sliding_test, brd);
     memset(&mvl, 0, sizeof(struct move_list));
 
     TEST_generate_castle_moves(brd, &mvl, BLACK);
@@ -671,6 +699,8 @@ void test_king_castling_moves(void)
     mv = MOVE(e8, g8, NO_PIECE, NO_PIECE, MFLAG_CASTLE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
+	free_board(brd);
+
 }
 
 void test_sample_board_position()
@@ -678,8 +708,9 @@ void test_sample_board_position()
 
     char *sample_position =
         "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1\n";
-    struct board *brd = init_game(sample_position);
-
+    struct board *brd = allocate_board();
+    consume_fen_notation(sample_position, brd);
+    
     struct move_list mvl = {
         .moves = {0},
         .move_count = 0
@@ -688,13 +719,16 @@ void test_sample_board_position()
     generate_all_moves(brd, &mvl);
 
     assert_true(mvl.move_count == 48);
+    free_board(brd);
 }
 
 void test_generate_all_moves_level_1(){
 char *sample_position =
         "r2q1rk1/2p1pppp/p1n2n2/1p1p4/1PbP2b1/B1N1PN2/P1P1BPPP/R2QK2R w KQ - 0 1\n";
-    struct board *brd = init_game(sample_position);
-
+    
+    struct board *brd = allocate_board();
+    consume_fen_notation(sample_position, brd);
+    
     struct move_list mvl = {
         .moves = {0},
         .move_count = 0
@@ -703,12 +737,8 @@ char *sample_position =
     generate_all_moves(brd, &mvl);
 
     assert_true(mvl.move_count == 48);
-
-	// generate list of all valid moves and compare with those generated
-
-
-
 	
+	free_board(brd);
 }
 
 
@@ -722,8 +752,9 @@ void test_clear_piece()
     //
     char *sample_position =
         "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1\n";
-    struct board *brd = init_game(sample_position);
-
+    struct board *brd = allocate_board();
+    consume_fen_notation(sample_position, brd);
+    
     assert_true(is_square_occupied(get_bitboard_all_pieces(brd), c3) == true);
     assert_true(is_square_occupied(get_bitboard(brd, W_KNIGHT), c3) == true);
 
@@ -746,6 +777,7 @@ void test_clear_piece()
     assert_true(is_square_occupied(get_bitboard_all_pieces(brd), c3) == false);
     assert_true(is_square_occupied(get_bitboard(brd, W_KNIGHT), c3) == false);
 
+	free_board(brd);
 }
 
 void test_add_piece()
@@ -756,8 +788,10 @@ void test_add_piece()
     //
     char *sample_position =
         "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1\n";
-    struct board *brd = init_game(sample_position);
-
+    
+    struct board *brd = allocate_board();
+    consume_fen_notation(sample_position, brd);
+        
     assert_true(is_square_occupied(get_bitboard_all_pieces(brd), c4) == false);
     assert_true(is_square_occupied(get_bitboard(brd, W_KNIGHT), c4) == false);
     assert_true(count_bits(get_bitboard(brd, W_KNIGHT)) == 2);
@@ -778,6 +812,7 @@ void test_add_piece()
     assert_true(is_square_occupied(get_bitboard_all_pieces(brd), c4) == true);
     assert_true(is_square_occupied(get_bitboard(brd, W_KNIGHT), c4) == true);
 
+	free_board(brd);
 }
 
 /**
@@ -797,8 +832,11 @@ void test_add_piece()
  */
 void test_en_passant(void)
 {
-    struct board *brd = init_game("4k3/2p5/8/3P4/8/8/8/4K3 b - - 0 1");
+    struct board *test_fen = "4k3/2p5/8/3P4/8/8/8/4K3 b - - 0 1\n";
 
+    struct board *brd = allocate_board();
+    consume_fen_notation(test_fen, brd);
+    
     mv_bitmap mv = MOVE(c7, c5, NO_PIECE, NO_PIECE, MFLAG_PAWN_START);
     make_move(brd, mv);
 
@@ -822,6 +860,7 @@ void test_en_passant(void)
     // 4 pieces on the board
     assert_true(count_bits(get_bitboard_all_pieces(brd)) == 3);
 
+	free_board(brd);
 }
 
 void test_move_piece()
@@ -832,7 +871,9 @@ void test_move_piece()
     //
     char *sample_position =
         "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1\n";
-    struct board *brd = init_game(sample_position);
+
+    struct board *brd = allocate_board();
+    consume_fen_notation(sample_position, brd);
 
     assert_true(is_square_occupied(get_bitboard_all_pieces(brd), e5) == true);
     assert_true(is_square_occupied(get_bitboard(brd, W_KNIGHT), e5) == true);
@@ -858,6 +899,7 @@ void test_move_piece()
 
     assert_true(is_square_occupied(get_bitboard(brd, W_KNIGHT), d3) == true);
 
+	free_board(brd);
 }
 
 void test_make_move_take_move_1(void)
@@ -892,7 +934,8 @@ void test_make_move_take_move_1(void)
 
         //printf("processing FEN %s\n", sample_position);
 
-        struct board *brd = init_game(sample_position);
+        struct board *brd = allocate_board();
+        consume_fen_notation(sample_position, brd);
 
         struct move_list list = {
             .moves = {0},
@@ -902,15 +945,16 @@ void test_make_move_take_move_1(void)
 
         generate_all_moves(brd, &list);
 
-        struct board *starting_brd = calloc(sizeof(struct board), 0);
+        struct board *starting_brd = allocate_board();
+        
         clone_board(brd, starting_brd);
 
         for (int i = 0; i < list.move_count; i++) {
             // make a move, take it back, and compare board before and after
             mv_bitmap mv = list.moves[i];
 
-            struct board before_move;
-            clone_board(brd, &before_move);
+            struct board *before_move = allocate_board();
+            clone_board(brd, before_move);
 
             bool valid_move = make_move(brd, mv);
             if (!valid_move) {
@@ -919,10 +963,15 @@ void test_make_move_take_move_1(void)
 
             take_move(brd);
 
-            assert_boards_are_equal(brd, &before_move);
+            assert_boards_are_equal(brd, before_move);
+			free_board(before_move);
+            
         }
 
         assert_boards_are_equal(brd, starting_brd);
+        
+        free_board(starting_brd);
+        free_board(brd);
     }
 }
 
@@ -935,7 +984,8 @@ void test_zobrist_hashing_makemove_takemove(void)
     // =======================
     char *enpass_pos = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\n";
 
-    struct board *brd = init_game(enpass_pos);
+    struct board *brd = allocate_board();
+    consume_fen_notation(enpass_pos, brd);
 
     uint64_t pre_ep_hash = get_board_hash(brd);
 
@@ -948,11 +998,15 @@ void test_zobrist_hashing_makemove_takemove(void)
     // check hash is back to original
     assert_true(get_board_hash(brd) == pre_ep_hash);
 
+	free_board(brd);
+	
     // check castle hashing
     // ====================
     char *castle_pos = "r1bqkbnr/pppp2pp/2n1pp2/8/8/3BPN2/PPPP1PPP/RNBQK2R w KQkq - 0 1\n";
 
-    brd = init_game(castle_pos);
+    brd = allocate_board();
+    consume_fen_notation(castle_pos, brd);
+
 
     uint64_t pre_castle_hash = get_board_hash(brd);
 
@@ -964,13 +1018,15 @@ void test_zobrist_hashing_makemove_takemove(void)
     take_move(brd);
     // check hash is back to original
     assert_true(get_board_hash(brd) == pre_castle_hash);
-
+	
+	free_board(brd);
 
     // check side-to-move hashing
     // ==========================
     char *side_to_move_pos = "r1bqkbnr/pppp2pp/2n1pp2/8/8/3BPN2/PPPP1PPP/RNBQK2R w KQkq - 0 1\n";
 
-    brd = init_game(side_to_move_pos);
+    brd = allocate_board();
+    consume_fen_notation(side_to_move_pos, brd);
 
     uint64_t pre_swap_hash = get_board_hash(brd);
 
@@ -978,20 +1034,21 @@ void test_zobrist_hashing_makemove_takemove(void)
     flip_sides(brd);
 
     // check hash has changed
-    assert_true(pre_swap_hash != get_board_hash(brd);
+    assert_true(pre_swap_hash != get_board_hash(brd));
 
     // flip back and check hash is back to original
     flip_sides(brd);
     assert_true(get_board_hash(brd) == pre_swap_hash);
 
-
+	free_board(brd);
 }
 
 
 
 void test_capture_move_gen_1(void)
 {
-    struct board *brd = init_game(STARTING_FEN);
+    struct board *brd = allocate_board();
+    consume_fen_notation(STARTING_FEN, brd);
 
     struct move_list list = {
         .moves = {0},
@@ -1002,11 +1059,16 @@ void test_capture_move_gen_1(void)
 
     assert_true(list.move_count == 0);
 
+	free_board(brd);
 }
 
 void test_capture_move_gen_2(void)
 {
-    struct board *brd = init_game("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1\n");
+    char * pos = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1\n";
+
+    struct board *brd = allocate_board();
+    consume_fen_notation(pos, brd);
+
     struct move_list list = {
         .moves = {0},
         .move_count = 0
@@ -1022,11 +1084,16 @@ void test_capture_move_gen_2(void)
         assert_true(pce != NO_PIECE);
         assert_true(IS_CAPTURE_MOVE(mv) == true);
     }
+    free_board(brd);
 }
 
 void test_capture_move_gen_3(void)
 {
-    struct board *brd = init_game("6r1/1b2npb1/1p2P3/1PPBpnR1/Pk1PpPpQ/N1qP1rp1/3P1Npp/BK1R4 w - - 0 1\n");
+    char *pos = "6r1/1b2npb1/1p2P3/1PPBpnR1/Pk1PpPpQ/N1qP1rp1/3P1Npp/BK1R4 w - - 0 1\n";
+
+    struct board *brd = allocate_board();
+    consume_fen_notation(pos, brd);
+
 
     struct move_list list = {
         .moves = {0},
@@ -1044,6 +1111,7 @@ void test_capture_move_gen_3(void)
         assert_true(pce != NO_PIECE);
         assert_true(IS_CAPTURE_MOVE(mv) == true);
     }
+    free_board(brd);
 }
 
 

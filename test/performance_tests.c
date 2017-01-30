@@ -25,7 +25,6 @@
 #include "types.h"
 #include "attack.h"
 #include "assert.h"
-#include "init.h"
 #include "fen.h"
 #include "board.h"
 #include "pieces.h"

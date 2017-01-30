@@ -48,7 +48,8 @@ static inline void add_white_pawn_info(struct board *brd, enum square sq);
 static inline void remove_black_pawn_info(struct board *brd, enum square sq);
 static inline void remove_white_pawn_info(struct board *brd, enum square sq);
 static inline void update_pawn_control(struct board* brd, const enum colour col, const enum square sq, int8_t val);
-
+static void init_board(struct board *brd);
+static void get_clean_board(struct board *brd);
 
 
 static void assert_board_and_move(struct board *brd, mv_bitmap mv);
@@ -135,10 +136,15 @@ struct board {
 
 };
 
-
+//////////////////////////////////////////////////////////////////
+//
+// 							Initialisation 
+//
+//////////////////////////////////////////////////////////////////
 
 struct board* allocate_board(void){
-	return (struct board *)calloc(1, sizeof(struct board));
+	struct board *brd  = (struct board *)calloc(1, sizeof(struct board));
+	init_board(brd);
 }
 
 void free_board(struct board *brd){
@@ -156,10 +162,13 @@ void free_board(struct board *brd){
  * @return	a new board
  *
  */
-void init_board(char *fen, struct board *brd)
+static void init_board(struct board *brd)
 {
     get_clean_board(brd);
-    consume_fen_notation(fen, brd);
+    
+    init_hash_keys();
+    init_move_gen_framework();
+    init_attack_framework();
     
 #ifdef ENABLE_ASSERTS
 	ASSERT_BOARD_OK(brd);
@@ -168,24 +177,6 @@ void init_board(char *fen, struct board *brd)
 }
 
 
-struct board * init_game(char *fen)
-{
-    init_game_no_board();
-
-    init_board(fen, pBrd);
-
-    ASSERT_BOARD_OK(pBrd);
-
-    return pBrd;
-}
-
-void init_game_no_board()
-{
-    init_hash_keys();
-    init_move_gen_framework();
-    init_attack_framework();
-}
-
 /*
  * Creates an empty board struct
  * name: get_clean_board
@@ -193,10 +184,9 @@ void init_game_no_board()
  * @return	ptr to a created board struct
  *
  */
-void get_clean_board(struct board *brd)
+static void get_clean_board(struct board *brd)
 {
-    memset(brd, 0, sizeof(struct board));
-
+   
     for(uint8_t i = 0; i < NUM_SQUARES; i++) {
         brd->pieces[i] = NO_PIECE;
     }
@@ -239,6 +229,12 @@ void init_search_killers(struct board *brd){
         }
     }
 }
+
+///////////////////////////////////////////////////////////////////////
+
+
+
+
 
 
 // returns the count.
