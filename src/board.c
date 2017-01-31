@@ -143,7 +143,8 @@ struct board {
 //////////////////////////////////////////////////////////////////
 
 struct board* allocate_board(void){
-	struct board *brd  = (struct board *)calloc(1, sizeof(struct board));
+	struct board *brd  = (struct board *)malloc(sizeof(struct board));
+	memset(brd, 0, sizeof(struct board));
 	init_board(brd);
 	return brd;
 }
