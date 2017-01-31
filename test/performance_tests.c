@@ -379,7 +379,9 @@ void test_move_gen_depth()
         struct EPD e = test_positions[i];
 
         printf("Analysing FEN to depth %d : '%s'\n", depth, e.fen);
-        struct board *brd = init_game(e.fen);
+		struct board *brd = allocate_board();
+		consume_fen_notation(e.fen, brd);
+    
 
 #ifdef ENABLE_ASSERTS
 		ASSERT_BOARD_OK(brd);
@@ -402,7 +404,7 @@ void test_move_gen_depth()
 #ifdef ENABLE_ASSERTS
 		ASSERT_BOARD_OK(brd);
 #endif
-
+		free_board(brd);
 
     }
 

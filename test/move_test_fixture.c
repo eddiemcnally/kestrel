@@ -372,6 +372,7 @@ void test_generation_king_moves(void)
 
     struct board *brd = allocate_board();
     consume_fen_notation(test_fen, brd);
+    
     struct move_list mvl = {
         .moves = {0},
         .move_count = 0
@@ -391,9 +392,12 @@ void test_generation_king_moves(void)
     mv = MOVE(a2, a1, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    // reset things and check for white king
-    brd = init_game(test_fen);
-
+	free_board(brd);
+	
+	// reset things and check for white king
+    brd = allocate_board();
+    consume_fen_notation(test_fen, brd);
+    
     memset(&mvl, 0, sizeof(struct move_list));
     TEST_generate_king_moves(brd, &mvl, WHITE);
 
@@ -405,12 +409,15 @@ void test_generation_king_moves(void)
     mv = MOVE(h1, g1, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
+	free_board(brd);
+
     //=======================
     // reset things and do another test
-    test_fen =
-        "r5r1/2KP2R1/R1PP2p1/1pPp2P1/pp1Pp3/3kp1P1/3P2pQ/6q1 w - - 0 1";
+    test_fen = "r5r1/2KP2R1/R1PP2p1/1pPp2P1/pp1Pp3/3kp1P1/3P2pQ/6q1 w - - 0 1";
 
-    brd = init_game(test_fen);
+	brd = allocate_board();
+    consume_fen_notation(test_fen, brd);
+
     memset(&mvl, 0, sizeof(struct move_list));
     TEST_generate_king_moves(brd, &mvl, BLACK);
 
@@ -430,8 +437,11 @@ void test_generation_king_moves(void)
     mv = MOVE(d3, e2, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
+	free_board(brd);
+
     // reset things and check for white king
-    brd = init_game(test_fen);
+	brd = allocate_board();
+    consume_fen_notation(test_fen, brd);
 
     memset(&mvl, 0, sizeof(struct move_list));
     TEST_generate_king_moves(brd, &mvl, WHITE);
@@ -540,6 +550,7 @@ void test_generation_sliding_horizontal_and_vertical_moves(void)
 {
 
     char *sliding_test = "K7/1rp5/5R1P/6p1/7P/1k3p1P/1P1p2r1/4R3 w - - 0 1";
+    struct board *brd = allocate_board();
     consume_fen_notation(sliding_test, brd);
 
 
@@ -663,7 +674,11 @@ void test_king_castling_moves(void)
     mv = MOVE(e1, c1, NO_PIECE, NO_PIECE, MFLAG_CASTLE);
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
-    brd = init_game(sliding_test);
+	free_board(brd);
+
+	brd = allocate_board();
+    consume_fen_notation(sliding_test, brd);
+    
     memset(&mvl, 0, sizeof(struct move_list));
 
     TEST_generate_castle_moves(brd, &mvl, BLACK);
@@ -832,7 +847,7 @@ void test_add_piece()
  */
 void test_en_passant(void)
 {
-    struct board *test_fen = "4k3/2p5/8/3P4/8/8/8/4K3 b - - 0 1\n";
+    char *test_fen = "4k3/2p5/8/3P4/8/8/8/4K3 b - - 0 1\n";
 
     struct board *brd = allocate_board();
     consume_fen_notation(test_fen, brd);

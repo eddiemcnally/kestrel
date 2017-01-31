@@ -23,6 +23,8 @@
 #include <time.h>
 #include "seatest.h"
 #include "types.h"
+#include "board.h"
+#include "fen.h"
 #include "search.h"
 #include "move_gen_utils.h"
 
@@ -70,7 +72,8 @@ void test_move_sort_1(void)
 
 void test_mate_in_two()
 {
-    struct board *brd = init_game(MATE_IN_TWO);
+	struct board *brd = allocate_board();
+	consume_fen_notation(MATE_IN_TWO, brd);
 
     struct search_info si;
 

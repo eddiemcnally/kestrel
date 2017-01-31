@@ -145,6 +145,7 @@ struct board {
 struct board* allocate_board(void){
 	struct board *brd  = (struct board *)calloc(1, sizeof(struct board));
 	init_board(brd);
+	return brd;
 }
 
 void free_board(struct board *brd){

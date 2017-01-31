@@ -102,7 +102,7 @@ static void do_uci_loop()
             uci_print_ready();
             continue;
         } else if (!strncmp(line, "position", 8)) {
-            uci_parse_position(line, &brd);
+            uci_parse_position(line, brd);
         } else if (!strncmp(line, "ucinewgame", 10)) {
             uci_parse_position("position startpos\n", brd);
 //        } else if (!strncmp(line, "go", 2)) {
