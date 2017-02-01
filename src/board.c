@@ -172,10 +172,6 @@ static void init_board(struct board *brd)
     init_move_gen_framework();
     init_attack_framework();
     
-#ifdef ENABLE_ASSERTS
-	ASSERT_BOARD_OK(brd);
-#endif
-
 }
 
 
@@ -447,7 +443,11 @@ uint64_t get_bitboard(const struct board *brd, enum piece pce){
 }
 
 uint64_t get_bitboard_for_king(const struct board *brd, enum colour piece_col){
-	return brd->king_sq[piece_col];
+	if (piece_col == WHITE){
+		return brd->bitboards.pieces[W_KING];
+	} else{
+		return brd->bitboards.pieces[B_KING];
+	}
 }
 
 uint64_t get_bitboard_all_pieces(const struct board *brd){

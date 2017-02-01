@@ -44,7 +44,7 @@
  * Thanks for BlueFever Software for his youtube videos and this code
  */
 
-int consume_fen_notation(const char *fen_string, struct board *brd)
+void consume_fen_notation(const char *fen_string, struct board *brd)
 {
 
     int rank = RANK_8;
@@ -113,7 +113,7 @@ int consume_fen_notation(const char *fen_string, struct board *brd)
 
         default:
             printf("FEN error \n");
-            return -1;
+            return;
         }
 
         for (int i = 0; i < count; i++) {
@@ -176,6 +176,5 @@ int consume_fen_notation(const char *fen_string, struct board *brd)
     }
 
 	update_board_hash(brd);
-	
-    return 0;
+
 }

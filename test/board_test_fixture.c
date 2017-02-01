@@ -50,7 +50,6 @@ void board_test_fixture(void);
  */
 void test_initial_board_placement()
 {
-    init_hash_keys();
     struct board *brd = allocate_board();
     consume_fen_notation(STARTING_FEN, brd);
 
