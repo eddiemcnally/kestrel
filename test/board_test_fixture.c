@@ -44,6 +44,7 @@ void test_checking_bits_in_a_board(void);
 void test_bit_counting(void);
 void test_LSB_clear(void);
 void board_test_fixture(void);
+void test_king_bitboard(void);
 
 /**
  * Verifies the initial board setup plus some supporting code
@@ -202,6 +203,23 @@ void test_fen_parsing_general_layout_1()
 
 	free_board(brd);
 }
+
+void test_king_bitboard(){
+	char *pos = "2rq1b1r/p3kppp/2np1n2/1pp1pb2/PP1P1B2/2N1PP2/2P1N1PP/RQK2B1R b - - 0 1\n";
+	
+    struct board *brd = allocate_board();
+    consume_fen_notation(pos, brd);
+	
+	uint64_t blk_bb = get_bitboard_for_king(brd, BLACK);
+	enum square black_king_sq = pop_1st_bit(&blk_bb);
+	assert_true(black_king_sq == e7);
+
+	uint64_t wht_bb = get_bitboard_for_king(brd, WHITE);
+	enum square white_king_sq = pop_1st_bit(&wht_bb);
+	assert_true(white_king_sq == c1);
+	
+}
+
 
 void test_fen_parsing_general_layout_2()
 {
@@ -367,17 +385,32 @@ void test_fen_parsing_general_layout_2()
     assert_true(get_en_passant_sq(brd) == NO_SQUARE);
 
 
-    // test pawn positions
-    for(int f = FILE_A; f <= FILE_H; f++) {
-        assert_true(get_num_pawns_on_rank(brd,WHITE, (enum rank)f) == 1);
-        assert_true(get_num_pawns_on_rank(brd,BLACK, (enum rank)f) == 1);
+    // test pawns on files
+    for(enum file f = FILE_A; f <= FILE_H; f++) {
+        assert_true(get_num_pawns_on_file(brd, WHITE, f) == 1);
+        assert_true(get_num_pawns_on_file(brd, BLACK, f) == 1);
     }
-    assert_true(get_num_pawns_on_rank(brd,WHITE, RANK_2) == 7);
-    assert_true(get_num_pawns_on_rank(brd,WHITE, RANK_4) == 1);
+    
+    // test pawns on files
+    assert_true(get_num_pawns_on_rank(brd, WHITE, RANK_1) == 0);
+    assert_true(get_num_pawns_on_rank(brd, WHITE, RANK_2) == 7);
+    assert_true(get_num_pawns_on_rank(brd, WHITE, RANK_3) == 0);
+    assert_true(get_num_pawns_on_rank(brd, WHITE, RANK_4) == 1);
+    assert_true(get_num_pawns_on_rank(brd, WHITE, RANK_5) == 0);
+    assert_true(get_num_pawns_on_rank(brd, WHITE, RANK_6) == 0);
+    assert_true(get_num_pawns_on_rank(brd, WHITE, RANK_7) == 0);
+    assert_true(get_num_pawns_on_rank(brd, WHITE, RANK_8) == 0);
 
-    assert_true(get_num_pawns_on_rank(brd,BLACK,RANK_7) == 7);
-    assert_true(get_num_pawns_on_rank(brd,BLACK,RANK_5) == 1);
-
+    assert_true(get_num_pawns_on_rank(brd, BLACK, RANK_1) == 0);
+    assert_true(get_num_pawns_on_rank(brd, BLACK, RANK_2) == 0);
+    assert_true(get_num_pawns_on_rank(brd, BLACK, RANK_3) == 0);
+    assert_true(get_num_pawns_on_rank(brd, BLACK, RANK_4) == 0);
+    assert_true(get_num_pawns_on_rank(brd, BLACK, RANK_5) == 1);
+    assert_true(get_num_pawns_on_rank(brd, BLACK, RANK_6) == 0);
+    assert_true(get_num_pawns_on_rank(brd, BLACK, RANK_7) == 7);
+    assert_true(get_num_pawns_on_rank(brd, BLACK, RANK_8) == 0);
+        
+    
     assert_true(get_num_squares_under_pawn_ctl(brd,WHITE,a3) == 1);
     assert_true(get_num_squares_under_pawn_ctl(brd,WHITE,b3) == 2);
     assert_true(get_num_squares_under_pawn_ctl(brd,WHITE,c3) == 2);
@@ -554,6 +587,7 @@ void board_test_fixture(void)
 
     run_test(test_initial_board_placement);
 
+	run_test(test_king_bitboard);
     run_test(test_setting_bits_in_a_board);
     run_test(test_checking_bits_in_a_board);
     run_test(test_clearing_bits_in_a_board);

@@ -51,7 +51,7 @@ void all_tests(void)
     attack_test_fixture();
     utils_test_fixture();
     search_test_fixture();
-    perf_test_fixture();
+    //perf_test_fixture();
 
 }
 

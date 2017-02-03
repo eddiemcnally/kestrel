@@ -43,8 +43,7 @@
 
 
 
-static inline void add_black_pawn_info(struct board *brd, enum square sq);
-static inline void add_white_pawn_info(struct board *brd, enum square sq);
+static inline void add_pawn_info(struct board *brd, enum colour col, enum square sq);
 static inline void remove_black_pawn_info(struct board *brd, enum square sq);
 static inline void remove_white_pawn_info(struct board *brd, enum square sq);
 static inline void update_pawn_control(struct board* brd, const enum colour col, const enum square sq, int8_t val);
@@ -568,12 +567,12 @@ void move_piece(struct board *brd, enum square from, enum square to)
 		case W_PAWN:
             // easiest way to move a pawn
             remove_white_pawn_info(brd, from);
-            add_white_pawn_info(brd, to);
+            add_pawn_info(brd, WHITE, to);
 			break;
 		case B_PAWN:
             // easiest way to move a pawn
             remove_black_pawn_info(brd, from);
-            add_black_pawn_info(brd, to);
+            add_pawn_info(brd, BLACK, to);
             break;
 		case W_KING:
             brd->king_sq[WHITE] = to;
@@ -602,10 +601,10 @@ void add_piece_to_board(struct board *brd, enum piece pce, enum square sq)
 
     switch (pce) {
     case W_PAWN:
-        add_white_pawn_info(brd, sq);
+        add_pawn_info(brd, WHITE, sq);
         break;
     case B_PAWN:
-        add_black_pawn_info(brd, sq);
+        add_pawn_info(brd, BLACK, sq);
         break;
     case W_KING:
     case B_KING:
@@ -695,31 +694,18 @@ static inline void remove_white_pawn_info(struct board *brd, enum square sq)
 
 
 
+
+
 // adds a pawn to the underlying board struct
-static inline void add_black_pawn_info(struct board *brd, enum square sq)
+static inline void add_pawn_info(struct board *brd, enum colour col, enum square sq)
 {
     uint8_t file = get_file(sq);
     uint8_t rank = get_rank(sq);
 
-    brd->pawns_on_file[BLACK][file]++;
-    brd->pawns_on_rank[BLACK][rank]++;
+    brd->pawns_on_file[col][file]++;
+    brd->pawns_on_rank[col][rank]++;
 
-    update_pawn_control(brd, BLACK, sq, 1);
-}
-
-
-
-// adds a pawn to the underlying board struct
-static inline void add_white_pawn_info(struct board *brd, enum square sq)
-{
-    uint8_t file = get_file(sq);
-    uint8_t rank = get_rank(sq);
-
-    brd->pawns_on_file[WHITE][file]++;
-    brd->pawns_on_rank[WHITE][rank]++;
-
-    update_pawn_control(brd, WHITE, sq, 1);
-
+    update_pawn_control(brd, col, sq, 1);
 }
 
 
