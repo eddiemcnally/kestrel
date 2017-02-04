@@ -439,6 +439,62 @@ void test_fen_parsing_general_layout_2()
 }
 
 
+void test_get_king_square(){
+	char *test_pos = "rnbq3r/ppp2kpp/4pn2/1N6/1b1NP3/3B4/PP1B1PPP/R2Q2KR w KQkq -\n";
+	
+    struct board *brd = allocate_board();
+    consume_fen_notation(test_pos, brd);
+
+	assert_true(get_king_square(brd, BLACK) == f7);
+	assert_true(get_king_square(brd, WHITE) == g1);
+	free_board(brd);
+
+	test_pos = "rnb4r/pp4pp/1q2pn2/1Np3k1/1b1NP3/2BB4/PP3PPP/RK1Q3R w KQkq -\n";
+	
+    brd = allocate_board();
+    consume_fen_notation(test_pos, brd);
+
+	assert_true(get_king_square(brd, BLACK) == g5);
+	assert_true(get_king_square(brd, WHITE) == b1);
+	free_board(brd);
+
+
+}
+
+
+void test_is_pawn_controlling_square(){
+	char *test_pos = "r1b1k2r/pp1n1ppp/3bpn2/q1pp4/1PPBB3/P2N1P2/3PP1PP/R1BQK3 b Qkq - 0 1\n";
+	
+    struct board *brd = allocate_board();
+    consume_fen_notation(test_pos, brd);
+
+	assert_true(is_pawn_controlling_sq(brd, WHITE, a3));
+	assert_true(is_pawn_controlling_sq(brd, WHITE, b4));
+	assert_true(is_pawn_controlling_sq(brd, WHITE, c3));
+	assert_true(is_pawn_controlling_sq(brd, WHITE, d5));
+	assert_true(is_pawn_controlling_sq(brd, WHITE, e4));
+	assert_true(is_pawn_controlling_sq(brd, WHITE, f5));
+	assert_true(is_pawn_controlling_sq(brd, WHITE, g4));
+	assert_true(is_pawn_controlling_sq(brd, WHITE, g3));
+
+
+	assert_true(is_pawn_controlling_sq(brd, BLACK, a6));
+	assert_true(is_pawn_controlling_sq(brd, BLACK, b6));
+	assert_true(is_pawn_controlling_sq(brd, BLACK, b4));
+	assert_true(is_pawn_controlling_sq(brd, BLACK, c6));
+	assert_true(is_pawn_controlling_sq(brd, BLACK, c4));
+	assert_true(is_pawn_controlling_sq(brd, BLACK, d4));
+	assert_true(is_pawn_controlling_sq(brd, BLACK, d5));
+	assert_true(is_pawn_controlling_sq(brd, BLACK, e4));
+	assert_true(is_pawn_controlling_sq(brd, BLACK, e6));
+	assert_true(is_pawn_controlling_sq(brd, BLACK, f5));
+	assert_true(is_pawn_controlling_sq(brd, BLACK, g6));
+	assert_true(is_pawn_controlling_sq(brd, BLACK, h6));
+
+	free_board(brd);
+}
+
+
 void test_pawn_control(){
 	char *test_pos = "r1b1k2r/pp1n1ppp/3bpn2/q1pp4/1PPBB3/P2N1P2/3PP1PP/R1BQK3 b Qkq - 0 1\n";
 	
@@ -698,7 +754,6 @@ uint64_t get_bitboard_for_king(const struct board *brd, enum colour piece_col);
 uint64_t get_bitboard_all_pieces(const struct board *brd);
 uint64_t get_bitboard_combined(const struct board *brd, enum piece piece_1, enum piece piece_2);
 int32_t get_material_value(const struct board *brd, enum colour col);
-enum square get_king_square(const struct board *brd, enum colour col);
 
 enum colour get_side_to_move(const struct board *brd);
 void set_side_to_move(struct board *brd, enum colour side);
@@ -740,15 +795,6 @@ void take_move(struct board *brd);
 void flip_sides(struct board *brd);
 void set_bit(uint64_t * brd, enum square sq);
 void clear_bit(uint64_t * brd, enum square sq);
-
-bool is_pawn_controlling_sq(const struct board *brd, enum colour col, enum square sq);
-uint8_t get_num_pawns_on_rank(const struct board *brd, enum colour col, enum rank rank);
-uint8_t get_num_pawns_on_file(const struct board *brd, enum colour col, enum file file);
-uint8_t get_num_squares_under_pawn_ctl(const struct board *brd, enum colour col, enum square sq);
-
-
-
-
 
 
 void set_piece_material(struct board *brd);
