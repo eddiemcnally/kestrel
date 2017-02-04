@@ -41,6 +41,7 @@ void test_fen_parsing_general_layout_3(void);
 void test_setting_bits_in_a_board(void);
 void test_clearing_bits_in_a_board(void);
 void test_checking_bits_in_a_board(void);
+void test_pawn_control(void);
 void test_bit_counting(void);
 void test_LSB_clear(void);
 void board_test_fixture(void);
@@ -438,6 +439,87 @@ void test_fen_parsing_general_layout_2()
 }
 
 
+void test_pawn_control(){
+	char *test_pos = "r1b1k2r/pp1n1ppp/3bpn2/q1pp4/1PPBB3/P2N1P2/3PP1PP/R1BQK3 b Qkq - 0 1\n";
+	
+    struct board *brd = allocate_board();
+    consume_fen_notation(test_pos, brd);
+
+	// check white pawn control
+	for(enum square sq = a1; sq <= h2; sq++){
+		assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, sq) == 0);		
+	}
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, a3) == 0);
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, b3) == 0);	
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, c3) == 1);	
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, d3) == 1);
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, e3) == 1);	
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, f3) == 2);	
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, g3) == 1);
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, h3) == 1);	
+
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, a4) == 0);
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, b4) == 1);	
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, c4) == 0);	
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, d4) == 0);
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, e4) == 1);	
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, f4) == 0);	
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, g4) == 1);
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, h4) == 0);	
+
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, a5) == 1);
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, b5) == 1);	
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, c5) == 1);	
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, d5) == 1);
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, e5) == 0);	
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, f5) == 0);	
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, g5) == 0);
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, h5) == 0);	
+
+	for(enum square sq = a6; sq <= h8; sq++){
+		assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, sq) == 0);		
+	}
+	
+	// check black pawn control
+	for(enum square sq = a7; sq <= h8; sq++){
+		assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, sq) == 0);		
+	}
+	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, a6) == 1);
+	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, b6) == 1);
+	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, c6) == 1);
+	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, d6) == 0);
+	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, e6) == 1);
+	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, f6) == 1);
+	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, g6) == 2);
+	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, h6) == 1);
+	
+	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, a5) == 0);
+	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, b5) == 0);
+	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, c5) == 0);
+	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, d5) == 1);
+	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, e5) == 0);
+	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, f5) == 1);
+	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, g5) == 0);
+	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, h5) == 0);
+	
+	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, a4) == 0);
+	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, b4) == 1);
+	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, c4) == 1);
+	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, d4) == 1);
+	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, e4) == 1);
+	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, f4) == 0);
+	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, g4) == 0);
+	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, h4) == 0);
+
+	for(enum square sq = a1; sq <=h3; sq++){
+		assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, sq) == 0);		
+	}
+	
+	free_board(brd);
+}
+
+
+
 // en passant
 void test_fen_parsing_general_layout_3()
 {
@@ -598,6 +680,95 @@ void board_test_fixture(void)
     run_test(test_fen_parsing_general_layout_3);
     run_test(test_bit_counting);
     run_test(test_LSB_clear);
+    run_test(test_pawn_control);
 
     test_fixture_end();	// ends a fixture
 }
+
+
+
+/* Test to do:
+ * 
+ * 
+void move_piece(struct board *brd, enum square from, enum square to);
+void remove_piece_from_board(struct board *brd,  enum piece pce_to_remove, enum square sq);
+void add_piece_to_board(struct board *brd, enum piece pce, enum square sq);
+uint64_t get_bitboard(const struct board *brd, enum piece pce);
+uint64_t get_bitboard_for_king(const struct board *brd, enum colour piece_col);
+uint64_t get_bitboard_all_pieces(const struct board *brd);
+uint64_t get_bitboard_combined(const struct board *brd, enum piece piece_1, enum piece piece_2);
+int32_t get_material_value(const struct board *brd, enum colour col);
+enum square get_king_square(const struct board *brd, enum colour col);
+
+enum colour get_side_to_move(const struct board *brd);
+void set_side_to_move(struct board *brd, enum colour side);
+
+void set_castle_permission(struct board *brd, enum castle_perm perm);
+enum castle_perm get_castle_permissions(const struct board *brd);
+
+void set_en_passant_sq(struct board *brd, enum square sq);
+enum square get_en_passant_sq(const struct board *brd);
+
+void update_board_hash(struct board *brd);
+uint64_t get_board_hash(const struct board *brd);
+
+enum piece get_piece_on_square(const struct board *brd, enum square sq);
+
+void push_history(struct board *brd, mv_bitmap move);
+mv_bitmap pop_history(struct board *brd);
+
+uint8_t get_ply(const struct board *brd);
+void set_ply(struct board *brd, uint8_t ply);
+
+uint8_t get_history_ply(const struct board *brd);
+void set_history_ply(struct board *brd, uint8_t hist_ply);
+
+void assert_boards_are_equal(const struct board *brd1, const struct board *brd2);
+
+mv_bitmap get_best_pvline(const struct board *brd);
+mv_bitmap get_pvline(const struct board *brd, uint8_t search_depth);
+void set_pvline(struct board *brd, uint8_t search_depth, mv_bitmap move);
+uint8_t populate_pv_line(struct board *brd, uint8_t depth);
+
+
+
+
+uint8_t get_fifty_move_counter(const struct board *brd);
+
+bool make_move(struct board *brd, mv_bitmap mv);
+void take_move(struct board *brd);
+void flip_sides(struct board *brd);
+void set_bit(uint64_t * brd, enum square sq);
+void clear_bit(uint64_t * brd, enum square sq);
+
+bool is_pawn_controlling_sq(const struct board *brd, enum colour col, enum square sq);
+uint8_t get_num_pawns_on_rank(const struct board *brd, enum colour col, enum rank rank);
+uint8_t get_num_pawns_on_file(const struct board *brd, enum colour col, enum file file);
+uint8_t get_num_squares_under_pawn_ctl(const struct board *brd, enum colour col, enum square sq);
+
+
+
+
+
+
+void set_piece_material(struct board *brd);
+uint64_t overlay_white_piece_bitboards(const struct board * brd);
+uint64_t overlay_black_piece_bitboards(const struct board * brd);
+void overlay_boards(struct board *the_board);
+uint8_t count_bits(uint64_t bb);
+uint64_t square_to_bitboard(enum square sq);
+
+void init_search_history(struct board *brd);
+void init_search_killers(struct board *brd);
+
+mv_bitmap get_search_killer(struct board *brd, uint8_t killer_move_num, uint8_t ply); 
+uint32_t get_search_history(struct board *brd, enum piece pce, enum square sq); 
+void add_to_search_history(struct board *brd, enum piece pce, enum square to_sq, uint8_t depth);
+
+
+
+void shuffle_search_killers(struct board *brd, mv_bitmap mv);
+
+
+void clone_board(const struct board *board_to_clone, struct board *cloned);
+*/
