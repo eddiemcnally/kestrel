@@ -171,5 +171,5 @@ void free_board(struct board *brd);
 
 uint8_t get_rank(enum square sq);
 uint8_t get_file(enum square sq);
-enum square get_square(uint8_t rank, uint8_t file);
+enum square get_square(enum rank r, enum file f);
 void clone_board(const struct board *board_to_clone, struct board *cloned);

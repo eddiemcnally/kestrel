@@ -45,12 +45,12 @@ void all_tests(void)
 
     // add new test fixtures here.
     board_test_fixture();
-    piece_test_fixture();
-    occupancy_mask_test_fixture();
-    move_test_fixture();
-    attack_test_fixture();
+    //piece_test_fixture();
+    //occupancy_mask_test_fixture();
+    //move_test_fixture();
+    //attack_test_fixture();
     utils_test_fixture();
-    search_test_fixture();
+    //search_test_fixture();
     perf_test_fixture();
 
 }

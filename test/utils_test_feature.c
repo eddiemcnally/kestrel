@@ -36,6 +36,8 @@ void utils_test_fixture(void);
 void test_clear_MSB(void);
 void test_flip_side(void);
 
+void test_get_sq_from_rank_file(void);
+
 void test_bit_reversal(void)
 {
 
@@ -74,7 +76,13 @@ void test_flip_side(void)
     assert_true(fs == BLACK);
 }
 
-
+void test_get_sq_from_rank_file(){
+	enum rank r = RANK_8;
+	enum file f = FILE_A;
+	
+	enum square sq = get_square(r, f);
+	assert_true(sq = a8);
+}
 
 
 
@@ -86,6 +94,7 @@ void utils_test_fixture(void)
 
     run_test(test_bit_reversal);
     run_test(test_flip_side);
+    run_test(test_get_sq_from_rank_file);
 
     test_fixture_end();
 }

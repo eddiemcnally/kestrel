@@ -7,7 +7,7 @@ set(CMAKE_C_COMPILER "/usr/bin/clang")
 
 
 # debug options
-set(debug OFF)
+set(debug ON)
 
 if(debug)
 	# 
@@ -20,6 +20,7 @@ if(debug)
 		-Wall \
 		-Wextra \
 		-fsanitize=undefined \
+		-fno-omit-frame-pointer \
 		-Wstrict-prototypes \
 		-Wmissing-prototypes \
 		-Wswitch-default \

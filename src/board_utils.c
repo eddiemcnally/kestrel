@@ -57,10 +57,11 @@ void print_board(const struct board *the_board)
 {
     printf("\nGame Board:\n\n");
 
-    for (uint8_t rank = RANK_8; rank >= RANK_1; rank--) {
-        printf("%d  ", rank + 1);	// enum is zero-based
-        for (uint8_t file = FILE_A; file <= FILE_H; file++) {
-            enum square sq = get_square(rank, file);
+    for (int r = RANK_8; r >= RANK_1; r--) {
+        printf("%d  ", r + 1);	// enum is zero-based
+        for (int f = FILE_A; f <= FILE_H; f++) {
+            enum square sq = get_square(r, f);
+            
             enum piece pce = get_piece_on_square(the_board, sq);
             if (pce != NO_PIECE) {
                 char c = get_piece_label(pce);
@@ -89,8 +90,8 @@ void print_board(const struct board *the_board)
     if (enp_sq == NO_SQUARE) {
         printf("enPas:\t-\n");
     } else {
-        uint32_t rank = get_rank(enp_sq);
-        int file = get_file(enp_sq);
+        uint8_t rank = get_rank(enp_sq);
+        uint8_t file = get_file(enp_sq);
         printf("enPas:\t%c%c\n", files[file], ranks[rank]);
     }
 
@@ -191,10 +192,6 @@ bool ASSERT_BOARD_OK(const struct board *brd)
 
                 assert(sq == wk_sq);
                 
-                if (get_king_square(brd, WHITE) != wk_sq){
-					printf("NUNUIN");
-				}
-                
                 assert(get_king_square(brd, WHITE) == wk_sq);
             } else if (pce == B_KING) {
 
@@ -289,10 +286,6 @@ void assert_material_correct(const struct board *brd)
         }
     }
     assert(local_material[WHITE] == get_material_value(brd, WHITE));
-
-	if (local_material[BLACK] != get_material_value(brd, BLACK))
-		printf("NININ");
-
 
     assert(local_material[BLACK] == get_material_value(brd, BLACK));
 #endif

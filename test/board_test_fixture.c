@@ -38,6 +38,7 @@ void test_add_to_board(void);
 void test_fen_parsing_general_layout_1(void);
 void test_fen_parsing_general_layout_2(void);
 void test_fen_parsing_general_layout_3(void);
+void test_position_1(void);
 void test_setting_bits_in_a_board(void);
 void test_clearing_bits_in_a_board(void);
 void test_checking_bits_in_a_board(void);
@@ -465,6 +466,18 @@ void test_get_king_square(){
 }
 
 
+void test_position_1(){
+	char *test_pos = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\n";
+	
+    struct board *brd = allocate_board();
+    consume_fen_notation(test_pos, brd);
+
+	ASSERT_BOARD_OK(brd);
+
+	free_board(brd);
+}
+
+
 void test_is_pawn_controlling_square(){
 	char *test_pos = "r1b1k2r/pp1n1ppp/3bpn2/q1pp4/1PPBB3/P2N1P2/3PP1PP/R1BQK3 b Qkq - 0 1\n";
 	
@@ -749,6 +762,7 @@ void board_test_fixture(void)
     run_test(test_get_king_square);
 
     run_test(test_fen_parsing_initial_board_layout);
+    run_test(test_position_1);
     run_test(test_fen_parsing_general_layout_1);
     run_test(test_fen_parsing_general_layout_2);
     run_test(test_fen_parsing_general_layout_3);

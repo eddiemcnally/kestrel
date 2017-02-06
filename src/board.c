@@ -486,8 +486,8 @@ inline uint8_t get_file(enum square sq){
 	return (uint8_t)(sq % 8);
 }
 
-inline enum square get_square(uint8_t rank, uint8_t file){
-	return (enum square)((rank << 3) + file);
+inline enum square get_square(enum rank r, enum file f){
+	return (enum square)((r << 3) + f);
 }
 
 
@@ -733,10 +733,9 @@ static void assert_board_and_move(struct board *brd, mv_bitmap mv){
     enum square from = FROMSQ(mv);
     enum square to = TOSQ(mv);
 	
-	printf("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV\n");	
+
 	print_board(brd);
 	ASSERT_BOARD_OK(brd);
-	printf("UHUHUH - ");
 	print_move_details(mv);
 	printf("castle move = %d\n", IS_CASTLE_MOVE(mv));
 	printf("en pass move = %d\n", IS_EN_PASS_MOVE(mv));
