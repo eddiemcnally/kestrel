@@ -274,22 +274,6 @@ void set_pvline(struct board *brd, uint8_t search_depth, mv_bitmap move){
 }
 
 
-
-inline uint64_t overlay_white_piece_bitboards(const struct board * brd)
-{
-    return brd->bitboards.pieces[W_PAWN] | brd->bitboards.pieces[W_BISHOP]
-           | brd->bitboards.pieces[W_KNIGHT] | brd->bitboards.pieces[W_ROOK]
-           | brd->bitboards.pieces[W_QUEEN] | brd->bitboards.pieces[W_KING];
-}
-
-inline uint64_t overlay_black_piece_bitboards(const struct board * brd)
-{
-    return brd->bitboards.pieces[B_PAWN] | brd->bitboards.pieces[B_BISHOP]
-           | brd->bitboards.pieces[B_KNIGHT] | brd->bitboards.pieces[B_ROOK]
-           | brd->bitboards.pieces[B_QUEEN] | brd->bitboards.pieces[B_KING];
-}
-
-
 void update_board_hash(struct board *brd){
 	brd->board_hash = get_position_hash(brd);
 }

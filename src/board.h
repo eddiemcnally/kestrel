@@ -143,8 +143,6 @@ uint8_t get_num_squares_under_pawn_ctl(const struct board *brd, enum colour col,
 
 
 void set_piece_material(struct board *brd);
-uint64_t overlay_white_piece_bitboards(const struct board * brd);
-uint64_t overlay_black_piece_bitboards(const struct board * brd);
 void overlay_boards(struct board *the_board);
 uint8_t count_bits(uint64_t bb);
 uint64_t square_to_bitboard(enum square sq);

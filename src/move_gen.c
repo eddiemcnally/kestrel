@@ -632,7 +632,7 @@ static inline void
 generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
                           const bool only_capture_moves)
 {
-	print_board(brd);
+	//print_board(brd);
 	
     // get the bitboard representing all WHITE pawns
     // on the board

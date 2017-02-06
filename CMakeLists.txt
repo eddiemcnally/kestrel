@@ -7,7 +7,7 @@ set(CMAKE_C_COMPILER "/usr/bin/clang")
 
 
 # debug options
-set(debug ON)
+set(debug OFF)
 
 if(debug)
 	# 

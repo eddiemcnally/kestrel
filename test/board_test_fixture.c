@@ -46,6 +46,9 @@ void test_bit_counting(void);
 void test_LSB_clear(void);
 void board_test_fixture(void);
 void test_king_bitboard(void);
+void test_get_king_square(void);
+void test_get_set_side_to_move(void);
+void test_is_pawn_controlling_square(void);
 
 /**
  * Verifies the initial board setup plus some supporting code
@@ -468,15 +471,13 @@ void test_is_pawn_controlling_square(){
     struct board *brd = allocate_board();
     consume_fen_notation(test_pos, brd);
 
-	assert_true(is_pawn_controlling_sq(brd, WHITE, a3));
 	assert_true(is_pawn_controlling_sq(brd, WHITE, b4));
 	assert_true(is_pawn_controlling_sq(brd, WHITE, c3));
 	assert_true(is_pawn_controlling_sq(brd, WHITE, d5));
 	assert_true(is_pawn_controlling_sq(brd, WHITE, e4));
-	assert_true(is_pawn_controlling_sq(brd, WHITE, f5));
 	assert_true(is_pawn_controlling_sq(brd, WHITE, g4));
 	assert_true(is_pawn_controlling_sq(brd, WHITE, g3));
-
+	assert_true(is_pawn_controlling_sq(brd, WHITE, h3));
 
 	assert_true(is_pawn_controlling_sq(brd, BLACK, a6));
 	assert_true(is_pawn_controlling_sq(brd, BLACK, b6));
@@ -718,6 +719,22 @@ void test_LSB_clear(void)
     assert_false(is_square_occupied(brd, a1));
 }
 
+void  test_get_set_side_to_move(){
+	char *test_fen = "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 1";
+
+    struct board *brd = allocate_board();
+    consume_fen_notation(test_fen, brd);
+
+	set_side_to_move(brd, WHITE);
+	assert_true(get_side_to_move(brd) == WHITE);
+
+	set_side_to_move(brd, BLACK);
+	assert_true(get_side_to_move(brd) == BLACK);
+
+	free_board(brd);
+}
+
+
 void board_test_fixture(void)
 {
 
@@ -729,14 +746,20 @@ void board_test_fixture(void)
     run_test(test_setting_bits_in_a_board);
     run_test(test_checking_bits_in_a_board);
     run_test(test_clearing_bits_in_a_board);
+    run_test(test_get_king_square);
 
     run_test(test_fen_parsing_initial_board_layout);
     run_test(test_fen_parsing_general_layout_1);
     run_test(test_fen_parsing_general_layout_2);
     run_test(test_fen_parsing_general_layout_3);
+    
     run_test(test_bit_counting);
     run_test(test_LSB_clear);
+    
     run_test(test_pawn_control);
+    run_test(test_is_pawn_controlling_square);
+    
+    run_test(test_get_set_side_to_move);
 
     test_fixture_end();	// ends a fixture
 }
@@ -749,14 +772,6 @@ void board_test_fixture(void)
 void move_piece(struct board *brd, enum square from, enum square to);
 void remove_piece_from_board(struct board *brd,  enum piece pce_to_remove, enum square sq);
 void add_piece_to_board(struct board *brd, enum piece pce, enum square sq);
-uint64_t get_bitboard(const struct board *brd, enum piece pce);
-uint64_t get_bitboard_for_king(const struct board *brd, enum colour piece_col);
-uint64_t get_bitboard_all_pieces(const struct board *brd);
-uint64_t get_bitboard_combined(const struct board *brd, enum piece piece_1, enum piece piece_2);
-int32_t get_material_value(const struct board *brd, enum colour col);
-
-enum colour get_side_to_move(const struct board *brd);
-void set_side_to_move(struct board *brd, enum colour side);
 
 void set_castle_permission(struct board *brd, enum castle_perm perm);
 enum castle_perm get_castle_permissions(const struct board *brd);
@@ -766,8 +781,6 @@ enum square get_en_passant_sq(const struct board *brd);
 
 void update_board_hash(struct board *brd);
 uint64_t get_board_hash(const struct board *brd);
-
-enum piece get_piece_on_square(const struct board *brd, enum square sq);
 
 void push_history(struct board *brd, mv_bitmap move);
 mv_bitmap pop_history(struct board *brd);
@@ -802,18 +815,6 @@ uint64_t overlay_white_piece_bitboards(const struct board * brd);
 uint64_t overlay_black_piece_bitboards(const struct board * brd);
 void overlay_boards(struct board *the_board);
 uint8_t count_bits(uint64_t bb);
-uint64_t square_to_bitboard(enum square sq);
-
-void init_search_history(struct board *brd);
-void init_search_killers(struct board *brd);
-
-mv_bitmap get_search_killer(struct board *brd, uint8_t killer_move_num, uint8_t ply); 
-uint32_t get_search_history(struct board *brd, enum piece pce, enum square sq); 
-void add_to_search_history(struct board *brd, enum piece pce, enum square to_sq, uint8_t depth);
-
-
-
-void shuffle_search_killers(struct board *brd, mv_bitmap mv);
 
 
 void clone_board(const struct board *board_to_clone, struct board *cloned);
