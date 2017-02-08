@@ -30,7 +30,7 @@ void add_to_score(mv_bitmap *mv, uint32_t to_add);
 void validate_move_list(struct move_list *mvl);
 
 struct move_list *get_empty_move_list(void);
-bool is_move_in_list(struct move_list *mvl, mv_bitmap mv);
+bool is_move_in_list(const struct move_list *mvl, mv_bitmap mv);
 uint64_t reverse_bits(uint64_t word);
 uint8_t pop_1st_bit(uint64_t * bb);
 char *print_move(mv_bitmap move_bitmap);

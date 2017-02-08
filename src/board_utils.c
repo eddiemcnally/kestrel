@@ -174,6 +174,10 @@ bool ASSERT_BOARD_OK(const struct board *brd)
         conflated |= get_bitboard(brd, (enum piece)i);
     }
 
+	if (conflated != get_bitboard_all_pieces(brd)){
+		printf("JNNIUN");
+	}
+
     assert(conflated == get_bitboard_all_pieces(brd));
     
     uint64_t wking_bb = get_bitboard_for_king(brd, WHITE);

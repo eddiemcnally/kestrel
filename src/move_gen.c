@@ -311,8 +311,8 @@ void generate_all_capture_moves(struct board *brd, struct move_list *mvl)
 static inline void do_gen_moves(struct board *brd, struct move_list *mvl, const bool captures_only)
 {
 		ASSERT_BOARD_OK(brd);
-		printf("generating moves...\n");
-		print_board(brd);
+		//printf("generating moves...\n");
+		//print_board(brd);
 		
 		
     if (get_side_to_move(brd) == WHITE) {

@@ -117,21 +117,6 @@ uint64_t reverse_bits(uint64_t word)
 
 
 
-inline bool is_move_in_list(struct move_list *mvl, mv_bitmap mv)
-{
-    mv_bitmap mv_no_score = mv >> MV_MASK_OFF_FROM_SQ;
-
-    for (int i = 0; i < mvl->move_count; i++) {
-        mv_bitmap temp = mvl->moves[i] >> MV_MASK_OFF_FROM_SQ;
-
-        if (temp == mv_no_score) {
-            return true;
-        }
-    }
-    return false;
-}
-
-
 
 void validate_move_list(struct move_list *mvl)
 {
@@ -222,13 +207,36 @@ void print_move_details(mv_bitmap move_bitmap)
 		c_promoted = get_piece_label(promoted);
 	}
 	
+	char en_pass = '-';
+	if (IS_EN_PASS_MOVE(move_bitmap)){
+		en_pass = 'Y';
+	}
+	
     uint32_t score = get_score(move_bitmap);
 
-    printf("%c%c%c%c, captured '%c' promote '%c' score %d IsCapt %d \n",
+    printf("%c%c%c%c, captured '%c' promote '%c' score %d IsCapt %d IsEnPass %c\n",
            ('a' + from_file), ('1' + from_rank), ('a' + to_file),
-           ('1' + to_rank), c_capt, c_promoted, score, IS_CAPTURE_MOVE(move_bitmap));
+           ('1' + to_rank), c_capt, c_promoted, score, IS_CAPTURE_MOVE(move_bitmap), en_pass);
 
 }
+
+
+bool is_move_in_list(const struct move_list *list, mv_bitmap mv){
+	mv_bitmap masked_mv = get_move(mv);
+	
+	for (int i = 0; i < list->move_count; i++) {
+        mv_bitmap target_mv = list->moves[i];
+        
+        // mask out the score
+        target_mv = get_move(target_mv);         
+        if (target_mv == masked_mv){
+			return true;
+		}
+    }
+	return false;
+}
+
+
 
 /*
  * Prints out the move list details
@@ -237,8 +245,6 @@ void print_move_details(mv_bitmap move_bitmap)
  * @return
  *
  */
-
-
 void print_move_list_details(const struct move_list *list)
 {
     printf("MoveList Details: (%d)\n", list->move_count);

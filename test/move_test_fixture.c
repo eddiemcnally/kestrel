@@ -50,6 +50,7 @@ void test_capture_move_gen_2(void);
 void test_capture_move_gen_3(void);
 void test_zobrist_hashing_makemove_takemove(void);
 void test_en_passant(void);
+void test_en_passent_move_gen(void);
 void move_test_fixture(void);
 void test_make_move_take_move_1(void);
 void test_generate_all_moves_level_1(void);
@@ -878,6 +879,78 @@ void test_en_passant(void)
 	free_board(brd);
 }
 
+void test_en_passent_move_gen(){
+    char *test_fen = "rnbqkbnr/pp2pppp/8/2ppP3/8/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 3\n";
+
+    struct board *brd = allocate_board();
+    consume_fen_notation(test_fen, brd);
+	
+    struct move_list mvl = {
+        .moves = {0},
+        .move_count = 0
+    };
+    TEST_generate_white_pawn_moves(brd, &mvl);
+
+    assert_true(mvl.move_count == 16);
+    
+    //print_move_list_details(&mvl);
+    
+	// x2 pawn moves
+    mv_bitmap mv = MOVE(a2, a4, NO_PIECE, NO_PIECE, MFLAG_PAWN_START);
+	assert_true(is_move_in_list(&mvl, mv));
+    
+    mv = MOVE(b2, b4, NO_PIECE, NO_PIECE, MFLAG_PAWN_START);
+	assert_true(is_move_in_list(&mvl, mv));
+    
+    mv = MOVE(c2, c4, NO_PIECE, NO_PIECE, MFLAG_PAWN_START);
+	assert_true(is_move_in_list(&mvl, mv));
+
+    mv = MOVE(d2, d4, NO_PIECE, NO_PIECE, MFLAG_PAWN_START);
+	assert_true(is_move_in_list(&mvl, mv));
+
+    mv = MOVE(f2, f4, NO_PIECE, NO_PIECE, MFLAG_PAWN_START);
+	assert_true(is_move_in_list(&mvl, mv));
+
+    mv = MOVE(g2, g4, NO_PIECE, NO_PIECE, MFLAG_PAWN_START);
+	assert_true(is_move_in_list(&mvl, mv));
+
+    mv = MOVE(h2, h4, NO_PIECE, NO_PIECE, MFLAG_PAWN_START);
+	assert_true(is_move_in_list(&mvl, mv));
+
+	// one square pawn moves
+    mv = MOVE(a2, a3, NO_PIECE, NO_PIECE, MFLAG_NONE);
+	assert_true(is_move_in_list(&mvl, mv));
+    
+    mv = MOVE(b2, b3, NO_PIECE, NO_PIECE, MFLAG_NONE);
+	assert_true(is_move_in_list(&mvl, mv));
+    
+    mv = MOVE(c2, c3, NO_PIECE, NO_PIECE, MFLAG_NONE);
+	assert_true(is_move_in_list(&mvl, mv));
+
+    mv = MOVE(d2, d3, NO_PIECE, NO_PIECE, MFLAG_NONE);
+	assert_true(is_move_in_list(&mvl, mv));
+
+    mv = MOVE(f2, f3, NO_PIECE, NO_PIECE, MFLAG_NONE);
+	assert_true(is_move_in_list(&mvl, mv));
+
+    mv = MOVE(g2, g3, NO_PIECE, NO_PIECE, MFLAG_NONE);
+	assert_true(is_move_in_list(&mvl, mv));
+
+    mv = MOVE(h2, h3, NO_PIECE, NO_PIECE, MFLAG_NONE);
+	assert_true(is_move_in_list(&mvl, mv));
+
+
+    mv = MOVE(e5, e6, NO_PIECE, NO_PIECE, MFLAG_NONE);
+	assert_true(is_move_in_list(&mvl, mv));
+	
+    mv = MOVE(e5, d6, B_PAWN, NO_PIECE, MFLAG_EN_PASSANT);
+	assert_true(is_move_in_list(&mvl, mv));
+
+	free_board(brd);
+
+}
+
+
 void test_move_piece()
 {
 
@@ -1142,6 +1215,7 @@ void move_test_fixture(void)
     run_test(test_generation_king_moves);
     run_test(test_king_castling_moves);
     run_test(test_en_passant);
+    run_test(test_en_passent_move_gen);
     run_test(test_generation_sliding_horizontal_and_vertical_moves);
     run_test(test_generation_sliding_diagonal_moves);
     run_test(test_sample_board_position);
