@@ -251,7 +251,7 @@ void test_generation_black_pawn_moves(void)
 
     mv = MOVE(d5, d4, NO_PIECE, NO_PIECE, 0);
     assert_true(TEST_is_move_in_list(&mvl, mv));
-    
+
     free_board(brd);
 
 }
@@ -374,7 +374,7 @@ void test_generation_king_moves(void)
 
     struct board *brd = allocate_board();
     consume_fen_notation(test_fen, brd);
-    
+
     struct move_list mvl = {
         .moves = {0},
         .move_count = 0
@@ -395,11 +395,11 @@ void test_generation_king_moves(void)
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
 	free_board(brd);
-	
+
 	// reset things and check for white king
     brd = allocate_board();
     consume_fen_notation(test_fen, brd);
-    
+
     memset(&mvl, 0, sizeof(struct move_list));
     TEST_generate_king_moves(brd, &mvl, WHITE);
 
@@ -591,7 +591,7 @@ void test_generation_sliding_horizontal_and_vertical_moves(void)
     assert_true(TEST_is_move_in_list(&mvl, mv));
 
 	free_board(brd);
-	
+
     // check the white rooks
     brd = allocate_board();
     consume_fen_notation(sliding_test, brd);
@@ -680,7 +680,7 @@ void test_king_castling_moves(void)
 
 	brd = allocate_board();
     consume_fen_notation(sliding_test, brd);
-    
+
     memset(&mvl, 0, sizeof(struct move_list));
 
     TEST_generate_castle_moves(brd, &mvl, BLACK);
@@ -703,8 +703,8 @@ void test_king_castling_moves(void)
 
     assert_true(mvl.move_count == 0);
 	free_board(brd);
-	
-	
+
+
 	///////////////////////////////////////////////
     brd = allocate_board();
     consume_fen_notation(sliding_test, brd);
@@ -727,7 +727,7 @@ void test_sample_board_position()
         "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1\n";
     struct board *brd = allocate_board();
     consume_fen_notation(sample_position, brd);
-    
+
     struct move_list mvl = {
         .moves = {0},
         .move_count = 0
@@ -742,10 +742,10 @@ void test_sample_board_position()
 void test_generate_all_moves_level_1(){
 char *sample_position =
         "r2q1rk1/2p1pppp/p1n2n2/1p1p4/1PbP2b1/B1N1PN2/P1P1BPPP/R2QK2R w KQ - 0 1\n";
-    
+
     struct board *brd = allocate_board();
     consume_fen_notation(sample_position, brd);
-    
+
     struct move_list mvl = {
         .moves = {0},
         .move_count = 0
@@ -754,7 +754,7 @@ char *sample_position =
     generate_all_moves(brd, &mvl);
 
     assert_true(mvl.move_count == 48);
-	
+
 	free_board(brd);
 }
 
@@ -771,11 +771,11 @@ void test_clear_piece()
         "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1\n";
     struct board *brd = allocate_board();
     consume_fen_notation(sample_position, brd);
-    
+
    	const struct bitboards *bb_str = get_bitboard_struct(brd);
-    
+
     assert_true(is_square_occupied(get_bitboard_all_pieces(bb_str), c3) == true);
-    assert_true(is_square_occupied(get_bitboard(bb_str, W_KNIGHT), c3) == true);
+    assert_true(is_square_occupied(get_bitboard_for_piece(bb_str, W_KNIGHT), c3) == true);
 
     // save some info before the move for comparison
     uint64_t old_hash = get_board_hash(brd);
@@ -794,7 +794,7 @@ void test_clear_piece()
     assert_true(get_piece_on_square(brd, c3) == NO_PIECE);
 
     assert_true(is_square_occupied(get_bitboard_all_pieces(bb_str), c3) == false);
-    assert_true(is_square_occupied(get_bitboard(bb_str, W_KNIGHT), c3) == false);
+    assert_true(is_square_occupied(get_bitboard_for_piece(bb_str, W_KNIGHT), c3) == false);
 
 	free_board(brd);
 }
@@ -807,15 +807,15 @@ void test_add_piece()
     //
     char *sample_position =
         "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1\n";
-    
+
     struct board *brd = allocate_board();
     consume_fen_notation(sample_position, brd);
-        
+
    	const struct bitboards *bb_str = get_bitboard_struct(brd);
-        
+
     assert_true(is_square_occupied(get_bitboard_all_pieces(bb_str), c4) == false);
-    assert_true(is_square_occupied(get_bitboard(bb_str, W_KNIGHT), c4) == false);
-    assert_true(count_bits(get_bitboard(bb_str, W_KNIGHT)) == 2);
+    assert_true(is_square_occupied(get_bitboard_for_piece(bb_str, W_KNIGHT), c4) == false);
+    assert_true(count_bits(get_bitboard_for_piece(bb_str, W_KNIGHT)) == 2);
 
     // save some info before the move for comparison
     uint64_t old_hash = get_board_hash(brd);
@@ -831,7 +831,7 @@ void test_add_piece()
     assert_true(get_piece_on_square(brd, c4) == W_KNIGHT);
 
     assert_true(is_square_occupied(get_bitboard_all_pieces(bb_str), c4) == true);
-    assert_true(is_square_occupied(get_bitboard(bb_str, W_KNIGHT), c4) == true);
+    assert_true(is_square_occupied(get_bitboard_for_piece(bb_str, W_KNIGHT), c4) == true);
 
 	free_board(brd);
 }
@@ -857,9 +857,9 @@ void test_en_passant(void)
 
     struct board *brd = allocate_board();
     consume_fen_notation(test_fen, brd);
-    
+
    	const struct bitboards *bb_str = get_bitboard_struct(brd);
-    
+
     mv_bitmap mv = MOVE(c7, c5, NO_PIECE, NO_PIECE, MFLAG_PAWN_START);
     make_move(brd, mv);
 
@@ -891,7 +891,7 @@ void test_en_passent_move_gen(){
 
     struct board *brd = allocate_board();
     consume_fen_notation(test_fen, brd);
-	
+
     struct move_list mvl = {
         .moves = {0},
         .move_count = 0
@@ -899,16 +899,16 @@ void test_en_passent_move_gen(){
     TEST_generate_white_pawn_moves(brd, &mvl);
 
     assert_true(mvl.move_count == 16);
-    
+
     //print_move_list_details(&mvl);
-    
+
 	// x2 pawn moves
     mv_bitmap mv = MOVE(a2, a4, NO_PIECE, NO_PIECE, MFLAG_PAWN_START);
 	assert_true(is_move_in_list(&mvl, mv));
-    
+
     mv = MOVE(b2, b4, NO_PIECE, NO_PIECE, MFLAG_PAWN_START);
 	assert_true(is_move_in_list(&mvl, mv));
-    
+
     mv = MOVE(c2, c4, NO_PIECE, NO_PIECE, MFLAG_PAWN_START);
 	assert_true(is_move_in_list(&mvl, mv));
 
@@ -927,10 +927,10 @@ void test_en_passent_move_gen(){
 	// one square pawn moves
     mv = MOVE(a2, a3, NO_PIECE, NO_PIECE, MFLAG_NONE);
 	assert_true(is_move_in_list(&mvl, mv));
-    
+
     mv = MOVE(b2, b3, NO_PIECE, NO_PIECE, MFLAG_NONE);
 	assert_true(is_move_in_list(&mvl, mv));
-    
+
     mv = MOVE(c2, c3, NO_PIECE, NO_PIECE, MFLAG_NONE);
 	assert_true(is_move_in_list(&mvl, mv));
 
@@ -949,7 +949,7 @@ void test_en_passent_move_gen(){
 
     mv = MOVE(e5, e6, NO_PIECE, NO_PIECE, MFLAG_NONE);
 	assert_true(is_move_in_list(&mvl, mv));
-	
+
     mv = MOVE(e5, d6, B_PAWN, NO_PIECE, MFLAG_EN_PASSANT);
 	assert_true(is_move_in_list(&mvl, mv));
 
@@ -973,8 +973,8 @@ void test_move_piece()
 	const struct bitboards *bb_str = get_bitboard_struct(brd);
 
     assert_true(is_square_occupied(get_bitboard_all_pieces(bb_str), e5) == true);
-    assert_true(is_square_occupied(get_bitboard(bb_str, W_KNIGHT), e5) == true);
-    assert_true(count_bits(get_bitboard(bb_str, W_KNIGHT)) == 2);
+    assert_true(is_square_occupied(get_bitboard_for_piece(bb_str, W_KNIGHT), e5) == true);
+    assert_true(count_bits(get_bitboard_for_piece(bb_str, W_KNIGHT)) == 2);
 
     // save some info before the move for comparison
     uint64_t old_hash = get_board_hash(brd);
@@ -994,7 +994,7 @@ void test_move_piece()
     assert_true(is_square_occupied(get_bitboard_all_pieces(bb_str), d3) == true);
     assert_true(is_square_occupied(get_bitboard_all_pieces(bb_str), e5) == false);
 
-    assert_true(is_square_occupied(get_bitboard(bb_str, W_KNIGHT), d3) == true);
+    assert_true(is_square_occupied(get_bitboard_for_piece(bb_str, W_KNIGHT), d3) == true);
 
 	free_board(brd);
 }
@@ -1043,7 +1043,7 @@ void test_make_move_take_move_1(void)
         generate_all_moves(brd, &list);
 
         struct board *starting_brd = allocate_board();
-        
+
         clone_board(brd, starting_brd);
 
         for (int i = 0; i < list.move_count; i++) {
@@ -1062,11 +1062,11 @@ void test_make_move_take_move_1(void)
 
             assert_boards_are_equal(brd, before_move);
 			free_board(before_move);
-            
+
         }
 
         assert_boards_are_equal(brd, starting_brd);
-        
+
         free_board(starting_brd);
         free_board(brd);
     }
@@ -1096,7 +1096,7 @@ void test_zobrist_hashing_makemove_takemove(void)
     assert_true(get_board_hash(brd) == pre_ep_hash);
 
 	free_board(brd);
-	
+
     // check castle hashing
     // ====================
     char *castle_pos = "r1bqkbnr/pppp2pp/2n1pp2/8/8/3BPN2/PPPP1PPP/RNBQK2R w KQkq - 0 1\n";
@@ -1115,7 +1115,7 @@ void test_zobrist_hashing_makemove_takemove(void)
     take_move(brd);
     // check hash is back to original
     assert_true(get_board_hash(brd) == pre_castle_hash);
-	
+
 	free_board(brd);
 
     // check side-to-move hashing

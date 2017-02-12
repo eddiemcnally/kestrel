@@ -314,8 +314,8 @@ static inline void do_gen_moves(struct board *brd, struct move_list *mvl, const 
 		ASSERT_BOARD_OK(brd);
 		//printf("generating moves...\n");
 		//print_board(brd);
-		
-		
+
+
     if (get_side_to_move(brd) == WHITE) {
         generate_white_pawn_moves(brd, mvl, captures_only);
         generate_knight_piece_moves(brd, mvl, W_KNIGHT, BLACK, captures_only);
@@ -338,14 +338,14 @@ static inline void do_gen_moves(struct board *brd, struct move_list *mvl, const 
 
 
 
-static inline void 
+static inline void
 add_en_passant_move(mv_bitmap mv, struct move_list *mvlist){
 
 #ifdef ENABLE_ASSERTS
 		assert(IS_EN_PASS_MOVE(mv));
 #endif
-	
-	
+
+
     mvlist->moves[mvlist->move_count] = mv;
     mvlist->move_count++;
 }
@@ -356,7 +356,7 @@ add_capture_move(mv_bitmap mv, struct move_list *mvlist, enum piece attacker, en
 	if (victim == 15 || attacker == 15){
 		assert(false);
 	}
-	
+
     // add mvv-lva assessment of score
     uint32_t mvvlva = mvv_lva_score[victim][attacker];
 
@@ -474,7 +474,7 @@ static inline void generate_knight_piece_moves(struct board *brd,
 
     // get the bitboard representing all of the piece types
     // on the board
-    uint64_t knight_bb = get_bitboard(bb, knight);
+    uint64_t knight_bb = get_bitboard_for_piece(bb, knight);
 
     // iterate over all knights of this colour on the board
     while (knight_bb != 0) {
@@ -529,7 +529,7 @@ static inline void generate_king_moves(struct board *brd,
 {
     enum square king_sq = get_king_square(brd, col);
 	const struct bitboards *bb = get_bitboard_struct(brd);
-	
+
     // get occupancy mask for this piece and square
     uint64_t mask = get_king_occ_mask(king_sq);
 
@@ -572,15 +572,15 @@ static inline void generate_king_moves(struct board *brd,
 
 static inline void generate_white_castle_moves(struct board *brd,
         struct move_list *mvl)
-{	
+{
 	const struct bitboards *bb = get_bitboard_struct(brd);
-		
+
     // check for castling
     if (get_castle_permissions(brd) & WKCA) {
 		uint64_t brd_bb= get_bitboard_all_pieces(bb);
-		
+
 		bool f1g1_occupied = ((brd_bb & F1G1_MASK) != 0);
-		
+
         if (!f1g1_occupied) {
             if (!is_sq_attacked(brd, e1, BLACK)
                     && !is_sq_attacked(brd, f1, BLACK)) {
@@ -594,7 +594,7 @@ static inline void generate_white_castle_moves(struct board *brd,
 
     if (get_castle_permissions(brd) & WQCA) {
  		uint64_t brd_bb= get_bitboard_all_pieces(bb);
- 		
+
 		bool b1c1d1_occupied = ((brd_bb & B1C1D1_MASK) != 0);
 
         if (!b1c1d1_occupied) {
@@ -616,9 +616,9 @@ static inline void generate_black_castle_moves(struct board *brd,
 
     if (get_castle_permissions(brd) & BKCA) {
 		uint64_t brd_bb= get_bitboard_all_pieces(bb);
-		
+
 		bool f8g8_occupied = ((brd_bb & F8G8_MASK) != 0);
-		
+
         if (!f8g8_occupied) {
             if (!is_sq_attacked(brd, e8, WHITE)
                     && !is_sq_attacked(brd, f8, WHITE)) {
@@ -651,14 +651,14 @@ generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
                           const bool only_capture_moves)
 {
 	//print_board(brd);
-	
+
 	ASSERT_BOARD_OK(brd);
-	
+
 	const struct bitboards *bb = get_bitboard_struct(brd);
-		
+
     // get the bitboard representing all WHITE pawns
     // on the board
-    uint64_t pawn_bb = get_bitboard(bb, W_PAWN);
+    uint64_t pawn_bb = get_bitboard_for_piece(bb, W_PAWN);
 
     uint64_t bb_black_pieces = get_bitboard_for_colour(bb, BLACK);
 
@@ -698,7 +698,7 @@ generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
                         add_quiet_move(brd, mv, mvl, W_PAWN);
                     }
                 }
-                      
+
             }
         }
         // check for capture left
@@ -708,11 +708,11 @@ generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
 
             if (is_square_occupied(bb_black_pieces, northwest) == true) {
                 enum piece capt_pce = get_piece_on_square(brd, northwest);
-                
+
                 if (capt_pce == NO_PIECE){
 					printf("*****");
 				}
-                
+
                 if (pawn_rank == RANK_7) {
                     // pawn can promote to 4 pieces
                     mv = MOVE(pawn_sq, northwest, capt_pce, W_QUEEN, MFLAG_CAPTURE);
@@ -779,10 +779,10 @@ generate_black_pawn_moves(struct board *brd, struct move_list *mvl,
 {
 
 	const struct bitboards *bb = get_bitboard_struct(brd);
-	
+
     // get the bitboard representing all BLACK pawns
     // on the board
-    uint64_t pawn_bb = get_bitboard(bb, B_PAWN);
+    uint64_t pawn_bb = get_bitboard_for_piece(bb, B_PAWN);
     uint64_t bb_white_pieces = get_bitboard_for_colour(bb, WHITE);
 
     while (pawn_bb != 0) {
@@ -823,7 +823,7 @@ generate_black_pawn_moves(struct board *brd, struct move_list *mvl,
                         add_quiet_move(brd, mv, mvl, B_PAWN);
                     }
                 }
-                
+
             }
         }
 
@@ -912,15 +912,9 @@ static inline void generate_sliding_horizontal_vertical_moves (struct board *brd
         enum colour col, const bool only_capture_moves)
 {
 	const struct bitboards *bb_str = get_bitboard_struct(brd);
-	
-    // create a single bitboard for both rook nd queen
-    uint64_t bb = 0;
-    if (col == WHITE) {
-        bb = get_bitboard_combined(bb_str, W_ROOK, W_QUEEN);
-    } else {
-        bb = get_bitboard_combined(bb_str, B_ROOK, B_QUEEN);
-    }
 
+    // create a single bitboard for both rook nd queen
+    uint64_t bb = get_bitboard_combined_rook_queen(bb_str, col);
 
     while (bb != 0) {
 
@@ -995,14 +989,9 @@ static inline void generate_sliding_diagonal_moves(struct board *brd,
         struct move_list *mvl, enum colour col, const bool only_capture_moves)
 {
 	const struct bitboards *bb_str = get_bitboard_struct(brd);
-	
+
     // create single bitboard representing bishop and queen
-    uint64_t bb = 0;
-    if (col == WHITE) {
-        bb = get_bitboard_combined(bb_str, W_BISHOP, W_QUEEN);
-    } else {
-        bb = get_bitboard_combined(bb_str, B_BISHOP, B_QUEEN);
-    }
+    uint64_t bb = get_bitboard_combined_bishop_queen(bb_str, col);
 
     while (bb != 0) {
 

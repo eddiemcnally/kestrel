@@ -85,7 +85,7 @@ void search_positions(struct board *brd, struct search_info *si, uint32_t tt_siz
         num_moves = populate_pv_line(brd, current_depth);
 
         best_move = get_best_pvline(brd);
-                
+
         uci_print_info_score(score, current_depth, si->num_nodes,
                              (get_time_of_day_in_millis() - si->search_start_time),
                              num_moves, &best_move);
@@ -116,7 +116,7 @@ static void init_search(struct board *brd)
     }
 
 	init_search_history(brd);
-	
+
 	init_search_killers(brd);
 
     set_ply(brd, 0);
@@ -240,7 +240,7 @@ static int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alp
         //printf("***no legal moves left\n");
         // no legal moves....must be mate or draw
         enum colour side_to_move = get_side_to_move(brd);
-        
+
         enum square king_sq = get_king_square(brd, side_to_move);
         enum colour opposite_side = GET_OPPOSITE_SIDE(side_to_move);
 

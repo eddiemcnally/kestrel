@@ -1,4 +1,3 @@
-
 /*
  * bitboard.c
  *
@@ -30,23 +29,26 @@
 #include <stdbool.h>
 #include "types.h"
 
-struct bitboards{
-	// bitboard entry for each piece
+struct bitboards {
+    // bitboard entry for each piece
     uint64_t pieces[NUM_PIECES];
 
     // The above array piece arrays overlayed into a single bitboard.
     // In effect, an bitwise OR of all elements in pieces[]
     uint64_t board;
 
-	// a bitboard per colour
-	uint64_t colour_bb[NUM_COLOURS];
+    // a bitboard per colour
+    uint64_t colour_bb[NUM_COLOURS];
 };
 
 void add_piece_to_bitboards(struct bitboards *bb, enum piece pce, enum square sq);
 void remove_piece_from_bitboards(struct bitboards *bb, enum piece pce, enum square sq);
-uint64_t get_bitboard(const struct bitboards *bb, enum piece pce);
+uint64_t get_bitboard_for_piece(const struct bitboards *bb, enum piece pce);
 uint64_t get_bitboard_all_pieces(const struct bitboards *bb);
-uint64_t get_bitboard_combined(const struct bitboards *bb, enum piece pce_1, enum piece pce_2);
+
+uint64_t get_bitboard_combined_rook_queen(const struct bitboards *bb, enum colour col);
+uint64_t get_bitboard_combined_bishop_queen(const struct bitboards *bb, enum colour col);
+
 uint64_t get_bitboard_for_colour(const struct bitboards *bb, enum colour col);
 uint64_t get_bitboard_for_king(const struct bitboards *bb, enum colour col);
 uint64_t square_to_bitboard(enum square sq);

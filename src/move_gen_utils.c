@@ -185,7 +185,7 @@ char *print_move(mv_bitmap move_bitmap)
 void print_board_and_move(struct board *brd, mv_bitmap move_bitmap)
 {
 	print_board(brd);
-	print_move_details(move_bitmap);	
+	print_move_details(move_bitmap);
 }
 
 void print_move_details(mv_bitmap move_bitmap)
@@ -207,12 +207,12 @@ void print_move_details(mv_bitmap move_bitmap)
     if (promoted != NO_PIECE){
 		c_promoted = get_piece_label(promoted);
 	}
-	
+
 	char en_pass = '-';
 	if (IS_EN_PASS_MOVE(move_bitmap)){
 		en_pass = 'Y';
 	}
-	
+
     uint32_t score = get_score(move_bitmap);
 
     printf("%c%c%c%c, captured '%c' promote '%c' score %d IsCapt %d IsEnPass %c\n",
@@ -224,12 +224,12 @@ void print_move_details(mv_bitmap move_bitmap)
 
 bool is_move_in_list(const struct move_list *list, mv_bitmap mv){
 	mv_bitmap masked_mv = get_move(mv);
-	
+
 	for (int i = 0; i < list->move_count; i++) {
         mv_bitmap target_mv = list->moves[i];
-        
+
         // mask out the score
-        target_mv = get_move(target_mv);         
+        target_mv = get_move(target_mv);
         if (target_mv == masked_mv){
 			return true;
 		}

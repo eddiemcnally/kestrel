@@ -92,13 +92,13 @@ bool is_sq_attacked(const struct board *brd, enum square sq,
         }
 
         // get the bitboard for rook and queen
-        uint64_t rq_bb = get_bitboard_combined(bb, W_ROOK, W_QUEEN);
+        uint64_t rq_bb = get_bitboard_combined_rook_queen(bb, WHITE);
         if (is_rook_or_queen_attacking_square(brd, sq, rq_bb)) {
             return true;
         }
 
         // get the bitboard for bishop and queen
-        uint64_t bq_bb = get_bitboard_combined(bb, W_BISHOP, W_QUEEN);
+        uint64_t bq_bb = get_bitboard_combined_bishop_queen(bb, WHITE);
         if (is_bishop_or_queen_attacking_square(brd, sq, bq_bb)) {
             return true;
         }
@@ -118,12 +118,12 @@ bool is_sq_attacked(const struct board *brd, enum square sq,
         }
 
         // get the bitboard for rook and queen
-        uint64_t rq_bb = get_bitboard_combined(bb, B_ROOK, B_QUEEN);
+        uint64_t rq_bb = get_bitboard_combined_rook_queen(bb, BLACK);
         if (is_rook_or_queen_attacking_square(brd, sq, rq_bb)) {
             return true;
         }
         // get the bitboard for bishop and queen
-        uint64_t rq_bq = get_bitboard_combined(bb, B_BISHOP, B_QUEEN);
+        uint64_t rq_bq = get_bitboard_combined_bishop_queen(bb, BLACK);
         if (is_bishop_or_queen_attacking_square(brd, sq, rq_bq)) {
             return true;
         }
@@ -195,7 +195,7 @@ inline bool is_knight_attacking_square(const struct board *brd,
 
     // get the bitboard representing all knights on the board of
     // this colour
-    uint64_t bb_knight = get_bitboard(bb, attacking_piece);
+    uint64_t bb_knight = get_bitboard_for_piece(bb, attacking_piece);
     while (bb_knight != 0) {
         enum square knight_sq = pop_1st_bit(&bb_knight);
         uint64_t msk = get_knight_occ_mask(knight_sq);
@@ -225,7 +225,7 @@ inline bool is_attacked_horizontally_or_vertically(
 {
 
 	const struct bitboards *bb = get_bitboard_struct(brd);
-	
+
     uint64_t rook_mask = get_rook_occ_mask(sq_one);
 
     if (is_square_occupied(rook_mask, sq_two)) {
@@ -259,7 +259,7 @@ inline bool is_attacked_diagonally(const struct board *brd,
 {
     uint64_t bishop_occ_mask = get_bishop_occ_mask(attacking_sq);
 	const struct bitboards *bb = get_bitboard_struct(brd);
-	
+
     if(is_square_occupied(bishop_occ_mask, target_sq)) {
         // the piece on target_sq shares a diagonal with the bishop so
         // check intervening squares

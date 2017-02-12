@@ -62,7 +62,7 @@ void print_board(const struct board *the_board)
         printf("%d  ", r + 1);	// enum is zero-based
         for (enum file f = FILE_A; f <= FILE_H; f++) {
             enum square sq = get_square(r, f);
-            
+
             enum piece pce = get_piece_on_square(the_board, sq);
             if (pce != NO_PIECE) {
                 char c = get_piece_label(pce);
@@ -175,11 +175,11 @@ bool ASSERT_BOARD_OK(const struct board *brd)
 	const struct bitboards *bb = get_bitboard_struct(brd);
 
     for (int i = 0; i < NUM_PIECES; i++) {
-        conflated |= get_bitboard(bb, (enum piece)i);
+        conflated |= get_bitboard_for_piece(bb, (enum piece)i);
     }
 
     assert(conflated == get_bitboard_all_pieces(bb));
-    
+
     uint64_t wking_bb = get_bitboard_for_king(bb, WHITE);
     assert(count_bits(wking_bb) == 1);
     uint64_t bking_bb = get_bitboard_for_king(bb, BLACK);
@@ -195,11 +195,11 @@ bool ASSERT_BOARD_OK(const struct board *brd)
                 enum square wk_sq = pop_1st_bit(&bb_wk);
 
                 assert(sq == wk_sq);
-                
+
                 assert(get_king_square(brd, WHITE) == wk_sq);
             } else if (pce == B_KING) {
 
-                uint64_t bb_bk = get_bitboard(bb, B_KING);
+                uint64_t bb_bk = get_bitboard_for_piece(bb, B_KING);
                 enum square bk_sq = pop_1st_bit(&bb_bk);
 
                 assert(sq == bk_sq);
@@ -226,7 +226,7 @@ bool ASSERT_BOARD_OK(const struct board *brd)
                 assert(is_square_occupied(black_bb, sq) != 0);
             }
 
-            uint64_t pce_bb = get_bitboard(bb, pce);
+            uint64_t pce_bb = get_bitboard_for_piece(bb, pce);
             assert(is_square_occupied(pce_bb, sq) != 0);
         }
     }
@@ -254,7 +254,7 @@ void assert_material_correct(const struct board *brd)
 
     // calc and verify the material count
     int32_t local_material[NUM_COLOURS] = {0, 0};
-    
+
     for (enum square sq = a1; sq <= h8; sq++) {
         enum piece pce = get_piece_on_square(brd, sq);
         if (pce != NO_PIECE) {

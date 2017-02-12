@@ -75,14 +75,14 @@ struct board {
 
 	// bitboards
 	struct bitboards bitboards;
-    
+
     // indexed by enum colour, contains sum of all piece values
     uint32_t material[NUM_COLOURS];
 
     // contains the pieces on each square
     enum piece pieces[NUM_SQUARES];
 
-    
+
     // we need to look up the king position very frequently,
     // so save it for a quick lookup, rather than extracting it
     // from a bitboard each time
@@ -129,7 +129,7 @@ struct board {
 
 //////////////////////////////////////////////////////////////////
 //
-// 							Initialisation 
+// 							Initialisation
 //
 //////////////////////////////////////////////////////////////////
 
@@ -158,11 +158,11 @@ void free_board(struct board *brd){
 static void init_board(struct board *brd)
 {
     get_clean_board(brd);
-    
+
     init_hash_keys();
     init_move_gen_framework();
     init_attack_framework();
-    
+
 }
 
 
@@ -175,7 +175,7 @@ static void init_board(struct board *brd)
  */
 static void get_clean_board(struct board *brd)
 {
-   
+
     for(uint8_t i = 0; i < NUM_SQUARES; i++) {
         brd->pieces[i] = NO_PIECE;
     }
@@ -195,7 +195,7 @@ static void get_clean_board(struct board *brd)
         brd->history[i].en_passant = NO_SQUARE;
         // other struct values are already set to zero with memset
     }
-    
+
     set_castle_permission(brd, CASTLE_PERM_NONE);
 }
 
@@ -376,7 +376,7 @@ void assert_boards_are_equal(const struct board *brd1, const struct board *brd2)
 
 mv_bitmap get_search_killer(struct board *brd, uint8_t killer_move_num, uint8_t ply){
 	return brd->search_killers[killer_move_num][ply];
-} 
+}
 
 uint32_t get_search_history(struct board *brd, enum piece pce, enum square sq){
 	return brd->search_history[pce][sq];
@@ -408,7 +408,7 @@ inline bool is_piece_on_square(const struct board *brd, enum piece pce, enum squ
 
 
 bool is_pawn_controlling_sq(const struct board *brd, enum colour col, enum square sq){
-	return brd->pawn_control[col][sq] > 0; 
+	return brd->pawn_control[col][sq] > 0;
 }
 
 
@@ -465,7 +465,7 @@ uint8_t get_num_pawns_on_file(const struct board *brd, enum colour col, enum fil
 }
 
 uint8_t get_num_squares_under_pawn_ctl(const struct board *brd, enum colour col, enum square sq){
-	return brd->pawn_control[col][sq]; 
+	return brd->pawn_control[col][sq];
 }
 
 
@@ -496,7 +496,7 @@ mv_bitmap pop_history(struct board *brd){
 
 
 void move_piece(struct board *brd, enum square from, enum square to)
-{	
+{
     enum piece pce = brd->pieces[from];
 
     // adjust the hash
@@ -663,10 +663,10 @@ static inline void update_pawn_control(struct board* brd, const enum colour col,
 	if (col == WHITE){
 		if (file > FILE_A) {
 			if (rank < RANK_8) {
-				next_sq = (int8_t)(sq + NW);				
+				next_sq = (int8_t)(sq + NW);
 				brd->pawn_control[col][next_sq] += val;
 			}
-		} 
+		}
 		if (file < FILE_H) {
 			if (rank < RANK_8) {
 				next_sq = (int8_t)(sq + NE);
@@ -679,7 +679,7 @@ static inline void update_pawn_control(struct board* brd, const enum colour col,
 				next_sq = (int8_t)((int8_t)sq + (int8_t)SW);
 				brd->pawn_control[col][next_sq] += val;
 			}
-		} 
+		}
 		if (file < FILE_H) {
 			if (rank > RANK_1) {
 				next_sq = (int8_t)((int8_t)sq + (int8_t)SE);
@@ -693,7 +693,7 @@ static inline void update_pawn_control(struct board* brd, const enum colour col,
 static void assert_board_and_move(struct board *brd, mv_bitmap mv){
     enum square from = FROMSQ(mv);
     enum square to = TOSQ(mv);
-	
+
 
 	print_board(brd);
 	ASSERT_BOARD_OK(brd);
@@ -716,10 +716,10 @@ static void assert_board_and_move(struct board *brd, mv_bitmap mv){
 
 // return false if move is invalid, true otherwise
 bool make_move(struct board *brd, mv_bitmap mv)
-{	
+{
     enum square from = FROMSQ(mv);
     enum square to = TOSQ(mv);
-	
+
     enum piece pce_being_moved = get_piece_on_square(brd, from);
     enum colour side = get_side_to_move(brd);
 

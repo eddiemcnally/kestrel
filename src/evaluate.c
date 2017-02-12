@@ -248,7 +248,7 @@ inline static int32_t eval_piece(const struct board *brd, enum piece pce,
     int32_t score = 0;
    	const struct bitboards *bb_str = get_bitboard_struct(brd);
 
-    uint64_t bb = get_bitboard(bb_str, pce);
+    uint64_t bb = get_bitboard_for_piece(bb_str, pce);
     if (IS_BLACK(pce)) {
         while (bb != 0) {
             enum square sq = pop_1st_bit(&bb);
@@ -274,14 +274,14 @@ inline static int32_t eval_pawn_dependant_pieces(const struct board *brd,
     // for each target, adjust the score based on the number of friendly pawns
     // -------
 
-    uint64_t target_bb = get_bitboard(bb_str, target_pce);
+    uint64_t target_bb = get_bitboard_for_piece(bb_str, target_pce);
     if (target_bb == 0) {
         // no pieces of this type, so nothing to adjust by
         return 0;
     }
     uint8_t num_targets = count_bits(target_bb);
 
-    uint64_t pawn_bb = get_bitboard(bb_str, pawn);
+    uint64_t pawn_bb = get_bitboard_for_piece(bb_str, pawn);
     uint8_t num_pawns = count_bits(pawn_bb);
 
     int32_t adj_val = *(adj_vals + num_pawns);
@@ -299,7 +299,7 @@ inline static int32_t eval_paired_pieces(const struct board *brd, enum piece pce
 {
    	const struct bitboards *bb_str = get_bitboard_struct(brd);
 
-    uint64_t pce_bb = get_bitboard(bb_str, pce);
+    uint64_t pce_bb = get_bitboard_for_piece(bb_str, pce);
     uint8_t num_pieces = count_bits(pce_bb);
 
     if (num_pieces <= 1) {

@@ -141,13 +141,13 @@ uint64_t get_position_hash(const struct board * brd)
    	const struct bitboards *bb_str = get_bitboard_struct(brd);
 
 	uint64_t bb = get_bitboard_all_pieces(bb_str);
-	
+
 	while(bb != 0){
 		enum square sq = pop_1st_bit(&bb);
 		enum piece pce = get_piece_on_square(brd, sq);
 
         retval ^= get_piece_hash(pce, sq);
-	}		
+	}
 
     if (get_side_to_move(brd) == WHITE) {
         retval ^= get_side_hash();
