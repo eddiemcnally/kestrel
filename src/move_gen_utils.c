@@ -31,6 +31,7 @@
 #include <assert.h>
 #include "types.h"
 #include "pieces.h"
+#include "bitboard.h"
 #include "board.h"
 #include "board_utils.h"
 #include "move_gen_utils.h"

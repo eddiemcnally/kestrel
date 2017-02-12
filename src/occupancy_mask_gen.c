@@ -30,6 +30,7 @@
 #include <assert.h>
 #include "types.h"
 #include "board.h"
+#include "bitboard.h"
 #include "pieces.h"
 #include "utils.h"
 #include "occupancy_mask_gen.h"

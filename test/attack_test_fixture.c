@@ -25,6 +25,7 @@
 #include "attack.h"
 #include "fen.h"
 #include "board.h"
+#include "bitboard.h"
 #include "pieces.h"
 #include "board_utils.h"
 #include "move_gen.h"

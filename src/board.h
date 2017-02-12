@@ -84,10 +84,6 @@ enum castle_perm {
 void move_piece(struct board *brd, enum square from, enum square to);
 void remove_piece_from_board(struct board *brd,  enum piece pce_to_remove, enum square sq);
 void add_piece_to_board(struct board *brd, enum piece pce, enum square sq);
-uint64_t get_bitboard(const struct board *brd, enum piece pce);
-uint64_t get_bitboard_for_king(const struct board *brd, enum colour piece_col);
-uint64_t get_bitboard_all_pieces(const struct board *brd);
-uint64_t get_bitboard_combined(const struct board *brd, enum piece piece_1, enum piece piece_2);
 int32_t get_material_value(const struct board *brd, enum colour col);
 enum square get_king_square(const struct board *brd, enum colour col);
 
@@ -129,8 +125,6 @@ uint8_t get_fifty_move_counter(const struct board *brd);
 bool make_move(struct board *brd, mv_bitmap mv);
 void take_move(struct board *brd);
 void flip_sides(struct board *brd);
-void set_bit(uint64_t * brd, enum square sq);
-void clear_bit(uint64_t * brd, enum square sq);
 
 bool is_pawn_controlling_sq(const struct board *brd, enum colour col, enum square sq);
 uint8_t get_num_pawns_on_rank(const struct board *brd, enum colour col, enum rank rank);
@@ -139,13 +133,8 @@ uint8_t get_num_squares_under_pawn_ctl(const struct board *brd, enum colour col,
 
 
 
-
-
-
 void set_piece_material(struct board *brd);
 void overlay_boards(struct board *the_board);
-uint8_t count_bits(uint64_t bb);
-uint64_t square_to_bitboard(enum square sq);
 bool is_piece_on_square(const struct board *brd, enum piece pce, enum square sq);
 bool is_square_occupied(uint64_t bitboard, enum square sq);
 bool is_repetition(const struct board *brd);
@@ -161,6 +150,7 @@ void add_to_search_history(struct board *brd, enum piece pce, enum square to_sq,
 
 void shuffle_search_killers(struct board *brd, mv_bitmap mv);
 
+const struct bitboards * get_bitboard_struct(const struct board *brd);
 
 struct board* init_game(char *fen);
 

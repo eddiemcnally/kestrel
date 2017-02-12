@@ -61,8 +61,7 @@ else()
 		-Wcast-qual \
 		-Wcast-align \
 		-Wmissing-include-dirs \
-		-Wpointer-arith \
-		-fomit-frame-pointer" )
+		-Wpointer-arith" )
 endif()
 
 
@@ -75,6 +74,8 @@ set(COMMON_SOURCES
             src/occupancy_mask_gen.h
             src/occupancy_mask.c
             src/occupancy_mask.h
+            src/bitboard.c
+            src/bitboard.h
             src/board.c
             src/board.h
             src/board_utils.c

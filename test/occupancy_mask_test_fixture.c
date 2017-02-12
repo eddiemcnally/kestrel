@@ -24,6 +24,7 @@
 #include "types.h"
 #include "board.h"
 #include "pieces.h"
+#include "bitboard.h"
 #include "board_utils.h"
 #include "utils.h"
 #include "occupancy_mask.h"

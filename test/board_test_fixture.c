@@ -23,6 +23,7 @@
 #include "types.h"
 #include "hashkeys.h"
 #include "board_utils.h"
+#include "bitboard.h"
 #include "board.h"
 #include "fen.h"
 #include "move_gen.h"
@@ -215,11 +216,13 @@ void test_king_bitboard(){
     struct board *brd = allocate_board();
     consume_fen_notation(pos, brd);
 	
-	uint64_t blk_bb = get_bitboard_for_king(brd, BLACK);
+	const struct bitboards *bb_str = get_bitboard_struct(brd);
+	
+	uint64_t blk_bb = get_bitboard_for_king(bb_str, BLACK);
 	enum square black_king_sq = pop_1st_bit(&blk_bb);
 	assert_true(black_king_sq == e7);
 
-	uint64_t wht_bb = get_bitboard_for_king(brd, WHITE);
+	uint64_t wht_bb = get_bitboard_for_king(bb_str, WHITE);
 	enum square white_king_sq = pop_1st_bit(&wht_bb);
 	assert_true(white_king_sq == c1);
 	
@@ -236,11 +239,14 @@ void test_fen_parsing_general_layout_2()
     struct board *brd = allocate_board();
     consume_fen_notation(test_fen, brd);
 
+	const struct bitboards *bb_str = get_bitboard_struct(brd);
+
+
 	ASSERT_BOARD_OK(brd);
 
     //print_board(brd);
 
-	uint64_t white_bb = get_bitboard_for_colour(brd, WHITE);
+	uint64_t white_bb = get_bitboard_for_colour(bb_str, WHITE);
 
     // verify the board
     assert_true(W_ROOK == get_piece_on_square(brd, a1));
@@ -309,7 +315,7 @@ void test_fen_parsing_general_layout_2()
 	assert_true(is_piece_on_square(brd, W_PAWN, h2));
 
 
-	uint64_t black_bb = get_bitboard_for_colour(brd, BLACK);
+	uint64_t black_bb = get_bitboard_for_colour(bb_str, BLACK);
 
     assert_true(B_PAWN == get_piece_on_square(brd, a7));
     assert_true(get_piece_on_square(brd, a7) == B_PAWN);

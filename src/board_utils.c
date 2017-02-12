@@ -34,6 +34,7 @@
 #include "move_gen_utils.h"
 #include "hashkeys.h"
 #include "board.h"
+#include "bitboard.h"
 #include "pieces.h"
 #include "utils.h"
 #include "board_utils.h"
@@ -57,9 +58,9 @@ void print_board(const struct board *the_board)
 {
     printf("\nGame Board:\n\n");
 
-    for (int r = RANK_8; r >= RANK_1; r--) {
+    for (enum rank r = RANK_8; r >= RANK_1; r--) {
         printf("%d  ", r + 1);	// enum is zero-based
-        for (int f = FILE_A; f <= FILE_H; f++) {
+        for (enum file f = FILE_A; f <= FILE_H; f++) {
             enum square sq = get_square(r, f);
             
             enum piece pce = get_piece_on_square(the_board, sq);
@@ -165,24 +166,23 @@ void print_compressed_board(const struct board *brd)
  *
  */
 
+
 bool ASSERT_BOARD_OK(const struct board *brd)
 {
     // check bit boards
     uint64_t conflated = 0;
 
+	const struct bitboards *bb = get_bitboard_struct(brd);
+
     for (int i = 0; i < NUM_PIECES; i++) {
-        conflated |= get_bitboard(brd, (enum piece)i);
+        conflated |= get_bitboard(bb, (enum piece)i);
     }
 
-	if (conflated != get_bitboard_all_pieces(brd)){
-		printf("JNNIUN");
-	}
-
-    assert(conflated == get_bitboard_all_pieces(brd));
+    assert(conflated == get_bitboard_all_pieces(bb));
     
-    uint64_t wking_bb = get_bitboard_for_king(brd, WHITE);
+    uint64_t wking_bb = get_bitboard_for_king(bb, WHITE);
     assert(count_bits(wking_bb) == 1);
-    uint64_t bking_bb = get_bitboard_for_king(brd, BLACK);
+    uint64_t bking_bb = get_bitboard_for_king(bb, BLACK);
     assert(count_bits(bking_bb) == 1);
 
     // check where Kings are
@@ -191,7 +191,7 @@ bool ASSERT_BOARD_OK(const struct board *brd)
         if (pce != NO_PIECE) {
             if (pce == W_KING) {
 
-                uint64_t bb_wk = get_bitboard_for_king(brd, WHITE);
+                uint64_t bb_wk = get_bitboard_for_king(bb, WHITE);
                 enum square wk_sq = pop_1st_bit(&bb_wk);
 
                 assert(sq == wk_sq);
@@ -199,7 +199,7 @@ bool ASSERT_BOARD_OK(const struct board *brd)
                 assert(get_king_square(brd, WHITE) == wk_sq);
             } else if (pce == B_KING) {
 
-                uint64_t bb_bk = get_bitboard(brd, B_KING);
+                uint64_t bb_bk = get_bitboard(bb, B_KING);
                 enum square bk_sq = pop_1st_bit(&bb_bk);
 
                 assert(sq == bk_sq);
@@ -209,8 +209,8 @@ bool ASSERT_BOARD_OK(const struct board *brd)
     }
 
     // check verbose representation of board
-    uint64_t black_bb = get_bitboard_for_colour(brd, BLACK);
-    uint64_t white_bb = get_bitboard_for_colour(brd, WHITE);
+    uint64_t black_bb = get_bitboard_for_colour(bb, BLACK);
+    uint64_t white_bb = get_bitboard_for_colour(bb, WHITE);
 
 	assert(conflated == (black_bb | white_bb));
 
@@ -218,7 +218,7 @@ bool ASSERT_BOARD_OK(const struct board *brd)
     for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
         enum piece pce = get_piece_on_square(brd, sq);
         if (pce != NO_PIECE) {
-            assert(is_square_occupied(get_bitboard_all_pieces(brd), sq) != 0);
+            assert(is_square_occupied(get_bitboard_all_pieces(bb), sq) != 0);
 
             if (GET_COLOUR(pce) == WHITE) {
                 assert(is_square_occupied(white_bb, sq) != 0);
@@ -226,7 +226,7 @@ bool ASSERT_BOARD_OK(const struct board *brd)
                 assert(is_square_occupied(black_bb, sq) != 0);
             }
 
-            uint64_t pce_bb = get_bitboard(brd, pce);
+            uint64_t pce_bb = get_bitboard(bb, pce);
             assert(is_square_occupied(pce_bb, sq) != 0);
         }
     }
@@ -245,33 +245,6 @@ bool ASSERT_BOARD_OK(const struct board *brd)
 
 }
 
-
-inline uint64_t get_bitboard_for_colour(const struct board *brd, enum colour col)
-{
-    uint64_t retval = 0;
-    switch(col) {
-    case (WHITE):
-        retval |= get_bitboard(brd, W_PAWN);
-        retval |= get_bitboard(brd, W_BISHOP);
-        retval |= get_bitboard(brd, W_ROOK);
-        retval |= get_bitboard(brd, W_KNIGHT);
-        retval |= get_bitboard(brd, W_QUEEN);
-        retval |= get_bitboard(brd, W_KING);
-        return retval;
-    case (BLACK):
-        retval |= get_bitboard(brd, B_PAWN);
-        retval |= get_bitboard(brd, B_BISHOP);
-        retval |= get_bitboard(brd, B_ROOK);
-        retval |= get_bitboard(brd, B_KNIGHT);
-        retval |= get_bitboard(brd, B_QUEEN);
-        retval |= get_bitboard(brd, B_KING);
-        return retval;
-    default:
-        assert(false);
-        print_stacktrace();
-        exit(-1);
-    }
-}
 
 
 void assert_material_correct(const struct board *brd)

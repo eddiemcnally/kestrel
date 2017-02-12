@@ -32,6 +32,7 @@
 #include <assert.h>
 #include "types.h"
 #include "board.h"
+#include "bitboard.h"
 #include "attack.h"
 #include "board_utils.h"
 #include "pieces.h"
@@ -352,6 +353,10 @@ add_en_passant_move(mv_bitmap mv, struct move_list *mvlist){
 static inline void
 add_capture_move(mv_bitmap mv, struct move_list *mvlist, enum piece attacker, enum piece victim)
 {
+	if (victim == 15 || attacker == 15){
+		assert(false);
+	}
+	
     // add mvv-lva assessment of score
     uint32_t mvvlva = mvv_lva_score[victim][attacker];
 
@@ -465,9 +470,11 @@ static inline void generate_knight_piece_moves(struct board *brd,
         const bool only_capture_moves)
 {
 
+	const struct bitboards *bb = get_bitboard_struct(brd);
+
     // get the bitboard representing all of the piece types
     // on the board
-    uint64_t knight_bb = get_bitboard(brd, knight);
+    uint64_t knight_bb = get_bitboard(bb, knight);
 
     // iterate over all knights of this colour on the board
     while (knight_bb != 0) {
@@ -479,7 +486,7 @@ static inline void generate_knight_piece_moves(struct board *brd,
 
         // AND'ing with opposite colour pieces, will give all
         // pieces that can be captured
-        uint64_t opp_pieces = get_bitboard_for_colour(brd, opposite_col);
+        uint64_t opp_pieces = get_bitboard_for_colour(bb, opposite_col);
         uint64_t capture_squares = mask & opp_pieces;
 
 
@@ -494,7 +501,7 @@ static inline void generate_knight_piece_moves(struct board *brd,
 
         if (only_capture_moves == false) {
             // find all quiet moves (ie, moves to empty squares)
-            uint64_t all_pieces = get_bitboard_all_pieces(brd);
+            uint64_t all_pieces = get_bitboard_all_pieces(bb);
             uint64_t empty_squares = ~all_pieces & mask;
             while (empty_squares != 0) {
                 // loop creating quiet moves
@@ -521,13 +528,14 @@ static inline void generate_king_moves(struct board *brd,
                                        const bool only_capture_moves)
 {
     enum square king_sq = get_king_square(brd, col);
-
+	const struct bitboards *bb = get_bitboard_struct(brd);
+	
     // get occupancy mask for this piece and square
     uint64_t mask = get_king_occ_mask(king_sq);
 
     // AND'ing with opposite colour pieces, will give all
     // pieces that can be captured
-    uint64_t opp_pieces = get_bitboard_for_colour(brd, opposite_col);
+    uint64_t opp_pieces = get_bitboard_for_colour(bb, opposite_col);
     uint64_t capture_squares = mask & opp_pieces;
 
     while (capture_squares != 0) {
@@ -540,7 +548,7 @@ static inline void generate_king_moves(struct board *brd,
 
     if (only_capture_moves == false) {
         // find all quiet moves
-        uint64_t all_pieces = get_bitboard_all_pieces(brd);
+        uint64_t all_pieces = get_bitboard_all_pieces(bb);
         uint64_t empty_squares = ~all_pieces & mask;
         while (empty_squares != 0) {
             // loop creating quiet moves
@@ -565,9 +573,11 @@ static inline void generate_king_moves(struct board *brd,
 static inline void generate_white_castle_moves(struct board *brd,
         struct move_list *mvl)
 {	
+	const struct bitboards *bb = get_bitboard_struct(brd);
+		
     // check for castling
     if (get_castle_permissions(brd) & WKCA) {
-		uint64_t brd_bb= get_bitboard_all_pieces(brd);
+		uint64_t brd_bb= get_bitboard_all_pieces(bb);
 		
 		bool f1g1_occupied = ((brd_bb & F1G1_MASK) != 0);
 		
@@ -583,7 +593,7 @@ static inline void generate_white_castle_moves(struct board *brd,
     }
 
     if (get_castle_permissions(brd) & WQCA) {
- 		uint64_t brd_bb= get_bitboard_all_pieces(brd);
+ 		uint64_t brd_bb= get_bitboard_all_pieces(bb);
  		
 		bool b1c1d1_occupied = ((brd_bb & B1C1D1_MASK) != 0);
 
@@ -602,8 +612,10 @@ static inline void generate_white_castle_moves(struct board *brd,
 static inline void generate_black_castle_moves(struct board *brd,
         struct move_list *mvl)
 {
+	const struct bitboards *bb = get_bitboard_struct(brd);
+
     if (get_castle_permissions(brd) & BKCA) {
-		uint64_t brd_bb= get_bitboard_all_pieces(brd);
+		uint64_t brd_bb= get_bitboard_all_pieces(bb);
 		
 		bool f8g8_occupied = ((brd_bb & F8G8_MASK) != 0);
 		
@@ -619,7 +631,7 @@ static inline void generate_black_castle_moves(struct board *brd,
     }
 
     if (get_castle_permissions(brd) & BQCA) {
-		uint64_t brd_bb= get_bitboard_all_pieces(brd);
+		uint64_t brd_bb= get_bitboard_all_pieces(bb);
 
 		bool b8c8d8_not_occupied = ((brd_bb & B8C8D8_MASK) == 0);
 
@@ -642,11 +654,13 @@ generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
 	
 	ASSERT_BOARD_OK(brd);
 	
+	const struct bitboards *bb = get_bitboard_struct(brd);
+		
     // get the bitboard representing all WHITE pawns
     // on the board
-    uint64_t pawn_bb = get_bitboard(brd, W_PAWN);
+    uint64_t pawn_bb = get_bitboard(bb, W_PAWN);
 
-    uint64_t bb_black_pieces = get_bitboard_for_colour(brd, BLACK);
+    uint64_t bb_black_pieces = get_bitboard_for_colour(bb, BLACK);
 
     while (pawn_bb != 0) {
         mv_bitmap mv = 0;
@@ -656,10 +670,9 @@ generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
         uint8_t pawn_rank = get_rank(pawn_sq);
         enum square north_sq = pawn_sq + NORTH;
 
-        // check for moving 1 and 2 squares forward
-        // ========================================
         if (only_capture_moves == false) {
-            if (is_square_occupied(get_bitboard_all_pieces(brd), north_sq) == false) {
+
+            if (is_square_occupied(get_bitboard_all_pieces(bb), north_sq) == false) {
                 if (pawn_rank == RANK_7) {
                     // pawn can promote to 4 pieces
                     mv = MOVE(pawn_sq, north_sq, NO_PIECE, W_QUEEN, MFLAG_NONE);
@@ -680,7 +693,7 @@ generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
 
                 if (pawn_rank == RANK_2) {
                     enum square north_x2 = pawn_sq + NN;
-                    if (is_square_occupied(get_bitboard_all_pieces(brd), north_x2) == false) {
+                    if (is_square_occupied(get_bitboard_all_pieces(bb), north_x2) == false) {
                         mv = MOVE(pawn_sq, north_x2, NO_PIECE, NO_PIECE, MFLAG_PAWN_START);
                         add_quiet_move(brd, mv, mvl, W_PAWN);
                     }
@@ -695,6 +708,10 @@ generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
 
             if (is_square_occupied(bb_black_pieces, northwest) == true) {
                 enum piece capt_pce = get_piece_on_square(brd, northwest);
+                
+                if (capt_pce == NO_PIECE){
+					printf("*****");
+				}
                 
                 if (pawn_rank == RANK_7) {
                     // pawn can promote to 4 pieces
@@ -761,10 +778,12 @@ generate_black_pawn_moves(struct board *brd, struct move_list *mvl,
                           const bool only_capture_moves)
 {
 
+	const struct bitboards *bb = get_bitboard_struct(brd);
+	
     // get the bitboard representing all BLACK pawns
     // on the board
-    uint64_t pawn_bb = get_bitboard(brd, B_PAWN);
-    uint64_t bb_white_pieces = get_bitboard_for_colour(brd, WHITE);
+    uint64_t pawn_bb = get_bitboard(bb, B_PAWN);
+    uint64_t bb_white_pieces = get_bitboard_for_colour(bb, WHITE);
 
     while (pawn_bb != 0) {
         mv_bitmap mv = 0;
@@ -777,7 +796,7 @@ generate_black_pawn_moves(struct board *brd, struct move_list *mvl,
         //=========================================
         enum square south_sq = pawn_sq + (enum square)SOUTH;
         if (only_capture_moves == false) {
-            if (is_square_occupied(get_bitboard_all_pieces(brd), south_sq) == false) {
+            if (is_square_occupied(get_bitboard_all_pieces(bb), south_sq) == false) {
                 if (pawn_rank == RANK_2) {
                     // pawn can promote to 4 pieces
                     mv = MOVE(pawn_sq, south_sq, NO_PIECE, B_QUEEN, MFLAG_NONE);
@@ -798,7 +817,7 @@ generate_black_pawn_moves(struct board *brd, struct move_list *mvl,
                 if (pawn_rank == RANK_7) {
                     enum square south_x2 = pawn_sq + (enum square)SS;	// can skip down 2 ranks
 
-                    bool sq_2_occupied = is_square_occupied(get_bitboard_all_pieces(brd), south_x2);
+                    bool sq_2_occupied = is_square_occupied(get_bitboard_all_pieces(bb), south_x2);
                     if (sq_2_occupied == false) {
                         mv = MOVE(pawn_sq, south_x2,NO_PIECE, NO_PIECE,MFLAG_PAWN_START);
                         add_quiet_move(brd, mv, mvl, B_PAWN);
@@ -892,13 +911,14 @@ static inline void generate_sliding_horizontal_vertical_moves (struct board *brd
         struct move_list *mvl,
         enum colour col, const bool only_capture_moves)
 {
-
+	const struct bitboards *bb_str = get_bitboard_struct(brd);
+	
     // create a single bitboard for both rook nd queen
     uint64_t bb = 0;
     if (col == WHITE) {
-        bb = get_bitboard_combined(brd, W_ROOK, W_QUEEN);
+        bb = get_bitboard_combined(bb_str, W_ROOK, W_QUEEN);
     } else {
-        bb = get_bitboard_combined(brd, B_ROOK, B_QUEEN);
+        bb = get_bitboard_combined(bb_str, B_ROOK, B_QUEEN);
     }
 
 
@@ -918,7 +938,7 @@ static inline void generate_sliding_horizontal_vertical_moves (struct board *brd
         uint64_t bb_slider = GET_PIECE_MASK(pce_sq);
 
         // all occupied squares (both colours)
-        uint64_t occupied = get_bitboard_all_pieces(brd);
+        uint64_t occupied = get_bitboard_all_pieces(bb_str);
 
         uint64_t horiz1 = occupied - (2 * bb_slider);
         uint64_t horiz2 =
@@ -936,7 +956,7 @@ static inline void generate_sliding_horizontal_vertical_moves (struct board *brd
 
         // get all same colour as piece being considered so
         // they can be excluded (since they block a move)
-        uint64_t col_occupied = get_bitboard_for_colour(brd, col);
+        uint64_t col_occupied = get_bitboard_for_colour(bb_str, col);
         uint64_t excl_same_col = all_moves & ~col_occupied;
 
         while (excl_same_col != 0) {
@@ -974,13 +994,14 @@ static inline void generate_sliding_horizontal_vertical_moves (struct board *brd
 static inline void generate_sliding_diagonal_moves(struct board *brd,
         struct move_list *mvl, enum colour col, const bool only_capture_moves)
 {
-
+	const struct bitboards *bb_str = get_bitboard_struct(brd);
+	
     // create single bitboard representing bishop and queen
     uint64_t bb = 0;
     if (col == WHITE) {
-        bb = get_bitboard_combined(brd, W_BISHOP, W_QUEEN);
+        bb = get_bitboard_combined(bb_str, W_BISHOP, W_QUEEN);
     } else {
-        bb = get_bitboard_combined(brd, B_BISHOP, B_QUEEN);
+        bb = get_bitboard_combined(bb_str, B_BISHOP, B_QUEEN);
     }
 
     while (bb != 0) {
@@ -995,7 +1016,7 @@ static inline void generate_sliding_diagonal_moves(struct board *brd,
         uint64_t bb_slider = GET_PIECE_MASK(pce_sq);
 
         // all occupied squares (both colours)
-        uint64_t occupied = get_bitboard_all_pieces(brd);
+        uint64_t occupied = get_bitboard_all_pieces(bb_str);
 
         uint64_t diag1 = (occupied & posmask) - (2 * bb_slider);
         uint64_t diag2 =
@@ -1012,7 +1033,7 @@ static inline void generate_sliding_diagonal_moves(struct board *brd,
         uint64_t all_moves = (diagpos & posmask) | (diagneg & negmask);
 
         // get all same colour as piece being considered
-        uint64_t col_occupied = get_bitboard_for_colour(brd, col);
+        uint64_t col_occupied = get_bitboard_for_colour(bb_str, col);
         uint64_t excl_same_col = all_moves & ~col_occupied;
 
         while (excl_same_col != 0) {

@@ -25,6 +25,7 @@
 #include "attack.h"
 #include "fen.h"
 #include "board.h"
+#include "bitboard.h"
 #include "pieces.h"
 #include "utils.h"
 #include "board_utils.h"
@@ -771,8 +772,10 @@ void test_clear_piece()
     struct board *brd = allocate_board();
     consume_fen_notation(sample_position, brd);
     
-    assert_true(is_square_occupied(get_bitboard_all_pieces(brd), c3) == true);
-    assert_true(is_square_occupied(get_bitboard(brd, W_KNIGHT), c3) == true);
+   	const struct bitboards *bb_str = get_bitboard_struct(brd);
+    
+    assert_true(is_square_occupied(get_bitboard_all_pieces(bb_str), c3) == true);
+    assert_true(is_square_occupied(get_bitboard(bb_str, W_KNIGHT), c3) == true);
 
     // save some info before the move for comparison
     uint64_t old_hash = get_board_hash(brd);
@@ -790,8 +793,8 @@ void test_clear_piece()
     assert_true(old_pce == W_KNIGHT);
     assert_true(get_piece_on_square(brd, c3) == NO_PIECE);
 
-    assert_true(is_square_occupied(get_bitboard_all_pieces(brd), c3) == false);
-    assert_true(is_square_occupied(get_bitboard(brd, W_KNIGHT), c3) == false);
+    assert_true(is_square_occupied(get_bitboard_all_pieces(bb_str), c3) == false);
+    assert_true(is_square_occupied(get_bitboard(bb_str, W_KNIGHT), c3) == false);
 
 	free_board(brd);
 }
@@ -808,9 +811,11 @@ void test_add_piece()
     struct board *brd = allocate_board();
     consume_fen_notation(sample_position, brd);
         
-    assert_true(is_square_occupied(get_bitboard_all_pieces(brd), c4) == false);
-    assert_true(is_square_occupied(get_bitboard(brd, W_KNIGHT), c4) == false);
-    assert_true(count_bits(get_bitboard(brd, W_KNIGHT)) == 2);
+   	const struct bitboards *bb_str = get_bitboard_struct(brd);
+        
+    assert_true(is_square_occupied(get_bitboard_all_pieces(bb_str), c4) == false);
+    assert_true(is_square_occupied(get_bitboard(bb_str, W_KNIGHT), c4) == false);
+    assert_true(count_bits(get_bitboard(bb_str, W_KNIGHT)) == 2);
 
     // save some info before the move for comparison
     uint64_t old_hash = get_board_hash(brd);
@@ -825,8 +830,8 @@ void test_add_piece()
 
     assert_true(get_piece_on_square(brd, c4) == W_KNIGHT);
 
-    assert_true(is_square_occupied(get_bitboard_all_pieces(brd), c4) == true);
-    assert_true(is_square_occupied(get_bitboard(brd, W_KNIGHT), c4) == true);
+    assert_true(is_square_occupied(get_bitboard_all_pieces(bb_str), c4) == true);
+    assert_true(is_square_occupied(get_bitboard(bb_str, W_KNIGHT), c4) == true);
 
 	free_board(brd);
 }
@@ -853,6 +858,8 @@ void test_en_passant(void)
     struct board *brd = allocate_board();
     consume_fen_notation(test_fen, brd);
     
+   	const struct bitboards *bb_str = get_bitboard_struct(brd);
+    
     mv_bitmap mv = MOVE(c7, c5, NO_PIECE, NO_PIECE, MFLAG_PAWN_START);
     make_move(brd, mv);
 
@@ -862,7 +869,7 @@ void test_en_passant(void)
     assert_true(get_piece_on_square(brd, d5) == W_PAWN);
     assert_true(get_piece_on_square(brd, e1) == W_KING);
     // 4 pieces on the board
-    assert_true(count_bits(get_bitboard_all_pieces(brd)) == 4);
+    assert_true(count_bits(get_bitboard_all_pieces(bb_str)) == 4);
     assert_true(get_en_passant_sq(brd) == c6);
 
     // now, make the en passant move
@@ -874,7 +881,7 @@ void test_en_passant(void)
     assert_true(get_piece_on_square(brd, c6) == W_PAWN);
     assert_true(get_piece_on_square(brd, e1) == W_KING);
     // 4 pieces on the board
-    assert_true(count_bits(get_bitboard_all_pieces(brd)) == 3);
+    assert_true(count_bits(get_bitboard_all_pieces(bb_str)) == 3);
 
 	free_board(brd);
 }
@@ -963,9 +970,11 @@ void test_move_piece()
     struct board *brd = allocate_board();
     consume_fen_notation(sample_position, brd);
 
-    assert_true(is_square_occupied(get_bitboard_all_pieces(brd), e5) == true);
-    assert_true(is_square_occupied(get_bitboard(brd, W_KNIGHT), e5) == true);
-    assert_true(count_bits(get_bitboard(brd, W_KNIGHT)) == 2);
+	const struct bitboards *bb_str = get_bitboard_struct(brd);
+
+    assert_true(is_square_occupied(get_bitboard_all_pieces(bb_str), e5) == true);
+    assert_true(is_square_occupied(get_bitboard(bb_str, W_KNIGHT), e5) == true);
+    assert_true(count_bits(get_bitboard(bb_str, W_KNIGHT)) == 2);
 
     // save some info before the move for comparison
     uint64_t old_hash = get_board_hash(brd);
@@ -982,10 +991,10 @@ void test_move_piece()
     assert_true(get_piece_on_square(brd, d3) == W_KNIGHT);
     assert_true(get_piece_on_square(brd, e5) == NO_PIECE);
 
-    assert_true(is_square_occupied(get_bitboard_all_pieces(brd), d3) == true);
-    assert_true(is_square_occupied(get_bitboard_all_pieces(brd), e5) == false);
+    assert_true(is_square_occupied(get_bitboard_all_pieces(bb_str), d3) == true);
+    assert_true(is_square_occupied(get_bitboard_all_pieces(bb_str), e5) == false);
 
-    assert_true(is_square_occupied(get_bitboard(brd, W_KNIGHT), d3) == true);
+    assert_true(is_square_occupied(get_bitboard(bb_str, W_KNIGHT), d3) == true);
 
 	free_board(brd);
 }
@@ -1020,7 +1029,7 @@ void test_make_move_take_move_1(void)
     for (int pos = 0; pos < NUM_POSITIONS; pos++) {
         char *sample_position = positions[pos];
 
-        //printf("processing FEN %s\n", sample_position);
+        // printf("processing FEN %s\n", sample_position);
 
         struct board *brd = allocate_board();
         consume_fen_notation(sample_position, brd);

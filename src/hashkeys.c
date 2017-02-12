@@ -32,6 +32,7 @@
 #include <assert.h>
 #include "types.h"
 #include "board.h"
+#include "bitboard.h"
 #include "move_gen_utils.h"
 #include "hashkeys.h"
 
@@ -137,8 +138,9 @@ uint64_t get_en_passant_hash(enum square sq)
 uint64_t get_position_hash(const struct board * brd)
 {
     uint64_t retval = 0;
+   	const struct bitboards *bb_str = get_bitboard_struct(brd);
 
-	uint64_t bb = get_bitboard_all_pieces(brd);
+	uint64_t bb = get_bitboard_all_pieces(bb_str);
 	
 	while(bb != 0){
 		enum square sq = pop_1st_bit(&bb);
