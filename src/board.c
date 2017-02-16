@@ -50,6 +50,9 @@ static inline void remove_white_pawn_info(struct board *brd, enum square sq);
 static inline void update_pawn_control(struct board* brd, const enum colour col, const enum square sq, int8_t val);
 static void init_board(struct board *brd);
 static void get_clean_board(struct board *brd);
+static void make_pawn_move(struct board *brd, mv_bitmap mv);
+static void make_castle_move(struct board *brd, mv_bitmap mv);
+
 
 
 static void assert_board_and_move(struct board *brd, mv_bitmap mv);
@@ -723,54 +726,16 @@ bool make_move(struct board *brd, mv_bitmap mv)
     enum piece pce_being_moved = get_piece_on_square(brd, from);
     enum colour side = get_side_to_move(brd);
 
-    brd->history[brd->history_ply].board_hash = brd->board_hash;
+    push_history(brd, mv);
 
-    if (IS_EN_PASS_MOVE(mv)) {
-        if (side == WHITE) {
-	        // must be a bp
-            remove_piece_from_board(brd, B_PAWN, to - 8);
-        } else {
-            // must be a wp
-            remove_piece_from_board(brd, W_PAWN, to + 8);
-        }
-    } else if (IS_CASTLE_MOVE(mv)) {
-        switch (to) {
-        case c1:
-            move_piece(brd, a1, d1);
-            break;
-        case c8:
-            move_piece(brd, a8, d8);
-            break;
-        case g1:
-            move_piece(brd, h1, f1);
-            break;
-        case g8:
-            move_piece(brd, h8, f8);
-            break;
-        default:
-            printf("to : %s\n", print_square(to));
-            assert(false);
-            break;
-        }
-
+    if (IS_PAWN(pce_being_moved)){
+        make_pawn_move(brd, mv);
     }
 
-    if (brd->en_passant != NO_SQUARE) {
-        brd->board_hash ^= get_en_passant_hash(brd->en_passant);
+    if (IS_CASTLE_MOVE(mv)) {
+        make_castle_move(brd, mv);
     }
 
-    brd->board_hash ^= get_castle_hash(brd->castle_perm);
-
-    // set up history
-    brd->history[brd->history_ply].move = mv;
-    brd->history[brd->history_ply].fifty_move_counter = brd->fifty_move_counter;
-    brd->history[brd->history_ply].en_passant = brd->en_passant;
-    brd->history[brd->history_ply].castle_perm = brd->castle_perm;
-
-    // reset castle and set again
-    brd->castle_perm &= castle_permission_mask[from];
-    brd->castle_perm &= castle_permission_mask[to];
-    brd->board_hash ^= get_castle_hash(brd->castle_perm);
 
     brd->en_passant = NO_SQUARE;
     brd->fifty_move_counter++;
@@ -785,27 +750,8 @@ bool make_move(struct board *brd, mv_bitmap mv)
     brd->history_ply++;
 
 
-    if (IS_PAWN(pce_being_moved)) {
-        brd->fifty_move_counter = 0;
-
-        if (IS_PAWN_START(mv)) {
-            if (side == WHITE) {
-                brd->en_passant = from + 8;
-            } else {
-                brd->en_passant = from - 8;
-            }
-            brd->board_hash ^= get_en_passant_hash(brd->en_passant);
-        }
-    }
-
     move_piece(brd, from, to);
 
-    enum piece promoted = PROMOTED_PCE(mv);
-    if (promoted != NO_PIECE) {
-        enum piece capt = brd->pieces[to];
-        remove_piece_from_board(brd, capt, to);
-        add_piece_to_board(brd, promoted, to);
-    }
 
     // flip side
     flip_sides(brd);
@@ -820,9 +766,78 @@ bool make_move(struct board *brd, mv_bitmap mv)
     } else {
         return true;
     }
-
-
 }
+
+
+static void make_castle_move(struct board *brd, mv_bitmap mv){
+
+    enum square from = FROMSQ(mv);
+    enum square to = TOSQ(mv);
+
+    // hash out existing castle permissions
+    brd->board_hash ^= get_castle_hash(brd->castle_perm);
+
+    switch (to) {
+    case c1:
+        move_piece(brd, a1, d1);
+        break;
+    case c8:
+        move_piece(brd, a8, d8);
+        break;
+    case g1:
+        move_piece(brd, h1, f1);
+        break;
+    case g8:
+        move_piece(brd, h8, f8);
+        break;
+    default:
+        printf("to : %s\n", print_square(to));
+        assert(false);
+        break;
+    }
+    // re-hash back in the new castle permissions
+    brd->castle_perm &= castle_permission_mask[from];
+    brd->castle_perm &= castle_permission_mask[to];
+    brd->board_hash ^= get_castle_hash(brd->castle_perm);
+}
+
+
+static void make_pawn_move(struct board *brd, mv_bitmap mv){
+
+    enum square from = FROMSQ(mv);
+    enum square to = TOSQ(mv);
+    enum colour side = get_side_to_move(brd);
+
+    brd->fifty_move_counter = 0;
+
+    if (IS_EN_PASS_MOVE(mv)) {
+        if (side == WHITE) {
+	        // must be a bp
+            remove_piece_from_board(brd, B_PAWN, to - 8);
+        } else {
+            // must be a wp
+            remove_piece_from_board(brd, W_PAWN, to + 8);
+        }
+    }
+
+    if (IS_PAWN_START(mv)) {
+        if (side == WHITE) {
+            brd->en_passant = from + 8;
+        } else {
+            brd->en_passant = from - 8;
+        }
+        brd->board_hash ^= get_en_passant_hash(brd->en_passant);
+    }
+    enum piece promoted = PROMOTED_PCE(mv);
+    if (promoted != NO_PIECE) {
+        enum piece capt = brd->pieces[to];
+        remove_piece_from_board(brd, capt, to);
+        add_piece_to_board(brd, promoted, to);
+    }
+}
+
+
+
 
 inline void take_move(struct board *brd)
 {
@@ -898,6 +913,8 @@ inline void take_move(struct board *brd)
         add_piece_to_board(brd, pce_to_add, from);
     }
 }
+
+
 
 
 

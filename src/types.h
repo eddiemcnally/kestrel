@@ -75,6 +75,7 @@ typedef uint64_t mv_bitmap;
 #define IS_CAPTURE_MOVE(mv)		((mv & MFLAG_CAPTURE) != 0)
 #define IS_CASTLE_MOVE(mv)		((mv & MFLAG_CASTLE) != 0)
 #define IS_PAWN_START(mv)		((mv & MFLAG_PAWN_START) != 0)
+#define IS_PAWN_START(mv)		((mv & MFLAG_PAWN_START) != 0)
 
 
 
