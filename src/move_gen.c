@@ -71,6 +71,9 @@ static void generate_sliding_diagonal_moves(struct board *brd,
         struct move_list *mvl,
         enum colour col, const bool only_capture_moves);
 
+static void assert_move_ok(const struct board *brd, mv_bitmap mv);
+
+
 #ifdef ENABLE_ASSERTS
 static void assert_add_quiet_move(struct board *brd, mv_bitmap mv, enum piece pce_being_moved);
 static void assert_add_capture_move(struct board *brd, mv_bitmap mv);
@@ -495,7 +498,7 @@ static inline void generate_knight_piece_moves(struct board *brd,
             enum square cap_sq = pop_1st_bit(&capture_squares);
             enum piece p = get_piece_on_square(brd, cap_sq);
 
-            mv_bitmap mv = MOVE(knight_sq, cap_sq, p, NO_PIECE, MFLAG_CAPTURE);
+            mv_bitmap mv = MOVE_DEBUG(brd, knight_sq, cap_sq, p, NO_PIECE, MFLAG_CAPTURE);
             add_capture_move(mv, mvl, knight, p);
         }
 
@@ -506,7 +509,7 @@ static inline void generate_knight_piece_moves(struct board *brd,
             while (empty_squares != 0) {
                 // loop creating quiet moves
                 enum square empty_sq = pop_1st_bit(&empty_squares);
-                mv_bitmap mv = MOVE(knight_sq, empty_sq, NO_PIECE, NO_PIECE, MFLAG_NONE);
+                mv_bitmap mv = MOVE_DEBUG(brd, knight_sq, empty_sq, NO_PIECE, NO_PIECE, MFLAG_NONE);
                 add_quiet_move(brd, mv, mvl, knight);
             }
         }
@@ -542,7 +545,7 @@ static inline void generate_king_moves(struct board *brd,
         // loop creating capture moves
         enum square cap_sq = pop_1st_bit(&capture_squares);
         enum piece p = get_piece_on_square(brd, cap_sq);
-        mv_bitmap mv = MOVE(king_sq, cap_sq, p, NO_PIECE, MFLAG_CAPTURE);
+        mv_bitmap mv = MOVE_DEBUG(brd, king_sq, cap_sq, p, NO_PIECE, MFLAG_CAPTURE);
         add_capture_move(mv, mvl, king, p);
     }
 
@@ -554,7 +557,7 @@ static inline void generate_king_moves(struct board *brd,
             // loop creating quiet moves
             enum square empty_sq = pop_1st_bit(&empty_squares);
 
-            mv_bitmap mv = MOVE(king_sq, empty_sq, NO_PIECE, NO_PIECE, MFLAG_NONE);
+            mv_bitmap mv = MOVE_DEBUG(brd, king_sq, empty_sq, NO_PIECE, NO_PIECE, MFLAG_NONE);
 
             add_quiet_move(brd, mv, mvl, king);
         }
@@ -585,7 +588,7 @@ static inline void generate_white_castle_moves(struct board *brd,
             if (!is_sq_attacked(brd, e1, BLACK)
                     && !is_sq_attacked(brd, f1, BLACK)) {
 
-                mv_bitmap mv = MOVE(e1, g1, NO_PIECE,
+                mv_bitmap mv = MOVE_DEBUG(brd, e1, g1, NO_PIECE,
                                     NO_PIECE, MFLAG_CASTLE);
                 add_quiet_move(brd, mv, mvl, W_KING);
             }
@@ -601,7 +604,7 @@ static inline void generate_white_castle_moves(struct board *brd,
             if (!is_sq_attacked(brd, e1, BLACK)
                     && !is_sq_attacked(brd, d1, BLACK)) {
 
-                mv_bitmap mv = MOVE(e1, c1, NO_PIECE,
+                mv_bitmap mv = MOVE_DEBUG(brd, e1, c1, NO_PIECE,
                                     NO_PIECE, MFLAG_CASTLE);
                 add_quiet_move(brd, mv, mvl, W_KING);
             }
@@ -623,7 +626,7 @@ static inline void generate_black_castle_moves(struct board *brd,
             if (!is_sq_attacked(brd, e8, WHITE)
                     && !is_sq_attacked(brd, f8, WHITE)) {
 
-                mv_bitmap mv = MOVE(e8, g8, NO_PIECE,
+                mv_bitmap mv = MOVE_DEBUG(brd, e8, g8, NO_PIECE,
                                     NO_PIECE, MFLAG_CASTLE);
                 add_quiet_move(brd, mv, mvl, B_KING);
             }
@@ -639,7 +642,7 @@ static inline void generate_black_castle_moves(struct board *brd,
             if (!is_sq_attacked(brd, e8, WHITE)
                     && !is_sq_attacked(brd, d8, WHITE)) {
 
-                mv_bitmap mv = MOVE(e8, c8, NO_PIECE, NO_PIECE, MFLAG_CASTLE);
+                mv_bitmap mv = MOVE_DEBUG(brd, e8, c8, NO_PIECE, NO_PIECE, MFLAG_CASTLE);
                 add_quiet_move(brd, mv, mvl, B_KING);
             }
         }
@@ -675,26 +678,26 @@ generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
             if (is_square_occupied(get_bitboard_all_pieces(bb), north_sq) == false) {
                 if (pawn_rank == RANK_7) {
                     // pawn can promote to 4 pieces
-                    mv = MOVE(pawn_sq, north_sq, NO_PIECE, W_QUEEN, MFLAG_NONE);
+                    mv = MOVE_DEBUG(brd, pawn_sq, north_sq, NO_PIECE, W_QUEEN, MFLAG_NONE);
                     add_quiet_move(brd, mv, mvl, W_PAWN);
 
-                    mv = MOVE(pawn_sq, north_sq, NO_PIECE, W_ROOK, MFLAG_NONE);
+                    mv = MOVE_DEBUG(brd, pawn_sq, north_sq, NO_PIECE, W_ROOK, MFLAG_NONE);
                     add_quiet_move(brd, mv, mvl, W_PAWN);
 
-                    mv = MOVE(pawn_sq, north_sq, NO_PIECE, W_BISHOP, MFLAG_NONE);
+                    mv = MOVE_DEBUG(brd, pawn_sq, north_sq, NO_PIECE, W_BISHOP, MFLAG_NONE);
                     add_quiet_move(brd, mv, mvl, W_PAWN);
 
-                    mv = MOVE(pawn_sq, north_sq, NO_PIECE, W_KNIGHT, MFLAG_NONE);
+                    mv = MOVE_DEBUG(brd, pawn_sq, north_sq, NO_PIECE, W_KNIGHT, MFLAG_NONE);
                     add_quiet_move(brd, mv, mvl, W_PAWN);
                 } else {
-                    mv = MOVE(pawn_sq, north_sq, NO_PIECE, NO_PIECE, MFLAG_NONE);
+                    mv = MOVE_DEBUG(brd, pawn_sq, north_sq, NO_PIECE, NO_PIECE, MFLAG_NONE);
                     add_quiet_move(brd, mv, mvl, W_PAWN);
                 }
 
                 if (pawn_rank == RANK_2) {
                     enum square north_x2 = pawn_sq + NN;
                     if (is_square_occupied(get_bitboard_all_pieces(bb), north_x2) == false) {
-                        mv = MOVE(pawn_sq, north_x2, NO_PIECE, NO_PIECE, MFLAG_PAWN_START);
+                        mv = MOVE_DEBUG(brd, pawn_sq, north_x2, NO_PIECE, NO_PIECE, MFLAG_PAWN_START);
                         add_quiet_move(brd, mv, mvl, W_PAWN);
                     }
                 }
@@ -715,25 +718,25 @@ generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
 
                 if (pawn_rank == RANK_7) {
                     // pawn can promote to 4 pieces
-                    mv = MOVE(pawn_sq, northwest, capt_pce, W_QUEEN, MFLAG_CAPTURE);
+                    mv = MOVE_DEBUG(brd, pawn_sq, northwest, capt_pce, W_QUEEN, MFLAG_CAPTURE);
                     add_capture_move(mv, mvl, W_PAWN, capt_pce);
 
-                    mv = MOVE(pawn_sq, northwest, capt_pce, W_ROOK, MFLAG_CAPTURE);
+                    mv = MOVE_DEBUG(brd, pawn_sq, northwest, capt_pce, W_ROOK, MFLAG_CAPTURE);
                     add_capture_move(mv, mvl, W_PAWN, capt_pce);
 
-                    mv = MOVE(pawn_sq, northwest, capt_pce, W_BISHOP, MFLAG_CAPTURE);
+                    mv = MOVE_DEBUG(brd, pawn_sq, northwest, capt_pce, W_BISHOP, MFLAG_CAPTURE);
                     add_capture_move(mv, mvl, W_PAWN, capt_pce);
 
-                    mv = MOVE(pawn_sq, northwest, capt_pce, W_KNIGHT, MFLAG_CAPTURE);
+                    mv = MOVE_DEBUG(brd, pawn_sq, northwest, capt_pce, W_KNIGHT, MFLAG_CAPTURE);
                     add_capture_move(mv, mvl, W_PAWN, capt_pce);
                 } else {
-                    mv = MOVE(pawn_sq, northwest, capt_pce, NO_PIECE, MFLAG_CAPTURE);
+                    mv = MOVE_DEBUG(brd, pawn_sq, northwest, capt_pce, NO_PIECE, MFLAG_CAPTURE);
                     add_capture_move(mv, mvl, W_PAWN, capt_pce);
                 }
             }
 
             if (northwest == get_en_passant_sq(brd)) {
-                mv = MOVE(pawn_sq, northwest, B_PAWN, NO_PIECE, MFLAG_EN_PASSANT);
+                mv = MOVE_DEBUG(brd, pawn_sq, northwest, B_PAWN, NO_PIECE, MFLAG_EN_PASSANT);
                 add_en_passant_move(mv, mvl);
             }
         }
@@ -747,25 +750,25 @@ generate_white_pawn_moves(struct board *brd, struct move_list *mvl,
                 enum piece capt_pce = get_piece_on_square(brd, northeast);
                 if (pawn_rank == RANK_7) {
                     // pawn can promote to 4 pieces
-                    mv = MOVE(pawn_sq, northeast, capt_pce, W_QUEEN, MFLAG_CAPTURE);
+                    mv = MOVE_DEBUG(brd, pawn_sq, northeast, capt_pce, W_QUEEN, MFLAG_CAPTURE);
                     add_capture_move(mv, mvl, W_PAWN, capt_pce);
 
-                    mv = MOVE(pawn_sq, northeast, capt_pce, W_ROOK, MFLAG_CAPTURE);
+                    mv = MOVE_DEBUG(brd, pawn_sq, northeast, capt_pce, W_ROOK, MFLAG_CAPTURE);
                     add_capture_move(mv, mvl, W_PAWN, capt_pce);
 
-                    mv = MOVE(pawn_sq, northeast, capt_pce, W_BISHOP, MFLAG_CAPTURE);
+                    mv = MOVE_DEBUG(brd, pawn_sq, northeast, capt_pce, W_BISHOP, MFLAG_CAPTURE);
                     add_capture_move(mv, mvl, W_PAWN, capt_pce);
 
-                    mv = MOVE(pawn_sq, northeast, capt_pce, W_KNIGHT, MFLAG_CAPTURE);
+                    mv = MOVE_DEBUG(brd, pawn_sq, northeast, capt_pce, W_KNIGHT, MFLAG_CAPTURE);
                     add_capture_move(mv, mvl, W_PAWN, capt_pce);
                 } else {
-                    mv = MOVE(pawn_sq, northeast, capt_pce, NO_PIECE, MFLAG_CAPTURE);
+                    mv = MOVE_DEBUG(brd, pawn_sq, northeast, capt_pce, NO_PIECE, MFLAG_CAPTURE);
                     add_capture_move(mv, mvl, W_PAWN, capt_pce);
                 }
             }
 
             if (northeast == get_en_passant_sq(brd)) {
-                mv = MOVE(pawn_sq, northeast, B_PAWN, NO_PIECE, MFLAG_EN_PASSANT);
+                mv = MOVE_DEBUG(brd, pawn_sq, northeast, B_PAWN, NO_PIECE, MFLAG_EN_PASSANT);
                 add_en_passant_move(mv, mvl);
             }
         }
@@ -799,19 +802,19 @@ generate_black_pawn_moves(struct board *brd, struct move_list *mvl,
             if (is_square_occupied(get_bitboard_all_pieces(bb), south_sq) == false) {
                 if (pawn_rank == RANK_2) {
                     // pawn can promote to 4 pieces
-                    mv = MOVE(pawn_sq, south_sq, NO_PIECE, B_QUEEN, MFLAG_NONE);
+                    mv = MOVE_DEBUG(brd, pawn_sq, south_sq, NO_PIECE, B_QUEEN, MFLAG_NONE);
                     add_quiet_move(brd, mv, mvl, B_PAWN);
 
-                    mv = MOVE(pawn_sq, south_sq, NO_PIECE, B_ROOK, MFLAG_NONE);
+                    mv = MOVE_DEBUG(brd, pawn_sq, south_sq, NO_PIECE, B_ROOK, MFLAG_NONE);
                     add_quiet_move(brd, mv, mvl, B_PAWN);
 
-                    mv = MOVE(pawn_sq, south_sq, NO_PIECE, B_BISHOP, MFLAG_NONE);
+                    mv = MOVE_DEBUG(brd, pawn_sq, south_sq, NO_PIECE, B_BISHOP, MFLAG_NONE);
                     add_quiet_move(brd, mv, mvl, B_PAWN);
 
-                    mv = MOVE(pawn_sq, south_sq, NO_PIECE, B_KNIGHT, MFLAG_NONE);
+                    mv = MOVE_DEBUG(brd, pawn_sq, south_sq, NO_PIECE, B_KNIGHT, MFLAG_NONE);
                     add_quiet_move(brd, mv, mvl, B_PAWN);
                 } else {
-                    mv = MOVE(pawn_sq, south_sq, NO_PIECE, NO_PIECE, MFLAG_NONE);
+                    mv = MOVE_DEBUG(brd, pawn_sq, south_sq, NO_PIECE, NO_PIECE, MFLAG_NONE);
                     add_quiet_move(brd, mv, mvl, B_PAWN);
                 }
                 if (pawn_rank == RANK_7) {
@@ -819,7 +822,7 @@ generate_black_pawn_moves(struct board *brd, struct move_list *mvl,
 
                     bool sq_2_occupied = is_square_occupied(get_bitboard_all_pieces(bb), south_x2);
                     if (sq_2_occupied == false) {
-                        mv = MOVE(pawn_sq, south_x2,NO_PIECE, NO_PIECE,MFLAG_PAWN_START);
+                        mv = MOVE_DEBUG(brd, pawn_sq, south_x2,NO_PIECE, NO_PIECE,MFLAG_PAWN_START);
                         add_quiet_move(brd, mv, mvl, B_PAWN);
                     }
                 }
@@ -836,25 +839,25 @@ generate_black_pawn_moves(struct board *brd, struct move_list *mvl,
                 enum piece capt_pce = get_piece_on_square(brd, southwest);
                 if (pawn_rank == RANK_2) {
                     // pawn can promote to 4 pieces
-                    mv = MOVE(pawn_sq, southwest, capt_pce, B_QUEEN, MFLAG_CAPTURE);
+                    mv = MOVE_DEBUG(brd, pawn_sq, southwest, capt_pce, B_QUEEN, MFLAG_CAPTURE);
                     add_capture_move(mv, mvl, B_PAWN, capt_pce);
 
-                    mv = MOVE(pawn_sq, southwest, capt_pce, B_ROOK, MFLAG_CAPTURE);
+                    mv = MOVE_DEBUG(brd, pawn_sq, southwest, capt_pce, B_ROOK, MFLAG_CAPTURE);
                     add_capture_move(mv, mvl, B_PAWN, capt_pce);
 
-                    mv = MOVE(pawn_sq, southwest, capt_pce, B_BISHOP, MFLAG_CAPTURE);
+                    mv = MOVE_DEBUG(brd, pawn_sq, southwest, capt_pce, B_BISHOP, MFLAG_CAPTURE);
                     add_capture_move(mv, mvl, B_PAWN, capt_pce);
 
-                    mv = MOVE(pawn_sq, southwest, capt_pce, B_KNIGHT, MFLAG_CAPTURE);
+                    mv = MOVE_DEBUG(brd, pawn_sq, southwest, capt_pce, B_KNIGHT, MFLAG_CAPTURE);
                     add_capture_move(mv, mvl, B_PAWN, capt_pce);
                 } else {
-                    mv = MOVE(pawn_sq, southwest, capt_pce, NO_PIECE, MFLAG_CAPTURE);
+                    mv = MOVE_DEBUG(brd, pawn_sq, southwest, capt_pce, NO_PIECE, MFLAG_CAPTURE);
                     add_capture_move(mv, mvl, B_PAWN, capt_pce);
                 }
             }
 
             if (southwest == get_en_passant_sq(brd)) {
-                mv = MOVE(pawn_sq, southwest, W_PAWN, NO_PIECE, MFLAG_EN_PASSANT);
+                mv = MOVE_DEBUG(brd, pawn_sq, southwest, W_PAWN, NO_PIECE, MFLAG_EN_PASSANT);
                 add_en_passant_move(mv, mvl);
             }
         }
@@ -867,25 +870,25 @@ generate_black_pawn_moves(struct board *brd, struct move_list *mvl,
                 enum piece capt_pce = get_piece_on_square(brd, southeast);
                 if (pawn_rank == RANK_2) {
                     // pawn can promote to 4 pieces
-                    mv = MOVE(pawn_sq, southeast, capt_pce, B_QUEEN, MFLAG_CAPTURE);
+                    mv = MOVE_DEBUG(brd, pawn_sq, southeast, capt_pce, B_QUEEN, MFLAG_CAPTURE);
                     add_capture_move(mv, mvl, B_PAWN, capt_pce);
 
-                    mv = MOVE(pawn_sq, southeast, capt_pce, B_ROOK, MFLAG_CAPTURE);
+                    mv = MOVE_DEBUG(brd, pawn_sq, southeast, capt_pce, B_ROOK, MFLAG_CAPTURE);
                     add_capture_move(mv, mvl, B_PAWN, capt_pce);
 
-                    mv = MOVE(pawn_sq, southeast, capt_pce, B_BISHOP, MFLAG_CAPTURE);
+                    mv = MOVE_DEBUG(brd, pawn_sq, southeast, capt_pce, B_BISHOP, MFLAG_CAPTURE);
                     add_capture_move(mv, mvl, B_PAWN, capt_pce);
 
-                    mv = MOVE(pawn_sq, southeast, capt_pce, B_KNIGHT, MFLAG_CAPTURE);
+                    mv = MOVE_DEBUG(brd, pawn_sq, southeast, capt_pce, B_KNIGHT, MFLAG_CAPTURE);
                     add_capture_move(mv, mvl, B_PAWN, capt_pce);
                 } else {
-                    mv = MOVE(pawn_sq, southeast, capt_pce, NO_PIECE, MFLAG_CAPTURE);
+                    mv = MOVE_DEBUG(brd, pawn_sq, southeast, capt_pce, NO_PIECE, MFLAG_CAPTURE);
                     add_capture_move(mv, mvl, B_PAWN, capt_pce);
                 }
             }
 
             if (southeast == get_en_passant_sq(brd)) {
-                mv = MOVE(pawn_sq, southeast, W_PAWN, NO_PIECE, MFLAG_EN_PASSANT);
+                mv = MOVE_DEBUG(brd, pawn_sq, southeast, W_PAWN, NO_PIECE, MFLAG_EN_PASSANT);
                 add_en_passant_move(mv, mvl);
             }
         }
@@ -958,12 +961,12 @@ static inline void generate_sliding_horizontal_vertical_moves (struct board *brd
             enum piece mv_pce = get_piece_on_square(brd, sq);
 
             if (mv_pce != NO_PIECE) {
-                mv_bitmap mv = MOVE(pce_sq, sq, mv_pce, NO_PIECE, MFLAG_CAPTURE);
+                mv_bitmap mv = MOVE_DEBUG(brd, pce_sq, sq, mv_pce, NO_PIECE, MFLAG_CAPTURE);
                 enum piece attacking_pce = get_piece_on_square(brd, pce_sq);
                 add_capture_move(mv, mvl, attacking_pce, mv_pce);
             } else {
                 if (only_capture_moves == false) {
-                    mv_bitmap mv = MOVE(pce_sq, sq, NO_PIECE, NO_PIECE, MFLAG_NONE);
+                    mv_bitmap mv = MOVE_DEBUG(brd, pce_sq, sq, NO_PIECE, NO_PIECE, MFLAG_NONE);
                     add_quiet_move(brd, mv, mvl, piece_being_moved);
                 }
             }
@@ -1032,12 +1035,12 @@ static inline void generate_sliding_diagonal_moves(struct board *brd,
             enum piece mv_pce = get_piece_on_square(brd, sq);
 
             if (mv_pce != NO_PIECE) {
-                mv_bitmap mv = MOVE(pce_sq, sq, mv_pce, NO_PIECE, MFLAG_CAPTURE);
+                mv_bitmap mv = MOVE_DEBUG(brd, pce_sq, sq, mv_pce, NO_PIECE, MFLAG_CAPTURE);
                 enum piece attacking_pce = get_piece_on_square(brd, pce_sq);
                 add_capture_move(mv, mvl, attacking_pce, mv_pce);
             } else {
                 if (only_capture_moves == false) {
-                    mv_bitmap mv = MOVE(pce_sq, sq, NO_PIECE, NO_PIECE, MFLAG_NONE);
+                    mv_bitmap mv = MOVE_DEBUG(brd, pce_sq, sq, NO_PIECE, NO_PIECE, MFLAG_NONE);
                     add_quiet_move(brd, mv, mvl, piece_being_moved);
                 }
             }
@@ -1077,6 +1080,44 @@ bool move_exists(struct board *brd, mv_bitmap move_to_test)
 
 // function to map move attributes to a bitmapped field
 // see typdef for mv_bitmap for a description
+inline mv_bitmap MOVE_DEBUG(const struct board *brd, enum square from, enum square to, enum piece capture,
+                           enum piece promote, uint64_t flags)
+{
+    mv_bitmap retval = 0;
+
+    retval =  ((mv_bitmap)from 		<< MV_MASK_OFF_FROM_SQ);
+    retval |= ((mv_bitmap)to 		<< MV_MASK_OFF_TO_SQ);
+    retval |= ((mv_bitmap)capture 	<< MV_MASK_OFF_CAPTURED_PCE);
+    retval |= ((mv_bitmap)promote 	<< MV_MASK_OFF_PROMOTED_PCE);
+    retval |= flags;
+
+	assert_move_ok(brd, retval);
+
+    return retval;
+}
+
+static void assert_move_ok(const struct board *brd, mv_bitmap mv){
+	
+	enum square to = TOSQ(mv);
+	enum square from = FROMSQ(mv);
+	
+	enum piece pce_on_from_sq = get_piece_on_square(brd, from);
+	assert(pce_on_from_sq != NO_PIECE);
+	
+	enum piece pce_on_to_sq = get_piece_on_square(brd, to);
+	
+	if (IS_CAPTURE_MOVE(mv) == false){
+		assert(pce_on_to_sq == NO_PIECE);
+	} else{
+		assert(pce_on_to_sq != NO_PIECE);
+	}	
+}
+
+
+
+
+// function to map move attributes to a bitmapped field
+// see typdef for mv_bitmap for a description
 inline mv_bitmap MOVE(enum square from, enum square to, enum piece capture,
                            enum piece promote, uint64_t flags)
 {
@@ -1090,7 +1131,6 @@ inline mv_bitmap MOVE(enum square from, enum square to, enum piece capture,
 
     return retval;
 }
-
 
 
 
