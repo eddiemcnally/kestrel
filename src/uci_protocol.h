@@ -24,7 +24,7 @@
  *
  */
 #include <stdio.h>
-#include "types.h"
+#include "kestrel.h"
 #include "search.h"
 
 void uci_print_hello(void);

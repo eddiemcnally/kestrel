@@ -30,7 +30,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <assert.h>
-#include "types.h"
+#include "kestrel.h"
 #include "board.h"
 #include "bitboard.h"
 #include "attack.h"
@@ -1097,20 +1097,20 @@ inline mv_bitmap MOVE_DEBUG(const struct board *brd, enum square from, enum squa
 }
 
 static void assert_move_ok(const struct board *brd, mv_bitmap mv){
-	
+
 	enum square to = TOSQ(mv);
 	enum square from = FROMSQ(mv);
-	
+
 	enum piece pce_on_from_sq = get_piece_on_square(brd, from);
 	assert(pce_on_from_sq != NO_PIECE);
-	
+
 	enum piece pce_on_to_sq = get_piece_on_square(brd, to);
-	
+
 	if (IS_CAPTURE_MOVE(mv) == false){
 		assert(pce_on_to_sq == NO_PIECE);
 	} else{
 		assert(pce_on_to_sq != NO_PIECE);
-	}	
+	}
 }
 
 

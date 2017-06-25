@@ -28,7 +28,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <assert.h>
-#include "types.h"
+#include "kestrel.h"
 #include "search.h"
 #include "attack.h"
 #include "evaluate.h"

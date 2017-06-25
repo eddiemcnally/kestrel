@@ -29,7 +29,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <assert.h>
-#include "types.h"
+#include "kestrel.h"
 #include "pieces.h"
 #include "bitboard.h"
 #include "board.h"

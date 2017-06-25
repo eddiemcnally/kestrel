@@ -20,12 +20,12 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include "seatest.h"
-#include "types.h"
+#include "kestrel.h"
 #include "hashkeys.h"
 #include "board_utils.h"
 #include "bitboard.h"
 #include "board.h"
-#include "fen.h"
+#include "fen/fen.h"
 #include "move_gen.h"
 #include "move_gen_utils.h"
 #include "pieces.h"
@@ -60,7 +60,7 @@ void test_initial_board_placement()
     struct board *brd = allocate_board();
     consume_fen_notation(STARTING_FEN, brd);
 
-    
+
    	ASSERT_BOARD_OK(brd);
 
     assert_true(W_ROOK == get_piece_on_square(brd, a1));
@@ -131,7 +131,7 @@ void test_fen_parsing_initial_board_layout(void)
     consume_fen_notation(test_fen, brd);
 
 	ASSERT_BOARD_OK(brd);
-	
+
     //print_board(brd);
 
     // verify the board
@@ -193,7 +193,7 @@ void test_fen_parsing_general_layout_1()
     consume_fen_notation(test_fen, brd);
 
 	ASSERT_BOARD_OK(brd);
-	
+
     //print_board(brd);
 
     // verify the board
@@ -212,12 +212,12 @@ void test_fen_parsing_general_layout_1()
 
 void test_king_bitboard(){
 	char *pos = "2rq1b1r/p3kppp/2np1n2/1pp1pb2/PP1P1B2/2N1PP2/2P1N1PP/RQK2B1R b - - 0 1\n";
-	
+
     struct board *brd = allocate_board();
     consume_fen_notation(pos, brd);
-	
+
 	const struct bitboards *bb_str = get_bitboard_struct(brd);
-	
+
 	uint64_t blk_bb = get_bitboard_for_king(bb_str, BLACK);
 	enum square black_king_sq = pop_1st_bit(&blk_bb);
 	assert_true(black_king_sq == e7);
@@ -225,7 +225,7 @@ void test_king_bitboard(){
 	uint64_t wht_bb = get_bitboard_for_king(bb_str, WHITE);
 	enum square white_king_sq = pop_1st_bit(&wht_bb);
 	assert_true(white_king_sq == c1);
-	
+
 }
 
 
@@ -253,12 +253,12 @@ void test_fen_parsing_general_layout_2()
     assert_true(get_piece_on_square(brd, a1) == W_ROOK);
 	assert_true(is_square_occupied(white_bb, a1));
 	assert_true(is_piece_on_square(brd, W_ROOK, a1));
-    
+
     assert_true(W_KNIGHT == get_piece_on_square(brd, b1));
     assert_true(get_piece_on_square(brd, b1) == W_KNIGHT);
 	assert_true(is_square_occupied(white_bb, b1));
 	assert_true(is_piece_on_square(brd, W_KNIGHT, b1));
-    
+
     assert_true(W_BISHOP == get_piece_on_square(brd, c1));
     assert_true(get_piece_on_square(brd, c1) == W_BISHOP);
    	assert_true(is_square_occupied(white_bb, c1));
@@ -401,7 +401,7 @@ void test_fen_parsing_general_layout_2()
         assert_true(get_num_pawns_on_file(brd, WHITE, f) == 1);
         assert_true(get_num_pawns_on_file(brd, BLACK, f) == 1);
     }
-    
+
     // test pawns on files
     assert_true(get_num_pawns_on_rank(brd, WHITE, RANK_1) == 0);
     assert_true(get_num_pawns_on_rank(brd, WHITE, RANK_2) == 7);
@@ -420,8 +420,8 @@ void test_fen_parsing_general_layout_2()
     assert_true(get_num_pawns_on_rank(brd, BLACK, RANK_6) == 0);
     assert_true(get_num_pawns_on_rank(brd, BLACK, RANK_7) == 7);
     assert_true(get_num_pawns_on_rank(brd, BLACK, RANK_8) == 0);
-        
-    
+
+
     assert_true(get_num_squares_under_pawn_ctl(brd,WHITE,a3) == 1);
     assert_true(get_num_squares_under_pawn_ctl(brd,WHITE,b3) == 2);
     assert_true(get_num_squares_under_pawn_ctl(brd,WHITE,c3) == 2);
@@ -451,7 +451,7 @@ void test_fen_parsing_general_layout_2()
 
 void test_get_king_square(){
 	char *test_pos = "rnbq3r/ppp2kpp/4pn2/1N6/1b1NP3/3B4/PP1B1PPP/R2Q2KR w KQkq -\n";
-	
+
     struct board *brd = allocate_board();
     consume_fen_notation(test_pos, brd);
 
@@ -460,7 +460,7 @@ void test_get_king_square(){
 	free_board(brd);
 
 	test_pos = "rnb4r/pp4pp/1q2pn2/1Np3k1/1b1NP3/2BB4/PP3PPP/RK1Q3R w KQkq -\n";
-	
+
     brd = allocate_board();
     consume_fen_notation(test_pos, brd);
 
@@ -474,7 +474,7 @@ void test_get_king_square(){
 
 void test_position_1(){
 	char *test_pos = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\n";
-	
+
     struct board *brd = allocate_board();
     consume_fen_notation(test_pos, brd);
 
@@ -486,7 +486,7 @@ void test_position_1(){
 
 void test_is_pawn_controlling_square(){
 	char *test_pos = "r1b1k2r/pp1n1ppp/3bpn2/q1pp4/1PPBB3/P2N1P2/3PP1PP/R1BQK3 b Qkq - 0 1\n";
-	
+
     struct board *brd = allocate_board();
     consume_fen_notation(test_pos, brd);
 
@@ -517,48 +517,48 @@ void test_is_pawn_controlling_square(){
 
 void test_pawn_control(){
 	char *test_pos = "r1b1k2r/pp1n1ppp/3bpn2/q1pp4/1PPBB3/P2N1P2/3PP1PP/R1BQK3 b Qkq - 0 1\n";
-	
+
     struct board *brd = allocate_board();
     consume_fen_notation(test_pos, brd);
 
 	// check white pawn control
 	for(enum square sq = a1; sq <= h2; sq++){
-		assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, sq) == 0);		
+		assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, sq) == 0);
 	}
 	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, a3) == 0);
-	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, b3) == 0);	
-	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, c3) == 1);	
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, b3) == 0);
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, c3) == 1);
 	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, d3) == 1);
-	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, e3) == 1);	
-	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, f3) == 2);	
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, e3) == 1);
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, f3) == 2);
 	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, g3) == 1);
-	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, h3) == 1);	
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, h3) == 1);
 
 	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, a4) == 0);
-	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, b4) == 1);	
-	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, c4) == 0);	
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, b4) == 1);
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, c4) == 0);
 	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, d4) == 0);
-	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, e4) == 1);	
-	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, f4) == 0);	
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, e4) == 1);
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, f4) == 0);
 	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, g4) == 1);
-	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, h4) == 0);	
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, h4) == 0);
 
 	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, a5) == 1);
-	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, b5) == 1);	
-	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, c5) == 1);	
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, b5) == 1);
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, c5) == 1);
 	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, d5) == 1);
-	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, e5) == 0);	
-	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, f5) == 0);	
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, e5) == 0);
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, f5) == 0);
 	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, g5) == 0);
-	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, h5) == 0);	
+	assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, h5) == 0);
 
 	for(enum square sq = a6; sq <= h8; sq++){
-		assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, sq) == 0);		
+		assert_true(get_num_squares_under_pawn_ctl(brd, WHITE, sq) == 0);
 	}
-	
+
 	// check black pawn control
 	for(enum square sq = a7; sq <= h8; sq++){
-		assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, sq) == 0);		
+		assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, sq) == 0);
 	}
 	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, a6) == 1);
 	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, b6) == 1);
@@ -568,7 +568,7 @@ void test_pawn_control(){
 	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, f6) == 1);
 	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, g6) == 2);
 	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, h6) == 1);
-	
+
 	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, a5) == 0);
 	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, b5) == 0);
 	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, c5) == 0);
@@ -577,7 +577,7 @@ void test_pawn_control(){
 	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, f5) == 1);
 	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, g5) == 0);
 	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, h5) == 0);
-	
+
 	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, a4) == 0);
 	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, b4) == 1);
 	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, c4) == 1);
@@ -588,9 +588,9 @@ void test_pawn_control(){
 	assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, h4) == 0);
 
 	for(enum square sq = a1; sq <=h3; sq++){
-		assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, sq) == 0);		
+		assert_true(get_num_squares_under_pawn_ctl(brd, BLACK, sq) == 0);
 	}
-	
+
 	free_board(brd);
 }
 
@@ -607,7 +607,7 @@ void test_fen_parsing_general_layout_3()
     consume_fen_notation(test_fen, brd);
 
 	ASSERT_BOARD_OK(brd);
-	
+
     //print_board(brd);
 
     assert_true(get_side_to_move(brd) == WHITE);
@@ -772,13 +772,13 @@ void board_test_fixture(void)
     run_test(test_fen_parsing_general_layout_1);
     run_test(test_fen_parsing_general_layout_2);
     run_test(test_fen_parsing_general_layout_3);
-    
+
     run_test(test_bit_counting);
     run_test(test_LSB_clear);
-    
+
     run_test(test_pawn_control);
     run_test(test_is_pawn_controlling_square);
-    
+
     run_test(test_get_set_side_to_move);
 
     test_fixture_end();	// ends a fixture
@@ -787,8 +787,8 @@ void board_test_fixture(void)
 
 
 /* Test to do:
- * 
- * 
+ *
+ *
 void move_piece(struct board *brd, enum square from, enum square to);
 void remove_piece_from_board(struct board *brd,  enum piece pce_to_remove, enum square sq);
 void add_piece_to_board(struct board *brd, enum piece pce, enum square sq);

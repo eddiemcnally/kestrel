@@ -1,5 +1,5 @@
 /*
- * occupancy_mask_gen.h
+ * utils.h
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
  * kestrel is free software: you can redistribute it and/or modify it
@@ -18,13 +18,10 @@
 
 #pragma once
 
-#include "types.h"
+#include "kestrel.h"
 
-//uint64_t get_occ_mask(enum piece pce, enum square sq);
-void print_occupancy_masks(enum piece pce);
-void print_mask_as_board(const uint64_t * mask);
-void print_out_masks(const uint64_t * masks);
-void generate_diagonal_occupancy_masks(void);
-uint64_t get_occupancy_mask(enum piece pce, enum square sq);
-void generate_rank_and_file_masks(void);
 
+void set_priority_and_affinity(void);
+uint64_t get_time_of_day_in_millis(void);
+uint64_t get_elapsed_time_in_millis(uint64_t start_time);
+void print_stacktrace (void);

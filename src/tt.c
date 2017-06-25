@@ -25,7 +25,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include "types.h"
+#include "kestrel.h"
 #include "board.h"
 #include "move_gen.h"
 #include "move_gen_utils.h"

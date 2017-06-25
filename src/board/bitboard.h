@@ -27,7 +27,7 @@
 #pragma once
 
 #include <stdbool.h>
-#include "types.h"
+#include "kestrel.h"
 
 struct bitboards {
     // bitboard entry for each piece

@@ -17,7 +17,7 @@
  */
 #pragma once
 
-#include "types.h"
+#include "kestrel.h"
 
 void create_tt_table(uint32_t tt_size_in_bytes);
 void add_to_tt(const uint64_t board_hash, const mv_bitmap move, uint8_t depth);

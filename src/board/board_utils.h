@@ -1,5 +1,5 @@
 /*
- * fen.h
+ * board_utils.h
  * Copyright (C) 2015 Eddie McNally <emcn@gmx.com>
  *
  * kestrel is free software: you can redistribute it and/or modify it
@@ -15,11 +15,17 @@
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 #pragma once
 
-void consume_fen_notation(const char *fen_string, struct board *board_to_setup);
+#include <stdbool.h>
+#include "kestrel.h"
 
-// starting FEN position
-#define STARTING_FEN 	"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\n"
+void print_board(const struct board *brd);
+bool ASSERT_BOARD_OK(const struct board *brd);
+void assert_material_correct(const struct board *brd);
+char *print_square(enum square sq);
 
 
+void print_compressed_board(const struct board *brd);
+mv_bitmap parse_move(char *ip_move, struct board *brd);

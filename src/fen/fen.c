@@ -26,12 +26,12 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "types.h"
+#include "kestrel.h"
 #include "pieces.h"
 #include "board.h"
 #include "hashkeys.h"
 #include "board_utils.h"
-#include "fen.h"
+#include "fen/fen.h"
 
 /*
  *

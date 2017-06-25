@@ -29,7 +29,7 @@
 #include <string.h>
 #include <assert.h>
 #include <inttypes.h>
-#include "types.h"
+#include "kestrel.h"
 #include "move_gen.h"
 #include "move_gen_utils.h"
 #include "hashkeys.h"

@@ -30,7 +30,7 @@
 #include <string.h>
 #include <time.h>
 #include <assert.h>
-#include "types.h"
+#include "kestrel.h"
 #include "board.h"
 #include "bitboard.h"
 #include "move_gen_utils.h"

@@ -5,12 +5,14 @@ project(kestrel)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_C_COMPILER "/usr/bin/clang")
 
+include_directories("src" "src/core" "src/fen" "src/utils" "src/board")
+
 
 # debug options
 set(debug ON)
 
 if(debug)
-	# 
+	#
 	# debug compile options
 	#
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} \
@@ -33,7 +35,7 @@ if(debug)
 		-Wcast-align \
 		-Wmissing-include-dirs \
 		-Wpointer-arith")
-	 
+
 else()
 
 		#
@@ -70,21 +72,23 @@ endif()
 # and the test runner binary (test_kestrel)
 #
 set(COMMON_SOURCES
-            src/occupancy_mask_gen.c
-            src/occupancy_mask_gen.h
-            src/occupancy_mask.c
-            src/occupancy_mask.h
-            src/bitboard.c
-            src/bitboard.h
-            src/board.c
-            src/board.h
-            src/board_utils.c
-            src/board_utils.h
-            src/fen.c
-            src/fen.h
+			src/core/kestrel.h
+			src/fen/fen.h
+			src/fen/fen.c
+			src/utils/utils.h
+			src/utils/utils.c
+			src/board/occupancy_mask_gen.c
+            src/board/occupancy_mask_gen.h
+            src/board/occupancy_mask.c
+            src/board/occupancy_mask.h
+            src/board/bitboard.c
+            src/board/bitboard.h
+            src/board/board.c
+            src/board/board.h
+            src/board/board_utils.c
+            src/board/board_utils.h
             src/pieces.c
             src/pieces.h
-            src/types.h
             src/attack.c
             src/attack.h
             src/move_gen.c
@@ -100,9 +104,7 @@ set(COMMON_SOURCES
             src/tt.c
             src/tt.h
             src/uci_protocol.c
-            src/uci_protocol.h
-            src/utils.c
-            src/utils.h)
+            src/uci_protocol.h)
 
 
 #

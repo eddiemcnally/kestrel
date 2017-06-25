@@ -28,7 +28,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <assert.h>
-#include "types.h"
+#include "kestrel.h"
 #include "board.h"
 #include "bitboard.h"
 #include "pieces.h"

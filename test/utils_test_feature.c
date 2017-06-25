@@ -21,7 +21,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "seatest.h"
-#include "types.h"
+#include "kestrel.h"
 #include "board.h"
 #include "pieces.h"
 #include "attack.h"
@@ -79,7 +79,7 @@ void test_flip_side(void)
 void test_get_sq_from_rank_file(){
 	enum rank r = RANK_8;
 	enum file f = FILE_A;
-	
+
 	enum square sq = get_square(r, f);
 	assert_true(sq = a8);
 }

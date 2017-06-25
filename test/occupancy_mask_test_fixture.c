@@ -21,7 +21,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "seatest.h"
-#include "types.h"
+#include "kestrel.h"
 #include "board.h"
 #include "pieces.h"
 #include "bitboard.h"

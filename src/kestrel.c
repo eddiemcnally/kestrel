@@ -26,13 +26,13 @@
 #include <stdint.h>
 #include <assert.h>
 #include <string.h>
-#include "types.h"
+#include "kestrel.h"
 #include "board.h"
 #include "evaluate.h"
 #include "board_utils.h"
 #include "hashkeys.h"
 #include "occupancy_mask.h"
-#include "fen.h"
+#include "fen/fen.h"
 #include "utils.h"
 #include "tt.h"
 #include "search.h"

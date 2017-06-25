@@ -28,7 +28,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <assert.h>
-#include "types.h"
+#include "kestrel.h"
 #include "board.h"
 #include "bitboard.h"
 #include "board_utils.h"

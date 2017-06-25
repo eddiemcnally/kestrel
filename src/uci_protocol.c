@@ -33,8 +33,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "types.h"
-#include "fen.h"
+#include "kestrel.h"
+#include "fen/fen.h"
 #include "board_utils.h"
 #include "move_gen_utils.h"
 #include "uci_protocol.h"

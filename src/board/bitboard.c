@@ -28,7 +28,7 @@
 #include <stdint.h>
 #include "bitboard.h"
 #include "pieces.h"
-#include "types.h"
+#include "kestrel.h"
 
 
 /** @brief adds a new piece to the bitboard framework

@@ -17,7 +17,7 @@
  */
 #include <stdint.h>
 #include "seatest.h"
-#include "types.h"
+#include "kestrel.h"
 #include "board.h"
 #include "pieces.h"
 

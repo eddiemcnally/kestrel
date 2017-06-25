@@ -19,7 +19,7 @@
 #pragma once
 
 #include <stdbool.h>
-#include "types.h"
+#include "kestrel.h"
 
 // white is even, black is odd
 #define IS_WHITE(piece)			((piece & 0x1) == 0)

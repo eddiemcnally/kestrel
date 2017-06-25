@@ -22,10 +22,10 @@
 #include <string.h>
 #include <time.h>
 #include "seatest.h"
-#include "types.h"
+#include "kestrel.h"
 #include "attack.h"
 #include "assert.h"
-#include "fen.h"
+#include "fen/fen.h"
 #include "board.h"
 #include "pieces.h"
 #include "board_utils.h"

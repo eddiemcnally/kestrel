@@ -19,7 +19,7 @@
 
 #include <stdbool.h>
 #include "move_gen.h"
-#include "types.h"
+#include "kestrel.h"
 #include "board.h"
 
 uint32_t get_score(mv_bitmap mv);

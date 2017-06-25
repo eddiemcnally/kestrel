@@ -19,7 +19,7 @@
 #pragma once
 
 #include <stdbool.h>
-#include "types.h"
+#include "kestrel.h"
 #include "move_gen.h"
 
 

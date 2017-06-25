@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "types.h"
+#include "kestrel.h"
 
 uint64_t get_knight_occ_mask(enum square sq);
 uint64_t get_bishop_occ_mask(enum square sq);
