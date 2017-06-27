@@ -21,11 +21,11 @@
 #include <stdbool.h>
 #include "kestrel.h"
 
-void print_board(const struct board *brd);
-bool ASSERT_BOARD_OK(const struct board *brd);
-void assert_material_correct(const struct board *brd);
+void print_board(const struct position *pos);
+bool ASSERT_BOARD_OK(const struct position *pos);
+void assert_material_correct(const struct position *pos);
 char *print_square(enum square sq);
 
 
-void print_compressed_board(const struct board *brd);
-mv_bitmap parse_move(char *ip_move, struct board *brd);
+void print_compressed_board(const struct position *pos);
+mv_bitmap parse_move(char *ip_move, struct position *pos);

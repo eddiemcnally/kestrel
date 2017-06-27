@@ -18,6 +18,6 @@
  */
 #pragma once
 
-int32_t evaluate_position(const struct board * brd);
+int32_t evaluate_position(const struct position * brd);
 
 

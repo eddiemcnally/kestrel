@@ -34,11 +34,11 @@
 #include "move_gen_utils.h"
 
 
-void perf_test(int depth, struct board *brd, struct perft_stats *p);
-void divide_perft(int depth, struct board *brd);
-uint32_t divide(int depth, struct board *brd);
+void perf_test(int depth, struct position *pos, struct perft_stats *p);
+void divide_perft(int depth, struct position *pos);
+uint32_t divide(int depth, struct position *pos);
 void test_move_gen_depth(void);
-void perft(int depth, struct board *brd, struct perft_stats *pstats);
+void perft(int depth, struct position *pos, struct perft_stats *pstats);
 void bug_check(void);
 void perf_test_fixture(void);
 
@@ -379,19 +379,19 @@ void test_move_gen_depth()
         struct EPD e = test_positions[i];
 
         printf("Analysing FEN to depth %d : '%s'\n", depth, e.fen);
-		struct board *brd = allocate_board();
-		consume_fen_notation(e.fen, brd);
+		struct position *pos = allocate_board();
+		consume_fen_notation(e.fen, pos);
 
 
 #ifdef ENABLE_ASSERTS
-		ASSERT_BOARD_OK(brd);
+		ASSERT_BOARD_OK(pos);
 #endif
 
         start_time = get_time_of_day_in_millis();
 
         ////////////
         leafNodes = 0;
-        perf_test(depth, brd, &pstats);
+        perf_test(depth, pos, &pstats);
         elapsed = get_elapsed_time_in_millis(start_time);
 
         assert_true(leafNodes == e.depth3);
@@ -402,9 +402,9 @@ void test_move_gen_depth()
         total_move_time += elapsed;
 
 #ifdef ENABLE_ASSERTS
-		ASSERT_BOARD_OK(brd);
+		ASSERT_BOARD_OK(pos);
 #endif
-		free_board(brd);
+		free_board(pos);
 
     }
 
@@ -415,7 +415,7 @@ void test_move_gen_depth()
 
 }
 
-void perf_test(int depth, struct board *brd, struct perft_stats *pstats)
+void perf_test(int depth, struct position *pos, struct perft_stats *pstats)
 {
 
     leafNodes = 0;
@@ -429,32 +429,32 @@ void perf_test(int depth, struct board *brd, struct perft_stats *pstats)
     start_time = get_time_of_day_in_millis();
 
 #ifdef ENABLE_ASSERTS
-		ASSERT_BOARD_OK(brd);
+		ASSERT_BOARD_OK(pos);
 #endif
 
 
 
-    generate_all_moves(brd, &mv_list);
+    generate_all_moves(pos, &mv_list);
 
     mv_bitmap mv;
     for (uint32_t mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
 
         mv = mv_list.moves[mv_num];
-		bool ok = make_move(brd, mv);
+		bool ok = make_move(pos, mv);
         if (!ok) {
             continue;
         }
 
-        perft(depth - 1, brd, pstats);
+        perft(depth - 1, pos, pstats);
 
-        take_move(brd);
+        take_move(pos);
     }
 
     elapsed = get_elapsed_time_in_millis(start_time);
 
 
 #ifdef ENABLE_ASSERTS
-		ASSERT_BOARD_OK(brd);
+		ASSERT_BOARD_OK(pos);
 #endif
 
 
@@ -465,7 +465,7 @@ void perf_test(int depth, struct board *brd, struct perft_stats *pstats)
     return;
 }
 
-void perft(int depth, struct board *brd, struct perft_stats *pstats)
+void perft(int depth, struct position *pos, struct perft_stats *pstats)
 {
 
     if (depth == 0) {
@@ -480,17 +480,17 @@ void perft(int depth, struct board *brd, struct perft_stats *pstats)
       .move_count = 0
     };
 
-    generate_all_moves(brd, &mv_list);
+    generate_all_moves(pos, &mv_list);
 
     mv_bitmap mv;
     for (uint32_t mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
         mv = mv_list.moves[mv_num];
 
-		bool ok = make_move(brd, mv);
+		bool ok = make_move(pos, mv);
         if (ok) {
-            perft(depth - 1, brd, pstats);
+            perft(depth - 1, pos, pstats);
 
-            take_move(brd);
+            take_move(pos);
         }
     }
     return;
@@ -499,10 +499,10 @@ void perft(int depth, struct board *brd, struct perft_stats *pstats)
 
 ///////////////////
 
-void divide_perft(int depth, struct board *brd)
+void divide_perft(int depth, struct position *pos)
 {
 
-    //ASSERT_BOARD_OK(brd);
+    //ASSERT_BOARD_OK(pos);
 
     //uint32_t move_cnt = 0;
 
@@ -511,16 +511,16 @@ void divide_perft(int depth, struct board *brd)
         .move_count = 0
     };
 
-    generate_all_moves(brd, &mv_list);
+    generate_all_moves(pos, &mv_list);
 
     mv_bitmap mv;
     for (uint32_t mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
         mv = mv_list.moves[mv_num];
 
-        if (make_move(brd, mv)) {
-            //move_cnt = divide((depth - 1), brd, mv);
-            divide((depth - 1), brd);
-            take_move(brd);
+        if (make_move(pos, mv)) {
+            //move_cnt = divide((depth - 1), pos, mv);
+            divide((depth - 1), pos);
+            take_move(pos);
 
             //printf("%s %d\n", print_move(mv), move_cnt);
         } else {
@@ -534,10 +534,10 @@ void divide_perft(int depth, struct board *brd)
     return;
 }
 
-uint32_t divide(int depth, struct board * brd)
+uint32_t divide(int depth, struct position *pos)
 {
 
-    //ASSERT_BOARD_OK(brd);
+    //ASSERT_BOARD_OK(pos);
 
     uint32_t nodes = 0;
 
@@ -550,14 +550,14 @@ uint32_t divide(int depth, struct board * brd)
         .move_count = 0
     };
 
-    generate_all_moves(brd, &mv_list);
+    generate_all_moves(pos, &mv_list);
 
     mv_bitmap mv;
     for (uint32_t mv_num = 0; mv_num < mv_list.move_count; ++mv_num) {
         mv = mv_list.moves[mv_num];
-        if (make_move(brd, mv)) {
-            nodes += divide((depth - 1), brd);
-            take_move(brd);
+        if (make_move(pos, mv)) {
+            nodes += divide((depth - 1), pos);
+            take_move(pos);
         }
     }
     return nodes;

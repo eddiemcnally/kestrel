@@ -42,9 +42,9 @@
 #include "utils.h"
 
 
-static int32_t quiescence(struct board *brd, struct search_info *si, int32_t alpha, int32_t beta);
-static int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alpha, int32_t beta, uint8_t depth);
-static void init_search(struct board *brd);
+static int32_t quiescence(struct position *pos, struct search_info *si, int32_t alpha, int32_t beta);
+static int32_t alpha_beta(struct position *pos, struct search_info *si, int32_t alpha, int32_t beta, uint8_t depth);
+static void init_search(struct position *pos);
 static inline void check_search_time_limit(struct search_info *sinfo);
 
 
@@ -61,14 +61,14 @@ void init_search_struct(struct search_info *si)
 
 
 
-void search_positions(struct board *brd, struct search_info *si, uint32_t tt_size_in_bytes)
+void search_positions(struct position *pos, struct search_info *si, uint32_t tt_size_in_bytes)
 {
 
     si->search_start_time = get_time_of_day_in_millis();
 
-    //assert(ASSERT_BOARD_OK(brd) == true);
+    //assert(ASSERT_BOARD_OK(pos) == true);
 
-    init_search(brd);
+    init_search(pos);
 
     create_tt_table(tt_size_in_bytes);
 
@@ -77,14 +77,14 @@ void search_positions(struct board *brd, struct search_info *si, uint32_t tt_siz
     uint8_t num_moves = 0;
     // use iterative deepening
     for(uint8_t current_depth = 1; current_depth <= si->depth; current_depth++) {
-        score = alpha_beta(brd, si, -INFINITE, INFINITE, current_depth);
+        score = alpha_beta(pos, si, -INFINITE, INFINITE, current_depth);
 
         if (si->search_stopped == true) {
             break;
         }
-        num_moves = populate_pv_line(brd, current_depth);
+        num_moves = populate_pv_line(pos, current_depth);
 
-        best_move = get_best_pvline(brd);
+        best_move = get_best_pvline(pos);
 
         uci_print_info_score(score, current_depth, si->num_nodes,
                              (get_time_of_day_in_millis() - si->search_start_time),
@@ -97,7 +97,7 @@ void search_positions(struct board *brd, struct search_info *si, uint32_t tt_siz
             continue;
         }
 
-        set_pvline(brd, (uint8_t)i, NO_MOVE);
+        set_pvline(pos, (uint8_t)i, NO_MOVE);
     }
     // update search stats
     uint32_t elapsed_time_in_millis = (uint32_t)(get_time_of_day_in_millis() - si->search_start_time);
@@ -108,26 +108,26 @@ void search_positions(struct board *brd, struct search_info *si, uint32_t tt_siz
 
 
 
-static void init_search(struct board *brd)
+static void init_search(struct position *pos)
 {
 
     for(int i = 0; i < MAX_SEARCH_DEPTH; i++) {
-        set_pvline(brd, (uint8_t)i, NO_MOVE);
+        set_pvline(pos, (uint8_t)i, NO_MOVE);
     }
 
-	init_search_history(brd);
+	init_search_history(pos);
 
-	init_search_killers(brd);
+	init_search_killers(pos);
 
-    set_ply(brd, 0);
+    set_ply(pos, 0);
 
 }
 
 
-static int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alpha, int32_t beta, uint8_t depth)
+static int32_t alpha_beta(struct position *pos, struct search_info *si, int32_t alpha, int32_t beta, uint8_t depth)
 {
     if(depth <= 0) {
-        return quiescence(brd, si, alpha, beta);
+        return quiescence(pos, si, alpha, beta);
     }
 
     // only check every so many nodes
@@ -137,19 +137,19 @@ static int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alp
 
     si->num_nodes++;
 
-    if (is_repetition(brd)) {
+    if (is_repetition(pos)) {
         si->repetition++;
         return 0; // a draw
     }
 
-    if (get_fifty_move_counter(brd) >= 100) {
+    if (get_fifty_move_counter(pos) >= 100) {
         si->fifty_move_rule++;
         return 0; // a draw
     }
 
-    if (get_ply(brd) > MAX_SEARCH_DEPTH - 1) {
+    if (get_ply(pos) > MAX_SEARCH_DEPTH - 1) {
         si->max_depth_reached++;
-        return evaluate_position(brd);
+        return evaluate_position(pos);
     }
 
     mv_bitmap best_move = NO_MOVE;
@@ -160,10 +160,10 @@ static int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alp
         .move_count = 0
     };
 
-    generate_all_moves(brd, &mvl);
+    generate_all_moves(pos, &mvl);
 
     // check is position already in PV table
-    mv_bitmap pv_move = probe_tt(get_board_hash(brd));
+    mv_bitmap pv_move = probe_tt(get_board_hash(pos));
     if (pv_move != NO_MOVE) {
         // prioritise
         for(uint16_t i = 0; i < mvl.move_count; i++) {
@@ -185,13 +185,13 @@ static int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alp
         si->num_nodes++;
 
         mv_bitmap mv = mvl.moves[i];
-        bool valid_move = make_move(brd, mv);
+        bool valid_move = make_move(pos, mv);
         if (valid_move) {
             legal_move_cnt++;
 
             // note: alpha/beta are swapped, and sign is reversed
-            int32_t score = -alpha_beta(brd, si, -beta, -alpha, (uint8_t)(depth - 1));
-            take_move(brd);
+            int32_t score = -alpha_beta(pos, si, -beta, -alpha, (uint8_t)(depth - 1));
+            take_move(pos);
 
             if (si->search_stopped == true) {
                 // timed out
@@ -209,7 +209,7 @@ static int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alp
                     if (IS_CAPTURE_MOVE(mv) == false) {
                         si->killer_moves++;
                         // shuffle down killers
-                        shuffle_search_killers(brd, mv);
+                        shuffle_search_killers(pos, mv);
                     }
 
                     return beta;
@@ -224,8 +224,8 @@ static int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alp
                     enum square from_sq = FROMSQ(best_move);
                     enum square to_sq = TOSQ(best_move);
 
-                    enum piece pce = get_piece_on_square(brd, from_sq);
-                    add_to_search_history(brd, pce, to_sq, depth);
+                    enum piece pce = get_piece_on_square(pos, from_sq);
+                    add_to_search_history(pos, pce, to_sq, depth);
 				}
 
 
@@ -239,14 +239,14 @@ static int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alp
         si->zero_legal_moves++;
         //printf("***no legal moves left\n");
         // no legal moves....must be mate or draw
-        enum colour side_to_move = get_side_to_move(brd);
+        enum colour side_to_move = get_side_to_move(pos);
 
-        enum square king_sq = get_king_square(brd, side_to_move);
+        enum square king_sq = get_king_square(pos, side_to_move);
         enum colour opposite_side = GET_OPPOSITE_SIDE(side_to_move);
 
-        if (is_sq_attacked(brd, king_sq, opposite_side)) {
+        if (is_sq_attacked(pos, king_sq, opposite_side)) {
             si->mates_detected++;
-            return -MATE + get_ply(brd);
+            return -MATE + get_ply(pos);
         } else {
             // draw
             return 0;
@@ -255,7 +255,7 @@ static int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alp
 
     if (alpha != old_alpha) {
         // improved alpha, so add to tt
-        uint64_t board_hash = get_board_hash(brd);
+        uint64_t board_hash = get_board_hash(pos);
         add_to_tt(board_hash, best_move, depth);
 
         // search stats
@@ -267,7 +267,7 @@ static int32_t alpha_beta(struct board *brd, struct search_info *si, int32_t alp
 
 
 
-static int32_t quiescence(struct board *brd, struct search_info *si, int32_t alpha, int32_t beta)
+static int32_t quiescence(struct position *pos, struct search_info *si, int32_t alpha, int32_t beta)
 {
 
     // only check every so many nodes
@@ -276,17 +276,17 @@ static int32_t quiescence(struct board *brd, struct search_info *si, int32_t alp
     }
     si->num_nodes++;
 
-    if (is_repetition(brd) || get_fifty_move_counter(brd) > 100) {
+    if (is_repetition(pos) || get_fifty_move_counter(pos) > 100) {
         // draw
         return 0;
     }
 
-    if (get_ply(brd) > MAX_SEARCH_DEPTH - 1) {
-        return evaluate_position(brd);
+    if (get_ply(pos) > MAX_SEARCH_DEPTH - 1) {
+        return evaluate_position(pos);
     }
 
     // stand pat
-    int32_t stand_pat_score = evaluate_position(brd);
+    int32_t stand_pat_score = evaluate_position(pos);
     if (stand_pat_score >= beta) {
         si->stand_pat_cutoff++;
         return beta;
@@ -303,7 +303,7 @@ static int32_t quiescence(struct board *brd, struct search_info *si, int32_t alp
     };
 
     // only the capture moves
-    generate_all_capture_moves(brd, &mvl);
+    generate_all_capture_moves(pos, &mvl);
 
     uint16_t num_moves = mvl.move_count;
 
@@ -311,12 +311,12 @@ static int32_t quiescence(struct board *brd, struct search_info *si, int32_t alp
         bring_best_move_to_top(i, &mvl);
 
         mv_bitmap mv = mvl.moves[i];
-        bool valid_move = make_move(brd, mv);
+        bool valid_move = make_move(pos, mv);
         if (valid_move) {
 
             // note: alpha/beta are swapped, and sign is reversed
-            int32_t score = -quiescence(brd, si, -beta, -alpha);
-            take_move(brd);
+            int32_t score = -quiescence(pos, si, -beta, -alpha);
+            take_move(pos);
 
             if (si->search_stopped == true) {
                 // timed out

@@ -18,7 +18,7 @@
 #pragma once
 
 void init_hash_keys(void);
-uint64_t get_position_hash(const struct board *brd);
+uint64_t get_position_hash(const struct position *pos);
 uint64_t get_castle_hash(uint8_t castle_map);
 uint64_t get_side_hash(void);
 uint64_t get_en_passant_hash(enum square sq);

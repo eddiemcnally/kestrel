@@ -78,7 +78,7 @@ void uci_print_hello()
 // 		position [fen <fenstring> | startpos ]  moves <move1> .... <movei>
 // The line argument points to the start of the string, and includes
 // the "position" characters
-void uci_parse_position(char *line, struct board *brd)
+void uci_parse_position(char *line, struct position *pos)
 {
 
     // skip over the "position "
@@ -86,15 +86,15 @@ void uci_parse_position(char *line, struct board *brd)
     char *pc = line;
 
     if(strncmp(line, "startpos", 8) == 0) {
-        consume_fen_notation(STARTING_FEN, brd);
+        consume_fen_notation(STARTING_FEN, pos);
     } else {
         pc = strstr(line, "fen");
         if(pc == NULL) {
-            consume_fen_notation(STARTING_FEN, brd);
+            consume_fen_notation(STARTING_FEN, pos);
         } else {
             // skip over "fen "
             pc += 4;
-            consume_fen_notation(pc, brd);
+            consume_fen_notation(pc, pos);
         }
     }
 
@@ -106,13 +106,13 @@ void uci_parse_position(char *line, struct board *brd)
         // skip over "moves "
         pc += 6;
         while(*pc) {
-            mv = parse_move(pc, brd);
+            mv = parse_move(pc, pos);
             if(mv == NO_MOVE) {
                 break;
             }
 
-            make_move(brd, mv);
-            set_ply(brd, 0);
+            make_move(pos, mv);
+            set_ply(pos, 0);
 
             while(*pc && *pc != ' ') {
                 pc++;
@@ -199,7 +199,7 @@ void read_input(struct search_info *si)
 
  */
 
-void uci_parse_go(char *line, struct search_info *si, struct board *brd)
+void uci_parse_go(char *line, struct search_info *si, struct position *pos)
 {
 
     int32_t depth = -1;
@@ -216,20 +216,20 @@ void uci_parse_go(char *line, struct search_info *si, struct board *brd)
     }
 
     // black incr per move in ms
-    if ((ptr = strstr(line,"binc")) && get_side_to_move(brd) == BLACK) {
+    if ((ptr = strstr(line,"binc")) && get_side_to_move(pos) == BLACK) {
         incr = atoi(ptr + 5);	// skip over "binc "
     }
     // white incr per move in ms
-    if ((ptr = strstr(line,"winc")) && get_side_to_move(brd) == WHITE) {
+    if ((ptr = strstr(line,"winc")) && get_side_to_move(pos) == WHITE) {
         incr = atoi(ptr + 5);	// skip over "winc "
     }
     // white's remaining time in ms
-    if ((ptr = strstr(line,"wtime")) && get_side_to_move(brd) == WHITE) {
+    if ((ptr = strstr(line,"wtime")) && get_side_to_move(pos) == WHITE) {
         time = atoi(ptr + 6); 	// skip over "wtime "
     }
 
     // black's remaining time in ms
-    if ((ptr = strstr(line,"btime")) && get_side_to_move(brd) == BLACK) {
+    if ((ptr = strstr(line,"btime")) && get_side_to_move(pos) == BLACK) {
         time = atoi(ptr + 6);	// skip over "btime "
     }
 
@@ -269,7 +269,7 @@ void uci_parse_go(char *line, struct search_info *si, struct board *brd)
     printf("time:%d start:%jd stop:%jd depth:%d timeset:%i\n",
            time,si->search_start_time,si->search_expiry_time, si->depth,
            (int)si->search_time_set);
-    search_positions(brd, si, 640000000);
+    search_positions(pos, si, 640000000);
 }
 
 

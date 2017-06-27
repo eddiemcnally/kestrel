@@ -182,9 +182,9 @@ char *print_move(mv_bitmap move_bitmap)
 }
 
 
-void print_board_and_move(struct board *brd, mv_bitmap move_bitmap)
+void print_board_and_move(struct position *pos, mv_bitmap move_bitmap)
 {
-	print_board(brd);
+	print_board(pos);
 	print_move_details(move_bitmap);
 }
 

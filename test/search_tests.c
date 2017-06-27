@@ -72,24 +72,24 @@ void test_move_sort_1(void)
 
 void test_mate_in_two()
 {
-	struct board *brd = allocate_board();
-	consume_fen_notation(MATE_IN_TWO, brd);
+	struct position *pos = allocate_board();
+	consume_fen_notation(MATE_IN_TWO, pos);
 
     struct search_info si;
 
     memset(&si, 0, sizeof(struct search_info));
 
     si.depth = 4;
-    search_positions(brd, &si, 64000000);
+    search_positions(pos, &si, 64000000);
 
     // *** exclude the score ***
     mv_bitmap h7h8 = get_move(MOVE(h7, h8, NO_PIECE, NO_PIECE, 0));
     mv_bitmap g7h8 = get_move(MOVE(g7, h8, W_ROOK, NO_PIECE, MFLAG_CAPTURE));
     mv_bitmap h1h8 = get_move(MOVE(h1, h8, B_BISHOP, NO_PIECE, MFLAG_CAPTURE));
 
-    mv_bitmap pv_line_h7h8 = get_move(get_pvline(brd, 0));
-    mv_bitmap pv_line_g7h8 = get_move(get_pvline(brd, 1));
-    mv_bitmap pv_line_h1h8 = get_move(get_pvline(brd, 2));
+    mv_bitmap pv_line_h7h8 = get_move(get_pvline(pos, 0));
+    mv_bitmap pv_line_g7h8 = get_move(get_pvline(pos, 1));
+    mv_bitmap pv_line_h1h8 = get_move(get_pvline(pos, 2));
 
     //printf("PV g7h8 ->%s\n", print_move(pv_line_g7h8));
     //printf("PV h1h8 ->%s\n", print_move(pv_line_h1h8));

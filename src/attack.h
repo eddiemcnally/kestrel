@@ -24,10 +24,10 @@
 
 
 void init_attack_framework(void);
-bool is_sq_attacked(const struct board *brd, enum square sq,
+bool is_sq_attacked(const struct position *pos, enum square sq,
                     enum colour attacking_side);
 
-bool is_attacked_horizontally_or_vertically(const struct board *brd, enum square sq_one, enum square sq_two);
-bool is_attacked_diagonally(const struct board *brd, enum square attacking_sq, enum square target_sq);
-bool is_knight_attacking_square(const struct board *brd, uint64_t sq_bb, enum piece attacking_piece);
-bool is_king_attacking_square(const struct board *brd, uint64_t sq_bb, enum colour col);
+bool is_attacked_horizontally_or_vertically(const struct position *pos, enum square sq_one, enum square sq_two);
+bool is_attacked_diagonally(const struct position *pos, enum square attacking_sq, enum square target_sq);
+bool is_knight_attacking_square(const struct position *pos, uint64_t sq_bb, enum piece attacking_piece);
+bool is_king_attacking_square(const struct position *pos, uint64_t sq_bb, enum colour col);

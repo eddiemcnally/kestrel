@@ -521,11 +521,11 @@ void generate_bishop_occupancy_masks(uint64_t * occ_mask_array)
     }
 }
 
-void set_dest_sq_if_valid(uint8_t rank, uint8_t file, uint64_t * brd)
+void set_dest_sq_if_valid(uint8_t rank, uint8_t file, uint64_t * bb)
 {
     if (IS_VALID_FILE(file) && IS_VALID_RANK(rank)) {
         enum square dest_sq = get_square(rank, file);
-        set_bit(brd, (enum square)dest_sq);
+        set_bit(bb, (enum square)dest_sq);
         //printf("---- OK  rank/file (sq=%d): %d/%d\n", dest_sq, rank, file);
     } else {
         //printf("XXXX bad rank/file: %d/%d\n", rank, file);

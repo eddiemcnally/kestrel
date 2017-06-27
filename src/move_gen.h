@@ -40,33 +40,33 @@ struct move_list {
 
 mv_bitmap MOVE(enum square from, enum square to, enum piece capture,
                            enum piece promote, uint64_t flags);
-mv_bitmap MOVE_DEBUG(const struct board *brd, enum square from, enum square to, enum piece capture,
+mv_bitmap MOVE_DEBUG(const struct position *pos, enum square from, enum square to, enum piece capture,
                            enum piece promote, uint64_t flags);
 
 
-void generate_all_moves(struct board *brd, struct move_list *mvl);
-void generate_all_capture_moves(struct board *brd, struct move_list *mvl);
+void generate_all_moves(struct position *pos, struct move_list *mvl);
+void generate_all_capture_moves(struct position *pos, struct move_list *mvl);
 void init_move_gen_framework(void);
-bool move_exists(struct board *brd, mv_bitmap move_to_test) ;
+bool move_exists(struct position *pos, mv_bitmap move_to_test) ;
 
-void TEST_generate_white_pawn_moves(struct board *brd,
+void TEST_generate_white_pawn_moves(struct position *pos,
                                     struct move_list *mvl);
-void TEST_generate_black_pawn_moves(struct board *brd,
+void TEST_generate_black_pawn_moves(struct position *pos,
                                     struct move_list *mvl);
-void TEST_generate_knight_piece_moves(struct board *brd,
+void TEST_generate_knight_piece_moves(struct position *pos,
                                       struct move_list *mvl, enum colour col);
-void TEST_generate_king_moves(struct board *brd,
+void TEST_generate_king_moves(struct position *pos,
                               struct move_list *mvl, enum colour col);
-void TEST_generate_castle_moves(struct board *brd,
+void TEST_generate_castle_moves(struct position *pos,
                                 struct move_list *mvl, enum colour col);
-void TEST_generate_sliding_horizontal_vertical_moves(struct board
-        *brd,
+void TEST_generate_sliding_horizontal_vertical_moves(struct position
+        *pos,
         struct move_list *mvl,
         enum colour col);
-void TEST_generate_sliding_diagonal_moves(struct board *brd,
+void TEST_generate_sliding_diagonal_moves(struct position *pos,
         struct move_list *mvl,
         enum colour col);
-void TEST_generate_queen_moves(struct board *brd,
+void TEST_generate_queen_moves(struct position *pos,
                                struct move_list *mvl, enum piece pce);
 bool TEST_is_move_in_list(struct move_list *mvl, mv_bitmap mv);
 void TEST_add_en_passent_move(mv_bitmap move_bitmap, struct move_list *mvlist);

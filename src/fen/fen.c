@@ -44,7 +44,7 @@
  * Thanks for BlueFever Software for his youtube videos and this code
  */
 
-void consume_fen_notation(const char *fen_string, struct board *brd)
+void consume_fen_notation(const char *fen_string, struct position *pos)
 {
 
     int rank = RANK_8;
@@ -119,7 +119,7 @@ void consume_fen_notation(const char *fen_string, struct board *brd)
         for (int i = 0; i < count; i++) {
             if (piece_to_add != NO_PIECE) {
                 enum square sq = get_square((enum rank)rank, (enum file)file);
-                add_piece_to_board(brd, piece_to_add, sq);
+                add_piece_to_board(pos, piece_to_add, sq);
             }
             file++;
         }
@@ -128,9 +128,9 @@ void consume_fen_notation(const char *fen_string, struct board *brd)
 
     assert((*fen_string == 'w') || (*fen_string == 'b'));
     if (*fen_string == 'w') {
-		set_side_to_move(brd, WHITE);
+		set_side_to_move(pos, WHITE);
     } else {
-		set_side_to_move(brd, BLACK);
+		set_side_to_move(pos, BLACK);
     }
 
     // skip 'w' or 'b', and the next space
@@ -143,16 +143,16 @@ void consume_fen_notation(const char *fen_string, struct board *brd)
 
         switch (*fen_string) {
         case 'K':
-			set_castle_permission(brd, WKCA);
+			set_castle_permission(pos, WKCA);
             break;
         case 'Q':
-			set_castle_permission(brd, WQCA);
+			set_castle_permission(pos, WQCA);
             break;
         case 'k':
-			set_castle_permission(brd, BKCA);
+			set_castle_permission(pos, BKCA);
             break;
         case 'q':
-			set_castle_permission(brd, BQCA);
+			set_castle_permission(pos, BQCA);
             break;
         default:
             break;
@@ -170,11 +170,11 @@ void consume_fen_notation(const char *fen_string, struct board *brd)
         assert(IS_VALID_FILE(file));
         assert(IS_VALID_RANK(rank));
 
-		set_en_passant_sq(brd, get_square((enum rank)rank, (enum file)file));
+		set_en_passant_sq(pos, get_square((enum rank)rank, (enum file)file));
     } else {
-		set_en_passant_sq(brd, NO_SQUARE);
+		set_en_passant_sq(pos, NO_SQUARE);
     }
 
-	update_board_hash(brd);
+	update_board_hash(pos);
 
 }

@@ -144,7 +144,7 @@ struct undo {
 #define NUM_KILLER_MOVES	2
 
 
-struct board;
+struct position;
 
 struct perft_stats {
     uint64_t num_ep;

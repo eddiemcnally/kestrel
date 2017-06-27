@@ -20,7 +20,7 @@
 #pragma once
 
 
-void verify_initial_board_placement(struct board *the_board);
+void verify_initial_board_placement(struct position *the_board);
 void test_initial_board_placement(void);
 void test_clean_board(void);
 void test_fen_parsing_initial_board_layout(void);

@@ -135,29 +135,29 @@ uint64_t get_en_passant_hash(enum square sq)
  *
  */
 
-uint64_t get_position_hash(const struct board * brd)
+uint64_t get_position_hash(const struct position *pos)
 {
     uint64_t retval = 0;
-   	const struct bitboards *bb_str = get_bitboard_struct(brd);
+   	const struct bitboards *bb_str = get_bitboard_struct(pos);
 
 	uint64_t bb = get_bitboard_all_pieces(bb_str);
 
 	while(bb != 0){
 		enum square sq = pop_1st_bit(&bb);
-		enum piece pce = get_piece_on_square(brd, sq);
+		enum piece pce = get_piece_on_square(pos, sq);
 
         retval ^= get_piece_hash(pce, sq);
 	}
 
-    if (get_side_to_move(brd) == WHITE) {
+    if (get_side_to_move(pos) == WHITE) {
         retval ^= get_side_hash();
     }
 
-    if (get_en_passant_sq(brd) != NO_SQUARE) {
-        retval ^= get_en_passant_hash(get_en_passant_sq(brd));
+    if (get_en_passant_sq(pos) != NO_SQUARE) {
+        retval ^= get_en_passant_hash(get_en_passant_sq(pos));
     }
 
-    retval ^= get_castle_hash(get_castle_permissions(brd));
+    retval ^= get_castle_hash(get_castle_permissions(pos));
 
     return retval;
 }

@@ -81,85 +81,85 @@ enum castle_perm {
 
 
 
-void move_piece(struct board *brd, enum square from, enum square to);
-void remove_piece_from_board(struct board *brd,  enum piece pce_to_remove, enum square sq);
-void add_piece_to_board(struct board *brd, enum piece pce, enum square sq);
-int32_t get_material_value(const struct board *brd, enum colour col);
-enum square get_king_square(const struct board *brd, enum colour col);
+void move_piece(struct position *pos, enum square from, enum square to);
+void remove_piece_from_board(struct position *pos,  enum piece pce_to_remove, enum square sq);
+void add_piece_to_board(struct position *pos, enum piece pce, enum square sq);
+int32_t get_material_value(const struct position *pos, enum colour col);
+enum square get_king_square(const struct position *pos, enum colour col);
 
-enum colour get_side_to_move(const struct board *brd);
-void set_side_to_move(struct board *brd, enum colour side);
+enum colour get_side_to_move(const struct position *pos);
+void set_side_to_move(struct position *pos, enum colour side);
 
-void set_castle_permission(struct board *brd, enum castle_perm perm);
-enum castle_perm get_castle_permissions(const struct board *brd);
+void set_castle_permission(struct position *pos, enum castle_perm perm);
+enum castle_perm get_castle_permissions(const struct position *pos);
 
-void set_en_passant_sq(struct board *brd, enum square sq);
-enum square get_en_passant_sq(const struct board *brd);
+void set_en_passant_sq(struct position *pos, enum square sq);
+enum square get_en_passant_sq(const struct position *pos);
 
-void update_board_hash(struct board *brd);
-uint64_t get_board_hash(const struct board *brd);
+void update_board_hash(struct position *pos);
+uint64_t get_board_hash(const struct position *pos);
 
-enum piece get_piece_on_square(const struct board *brd, enum square sq);
+enum piece get_piece_on_square(const struct position *pos, enum square sq);
 
-void push_history(struct board *brd, mv_bitmap move);
-mv_bitmap pop_history(struct board *brd);
+void push_history(struct position *pos, mv_bitmap move);
+mv_bitmap pop_history(struct position *pos);
 
-uint8_t get_ply(const struct board *brd);
-void set_ply(struct board *brd, uint8_t ply);
+uint8_t get_ply(const struct position *pos);
+void set_ply(struct position *pos, uint8_t ply);
 
-uint8_t get_history_ply(const struct board *brd);
-void set_history_ply(struct board *brd, uint8_t hist_ply);
+uint8_t get_history_ply(const struct position *pos);
+void set_history_ply(struct position *pos, uint8_t hist_ply);
 
-void assert_boards_are_equal(const struct board *brd1, const struct board *brd2);
+void assert_boards_are_equal(const struct position *pos1, const struct position *pos2);
 
-mv_bitmap get_best_pvline(const struct board *brd);
-mv_bitmap get_pvline(const struct board *brd, uint8_t search_depth);
-void set_pvline(struct board *brd, uint8_t search_depth, mv_bitmap move);
-uint8_t populate_pv_line(struct board *brd, uint8_t depth);
-
-
-
-
-uint8_t get_fifty_move_counter(const struct board *brd);
-
-bool make_move(struct board *brd, mv_bitmap mv);
-void take_move(struct board *brd);
-void flip_sides(struct board *brd);
-
-bool is_pawn_controlling_sq(const struct board *brd, enum colour col, enum square sq);
-uint8_t get_num_pawns_on_rank(const struct board *brd, enum colour col, enum rank rank);
-uint8_t get_num_pawns_on_file(const struct board *brd, enum colour col, enum file file);
-uint8_t get_num_squares_under_pawn_ctl(const struct board *brd, enum colour col, enum square sq);
+mv_bitmap get_best_pvline(const struct position *pos);
+mv_bitmap get_pvline(const struct position *pos, uint8_t search_depth);
+void set_pvline(struct position *pos, uint8_t search_depth, mv_bitmap move);
+uint8_t populate_pv_line(struct position *pos, uint8_t depth);
 
 
 
-void set_piece_material(struct board *brd);
-void overlay_boards(struct board *the_board);
-bool is_piece_on_square(const struct board *brd, enum piece pce, enum square sq);
+
+uint8_t get_fifty_move_counter(const struct position *pos);
+
+bool make_move(struct position *pos, mv_bitmap mv);
+void take_move(struct position *pos);
+void flip_sides(struct position *pos);
+
+bool is_pawn_controlling_sq(const struct position *pos, enum colour col, enum square sq);
+uint8_t get_num_pawns_on_rank(const struct position *pos, enum colour col, enum rank rank);
+uint8_t get_num_pawns_on_file(const struct position *pos, enum colour col, enum file file);
+uint8_t get_num_squares_under_pawn_ctl(const struct position *pos, enum colour col, enum square sq);
+
+
+
+void set_piece_material(struct position *pos);
+void overlay_boards(struct position *the_board);
+bool is_piece_on_square(const struct position *pos, enum piece pce, enum square sq);
 bool is_square_occupied(uint64_t bitboard, enum square sq);
-bool is_repetition(const struct board *brd);
+bool is_repetition(const struct position *pos);
 
-void init_search_history(struct board *brd);
-void init_search_killers(struct board *brd);
+void init_search_history(struct position *pos);
+void init_search_killers(struct position *pos);
 
-mv_bitmap get_search_killer(struct board *brd, uint8_t killer_move_num, uint8_t ply);
-uint32_t get_search_history(struct board *brd, enum piece pce, enum square sq);
-void add_to_search_history(struct board *brd, enum piece pce, enum square to_sq, uint8_t depth);
+mv_bitmap get_search_killer(struct position *pos, uint8_t killer_move_num, uint8_t ply);
+uint32_t get_search_history(struct position *pos, enum piece pce, enum square sq);
+void add_to_search_history(struct position *pos, enum piece pce, enum square to_sq, uint8_t depth);
 
 
 
-void shuffle_search_killers(struct board *brd, mv_bitmap mv);
+void shuffle_search_killers(struct position *pos, mv_bitmap mv);
 
-const struct bitboards * get_bitboard_struct(const struct board *brd);
+const struct bitboards * get_bitboard_struct(const struct position *pos);
 
-struct board* init_game(char *fen);
+struct position* init_game(char *fen);
 
-struct board* allocate_board(void);
-void free_board(struct board *brd);
+struct position* allocate_board(void);
+void free_board(struct position *pos);
 
 
 
 uint8_t get_rank(enum square sq);
 uint8_t get_file(enum square sq);
 enum square get_square(enum rank r, enum file f);
-void clone_board(const struct board *board_to_clone, struct board *cloned);
+void clone_board(const struct position *board_to_clone, struct position *cloned);

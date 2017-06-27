@@ -54,7 +54,7 @@ static const char files[] = "abcdefgh";
  *
  * Thanks again to Bluefever Software for this code
  */
-void print_board(const struct board *the_board)
+void print_board(const struct position *the_board)
 {
     printf("\nGame Board:\n\n");
 
@@ -141,10 +141,10 @@ char *print_square(enum square sq)
     return square_text;
 }
 
-void print_compressed_board(const struct board *brd)
+void print_compressed_board(const struct position *pos)
 {
     for(enum square sq = a1; sq <=h8; sq++) {
-        enum piece pce = get_piece_on_square(brd, sq);
+        enum piece pce = get_piece_on_square(pos, sq);
         //printf("***pce = %d\n", pce);
         assert(IS_VALID_PIECE_OR_NO_PIECE(pce));
 
@@ -167,12 +167,12 @@ void print_compressed_board(const struct board *brd)
  */
 
 
-bool ASSERT_BOARD_OK(const struct board *brd)
+bool ASSERT_BOARD_OK(const struct position *pos)
 {
     // check bit boards
     uint64_t conflated = 0;
 
-	const struct bitboards *bb = get_bitboard_struct(brd);
+	const struct bitboards *bb = get_bitboard_struct(pos);
 
     for (int i = 0; i < NUM_PIECES; i++) {
         conflated |= get_bitboard_for_piece(bb, (enum piece)i);
@@ -187,7 +187,7 @@ bool ASSERT_BOARD_OK(const struct board *brd)
 
     // check where Kings are
     for (enum square sq = a1; sq <= h8; sq++) {
-        enum piece pce = get_piece_on_square(brd, sq);
+        enum piece pce = get_piece_on_square(pos, sq);
         if (pce != NO_PIECE) {
             if (pce == W_KING) {
 
@@ -196,14 +196,14 @@ bool ASSERT_BOARD_OK(const struct board *brd)
 
                 assert(sq == wk_sq);
 
-                assert(get_king_square(brd, WHITE) == wk_sq);
+                assert(get_king_square(pos, WHITE) == wk_sq);
             } else if (pce == B_KING) {
 
                 uint64_t bb_bk = get_bitboard_for_piece(bb, B_KING);
                 enum square bk_sq = pop_1st_bit(&bb_bk);
 
                 assert(sq == bk_sq);
-                assert(get_king_square(brd, BLACK) == bk_sq);
+                assert(get_king_square(pos, BLACK) == bk_sq);
             }
         }
     }
@@ -216,7 +216,7 @@ bool ASSERT_BOARD_OK(const struct board *brd)
 
 
     for (enum square sq = 0; sq < NUM_SQUARES; sq++) {
-        enum piece pce = get_piece_on_square(brd, sq);
+        enum piece pce = get_piece_on_square(pos, sq);
         if (pce != NO_PIECE) {
             assert(is_square_occupied(get_bitboard_all_pieces(bb), sq) != 0);
 
@@ -231,15 +231,15 @@ bool ASSERT_BOARD_OK(const struct board *brd)
         }
     }
 
-	enum square enp_sq = get_en_passant_sq(brd);
+	enum square enp_sq = get_en_passant_sq(pos);
     assert(IS_VALID_SQUARE(enp_sq) || (enp_sq == NO_SQUARE));
 
 
-    assert_material_correct(brd);
+    assert_material_correct(pos);
 
 
     // check on position key
-    assert(get_board_hash(brd) == get_position_hash(brd));
+    assert(get_board_hash(pos) == get_position_hash(pos));
 
     return true;
 
@@ -247,7 +247,7 @@ bool ASSERT_BOARD_OK(const struct board *brd)
 
 
 
-void assert_material_correct(const struct board *brd)
+void assert_material_correct(const struct position *pos)
 {
 
 #ifdef ENABLE_ASSERTS
@@ -256,15 +256,15 @@ void assert_material_correct(const struct board *brd)
     int32_t local_material[NUM_COLOURS] = {0, 0};
 
     for (enum square sq = a1; sq <= h8; sq++) {
-        enum piece pce = get_piece_on_square(brd, sq);
+        enum piece pce = get_piece_on_square(pos, sq);
         if (pce != NO_PIECE) {
             enum colour col = GET_COLOUR(pce);
             local_material[col] += GET_PIECE_VALUE(pce);
         }
     }
-    assert(local_material[WHITE] == get_material_value(brd, WHITE));
+    assert(local_material[WHITE] == get_material_value(pos, WHITE));
 
-    assert(local_material[BLACK] == get_material_value(brd, BLACK));
+    assert(local_material[BLACK] == get_material_value(pos, BLACK));
 #endif
 }
 
@@ -272,7 +272,7 @@ void assert_material_correct(const struct board *brd)
 
 // parses and validates a user-entered move
 // ip_move -> "a3b4" or "d7d8r"
-mv_bitmap parse_move(char *ip_move, struct board * brd)
+mv_bitmap parse_move(char *ip_move, struct position * pos)
 {
     if (ip_move[1] > '8' || ip_move[1] < '1') {
         return NO_MOVE;
@@ -301,7 +301,7 @@ mv_bitmap parse_move(char *ip_move, struct board * brd)
         .move_count = 0
     };
 
-    generate_all_moves(brd, &mv_list);
+    generate_all_moves(pos, &mv_list);
 
     mv_bitmap move = NO_MOVE;
     enum piece promoted = NO_PIECE;

@@ -34,7 +34,7 @@ struct bitboards {
     uint64_t pieces[NUM_PIECES];
 
     // The above array piece arrays overlayed into a single bitboard.
-    // In effect, an bitwise OR of all elements in pieces[]
+    // In effect, an https://github.com/eddiemcnally/kestrel.gitbitwise OR of all elements in pieces[]
     uint64_t board;
 
     // a bitboard per colour

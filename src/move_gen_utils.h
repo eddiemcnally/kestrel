@@ -37,4 +37,4 @@ char *print_move(mv_bitmap move_bitmap);
 void print_move_details(mv_bitmap move_bitmap);
 void print_move_list(const struct move_list *list);
 void print_move_list_details(const struct move_list *list);
-void print_board_and_move(struct board *brd, mv_bitmap move_bitmap);
+void print_board_and_move(struct position *pos, mv_bitmap move_bitmap);

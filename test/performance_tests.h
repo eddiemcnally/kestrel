@@ -17,11 +17,11 @@
  */
 #pragma once
 
-void perf_test(int depth, struct board *brd);
-void divide_perft(int depth, struct board *brd);
-uint32_t divide(int depth, struct board *brd);
+void perf_test(int depth, struct position *pos);
+void divide_perft(int depth, struct position *pos);
+uint32_t divide(int depth, struct position *pos);
 void test_move_gen_depth(void);
-void perft(int depth, struct board *brd);
+void perft(int depth, struct position *pos);
 void bug_check(void);
 void perf_test_fixture(void);
 
